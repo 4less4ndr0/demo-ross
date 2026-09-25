@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, BookHeart, Check, CircleHelp, Headphones, Images
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../components/Common";
 import { useDemo } from "../state/DemoContext";
+import { asset } from "../asset.js";
 
 const conversation = [
   { speaker: "ross", state: "response", line: "Ciao Elena. Ti va di stare un po’ insieme?", support: "ROSS inizia senza imporre un argomento." },
@@ -57,7 +58,7 @@ export function RossHome() {
       <main className="ross-home-main">
         <section className="ross-presence">
           <div className="ross-halo" />
-          <img src="/ross-eyes.png" alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
+          <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
           <span className="ross-state-label"><i /> {rossState === "rest" ? "In riposo" : rossState === "listening" ? "Ti ascolto" : rossState === "processing" ? "Sto pensando" : rossState === "activity" ? "Attività" : "Con te"}</span>
           <h1>{copy[0]}, Elena.</h1>
           <p>{copy[1]}</p>
@@ -78,7 +79,7 @@ export function RossHome() {
       </main>
 
       <Modal open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => setPanel(null)} size="lg">
-        {panel === "memories" && <div className="ross-modal-choices"><button onClick={() => navigate("/ross/conversazione")}>{sharedPhoto?.image ? <img className="ross-choice-image" src={sharedPhoto.image} alt={`Foto condivisa dalla famiglia: ${sharedPhoto.title}`} /> : <span className="choice-art photo"><Images /></span>}<strong>{sharedPhoto?.title || "Il viaggio in Sicilia"}</strong><small>{sharedPhoto ? "Condivisa da Anna · pronta da guardare insieme" : "Palermo, Cefalù e le fotografie del 1998"}</small></button><button onClick={() => notify("Ricordo pronto per la prossima conversazione")}><img className="ross-choice-image" src="/garden-photo.svg" alt="Gerani rossi sul balcone" /><strong>I gerani sul balcone</strong><small>Una piccola abitudine del mattino</small></button></div>}
+        {panel === "memories" && <div className="ross-modal-choices"><button onClick={() => navigate("/ross/conversazione")}>{sharedPhoto?.image ? <img className="ross-choice-image" src={sharedPhoto.image} alt={`Foto condivisa dalla famiglia: ${sharedPhoto.title}`} /> : <span className="choice-art photo"><Images /></span>}<strong>{sharedPhoto?.title || "Il viaggio in Sicilia"}</strong><small>{sharedPhoto ? "Condivisa da Anna · pronta da guardare insieme" : "Palermo, Cefalù e le fotografie del 1998"}</small></button><button onClick={() => notify("Ricordo pronto per la prossima conversazione")}><img className="ross-choice-image" src={asset("garden-photo.svg")} alt="Gerani rossi sul balcone" /><strong>I gerani sul balcone</strong><small>Una piccola abitudine del mattino</small></button></div>}
         {panel === "activities" && <div className="ross-modal-choices"><button onClick={() => { notify("Attività avviata: Indovina la canzone"); setPanel(null); setRossState("activity"); }}><span className="choice-art music"><Music2 /></span><strong>Indovina la canzone</strong><small>Dieci minuti, senza fretta</small></button><button onClick={() => { notify("Attività avviata: Fotografie di viaggio"); setPanel(null); setRossState("activity"); }}><span className="choice-art photo"><Images /></span><strong>{scheduled?.title || "Fotografie di viaggio"}</strong><small>{scheduled ? `Preparata per domani alle ${scheduled.time}` : "Scegliamo una foto e ne parliamo"}</small></button></div>}
         {panel === "music" && <div className="ross-playlist">{[sharedMusic?.title, "Se telefonando · Mina", "Il cielo in una stanza · Gino Paoli", "Azzurro · Adriano Celentano"].filter(Boolean).map((track, index) => <button key={track} onClick={() => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); setPanel(null); }}><span>{index + 1}</span><strong>{track}</strong><Play fill="currentColor" /></button>)}</div>}
         {panel === "help" && <div className="ross-help"><CircleHelp /><h3>Dimmi cosa ti serve.</h3><p>Puoi dire “chiama un operatore”, “abbassa il volume” oppure “voglio riposare”. Questa demo non effettua chiamate reali.</p><button className="primary-button" onClick={() => { chooseMode("Riposo"); setPanel(null); }}>Voglio riposare</button></div>}
@@ -118,7 +119,7 @@ export function RossConversation() {
     return <div className="ross-app ross-conversation-complete screen-enter" data-ross-state="rest">
       <header className="ross-header"><button onClick={() => navigate("/ross")}><ArrowLeft /> Home</button><div className="ross-wordmark"><span>R</span><strong>ROSS</strong></div><span /></header>
       <main>
-        <img src="/ross-eyes.png" alt="Gli occhi luminosi di ROSS" className="ross-eyes complete" />
+        <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes complete" />
         <span className="completion-check"><Check /></span>
         <h1>Grazie, Elena.</h1>
         <p>Ho salvato la nostra conversazione. Il nuovo dettaglio resterà da verificare prima di entrare nella tua storia.</p>
@@ -133,7 +134,7 @@ export function RossConversation() {
       <header className="ross-header"><button onClick={() => navigate("/ross")}><X /> Esci</button><div><span className="conversation-progress"><i style={{ width: `${((step + 1) / conversation.length) * 100}%` }} /></span><small>Conversazione · {step + 1} di {conversation.length}</small></div><button onClick={() => setPaused((value) => !value)}>{paused ? <Play /> : <Pause />} {paused ? "Riprendi" : "Pausa"}</button></header>
       <main>
         <section className="ross-conversation-face">
-          <img src="/ross-eyes.png" alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
+          <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
           <span><i />{current.state === "listening" ? "Ti ascolto" : current.state === "processing" ? "Sto collegando il ricordo" : current.state === "activity" ? "Una proposta per dopo" : "ROSS parla"}</span>
         </section>
         <section className="ross-dialogue" aria-live="polite">

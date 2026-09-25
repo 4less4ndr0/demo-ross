@@ -1,5 +1,7 @@
 # R.O.S.S. RSA Demo
 
+**Online:** https://4less4ndr0.github.io/demo-ross/
+
 Demo web interattiva di R.O.S.S. per RSA e Senior Living. È un progetto separato dal repository canonico R.O.S.S. e usa solo dati fittizi della struttura `Residenza Aurora`.
 
 ## Avvio locale
@@ -21,6 +23,16 @@ npm run test:sites
 ```
 
 La build client viene generata in `dist/client`. Il progetto include anche il worker e i metadati necessari per una futura pubblicazione tramite Sites.
+
+## Pubblicazione su GitHub Pages
+
+Ogni push su `main` avvia `.github/workflows/deploy-pages.yml`, che compila con `BASE_PATH=/demo-ross/` e pubblica `dist/client` su GitHub Pages (`404.html` = copia di `index.html`, così i link diretti alle rotte funzionano). Una tantum: *Settings → Pages → Source: GitHub Actions*.
+
+Per provare la build Pages in locale:
+
+```bash
+BASE_PATH=/demo-ross/ npm run build && npx vite preview --base /demo-ross/
+```
 
 ## Percorso demo consigliato
 

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { biography as initialBiography, interactions as initialInteractions, memories as initialMemories, modeSchedule as initialSchedule, residents as initialResidents } from "../data/demoData";
+import { asset } from "../asset.js";
 
 const DemoContext = createContext(null);
 const STORAGE_KEY = "ross-rsa-demo-v2";
@@ -22,7 +23,7 @@ const initialFamilyContributions = [
     people: ["Paolo"],
     place: "Cefalù",
     period: "1998",
-    image: "/cefalu-postcard.svg",
+    image: asset("cefalu-postcard.svg"),
     status: "Confermato",
   },
   {
