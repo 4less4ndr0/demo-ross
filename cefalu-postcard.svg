@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Cartolina illustrata di Cefalù</title>
+  <desc id="desc">Il lungomare di Cefalù al tramonto, con case chiare, mare calmo e una piccola macchina fotografica rossa in primo piano.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f5c9aa"/><stop offset="1" stop-color="#f8e9d7"/></linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#83b9b0"/><stop offset="1" stop-color="#416f6a"/></linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="930" cy="175" r="76" fill="#fff3c8" opacity=".9"/>
+  <path d="M0 425C220 390 398 430 612 415c210-16 371-66 588-25v410H0Z" fill="url(#sea)"/>
+  <path d="M0 430c135-74 272-128 421-142 112-10 206 23 319 8 97-12 179-50 270-74l190 98v119c-188-11-335 29-519 48-263 27-420-37-681 12Z" fill="#315853" opacity=".82"/>
+  <g fill="#f6ead8" stroke="#d8b99d" stroke-width="4">
+    <path d="M75 384V260l80-53 73 44v133Z"/><path d="M198 384V225l92-54 98 62v151Z"/><path d="M362 384V246l74-45 96 59v124Z"/><path d="M502 384V214l110-69 104 80v159Z"/>
+  </g>
+  <g fill="#8b5a48"><rect x="112" y="300" width="35" height="84"/><rect x="248" y="280" width="42" height="104"/><rect x="410" y="295" width="36" height="89"/><rect x="562" y="278" width="43" height="106"/></g>
+  <path d="M60 582c250-48 462-13 665 14 141 19 293 26 475-22" fill="none" stroke="#f6f0df" stroke-width="14" opacity=".75"/>
+  <g transform="translate(820 500) rotate(-7)"><rect width="215" height="145" rx="25" fill="#c95842" stroke="#7b342a" stroke-width="8"/><circle cx="108" cy="73" r="44" fill="#293a38" stroke="#f2e4d0" stroke-width="9"/><circle cx="108" cy="73" r="20" fill="#80aaa3"/><rect x="28" y="-16" width="65" height="32" rx="8" fill="#9c3f31"/></g>
+  <text x="80" y="720" fill="#fff8eb" font-family="Georgia,serif" font-size="76">Cefalù · estate 1998</text>
+</svg>

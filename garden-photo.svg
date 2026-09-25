@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Gerani sul balcone</title>
+  <desc id="desc">Illustrazione calda di vasi di gerani rossi su un balcone illuminato dal sole del mattino.</desc>
+  <defs><linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4dfc5"/><stop offset="1" stop-color="#d9b995"/></linearGradient></defs>
+  <rect width="1200" height="800" fill="url(#wall)"/>
+  <rect x="80" y="90" width="430" height="430" rx="8" fill="#8fb7bd" stroke="#f9f2e7" stroke-width="28"/>
+  <path d="M295 104v400M94 306h402" stroke="#f9f2e7" stroke-width="22"/>
+  <rect y="570" width="1200" height="230" fill="#d6c4a7"/>
+  <g stroke="#365f50" stroke-width="14" stroke-linecap="round"><path d="M690 590V360m0 75-80-80m80 120 95-120M920 590V410m0 60-75-70m75 105 72-82"/></g>
+  <g fill="#c55749"><circle cx="610" cy="350" r="42"/><circle cx="666" cy="318" r="48"/><circle cx="721" cy="358" r="44"/><circle cx="841" cy="402" r="45"/><circle cx="912" cy="376" r="49"/><circle cx="976" cy="423" r="42"/></g>
+  <g fill="#477660"><ellipse cx="630" cy="428" rx="49" ry="25" transform="rotate(24 630 428)"/><ellipse cx="758" cy="425" rx="52" ry="27" transform="rotate(-28 758 425)"/><ellipse cx="865" cy="493" rx="49" ry="25" transform="rotate(25 865 493)"/><ellipse cx="1000" cy="488" rx="52" ry="27" transform="rotate(-28 1000 488)"/></g>
+  <path d="M560 560h265l-38 166H598Z" fill="#a86842"/><path d="M820 560h245l-35 166H852Z" fill="#bd7c50"/>
+  <text x="70" y="735" fill="#5e3d2c" font-family="Georgia,serif" font-size="68">Il balcone di casa</text>
+</svg>
