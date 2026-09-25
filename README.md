@@ -26,7 +26,7 @@ La build client viene generata in `dist/client`. Il progetto include anche il wo
 
 ## Pubblicazione su GitHub Pages
 
-Ogni push su `main` avvia `.github/workflows/deploy-pages.yml`, che compila con `BASE_PATH=/demo-ross/` e pubblica `dist/client` su GitHub Pages (`404.html` = copia di `index.html`, così i link diretti alle rotte funzionano). Una tantum: *Settings → Pages → Source: GitHub Actions*.
+Ogni push su `main` avvia `.github/workflows/deploy-pages.yml`, che compila con `BASE_PATH=/demo-ross/` e pubblica `dist/client` sul branch `gh-pages`, servito da GitHub Pages (`404.html` = copia di `index.html`, così i link diretti alle rotte funzionano).
 
 Per provare la build Pages in locale:
 
