@@ -38,7 +38,7 @@ export function Sheet({ open, onOpenChange, side = "left", title, description, c
   return <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="ui-sheet-overlay" />
-      <DialogPrimitive.Content className={cx("ui-sheet", `ui-sheet-${side}`, className)} aria-describedby={undefined}>
+      <DialogPrimitive.Content className={cx("ui-sheet", `ui-sheet-${side}`, className)} aria-describedby={undefined} onOpenAutoFocus={(event) => { event.preventDefault(); event.currentTarget.focus(); }}>
         <DialogPrimitive.Title className={title ? "ui-sheet-title" : "ui-sr-only"}>{title || "Pannello"}</DialogPrimitive.Title>
         {description && <DialogPrimitive.Description className="ui-sheet-description">{description}</DialogPrimitive.Description>}
         {children}

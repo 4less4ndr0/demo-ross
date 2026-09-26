@@ -25,7 +25,7 @@ export function InsightRail({ onDone }) {
 
   return (
     <>
-        <div className="ask-rail-head"><div><span className="eyebrow">IL POLSO DI ROSS</span><h2>Oggi in Residenza Aurora</h2></div></div>
+        <div className="ask-rail-head"><div><span className="eyebrow">IL POLSO DI ROSS</span><h2>Com'è andata oggi</h2></div></div>
         {journey.completedAt && <button className="ask-journey" onClick={() => journey.confirmedAt ? go("/ospiti/elena?tab=memorie") : onAsk("Cosa è emerso oggi con Elena?")}>
           <span><Sparkles size={16} /></span><div><small>NUOVO DA ROSS · ELENA</small><strong>{journey.confirmedAt ? "Il ricordo della macchina fotografica di Paolo è confermato." : "È emerso un nuovo ricordo su Cefalù."}</strong></div><ArrowRight size={15} />
         </button>}
