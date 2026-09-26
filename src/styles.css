@@ -334,3 +334,8 @@
 }
 @media(max-width:430px){.top-tabs a svg{display:none}.presentation-toggle{display:none}}
 @media(max-width:650px){.ask-role-chip{margin-right:auto}}
+
+/* Barra superiore senza azioni: schede centrate */
+.topbar-place{flex:1 1 0;min-width:0}
+.topbar::after{content:"";flex:1 1 0}
+@media(max-width:900px){.topbar::after{content:none}.topbar-place{flex:1}}
