@@ -38,7 +38,7 @@ export const activities = [
   { id: "song", title: "Indovina la canzone", category: "Musica", duration: 10, difficulty: "Media", mode: "Individuale", reason: "Le attività musicali hanno favorito interazioni più lunghe", last: "Oggi", participation: 94, icon: "Music2" },
   { id: "associations", title: "Associazioni", category: "Giochi", duration: 8, difficulty: "Leggera", mode: "Individuale", reason: "Attività breve e variabile", last: "6 giorni fa", participation: 76, icon: "Sparkles" },
   { id: "categories", title: "Categorie", category: "Giochi", duration: 7, difficulty: "Media", mode: "Gruppo", reason: "Lucia ha chiesto di ripeterla", last: "Ieri", participation: 88, icon: "ListTree" },
-  { id: "memory-game", title: "Memory visivo", category: "Giochi", duration: 6, difficulty: "Leggera", mode: "Individuale", reason: "Partite brevi, senza finalità diagnostica", last: "9 giorni fa", participation: 71, icon: "Grid3X3" },
+  { id: "memory-game", title: "Memory visivo", category: "Giochi", duration: 6, difficulty: "Leggera", mode: "Individuale", reason: "Partite brevi, solo per il piacere del gioco", last: "9 giorni fa", participation: 71, icon: "Grid3X3" },
   { id: "shared-stories", title: "Storie in comune", category: "Socialità", duration: 20, difficulty: "Media", mode: "Gruppo", reason: "Tre ospiti condividono il tema del giardino", last: "4 giorni fa", participation: 84, icon: "Users" },
   { id: "guided-memory", title: "Ricordi guidati", category: "Memoria", duration: 14, difficulty: "Media", mode: "Individuale", reason: "Continua dal racconto sul viaggio del 1998", last: "7 giorni fa", participation: 86, icon: "BookOpen" },
 ];
@@ -69,10 +69,10 @@ export const interactions = Array.from({ length: 120 }, (_, index) => {
 
 
 export const insights = [
-  { id: "i1", category: "Benessere", title: "Teresa ha espresso serenità più spesso del solito", body: "Serenità espressa in 6 conversazioni su 7 questa settimana, rispetto a una media di 4.", period: "Ultimi 7 giorni", evidence: ["6 su 7", "media 4"], residentId: "teresa", action: "Apri il profilo", tone: "mint" },
+  { id: "i1", category: "Benessere", title: "Teresa ha espresso serenità più spesso del solito", body: "Serenità espressa in 6 conversazioni su 7 questa settimana, rispetto a una media di 4.", period: "Ultimi 7 giorni", evidence: ["6 su 7", "media 4"], residentId: "teresa", action: "Apri il ritratto", tone: "mint" },
   { id: "i2", category: "Benessere", title: "Carlo ha avviato meno conversazioni", body: "Negli ultimi 4 giorni Carlo ha avviato 3 conversazioni in meno rispetto alla propria media di 14 giorni.", period: "Ultimi 4 giorni", evidence: ["2 iniziative", "media personale 5"], residentId: "carlo", action: "Osserva andamento", tone: "sand" },
-  { id: "i3", category: "Benessere", title: "Lucia ha espresso stanchezza più del solito", body: "Stanchezza espressa in 3 conversazioni su 6 questa settimana (di solito 1). Da osservare di persona.", period: "Ultimi 7 giorni", evidence: ["3 su 6", "media 1"], residentId: "lucia", action: "Apri il profilo", tone: "coral" },
-  { id: "i4", category: "Presenza", title: "La fascia 10:00–11:30 è la più utilizzata", body: "Le interazioni del mattino sono mediamente 6 minuti più lunghe, senza differenze rilevanti nella partecipazione.", period: "Ultimi 30 giorni", evidence: ["38 interazioni", "+6 min durata"], action: "Vedi dettaglio", tone: "lilac" },
+  { id: "i3", category: "Benessere", title: "Lucia ha espresso stanchezza più del solito", body: "Stanchezza espressa in 3 conversazioni su 6 questa settimana (di solito 1). Da osservare di persona.", period: "Ultimi 7 giorni", evidence: ["3 su 6", "media 1"], residentId: "lucia", action: "Apri il ritratto", tone: "coral" },
+  { id: "i4", category: "Presenza", title: "La fascia 10:00–11:30 è la più utilizzata", body: "Le interazioni del mattino sono mediamente 6 minuti più lunghe, senza differenze evidenti nella partecipazione.", period: "Ultimi 30 giorni", evidence: ["38 interazioni", "+6 min durata"], action: "Vedi dettaglio", tone: "lilac" },
 ];
 
 export const dayTimeline = [
@@ -114,7 +114,7 @@ export const modeSchedule = [
 
 export const handoverEntries = [
   { residentId: "elena", source: "ROSS", text: "Partecipazione superiore alla propria media recente; ha espresso serenità.", time: "16:24" },
-  { residentId: "carlo", source: "ROSS", text: "Meno interazioni spontanee rispetto agli ultimi giorni. Nessun altro cambiamento rilevato nelle interazioni ROSS.", time: "15:50" },
+  { residentId: "carlo", source: "ROSS", text: "Meno interazioni spontanee rispetto agli ultimi giorni. Nessun altro cambiamento notato nelle conversazioni con ROSS.", time: "15:50" },
   { residentId: "lucia", source: "Operatore", text: "Ha chiesto di ripetere domani l'attività sulle categorie.", time: "16:08" },
   { residentId: "teresa", source: "ROSS", text: "L'attività musicale di gruppo è durata 18 minuti, 5 in più della sua media personale.", time: "15:36" },
   { residentId: "antonio", source: "ROSS", text: "Oggi non ha ancora parlato con ROSS; di solito entro le 11 sì. Ha espresso il desiderio di sentire un familiare in 2 conversazioni questa settimana.", time: "15:10" },

@@ -146,7 +146,7 @@ export function DemoProvider({ children }) {
           rossJourney: isRossCandidate ? { ...prev.rossJourney, confirmedAt: new Date().toISOString() } : prev.rossJourney,
         };
       });
-      notify("Memoria confermata e collegata al profilo", "success", { undo: true });
+      notify("Ricordo confermato e aggiunto alla sua storia", "success", { undo: true });
     },
     archiveMemory: (id) => {
       setState((prev) => ({ ...prev, memories: prev.memories.filter((m) => m.id !== id) }));
@@ -252,7 +252,7 @@ export function DemoProvider({ children }) {
     setRole: (role) => setState((prev) => ({ ...prev, role })),
     addDocument: (document) => {
       setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Caricato dallo staff", pages: 1, ...document }, ...prev.documents] }));
-      notify("Documento aggiunto alla cartella", "success", { undo: true });
+      notify("Documento aggiunto ai documenti dell'ospite", "success", { undo: true });
     },
     takeInsight: (id) => {
       setState((prev) => ({ ...prev, takenInsights: [...new Set([...prev.takenInsights, id])] }));

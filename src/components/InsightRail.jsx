@@ -7,12 +7,12 @@ import { Avatar } from "./Common";
 
 // Guida alla lettura della schermata: raccoglie le spiegazioni che prima erano nei tooltip.
 const readingGuide = [
-  { title: "La chat", text: "Chiedi di un ospite, di un bisogno o di un documento. Ogni risposta cita la fonte: Dati ROSS, Biografia d'ingresso, Documento o Nota operatore. Le domande consigliate cambiano per Staff (accesso condiviso, senza login), Psicologa e Direzione (accesso personale): si sceglie dal profilo, in basso.", question: "Chi ha bisogno di più attenzione oggi?" },
+  { title: "La chat", text: "Chiedi di un ospite, di un bisogno o di un documento. Ogni risposta cita la fonte: Dati ROSS, Biografia d'ingresso, Documento o Nota operatore. Le domande consigliate cambiano per Staff (accesso condiviso, senza login), Psicologa e Direzione (accesso personale): si sceglie dalla card in basso a sinistra.", question: "Chi ha bisogno di più attenzione oggi?" },
   { title: "Da osservare", text: "Segnali espressi dall'ospite negli ultimi 7 giorni (stanchezza, solitudine, fastidio…), confrontati con la sua media personale. Mai l'argomento o il motivo: il giudizio resta a voi.", question: "Chi ha espresso segnali da osservare questa settimana?" },
   { title: "Bisogni espressi", text: "Ciò che l'ospite ha chiesto per sé (uscire, sentire un familiare, sente freddo…), senza il contesto della conversazione.", question: "Quali bisogni hanno espresso gli ospiti?" },
   { title: "Voce della struttura", text: "Opinioni sulla vita in struttura (pasti, rumore, attività), anonime e aggregate: un tema compare solo se lo esprimono almeno 3 ospiti.", question: "Cosa dicono gli ospiti della vita in struttura?" },
-  { title: "Ingaggio con ROSS", text: "Quanto ogni ospite partecipa alle conversazioni rispetto alla propria media degli ultimi 14 giorni: + sopra la sua media, − sotto. «In costruzione» per chi è arrivato da poco.", question: "Come stanno usando ROSS gli ospiti?" },
-  { title: "Ospiti e Report", text: "Dalle schede in alto: la cartella di ogni ospite (come sta, come avvicinarsi, conversazioni, documenti) e i report stampabili: il Riepilogo d'équipe sulla situazione della struttura e il «Come sta» del singolo ospite." },
+  { title: "Presenza con ROSS", text: "Quanto ogni ospite partecipa alle chiacchierate rispetto alla propria media degli ultimi 14 giorni: + sopra la sua media, − sotto. «Lo sta conoscendo» per chi è arrivato da poco.", question: "Come stanno usando ROSS gli ospiti?" },
+  { title: "Ospiti e Report", text: "Dalle schede in alto: il ritratto di ogni ospite (come sta, come avvicinarsi, conversazioni, documenti) e i report stampabili: il Riepilogo d'équipe sulla situazione della struttura e il «Come sta» del singolo ospite." },
 ];
 
 // Insight aggregati nella sidebar della chat (docs/contratto-informativo-struttura.md).
@@ -68,12 +68,12 @@ export function InsightRail({ onDone }) {
         </AccordionPrimitive.Item>
         <AccordionPrimitive.Item value="ingaggio" className="rail-item">
           <AccordionPrimitive.Header className="rail-item-head">
-            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Ingaggio con ROSS</span><small className="rail-count">{state.residents.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
+            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Presenza con ROSS</span><small className="rail-count">{state.residents.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
         {engagement.map((r) => <button key={r.id} className="ask-engage" onClick={() => onAsk(`Come sta ${r.name.split(" ")[0]}?`)}>
           <Avatar resident={r} size="sm" /><span>{r.name}</span>
-          {r.delta == null ? <small className="ask-delta building">in costruzione</small> : <small className={`ask-delta ${r.delta >= 0 ? "up" : "down"}`}>{r.delta >= 0 ? "+" : ""}{r.delta.toFixed(1)}</small>}
+          {r.delta == null ? <small className="ask-delta building">lo sta conoscendo</small> : <small className={`ask-delta ${r.delta >= 0 ? "up" : "down"}`}>{r.delta >= 0 ? "+" : ""}{r.delta.toFixed(1)}</small>}
         </button>)}
           </div></AccordionPrimitive.Content>
         </AccordionPrimitive.Item>

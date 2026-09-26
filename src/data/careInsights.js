@@ -45,7 +45,7 @@ export const relating = {
   mario: { address: "Lei · «signor Rossi»", bestTime: "dopo le 17:00", duration: "lunghe, con pause", works: ["Domande tecniche", "Lavori manuali", "Tempi distesi"], avoid: "Rispettare la modalità silenziosa nel primo pomeriggio", interests: [["Montagna", "Biografia d'ingresso"], ["Falegnameria", "Biografia d'ingresso"]] },
   teresa: { address: "Tu · «Teresa»", bestTime: "pomeriggio, in gruppo", duration: "20–25 minuti", works: ["Canto di gruppo", "Fiori di stagione", "Insegnare agli altri"], avoid: "Nessuna indicazione particolare", interests: [["Canto corale", "Biografia d'ingresso"], ["Fiori", "Biografia d'ingresso"], ["Lavoro a maglia", "Emerso con ROSS"]] },
   antonio: { address: "Lei · «signor Greco»", bestTime: "pomeriggio, con la radio", duration: "10–15 minuti", works: ["Radio", "Automobili", "Scacchi"], avoid: "All'inizio risposte brevi: lasciargli tempo", interests: [["Radio", "Biografia d'ingresso"], ["Automobili", "Biografia d'ingresso"], ["Scacchi", "Emerso con ROSS"]] },
-  ada: { address: "Lei · «signora Ada»", bestTime: "mattino", duration: "brevi, 5–10 minuti", works: ["Poesia", "Cucito"], avoid: "Baseline in costruzione: indicazioni ancora provvisorie", interests: [["Poesia", "Biografia d'ingresso"], ["Cucito", "Biografia d'ingresso"]] },
+  ada: { address: "Lei · «signora Ada»", bestTime: "mattino", duration: "brevi, 5–10 minuti", works: ["Poesia", "Cucito"], avoid: "ROSS la sta ancora conoscendo: indicazioni provvisorie", interests: [["Poesia", "Biografia d'ingresso"], ["Cucito", "Biografia d'ingresso"]] },
   bruno: { address: "Tu · «Bruno»", bestTime: "dopo la quiete pomeridiana", duration: "15 minuti", works: ["Chiedergli di spiegare", "Treni", "Carte"], avoid: "Non proporre attività nel primo pomeriggio", interests: [["Treni", "Biografia d'ingresso"], ["Storia locale", "Emerso con ROSS"], ["Giochi di carte", "Biografia d'ingresso"]] },
 };
 
@@ -147,7 +147,7 @@ export function hooksFor(residentId, { withJourney = false } = {}) {
 // Presenza e continuità: assenza di interazione insolita (F12), momenti di difficoltà (F8).
 export const presenceNotes = [
   { residentId: "antonio", kind: "assenza", text: "Oggi non ha ancora parlato con ROSS; di solito entro le 11 sì." },
-  { residentId: "lucia", kind: "difficoltà", text: "Momenti di disorientamento in 2 conversazioni questa settimana (di solito nessuno). ROSS ha rallentato e semplificato." },
+  { residentId: "lucia", kind: "difficoltà", text: "In 2 conversazioni questa settimana ha fatto fatica a seguire il filo (di solito mai). ROSS ha rallentato e semplificato." },
 ];
 
 export const signalsFor = (id) => signals.filter((s) => s.residentId === id);
@@ -172,7 +172,7 @@ export const byAttention = (residents) => [...residents].sort((a, b) => attentio
 
 // Partecipazione rispetto alla media della persona: mai valori assoluti, mai confronti tra ospiti.
 export function trendOf(resident) {
-  if (resident.participation == null) return { tone: "building", label: "baseline in costruzione" };
+  if (resident.participation == null) return { tone: "building", label: "ROSS la sta ancora conoscendo" };
   if (resident.delta >= 0.3) return { tone: "up", label: "sopra la sua media" };
   if (resident.delta <= -0.3) return { tone: "down", label: "sotto la sua media" };
   return { tone: "flat", label: "in linea con la sua media" };

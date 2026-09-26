@@ -62,7 +62,7 @@ function TeamReport({ report, period, onResident }) {
       <div className="stack-bar" role="img" aria-label="Ospiti rispetto alla propria media">{report.distribution.filter((d) => d.count).map((d) => <i key={d.tone} className={`stack-${d.tone}`} style={{ flex: d.count }} title={`${d.label}: ${d.count}`} />)}</div>
       <div className="stack-legend">{report.distribution.map((d) => <span key={d.tone}><i className={`stack-${d.tone}`} />{d.label} <strong>{d.count}</strong></span>)}</div>
       <div className="signal-types">{report.signalTypes.map((x) => <span key={x.signal} className={x.positive ? "is-positive" : ""}>{capitalize(x.signal)} <strong>{x.count} {x.count === 1 ? "ospite" : "ospiti"}</strong></span>)}</div>
-      <small className="team-note">Segnali espressi negli ultimi 7 giorni, confrontati con la media di ciascuno. Nessuna valutazione clinica.</small>
+      <small className="team-note">Segnali espressi negli ultimi 7 giorni, confrontati con la media di ciascuno: spunti da osservare, non giudizi sulla salute.</small>
     </section>
 
     <section className="team-block"><h3>Voce della struttura</h3><p className="team-question">Cosa esprimono gli ospiti sulla vita in struttura? Solo in forma anonima, con almeno 3 ospiti per tema.</p>
@@ -71,7 +71,7 @@ function TeamReport({ report, period, onResident }) {
 
     <section className="team-block"><h3>Situazione per ospite</h3><p className="team-question">Prima chi ha bisogno di più attenzione. Il dettaglio è nel report di ciascuno.</p>
       <div className="team-table">{report.rows.map((row) => <div key={row.resident.id} className="team-row">
-        <div className="team-person"><Avatar resident={row.resident} size="sm" /><div><strong>{row.resident.name}</strong><small className={`trend-text trend-${row.trend.tone}`}>{row.trend.tone === "building" ? "Baseline in costruzione" : `Partecipazione ${row.trend.label}`}</small></div></div>
+        <div className="team-person"><Avatar resident={row.resident} size="sm" /><div><strong>{row.resident.name}</strong><small className={`trend-text trend-${row.trend.tone}`}>{row.trend.tone === "building" ? "ROSS la sta ancora conoscendo" : `Partecipazione ${row.trend.label}`}</small></div></div>
         <p className="team-headline">{row.headline}</p>
         <div className="team-flags">{row.watch.map((w) => <span key={w} className="attention-chip attention-watch">{capitalize(w)}</span>)}{row.need && <span className="attention-chip attention-need">{row.need}</span>}{!row.watch.length && !row.need && row.positive.map((p) => <span key={p} className="attention-chip attention-ok">{capitalize(p)}</span>)}</div>
         <p className="team-next"><span>Spunto</span>{row.next}</p>
@@ -101,18 +101,18 @@ function ResidentReport({ resident, report, period }) {
     <section className="report-kpis">{report.kpis.map(([value, label]) => <div key={label}><strong className={String(value).length > 10 ? "kpi-text" : ""}>{value}</strong><span>{label}</span></div>)}</section>
     <section className="report-narrative"><span>IN SINTESI</span><h2>{report.headline}</h2>{report.paragraphs.map((text) => <p key={text}>{text}</p>)}</section>
     <section className="report-columns">
-      <div><h3>Benessere · ultimi 7 giorni</h3><ul>{watch.map((sig) => <li key={sig.signal}>{capitalize(sig.signal)} <strong>{sig.note ? sig.trend : `${sig.count} su ${sig.of} · di solito ${sig.usual}`}</strong></li>)}{positive.map((sig) => <li key={sig.signal} className="is-positive">{capitalize(sig.signal)} <strong>{sig.count} su {sig.of} · di solito {sig.usual}</strong></li>)}{!report.signals.length && <li>{report.building ? "Baseline in costruzione" : "Nessun segnale particolare rispetto alla sua media"}</li>}</ul></div>
+      <div><h3>Benessere · ultimi 7 giorni</h3><ul>{watch.map((sig) => <li key={sig.signal}>{capitalize(sig.signal)} <strong>{sig.note ? sig.trend : `${sig.count} su ${sig.of} · di solito ${sig.usual}`}</strong></li>)}{positive.map((sig) => <li key={sig.signal} className="is-positive">{capitalize(sig.signal)} <strong>{sig.count} su {sig.of} · di solito {sig.usual}</strong></li>)}{!report.signals.length && <li>{report.building ? "ROSS la sta ancora conoscendo" : "Nessun segnale particolare rispetto alla sua media"}</li>}</ul></div>
       <div><h3>Bisogni espressi</h3><ul>{report.needs.length ? report.needs.map((n) => <li key={n.text}>{n.text} <strong>{n.times > 1 ? `${n.times} volte` : "1 volta"}</strong></li>) : <li>Nessun bisogno particolare espresso</li>}</ul></div>
     </section>
     {report.relating && <section className="report-approach"><h3>Come avvicinarsi</h3>
       <ol className="report-steps">{report.firstSteps.map((step) => <li key={step}>{step}</li>)}</ol>
       <div className="report-hooks">{report.hooks.map((h) => <div key={h.label}><strong>{h.label}{h.isNew ? " · nuovo" : ""}</strong><small>{h.source}{h.lever ? ` · ${h.lever.toLowerCase()}` : ""}</small>{h.detail && <p><em>Dalla biografia d'ingresso:</em> {h.detail}</p>}{h.opener && <p><em>Per iniziare:</em> {h.opener}</p>}</div>)}</div>
       <p className="report-relating">Come rivolgersi: <strong>{report.relating.address}</strong> · Momento migliore: <strong>{report.relating.bestTime}</strong> · Durata: <strong>{report.relating.duration}</strong> · {report.relating.avoid}</p>
-      <button className="text-link no-print" onClick={() => navigate(`/ospiti/${resident.id}?tab=avvicinare`)}>Tutte le indicazioni nella cartella <ArrowRight size={14} /></button>
+      <button className="text-link no-print" onClick={() => navigate(`/ospiti/${resident.id}?tab=avvicinare`)}>Tutte le indicazioni nel ritratto <ArrowRight size={14} /></button>
     </section>}
     {report.checklist.length > 0 && <section className="report-next report-presence"><span>DA OSSERVARE IN ÉQUIPE</span><ul className="report-checklist">{report.checklist.map((item) => <li key={item}>{item}</li>)}</ul></section>}
     <section className="report-next"><span>SPUNTO PER LO STAFF</span><p>{report.next}</p></section>
-    <section className="report-chart"><h3>Partecipazione {report.building ? "(baseline in costruzione)" : "rispetto alla sua media personale"}</h3><ParticipationChart series={report.series} building={report.building} /></section>
-    <footer>Report a uso interno dell'équipe. Descrive come sta la persona e di cosa ha bisogno, mai il contenuto delle sue conversazioni con ROSS. Non contiene citazioni, diagnosi, valutazioni cliniche o informazioni dei documenti sanitari. I dettagli biografici vengono solo dalla biografia d'ingresso.</footer>
+    <section className="report-chart"><h3>Partecipazione {report.building ? "(ROSS la sta ancora conoscendo)" : "rispetto alla sua media personale"}</h3><ParticipationChart series={report.series} building={report.building} /></section>
+    <footer>Report a uso interno dell'équipe. Descrive come sta la persona e di cosa ha bisogno, mai il contenuto delle sue conversazioni con ROSS. Non contiene citazioni, giudizi sulla salute né i contenuti dei documenti della struttura. I dettagli biografici vengono solo dalla biografia d'ingresso.</footer>
   </article>;
 }

@@ -41,7 +41,7 @@ Tutto ciò che la struttura riceve rientra in una di queste cinque famiglie. Son
 
 **Cos'è.** Segnali espressi dall'ospite nelle conversazioni, aggregati nel tempo e confrontati con la sua media personale.
 
-**Segnali ammessi.** Malinconia o tristezza, stanchezza, solitudine, preoccupazione o ansia, fastidio fisico riferito (per esempio "mi fa male il ginocchio"), disorientamento. A questi si aggiungono le variazioni di partecipazione e iniziativa rispetto alla baseline.
+**Segnali ammessi.** Malinconia o tristezza, stanchezza, solitudine, preoccupazione o ansia, fastidio fisico riferito (per esempio "mi fa male il ginocchio"), fatica a seguire la conversazione. A questi si aggiungono le variazioni di partecipazione e iniziativa rispetto alla baseline.
 
 **Forma.**
 - Finestra minima di **7 giorni**. Un segnale emotivo non si riporta mai su una singola conversazione.
@@ -172,9 +172,9 @@ Cosa è cambiato nella vista Struttura per rispettare questo contratto. I dati c
 | **Pannello insight** · banner "Nuovo da ROSS · Elena" | "È emerso un nuovo ricordo su Cefalù" | Ricordo specifico | "Nuovo interesse emerso per Elena: fotografia" |
 | **`insights`** (`demoData.js`) | "Un ricordo di Cefalù ricorre più volte… può essere verificato con la famiglia" | Contenuto | Un insight di benessere, per esempio "Lucia ha espresso stanchezza più del solito" |
 | **Report "Come sta"** (`reportNarrative.js`) | "Con le sue parole" (citazioni), "Di cosa parla" (temi con menzioni), testi con Sofia, Paolo, Cefalù | Citazioni, argomenti, nomi | Sezioni: **Segnali della settimana**, **Come relazionarsi** (con interessi per categoria), **Bisogni espressi**, **Presenza**. Nessuna citazione |
-| **Cartella** · Conversazioni ROSS | Colonna "Tema" (Musica, Famiglia, Viaggi…) | Argomento per conversazione | Solo data, durata, partecipazione, segnali espressi, modalità |
-| **Cartella** · Memorie e storia | Memory Library con ricordi emersi "da verificare" (vongole, Cefalù, macchina fotografica) | Ricordi emersi dalle conversazioni | **Biografia d'ingresso** (fonte famiglia o struttura) più **Interessi**: quelli d'ingresso e quelli emersi, per categoria, con "come usarlo" |
-| **Cartella** · Relazioni (grafo) | Nodi alimentati anche dai ricordi emersi | Contenuto emerso | Grafo costruito solo dalla biografia d'ingresso, con la fonte indicata |
+| **Ritratto (ex cartella)** · Conversazioni ROSS | Colonna "Tema" (Musica, Famiglia, Viaggi…) | Argomento per conversazione | Solo data, durata, partecipazione, segnali espressi, modalità |
+| **Ritratto (ex cartella)** · Memorie e storia | Memory Library con ricordi emersi "da verificare" (vongole, Cefalù, macchina fotografica) | Ricordi emersi dalle conversazioni | **Biografia d'ingresso** (fonte famiglia o struttura) più **Interessi**: quelli d'ingresso e quelli emersi, per categoria, con "come usarlo" |
+| **Ritratto (ex cartella)** · Relazioni (grafo) | Nodi alimentati anche dai ricordi emersi | Contenuto emerso | Grafo costruito solo dalla biografia d'ingresso, con la fonte indicata |
 | **Conversazione live** (`LiveInteraction.jsx`) | Pulsante "Trascrizione"; fine sessione con "Possibile nuova memoria: spaghetti alle vongole" | Trascrizione, ricordo | Niente trascrizione. Fine sessione con esito: durata, partecipazione, eventuale "nuovo interesse emerso: cucina" |
 | **Percorso ROSS → Struttura** | Lo staff verifica e conferma il ricordo della macchina fotografica rossa | Ricordo passato alla struttura | La struttura vede "nuovo interesse emerso: fotografia · partecipazione alta"; il ricordo resta a ROSS ed Elena |
 | **Passaggio consegne** (`handoverEntries`) | "Ha parlato spontaneamente della nipote" | Argomento e persona | "Partecipazione superiore alla sua media; ha espresso serenità" |

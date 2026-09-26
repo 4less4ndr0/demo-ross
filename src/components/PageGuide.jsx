@@ -37,9 +37,9 @@ export const residentsGuide = {
   entries: [
     { title: "Perché questo ordine", text: "In cima chi ha bisogno di più attenzione oggi: prima un'assenza insolita, poi i segnali da osservare, poi i bisogni espressi. Chi inizia la giornata sa da chi passare per primo.", question: "Chi ha bisogno di più attenzione oggi?" },
     { title: "Ognuno confrontato con sé stesso", text: "La partecipazione è sempre rispetto alla media della persona negli ultimi 14 giorni. Niente punteggi né classifiche: una persona riservata non è «peggio» di una socievole." },
-    { title: "La cartella", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio e spunti per ogni interesse), Conversazioni ROSS (quando e quanto, mai di cosa), Documenti (allegati dalla chat, in sola lettura)." },
+    { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio e spunti per ogni interesse), Conversazioni ROSS (quando e quanto, mai di cosa), Documenti (allegati dalla chat, in sola lettura)." },
     { title: "Cosa non trovi, e perché", text: "Niente storia di vita, grafo delle relazioni, ricordi o citazioni: sono della persona. I dettagli biografici compaiono solo se li hanno dati la famiglia o la struttura all'ingresso." },
-    { title: "ROSS segnala, voi decidete", text: "Nessuna diagnosi né valutazione clinica. I segnali sono spunti da verificare di persona: il giudizio resta all'équipe.", question: "Chi ha espresso segnali da osservare questa settimana?" },
+    { title: "ROSS segnala, voi decidete", text: "ROSS non giudica la salute di nessuno: racconta la giornata e ciò che la persona esprime. I segnali sono spunti da verificare di persona: il giudizio resta all'équipe.", question: "Chi ha espresso segnali da osservare questa settimana?" },
   ],
 };
 
@@ -48,10 +48,10 @@ export const reportsGuide = {
   subtitle: "A cosa servono questi report",
   intro: "Due report da stampare o salvare in PDF, pensati per il lavoro d'équipe: uno racconta la struttura, l'altro la singola persona. Trasformano ciò che ROSS osserva in qualcosa di cui parlare insieme.",
   entries: [
-    { title: "Riepilogo d'équipe", text: "Lo stato della struttura sui cinque punti cardinali: benessere, voce degli ospiti, bisogni, presenza. Per la riunione d'équipe e la direzione: chiude con i punti da discutere.", question: "Prepara il riepilogo d'équipe del mese" },
+    { title: "Riepilogo d'équipe", text: "Com'è la vita in struttura in questo periodo: benessere, voce degli ospiti, bisogni, presenza. Per la riunione d'équipe e la direzione: chiude con i punti da discutere.", question: "Prepara il riepilogo d'équipe del mese" },
     { title: "Singolo ospite", text: "Il «Come sta» di una persona: com'è andato il periodo, come avvicinarla, cosa osservare. Utile per un confronto in équipe o per chi la incontra da poco." },
     { title: "Perché anche su carta", text: "Le caselle «Da osservare» e «Da discutere» si spuntano a penna: ROSS segnala, l'équipe osserva, decide e annota." },
     { title: "Come si leggono i numeri", text: "Ogni ospite è confrontato solo con la propria media. La voce della struttura è anonima e un tema compare solo se lo esprimono almeno 3 ospiti. Minuti e orari vengono dalle conversazioni con ROSS." },
-    { title: "Cosa non c'è", text: "Né citazioni né argomenti né diagnosi, né dati dei documenti sanitari. Il report descrive come sta la persona, non cosa ha raccontato." },
+    { title: "Cosa non c'è", text: "Né citazioni né argomenti, né giudizi sulla salute, né i contenuti dei documenti della struttura. Il report racconta come sta la persona, non cosa ha raccontato." },
   ],
 };
