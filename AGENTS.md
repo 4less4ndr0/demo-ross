@@ -22,6 +22,10 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - **Interazioni in stile shadcn/ui** nella vista Struttura: bottoni, dropdown, select (anche nei moduli), dialog, sheet laterali e toast usano le primitive di `src/components/ui.jsx` (Radix + Sonner) con i token visivi ROSS (colori caldi, serif editoriale). Non adottare il tema neutro di shadcn né Tailwind. Le azioni reversibili mostrano un toast con "Annulla". Le viste Famiglia e ROSS mantengono i propri componenti.
 - **Selettore "Vista demo"** (Struttura / Famiglia / ROSS): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3. In modalità presentazione contiene anche "Avanti". Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
 
+## Passaggio di consegne
+
+- `docs/HANDOFF.md` è il documento vivo con stato attuale, mappa del codice, questioni aperte e changelog della vista Struttura. **Aggiornalo a ogni modifica**: nuova voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
+
 ## Privacy by design: cosa la struttura riceve
 
 - **Regola d'oro**: la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai *di cosa ha parlato***. Il riferimento completo è `docs/contratto-informativo-struttura.md`.
