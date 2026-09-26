@@ -28,6 +28,12 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - **Interazioni in stile shadcn/ui** nella vista Struttura: bottoni, dropdown, select (anche nei moduli), dialog, sheet laterali e toast usano le primitive di `src/components/ui.jsx` (Radix + Sonner) con i token visivi ROSS (colori caldi, serif editoriale). Non adottare il tema neutro di shadcn né Tailwind. Le azioni reversibili mostrano un toast con "Annulla". Le viste Famiglia e ROSS mantengono i propri componenti.
 - **Selettore "Vista demo"** (Struttura / Famiglia / ROSS): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3. In modalità presentazione contiene anche "Avanti". Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
 
+## Vista Famiglia
+
+- Il rapporto è **famiglia ↔ ospite ↔ ROSS**: la struttura non sta in mezzo. I contributi della famiglia (ricordi, foto, temi, musica) vanno **direttamente a ROSS** ("Disponibile a ROSS" → "Ripreso con Elena"); niente verifiche della struttura, niente "Scrivi alla struttura", niente programma delle attività della residenza.
+- La famiglia vede racconti e ricordi **solo se l'ospite ha scelto di condividerli** (campo `sharedWithFamily` sui ricordi, `shared` sui momenti), con il badge "Elena ha voluto raccontartelo". Senza consenso: "Elena ha tenuto questo racconto per sé" e solo com'è andata. Il consenso nasce nella conversazione con ROSS ("Ti va se lo racconto anche ad Anna?").
+- "Come sta questa settimana": i segnali positivi dell'ospite (da `careInsights.js`), senza dati da controllare.
+
 ## Lessico
 
 - ROSS parla come un compagno, non come un servizio sanitario: **mai** cartella, clinico, diagnosi, sintomo, rilevare, disorientamento, baseline, ingaggio, paziente, terapia, monitoraggio. La pagina di un ospite è il suo **ritratto**. Riferimento: `docs/lessico-struttura.md` (dalle pagine Notion "TOV guidelines" e "Keywords").

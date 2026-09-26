@@ -11,9 +11,9 @@ const conversation = [
   { speaker: "ross", state: "processing", line: "Mi hai raccontato che Mina ti ricorda i pomeriggi in cucina. Vuoi restare sulla musica o guardiamo una fotografia?", support: "Usa solo una memoria già confermata e offre una scelta." },
   { speaker: "elena", state: "listening", line: "Guardiamo quella del mare. Era in Sicilia, con Paolo.", support: "Il racconto porta spontaneamente a un ricordo personale." },
   { speaker: "ross", state: "response", line: "Ricordo il viaggio del 1998: Palermo e Cefalù. Cosa ti piaceva di quelle passeggiate?", support: "Recupera luogo, anno e persona dalla storia confermata." },
-  { speaker: "elena", state: "listening", line: "La luce della sera. Paolo portava sempre una piccola macchina fotografica rossa.", support: "Emerge un dettaglio nuovo, ancora da verificare." },
-  { speaker: "ross", state: "processing", line: "Questa della macchina fotografica rossa è una cosa nuova per me. La tengo come ricordo da verificare, va bene?", support: "ROSS distingue il nuovo dettaglio da ciò che sa già." },
-  { speaker: "elena", state: "listening", line: "Sì. Mi fotografava sul lungomare e poi rideva perché chiudevo gli occhi.", support: "Elena conferma che il dettaglio può essere conservato." },
+  { speaker: "elena", state: "listening", line: "La luce della sera. Paolo portava sempre una piccola macchina fotografica rossa.", support: "Emerge un dettaglio nuovo." },
+  { speaker: "ross", state: "processing", line: "Questa della macchina fotografica rossa è una cosa nuova per me. Ti va se lo racconto anche ad Anna? Credo le farebbe piacere.", support: "ROSS distingue il nuovo dettaglio da ciò che sa già e chiede a Elena se condividerlo." },
+  { speaker: "elena", state: "listening", line: "Sì, raccontaglielo. Mi fotografava sul lungomare e poi rideva perché chiudevo gli occhi.", support: "Elena sceglie di condividere il ricordo con la figlia." },
   { speaker: "ross", state: "activity", line: "La prossima volta possiamo guardare altre fotografie di Cefalù, oppure ascoltare ancora Mina. Per oggi possiamo fermarci qui.", support: "Chiude con una proposta coerente e senza insistere." },
 ];
 
@@ -122,8 +122,8 @@ export function RossConversation() {
         <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes complete" />
         <span className="completion-check"><Check /></span>
         <h1>Grazie, Elena.</h1>
-        <p>Ho salvato la nostra conversazione. Il nuovo dettaglio resterà da verificare prima di entrare nella tua storia.</p>
-        <article><span>NUOVO RICORDO DA VERIFICARE</span><h2>La macchina fotografica rossa di Paolo</h2><p>Collegata a Cefalù, al viaggio del 1998 e alle fotografie.</p><div><span>Conversazione salvata</span><ArrowRight /><span>Verifica struttura</span><ArrowRight /><span>Profilo e famiglia</span></div></article>
+        <p>Ho salvato la nostra conversazione. Racconterò ad Anna il nuovo ricordo, come mi hai chiesto.</p>
+        <article><span>NUOVO RICORDO · CONDIVISO CON ANNA</span><h2>La macchina fotografica rossa di Paolo</h2><p>Collegata a Cefalù, al viaggio del 1998 e alle fotografie.</p><div><span>Conversazione salvata</span><ArrowRight /><span>Elena sceglie di condividerlo</span><ArrowRight /><span>Arriva alla famiglia</span></div></article>
         <div className="ross-complete-actions"><button className="ross-primary-action" onClick={() => navigate("/ross")}><ArrowLeft /> Torna alla home</button><button onClick={restart}><RotateCcw /> Ripeti la demo</button></div>
       </main>
     </div>;

@@ -594,3 +594,12 @@
 /* Specchietto "Cosa ti dice ROSS" nella sidebar di Ospiti e Report */
 .compass-title-text{display:grid;gap:1px;text-align:left}
 .compass-title-text small{font-size:11px;font-weight:500;color:var(--muted)}
+
+/* Vista Famiglia: consenso di Elena e "come sta questa settimana" */
+.family-shared-badge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:700;color:var(--family-coral);background:var(--family-coral-soft);border-radius:999px;padding:4px 10px}
+.family-shared-badge svg{flex:none}
+.family-private-note{font-style:italic;color:var(--family-muted)}
+.family-week-list{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}
+.family-week-list li{display:grid;gap:1px;background:#fffdf9;border-radius:12px;padding:9px 12px}
+.family-week-list strong{font-size:13px;color:var(--family-ink)}
+.family-week-list small{font-size:11px;color:var(--family-muted)}

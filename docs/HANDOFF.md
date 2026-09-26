@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 26 settembre 2026 · stato di `main` dopo la PR #19.
+> Ultimo aggiornamento: 26 settembre 2026 · stato di `main` dopo la PR #21.
 
 ---
 
@@ -9,7 +9,7 @@
 
 - **Demo online:** https://4less4ndr0.github.io/demo-ross/ (GitHub Pages, branch `gh-pages`, aggiornato automaticamente a ogni push su `main`).
 - **Repository:** `4less4ndr0/demo-ross`. Il lavoro si fa su un branch dedicato, poi PR verso `main`.
-- **Perimetro del lavoro:** solo la **vista Struttura**, cioè ciò che vede lo staff della RSA. Le viste **Famiglia** (`/famiglia`) e **ROSS** (`/ross`, il tablet dell'ospite) non sono state ridisegnate.
+- **Perimetro del lavoro:** soprattutto la **vista Struttura**, cioè ciò che vede lo staff della RSA. La **vista Famiglia** (`/famiglia`) è stata riallineata al consenso dell'ospite (PR #21). La **vista ROSS** (`/ross`, il tablet dell'ospite) non è stata ridisegnata: è cambiato solo il copione della conversazione, dove ROSS chiede a Elena se condividere il ricordo con Anna.
 
 **Com'è fatta oggi la vista Struttura:**
 
@@ -24,6 +24,7 @@
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3; in presentazione mostra anche "Avanti". |
+| Vista Famiglia (`/famiglia`) | Oggi con Elena (racconto del giorno con il consenso visibile, spunto per la prossima chiamata, ricordi da riaprire, "Come sta questa settimana"), Storia e foto (solo ricordi condivisi da Elena o dalla famiglia), Attività (momenti condivisi o "tenuti per sé"), Condivisi da me (contributi diretti a ROSS). |
 
 ---
 
@@ -105,11 +106,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 5. Questioni aperte
 
-1. **Vista Famiglia:** mostra ancora il ricordo di Cefalù e dice che "la struttura lo sta verificando" (`FamilyExperience.jsx`, `DemoContext.jsx`), ma dal 26/09 i contributi della famiglia vanno direttamente a ROSS. Testi e flusso vanno riallineati, e va deciso che regole valgono per la famiglia (contratto, §6.1). È pronta una "Suggested task" per farlo.
-2. **Lessico nelle viste Famiglia e ROSS:** il riallineamento del lessico (`docs/lessico-struttura.md`) riguarda solo la Struttura; le altre due viste usano ancora parole come "verificare", "memoria" e simili.
+1. **Vista ROSS:** il lessico (`docs/lessico-struttura.md`) e la logica del consenso sono applicati solo in parte (copione della conversazione); il resto della vista del tablet non è stato rivisto.
+2. **Consenso verso la struttura:** per la famiglia il consenso è modellato (`sharedWithFamily`); per la struttura vale la regola d'oro, ma un eventuale "raccontalo anche alla struttura" è da progettare (contratto, §6.2).
 3. **Nomi dei documenti:** "Fisioterapia", "Esami del sangue" restano perché sono documenti della struttura. Da decidere se rinominarli nella demo.
 4. **Contenuti da validare:** spunti di "Come avvicinarsi" e dettagli d'ingresso, segnali positivi, azioni suggerite della voce della struttura e testi degli specchietti sono stati scritti per la demo e vanno riletti dal team.
-5. **Consenso dell'ospite a condividere** un contenuto con la struttura o con la famiglia (contratto, §6.2).
+5. **Consenso revocabile:** nella demo il consenso è per singolo racconto e non si può ritirare; da decidere come l'ospite possa cambiare idea.
 6. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
 7. **Livelli di accesso per ruolo:** oggi tutti i ruoli vedono lo stesso perimetro; cambiano solo domande e profondità delle risposte (contratto, §6.4).
 8. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
@@ -120,6 +121,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### PR #21 · 26/09/2026 · Vista Famiglia riallineata: consenso dell'ospite, niente struttura in mezzo
+- **Richiesta:** sistemare anche la vista Famiglia con la stessa filosofia.
+- **Decisioni:** la famiglia vede racconti e ricordi solo se Elena sceglie di condividerli, con il consenso visibile; tolti il programma della residenza e "Scrivi alla struttura".
+- **Modifiche:**
+  - consenso: `sharedWithFamily` sui ricordi (gli spaghetti alle vongole restano privati), `shared` sui momenti; la chiacchierata delle 17:18 è privata finché nella conversazione ROSS chiede "Ti va se lo racconto anche ad Anna?" ed Elena risponde "Sì, raccontaglielo";
+  - badge "Elena ha voluto raccontartelo" e dicitura "Elena ha tenuto questo racconto per sé";
+  - contributi della famiglia direttamente a ROSS: stati "Disponibile a ROSS" e "Ripreso con Elena"; via "Da verificare", "in verifica", "verificato dalla struttura";
+  - home: "Come sta questa settimana" (serenità e gratitudine di Elena) al posto di "Domani in residenza"; racconto del giorno in due stati, prima e dopo la conversazione;
+  - Storia e foto e dettaglio ricordo: provenienza "Raccontato da Elena" / "Dalla famiglia" al posto dello stato di verifica;
+  - Attività: tolta la striscia "Vita in residenza"; Condivisi da me: "già ripresi con Elena" / "in attesa del momento giusto"; tolto il tipo "Scrivi alla struttura";
+  - vista ROSS: solo il copione della conversazione e la schermata finale ("Racconterò ad Anna il nuovo ricordo, come mi hai chiesto").
+- **File:** `src/pages/FamilyExperience.jsx`, `src/pages/RossExperience.jsx`, `src/state/DemoContext.jsx`, `src/data/demoData.js`, `src/styles.css`, `AGENTS.md`, `docs/contratto-informativo-struttura.md`.
 
 ### PR #20 · 26/09/2026 · Passaggio di consegne aggiornato e testi narrativi allineati
 - **Controllo di coerenza:** i segnali positivi arrivano da un'unica fonte (`careInsights.js`) e compaiono nella lista, nel ritratto, nella chat e in entrambi i report; le schede e il riepilogo mostrano un positivo per ospite, il ritratto e il report tutti.
