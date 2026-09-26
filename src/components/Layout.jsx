@@ -1,48 +1,36 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Activity, BarChart3, Building2, ClipboardCheck, FileText, Home, Lightbulb, Menu, Palette, Play, Search, Settings, Sparkles, Users, X } from "lucide-react";
-import { activities, insights, residents } from "../data/demoData";
+import { FileText, Menu, MessageCircle, Palette, Play, Settings, Users, X } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
-import { Modal, ModeBadge } from "./Common";
+import { ModeBadge } from "./Common";
 
 const nav = [
-  ["/", "Panoramica", Home], ["/ospiti", "Ospiti", Users], ["/attivita", "Attività", Activity], ["/interazioni", "Interazioni", Sparkles], ["/consegne", "Passaggio consegne", ClipboardCheck], ["/insight", "Insight", Lightbulb], ["/analytics", "Analytics", BarChart3], ["/report", "Report", FileText], ["/struttura", "Struttura", Building2],
+  ["/", "Chiedi a ROSS", MessageCircle], ["/ospiti", "Ospiti", Users], ["/report", "Report", FileText],
 ];
-const presentationRoutes = ["/", "/ross", "/ross/conversazione", "/ospiti/elena?tab=memorie", "/ospiti/elena?tab=relazioni", "/famiglia", "/report", "/consegne"];
+const presentationRoutes = ["/", "/ross", "/ross/conversazione", "/?q=emerso", "/ospiti/elena?tab=memorie", "/ospiti/elena?tab=relazioni", "/famiglia", "/report", "/ospiti/elena?tab=documenti"];
 
 export function Layout() {
   const { state, actions } = useDemo();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     const handler = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") { event.preventDefault(); setSearchOpen(true); }
-      if (event.key === "Escape") setSearchOpen(false);
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        navigate("/", { state: { focus: true } });
+        window.dispatchEvent(new Event("ross:focus-chat"));
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
-
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    const residentResults = residents.filter((r) => `${r.name} ${r.room} ${r.interests.join(" ")}`.toLowerCase().includes(q)).map((r) => ({ type: "Ospite", title: r.name, detail: `Stanza ${r.room}`, path: `/ospiti/${r.id}` }));
-    const activityResults = activities.filter((a) => `${a.title} ${a.category} ${a.reason}`.toLowerCase().includes(q)).map((a) => ({ type: "Attività", title: a.title, detail: a.category, path: "/attivita" }));
-    const insightResults = insights.filter((i) => `${i.title} ${i.body}`.toLowerCase().includes(q)).map((i) => ({ type: "Insight", title: i.title, detail: i.period, path: "/insight" }));
-    const semantic = q.includes("sicilia") || q.includes("palermo") || q.includes("cefalù") ? [
-      { type: "Memoria", title: "Viaggio a Palermo", detail: "Elena · confermata", path: "/ospiti/elena?tab=memorie" },
-      { type: "Conversazione", title: "Vacanze in Sicilia", detail: "12 settembre · 16 min", path: "/interazioni" },
-      { type: "Attività", title: "Fotografie di viaggio", detail: "Suggerita per Elena", path: "/attivita" },
-    ] : [];
-    return [...semantic, ...residentResults, ...activityResults, ...insightResults].slice(0, 8);
-  }, [query]);
+  }, [navigate]);
 
   const nextPresentation = () => {
-    const current = presentationRoutes.findIndex((r) => r.split("?")[0] === location.pathname);
+    const here = `${location.pathname}${location.search}`;
+    const exact = presentationRoutes.indexOf(here);
+    const current = exact >= 0 ? exact : presentationRoutes.findIndex((r) => r.split("?")[0] === location.pathname);
     navigate(presentationRoutes[(current + 1) % presentationRoutes.length]);
   };
 
@@ -52,7 +40,6 @@ export function Layout() {
         <div className="brand"><span className="brand-mark">R</span><strong>R.O.S.S.</strong><button className="sidebar-close" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
         <nav>{nav.map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === "/"} onClick={() => setMenuOpen(false)}><Icon size={18} /><span>{label}</span></NavLink>)}</nav>
         <div className="sidebar-bottom">
-          <button onClick={() => setSearchOpen(true)}><Search size={18} /><span>Cerca</span><kbd>⌘K</kbd></button>
           <NavLink to="/impostazioni"><Settings size={18} /><span>Impostazioni</span></NavLink>
           <div className="operator"><span>GS</span><div><strong>Giulia Serra</strong><small>Coordinatrice</small></div></div>
         </div>
@@ -70,14 +57,6 @@ export function Layout() {
         <main className="page"><Outlet /></main>
       </div>
       {state.presentation && <button className="demo-next" onClick={nextPresentation}>Avanti nella demo <span>→</span></button>}
-      <Modal open={searchOpen} title="Cerca in ROSS" onClose={() => { setSearchOpen(false); setQuery(""); }} size="lg">
-        <div className="command-search"><Search size={20} /><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cerca ospiti, memorie, attività, insight…" /></div>
-        <div className="search-results">
-          {!query && <div className="search-hint"><strong>Prova “Sicilia”</strong><span>ROSS collega persone, memorie, conversazioni e attività.</span></div>}
-          {query && !results.length && <div className="search-hint"><strong>Nessun risultato</strong><span>Controlla il termine o cerca un'altra parola.</span></div>}
-          {results.map((result) => <button key={`${result.type}-${result.title}`} onClick={() => { navigate(result.path); setSearchOpen(false); setQuery(""); }}><span>{result.type}</span><strong>{result.title}</strong><small>{result.detail}</small></button>)}
-        </div>
-      </Modal>
     </div>
   );
 }
