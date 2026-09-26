@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 26 settembre 2026 · stato del branch `claude/optimistic-carson-xag798` (dopo la PR #12 più il riallineamento della vista Ospiti).
+> Ultimo aggiornamento: 26 settembre 2026 · stato di `main` dopo la PR #19.
 
 ---
 
@@ -15,11 +15,13 @@
 
 | Zona | Cosa c'è |
 |---|---|
-| Barra superiore | Solo tre schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report**. Su mobile stanno sulla stessa riga dell'hamburger. |
-| Sidebar sinistra | Logo, "Residenza Aurora" e data. Nella chat contiene anche un accordion con Da osservare, Bisogni espressi, Voce della struttura, Ingaggio con ROSS e **Cosa ti dice ROSS** (guida alla lettura). In fondo: Impostazioni e card profilo con l'account del ruolo (menu con il ruolo "Sto chiedendo come", impostazioni, presentazione e ripristino dei dati). Nelle altre pagine la sidebar si riduce a una colonna di icone. |
-| Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti, suggerimenti per ruolo, graffetta per allegare documenti, microfono simulato, menu "…". |
-| Ospiti (`/ospiti`, `/ospiti/:id`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni) con partecipazione rispetto alla media personale. Ritratto con quattro tab: Come sta · Come avvicinarsi · Conversazioni ROSS (per settimana) · Documenti (sola lettura). Niente biografia, grafo o contributi della famiglia. |
-| Report (`/report`) | Due report stampabili, scelti con i tab: **Riepilogo d'équipe** (default, anche `?ambito=struttura`): sintesi, KPI, benessere rispetto alla media di ciascuno, voce della struttura, situazione per ospite, presenza e uso di ROSS, punti da discutere. **Singolo ospite** (`?ospite=ID`, `&stampa=1`): "Come sta" con come avvicinarsi e checklist "Da osservare in équipe". |
+| Barra superiore | Solo tre schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report**. Restano ferme quando la sidebar cambia larghezza. Su mobile stanno sulla stessa riga dell'hamburger. |
+| Sidebar sinistra | Logo, "Residenza Aurora" e data. **Chat:** accordion con Da osservare, **Cosa va bene**, Bisogni espressi, Voce della struttura, Presenza con ROSS e **Cosa ti dice ROSS** (guida alla lettura). **Ospiti (lista) e Report:** sidebar larga con lo specchietto verde "Cosa ti dice ROSS" della pagina, aperto di default. **Ritratto e Impostazioni:** colonna di icone. In fondo: Impostazioni e card con l'account del ruolo (menu "Sto chiedendo come", impostazioni, presentazione, ripristino dati). |
+| Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti; 4 domande consigliate per ciascuno dei tre stakeholder (Staff, Psicologa, Direzione); graffetta per allegare documenti; microfono simulato; menu "…". |
+| Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: ultima conversazione, partecipazione rispetto alla **sua** media, chip verde "Va bene" e fino a 2 motivi di attenzione, interessi per categoria. |
+| Ritratto (`/ospiti/:id`) | Quattro tab: **Come sta** (narrativa, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, stile di ROSS, momenti della giornata) · **Conversazioni ROSS** (per settimana, mai di cosa) · **Documenti** (sola lettura). Niente biografia, grafo delle relazioni o contributi della famiglia. |
+| Report (`/report`) | Due report stampabili, scelti con i tab. **Riepilogo d'équipe** (default, anche `?ambito=struttura`): sintesi, KPI, benessere rispetto alla media di ciascuno, voce della struttura, situazione per ospite, presenza e uso di ROSS, punti da discutere (con "Da valorizzare"). **Singolo ospite** (`?ospite=ID`, `&stampa=1`): "Come sta" con come avvicinarsi, "Da valorizzare" e checklist "Da osservare in équipe". |
+| Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3; in presentazione mostra anche "Avanti". |
 
@@ -27,23 +29,28 @@
 
 ## 2. Decisioni di prodotto in vigore
 
-Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informativo-struttura.md`](contratto-informativo-struttura.md). In sintesi:
+Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informativo-struttura.md`](contratto-informativo-struttura.md) e in [`lessico-struttura.md`](lessico-struttura.md). In sintesi:
 
-1. **ROSS sta sopra i sistemi della RSA.** Non è un gestionale: niente anagrafica, note di reparto o pianificazione attività.
+1. **ROSS sta sopra i sistemi della RSA.** Non è un gestionale: niente anagrafica, note di reparto, pianificazione attività o dati come "Adesso: sala lettura".
 2. **La home è una chat** interrogabile anche da telefono, e ogni risposta cita la fonte.
-3. **Target non ancora definito.** Il selettore di ruolo serve anche a scoprire chi trae più valore dallo strumento. Tre stakeholder: **Staff** (operatori e coordinatori, accesso condiviso senza login), **Psicologa** e **Direzione** (accesso personale con login). Niente turni nella demo.
-4. **Regola d'oro della privacy:** la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai di cosa ha parlato**. Quindi niente trascrizioni, citazioni, argomenti, nomi raccontati, ricordi specifici, oggetto delle emozioni, diagnosi.
+3. **Tre stakeholder, target ancora da scegliere.** **Staff** (operatori e coordinatori, una sola voce, accesso condiviso senza login), **Psicologa** e **Direzione** (accesso personale con login). La card mostra l'account del ruolo, mai una persona per lo staff. Domande consigliate concrete e con un nome; niente turni nella demo.
+4. **Regola d'oro della privacy:** la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai di cosa ha parlato**. Niente trascrizioni, citazioni, argomenti, nomi raccontati, ricordi specifici, oggetto delle emozioni, giudizi sulla salute.
 5. **Cinque punti cardinali**, le sole cose che la struttura riceve:
    - benessere nel tempo: segnali espressi su almeno 7 giorni, confrontati con la media personale;
    - come relazionarsi: interessi solo per categoria;
    - bisogni personali: per ospite;
    - voce della struttura: anonima, solo con almeno 3 ospiti;
    - presenza e continuità.
-6. **Documenti clinici secondari:** si allegano solo dalla chat e non entrano nel report "Come sta".
-7. **Report "Come sta"** pensato per l'équipe interna: tono osservativo, niente diagnosi, niente citazioni.
-8. **Interazioni in stile shadcn/ui** (Radix + Sonner) con i colori e i caratteri ROSS; niente Tailwind né tema neutro. Le azioni reversibili mostrano un toast con "Annulla".
-9. **Barra superiore minimale:** tema, presentazione e modalità ROSS non stanno nella barra.
-10. **Il selettore "Vista demo"** è un comando per chi presenta: sta in un angolo, mai al centro.
+6. **Equilibrio:** ogni ospite mostra anche ciò che va bene, non solo ciò che è da osservare. Il positivo viene prima; ROSS segnala entrambi, l'équipe osserva e decide.
+7. **Confronti solo con sé stessi:** partecipazione "sopra / in linea / sotto la sua media"; mai punteggi assoluti (/10), classifiche o baseline unica.
+8. **Come avvicinarsi:** dettagli concreti **solo dalla biografia d'ingresso** (famiglia o struttura), con la fonte visibile; per gli interessi emersi con ROSS solo leva, spunto, attività e coinvolgimento, mai l'episodio.
+9. **Nella struttura non ci sono** biografia/storia, grafo delle relazioni né contributi della famiglia: questi vanno direttamente a ROSS.
+10. **Lessico:** ROSS parla come un compagno, non come un servizio sanitario. Mai cartella, clinico, diagnosi, sintomo, rilevare, disorientamento, baseline, ingaggio, paziente, terapia, monitoraggio. La pagina di un ospite è il suo **ritratto**.
+11. **Documenti della struttura secondari:** si allegano solo dalla chat, il tab Documenti è in sola lettura, non entrano nel report "Come sta". ROSS non interpreta i valori degli esami.
+12. **Report:** Riepilogo d'équipe (default) o Singolo ospite; numeri calcolati dalle conversazioni; niente "crescita della memoria" né icone "i".
+13. **Specchietto verde "Cosa ti dice ROSS"** sempre nel menu laterale, mai nel corpo della pagina. Contestualizza: a cosa serve la pagina, cosa si trova, perché è fatta così, cosa non c'è.
+14. **Interazioni in stile shadcn/ui** (Radix + Sonner) con i colori e i caratteri ROSS; niente Tailwind né tema neutro. Le azioni reversibili mostrano un toast con "Annulla".
+15. **Barra superiore minimale** (solo le tre schede) e **selettore "Vista demo"** in un angolo: è un comando per chi presenta.
 
 ---
 
@@ -52,26 +59,27 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 | File | Ruolo |
 |---|---|
 | `src/App.jsx` | Rotte. Le vecchie URL (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alle nuove. Mostra il `Toaster` (Sonner) nella vista Struttura e il vecchio toast nelle viste Famiglia e ROSS. |
-| `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, a icone altrove), Sheet su mobile, schede in alto, card profilo con l'account del ruolo (`roles[].account` in `chatScript.js`), scorciatoia ⌘K che porta alla chat. |
-| `src/components/InsightRail.jsx` | Accordion della sidebar e guida `readingGuide` ("Cosa ti dice ROSS"). Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
-| `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto verde "Cosa ti dice ROSS" nella sidebar di Ospiti e Report (aperto di default, lo stato resta nel browser); contenuti in `residentsGuide` e `reportsGuide`. La sidebar larga si attiva in `Layout.jsx`. |
+| `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, Ospiti e Report; a icone altrove), Sheet su mobile, schede in alto, card con l'account del ruolo (`roles[].account`), scorciatoia ⌘K che porta alla chat. |
+| `src/components/InsightRail.jsx` | Accordion della sidebar della chat (Da osservare, Cosa va bene, Bisogni, Voce, Presenza con ROSS) e guida `readingGuide`. Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
+| `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti e Report; testi in `residentsGuide` e `reportsGuide`. |
+| `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, "Avanti" in presentazione, sequenza `presentationRoutes`. |
 | `src/components/ui.jsx` | Primitive in stile shadcn: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog`, `Toaster`. |
-| `src/components/Common.jsx` | `Avatar`, `ModeBadge`, `InfoTip` (Radix Tooltip: portal, apertura al tocco), `SectionTitle`, `Modal` (usato ancora nelle viste Famiglia e ROSS), `DataExplanation`. |
+| `src/components/Common.jsx` | `Avatar`, `ModeBadge`, `InfoTip`, `SectionTitle`, `Modal` (viste Famiglia e ROSS), `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
-| `src/data/chatScript.js` | Motore della chat: `roles`, `suggestions`, intenti a parole chiave con risposte per ruolo e fonti. L'intento `privacy` rifiuta con garbo le domande sul contenuto delle conversazioni. |
-| `src/data/careInsights.js` | **Dati conformi al contratto:** `signals`, `needs`, `facilityVoice`, `relating`, `presenceNotes`, `journeyInterest`, `cardinalPoints`, `approachGuide` (primo approccio, stile di ROSS, momenti della giornata, spunti per interesse) e helper come `hooksFor` (interessi con spunti, ordinati per coinvolgimento). È il posto dove cambiare gli insight. |
-| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)` (narrativa, KPI, segnali, bisogni, come avvicinarsi, checklist, serie del grafico) e `buildTeamReport(state, period)` per il Riepilogo d'équipe, calcolato da `state.interactions` e dai dati di `careInsights.js`. |
+| `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione, chip "Va bene" e motivi di attenzione. |
+| `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con i quattro tab. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
 | `src/pages/OperationalPages.jsx` | `ReportsPage` con i tab Riepilogo d'équipe / Singolo ospite, `TeamReport` e `ResidentReport`. |
-| `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite: Come sta (narrativa, benessere nel tempo, bisogni, presenza, grafico rispetto alla media), Come avvicinarsi (relazionarsi e interessi per categoria), Conversazioni ROSS (raggruppate per settimana, senza argomenti), Documenti. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
-| `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report "Come sta". |
-| `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione: ultima conversazione, partecipazione rispetto alla media, fino a 2 motivi di attenzione, interessi per categoria. |
-| `src/pages/LiveInteraction.jsx` | Sessione live avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
+| `src/pages/LiveInteraction.jsx` | Sessione live: interessi dell'ospite in uso, esito con nuovo interesse per categoria (`journeyInterest` per Elena). |
 | `src/pages/Settings.jsx` | Impostazioni unificate, con la sezione `#privacy`. |
-| `src/state/DemoContext.jsx` | Stato persistente in localStorage (`ross-rsa-demo-v2`): `role`, `documents`, `notify` con Sonner e "Annulla" (ripristina l'istantanea dello stato). |
-| `src/data/demoData.js` | Dataset fittizio: ospiti, biografia, interazioni, `insights`, `handoverEntries`, `documents`, `graphData`. |
-| `src/styles.css` | Stili unici. Le sezioni aggiunte sono commentate, per esempio `/* Chiedi a ROSS … */`, `/* UI in stile shadcn/ui … */`, `/* Sidebar insight ad accordion … */`. |
-| `docs/contratto-informativo-struttura.md` | Contratto informativo ROSS → struttura: regola d'oro, cinque punti, divieti, checklist, aree grigie. |
+| `src/data/chatScript.js` | Motore della chat: `roles` (Staff, Psicologa, Direzione, con `account`), `roleFor` (converte i ruoli vecchi salvati), `suggestions`, intenti a parole chiave con risposte per ruolo e fonti (tra cui `priorita`, `positivi`, `segnali`, `bisogni`, `voce`, `presenza`, `report`, `privacy`). |
+| `src/data/careInsights.js` | **Dati conformi al contratto:** `signals` (da osservare e positivi), `needs`, `facilityVoice` (con azione suggerita), `relating`, `approachGuide` (primo approccio, stile, momenti, spunti per interesse), `presenceNotes`, `journeyInterest`, `cardinalPoints`. Helper: `hooksFor`, `attentionFor`, `attentionScore`, `byAttention`, `trendOf`, `describeSignal`, `signalDetail`, `groupByResident`. È il posto dove cambiare gli insight. |
+| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)` (narrativa, KPI, segnali, bisogni, come avvicinarsi, da valorizzare, checklist, serie del grafico) e `buildTeamReport(state, period)` per il Riepilogo d'équipe, calcolato da `state.interactions` e da `careInsights.js`. |
+| `src/state/DemoContext.jsx` | Stato persistente in localStorage (`ross-rsa-demo-v2`): `role`, `documents`, `notify` con Sonner e "Annulla". I dati degli ospiti vengono sempre dalla demo: dal browser si conservano solo modalità e stato. |
+| `src/data/demoData.js` | Dataset fittizio: ospiti, interazioni, `documents`, più dati usati solo dalle viste Famiglia e ROSS (biografia, memorie, `graphData`, `handoverEntries`). |
+| `src/styles.css` | Stili unici; le sezioni aggiunte sono commentate (es. `/* Come avvicinarsi … */`, `/* Report: Riepilogo d'équipe … */`). |
+| `docs/contratto-informativo-struttura.md` | Contratto informativo ROSS → struttura: regola d'oro, cinque punti, segnali ammessi (anche positivi), divieti, checklist, aree grigie. |
+| `docs/lessico-struttura.md` | Lessico della Struttura dalle pagine Notion "TOV guidelines" e "Keywords": principi, tabella "non si dice / si dice", checklist. |
 
 ---
 
@@ -80,36 +88,46 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 **Avvio locale:** `npm install`, poi `npm run dev` (http://localhost:5173).
 **Prima di ogni PR:** `npm run build` e `npm run test:sites`. La build deve produrre `dist/client/index.html`, `dist/server/index.js` e `dist/.openai/hosting.json`.
 **Deploy:** merge su `main`, poi il workflow `.github/workflows/deploy-pages.yml` pubblica su GitHub Pages in circa 30 secondi.
-**Dati vecchi nel browser:** card profilo → "Ripristina dati demo".
+**Dati vecchi nel browser:** card in basso → "Ripristina dati demo".
 
-- **Aggiungere una domanda alla chat:** in `src/data/chatScript.js` aggiungi un oggetto a `intents`, con `id`, `keywords` normalizzate senza accenti, eventuale `when(state)` e `answer({ state, role, resident })`. L'oggetto restituisce `text`, `bullets`, `residents`, `sources` e `action`. Usa `byRole` per le varianti per ruolo. Se è una domanda suggerita, aggiungila anche a `suggestions`.
-- **Cambiare gli insight** (segnali, bisogni, voce, come relazionarsi): modifica solo `src/data/careInsights.js`. Chat, sidebar, ritratto e report li leggono da lì.
-- **Aggiungere una voce alla guida "Cosa ti dice ROSS":** aggiungi un elemento a `readingGuide` in `src/components/InsightRail.jsx` (`title`, `text`, eventuale `question`).
+- **Aggiungere una domanda alla chat:** in `src/data/chatScript.js` aggiungi un oggetto a `intents`, con `id`, `keywords` normalizzate senza accenti, eventuale `when(state)` e `answer({ state, role, resident, q })`. L'oggetto restituisce `text`, `bullets`, `residents`, `sources`, `action`. Usa `byRole` per le varianti Staff / Psicologa / Direzione. Se è una domanda consigliata, aggiungila a `suggestions` e verifica che il punteggio delle keyword non la faccia finire in un altro intento.
+- **Cambiare gli insight** (segnali da osservare o positivi, bisogni, voce, come relazionarsi, spunti): modifica solo `src/data/careInsights.js`. Chat, sidebar, lista, ritratto e report li leggono da lì. Tieni l'equilibrio: ogni ospite con almeno un segnale positivo.
+- **Cambiare la guida "Cosa ti dice ROSS":** chat → `readingGuide` in `src/components/InsightRail.jsx`; Ospiti e Report → `residentsGuide` / `reportsGuide` in `src/components/PageGuide.jsx`.
 - **Nuovi controlli UI:** usa le primitive di `src/components/ui.jsx`, non `<select>` nativi né modali personalizzati.
-- **Checklist privacy prima di pubblicare un testo nuovo** (vedi il contratto, §5):
+- **Checklist prima di pubblicare un testo nuovo** (contratto §5 e lessico):
   - nessuna citazione, nessun argomento, nessun nome o luogo raccontato;
-  - segnali emotivi solo su almeno 7 giorni, nella forma "X conversazioni su Y", confrontati con la media della persona;
-  - verbi ammessi: *ha espresso*, *da osservare*; mai *è*, *sente*, *soffre*;
-  - la voce della struttura solo anonima e con almeno 3 ospiti.
+  - segnali su almeno 7 giorni, nella forma "X conversazioni su Y", confrontati con la media della persona;
+  - verbi ammessi: *ha espresso*, *ha partecipato*, *si accorge*, *racconta*; mai *è*, *sente*, *soffre*;
+  - voce della struttura solo anonima e con almeno 3 ospiti;
+  - nessuna parola della colonna "Non si dice" di `docs/lessico-struttura.md` (cartella, clinico, diagnosi, baseline…).
 
 ---
 
 ## 5. Questioni aperte
 
-1. **Vista Famiglia:** mostra ancora il ricordo di Cefalù e dice che "la struttura lo sta verificando" (`FamilyExperience.jsx`, `DemoContext.jsx`), ma dal 26/09 i contributi della famiglia vanno direttamente a ROSS e la struttura non li verifica: testi e flusso vanno riallineati. La brochure promette alla famiglia "con le sue parole". Va deciso che regole valgono per la famiglia (contratto, §6.1).
-2. **Consenso dell'ospite a condividere** un contenuto con la struttura o con la famiglia (contratto, §6.2).
-3. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
-4. **Livelli di accesso per ruolo:** oggi il perimetro è uguale per tutti i ruoli (contratto, §6.4).
-5. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
-6. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave.
-7. **Tooltip "i"** ancora presenti in Impostazioni (nei report sono stati tolti).
-8. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
+1. **Vista Famiglia:** mostra ancora il ricordo di Cefalù e dice che "la struttura lo sta verificando" (`FamilyExperience.jsx`, `DemoContext.jsx`), ma dal 26/09 i contributi della famiglia vanno direttamente a ROSS. Testi e flusso vanno riallineati, e va deciso che regole valgono per la famiglia (contratto, §6.1). È pronta una "Suggested task" per farlo.
+2. **Lessico nelle viste Famiglia e ROSS:** il riallineamento del lessico (`docs/lessico-struttura.md`) riguarda solo la Struttura; le altre due viste usano ancora parole come "verificare", "memoria" e simili.
+3. **Nomi dei documenti:** "Fisioterapia", "Esami del sangue" restano perché sono documenti della struttura. Da decidere se rinominarli nella demo.
+4. **Contenuti da validare:** spunti di "Come avvicinarsi" e dettagli d'ingresso, segnali positivi, azioni suggerite della voce della struttura e testi degli specchietti sono stati scritti per la demo e vanno riletti dal team.
+5. **Consenso dell'ospite a condividere** un contenuto con la struttura o con la famiglia (contratto, §6.2).
+6. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
+7. **Livelli di accesso per ruolo:** oggi tutti i ruoli vedono lo stesso perimetro; cambiano solo domande e profondità delle risposte (contratto, §6.4).
+8. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
+9. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave.
+10. **Tooltip "i"** ancora presenti in Impostazioni.
+11. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
 
 ---
 
 ## 6. Changelog (dal più recente)
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Più equilibrio tra ciò che va bene e ciò che è da osservare
+### PR #20 · 26/09/2026 · Passaggio di consegne aggiornato e testi narrativi allineati
+- **Controllo di coerenza:** i segnali positivi arrivano da un'unica fonte (`careInsights.js`) e compaiono nella lista, nel ritratto, nella chat e in entrambi i report; le schede e il riepilogo mostrano un positivo per ospite, il ritratto e il report tutti.
+- **Testi narrativi** (`reportNarrative.js`, usati nel ritratto e nel report) riscritti per citare anche ciò che va bene: buonumore di Lucia e Carlo, tranquillità di Mario, gratitudine di Elena, iniziativa di Teresa, curiosità di Ada.
+- Sezioni 1–5 riallineate allo stato dopo la PR #19: sidebar con "Cosa va bene" e specchietti, ritratto, due report, decisioni su equilibrio, lessico, confronti con sé stessi e "Come avvicinarsi", mappa del codice con i nuovi helper, questioni aperte (viste Famiglia e ROSS, nomi dei documenti, contenuti da validare).
+- Voci del changelog del branch etichettate con il numero di PR (#12–#19); riferimenti Notion "TOV guidelines" e "Keywords" aggiunti.
+
+### PR #19 · 26/09/2026 · Più equilibrio tra ciò che va bene e ciò che è da osservare
 - **Richiesta:** trend e insight pendevano sul negativo; serve un buon mix, anche nello stesso ospite.
 - **Modifiche:**
   - dati: ogni ospite ha almeno un segnale positivo (buonumore, tranquillità, gratitudine, curiosità, voglia di raccontare, più iniziativa, conversazioni più lunghe); i 4 da osservare restano; voce della struttura con il nuovo tema "Gentilezza del personale"; solo Carlo resta sotto la sua media;
@@ -119,7 +137,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
   - riepilogo d'équipe: sintesi che parte dal positivo, KPI "con segnali positivi", chip positivi per ospite, punto "Da valorizzare"; report del singolo ospite con la sezione "Da valorizzare".
 - **File:** `src/data/careInsights.js`, `src/data/chatScript.js`, `src/data/reportNarrative.js`, `src/data/demoData.js`, `src/pages/Residents.jsx`, `src/pages/ResidentProfile.jsx`, `src/pages/OperationalPages.jsx`, `src/components/InsightRail.jsx`, `src/components/PageGuide.jsx`, `AGENTS.md`, `docs/contratto-informativo-struttura.md`.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Lessico e tono di voce dalle linee guida Notion
+### PR #18 · 26/09/2026 · Lessico e tono di voce dalle linee guida Notion
 - **Richiesta:** togliere "cartella" e le altre parole cliniche; allineare il tono delle schede Chiedi a ROSS, Ospiti e Report alle linee guida Notion ("TOV guidelines", "Keywords").
 - **Decisione:** la pagina di un ospite si chiama **ritratto**.
 - **Modifiche:**
@@ -131,19 +149,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
   - nuovo `docs/lessico-struttura.md` con principi, tabella delle sostituzioni e checklist; regola in AGENTS.md.
 - **Restano:** i nomi dei documenti caricati dalla struttura (es. "Fisioterapia") e gli identificativi interni del codice. Le voci precedenti del changelog restano come sono state scritte.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Lo specchietto va nella sidebar
+### PR #17 · 26/09/2026 · Lo specchietto va nella sidebar
 - **Richiesta:** lo specchietto "Cosa ti dice ROSS" deve stare sempre nel menu laterale, come nella chat, non in cima alla pagina.
 - **Modifiche:** su Ospiti (lista) e Report la sidebar resta larga (320px) e contiene lo specchietto della pagina, aperto di default; tolto dal corpo delle pagine. La cartella del singolo ospite mantiene la sidebar a icone. Su mobile compare nel menu dall'hamburger.
 - **File:** `src/components/PageGuide.jsx`, `src/components/Layout.jsx`, `src/pages/Residents.jsx`, `src/pages/OperationalPages.jsx`, `src/styles.css`, `AGENTS.md`.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · "Cosa ti dice ROSS" anche in Ospiti e Report
+### PR #16 · 26/09/2026 · "Cosa ti dice ROSS" anche in Ospiti e Report
 - **Richiesta:** portare lo specchietto verde della chat anche nelle schede Ospiti e Report, per contestualizzare la filosofia: a cosa servono, cosa si trova, perché sono fatte così.
 - **Modifiche:** nuovo `PageGuide` (stesso stile verde con la bussola), chiuso di default e apribile, con 5 voci per pagina e domande da fare alla chat; nascosto in stampa.
   - Ospiti: perché questo ordine, ognuno confrontato con sé stesso, la cartella, cosa non trovi e perché, ROSS segnala e voi decidete.
   - Report: Riepilogo d'équipe, Singolo ospite, perché anche su carta, come si leggono i numeri, cosa non c'è.
 - **File:** `src/components/PageGuide.jsx`, `src/pages/Residents.jsx`, `src/pages/OperationalPages.jsx`, `src/styles.css`, `AGENTS.md`.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Report: Riepilogo d'équipe e Singolo ospite
+### PR #15 · 26/09/2026 · Report: Riepilogo d'équipe e Singolo ospite
 - **Richiesta:** rivedere la sezione Report con la stessa filosofia; l'équipe sceglie tra il report generale sulla struttura e quello del singolo ospite.
 - **Modifiche:**
   - pagina Report con i tab **Riepilogo d'équipe** (default) · **Singolo ospite** (preimpostato sull'ospite che ha più bisogno di attenzione);
@@ -154,7 +172,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
   - chat e menu: "Riepilogo d'équipe" al posto di "Report di struttura".
 - **File:** `src/pages/OperationalPages.jsx`, `src/data/reportNarrative.js`, `src/data/careInsights.js`, `src/pages/Residents.jsx`, `src/data/demoData.js`, `src/data/chatScript.js`, `src/pages/AskRoss.jsx`, `src/components/InsightRail.jsx`, `src/styles.css`, `AGENTS.md`.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · "Come avvicinarsi" diventa una guida pratica
+### PR #14 · 26/09/2026 · "Come avvicinarsi" diventa una guida pratica
 - **Richiesta:** rendere il tab più profondo e utile allo staff, con spunti concreti per ogni interesse, senza entrare nel privato.
 - **Decisione:** i dettagli concreti (es. "seguiva le corse di rally") compaiono solo se arrivano dalla biografia d'ingresso, con la fonte; per gli interessi emersi con ROSS solo leva, spunto, attività e coinvolgimento (contratto §3.2).
 - **Modifiche:**
@@ -166,7 +184,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
   - i dati degli ospiti salvati nel browser non sovrascrivono più quelli della demo (si conservano solo modalità e stato).
 - **File:** `src/data/careInsights.js`, `src/pages/ResidentProfile.jsx`, `src/data/chatScript.js`, `src/data/reportNarrative.js`, `src/pages/OperationalPages.jsx`, `src/state/DemoContext.jsx`, `src/styles.css`, `docs/contratto-informativo-struttura.md`, `AGENTS.md`.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Vista Ospiti riallineata al contratto informativo
+### PR #13 · 26/09/2026 · Vista Ospiti riallineata al contratto informativo
 - **Richiesta:** rivedere lista e cartella ospite con la stessa filosofia (come sta e di cosa ha bisogno, mai di cosa ha parlato; ROSS sopra il gestionale).
 - **Decisioni:** la storia esce dalla struttura; tab Relazioni eliminato; contributi della famiglia direttamente a ROSS.
 - **Modifiche:**
@@ -178,7 +196,8 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
   - Antonio: ultima conversazione "ieri alle 17:40", coerente con l'assenza di oggi.
 - **File:** `src/pages/Residents.jsx`, `src/pages/ResidentProfile.jsx`, `src/components/ParticipationChart.jsx`, `src/pages/OperationalPages.jsx`, `src/pages/LiveInteraction.jsx`, `src/data/reportNarrative.js`, `src/data/demoData.js`, `src/data/chatScript.js`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `package.json`.
 
-### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Tre stakeholder e domande consigliate
+### PR #12 · 26/09/2026 · Tre stakeholder, domande consigliate e passaggio di consegne
+- **Anche:** nasce questo documento (`docs/HANDOFF.md`), con la regola in AGENTS.md di aggiornarlo a ogni modifica.
 - **Richiesta:** nelle card suggerite il testo non era allineato. Domande come "Riassumimi il turno" erano troppo generiche, e nella demo non ci sono turni. Chi lavora in prima linea non ha un login, psicologa e direzione sì: operatori e coordinatori diventano una voce unica.
 - **Modifiche:**
   - ruoli da quattro a tre: **Staff** (senza login), **Psicologa**, **Direzione** (con login); `roleFor()` converte i vecchi valori `operatore` e `coordinatrice` salvati nel browser;
@@ -332,5 +351,6 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
   - *ROSS, Key messages finali*;
   - *Requisiti di Progetto, ROSS* (F1–F14);
   - *Incontro 24/08/2026, Anni Sereni*;
-  - *Riorganizzare la piattaforma R.O.S.S. lato RSA* ed *estratto convo fede ale*.
-- Documenti interni al repository: [`AGENTS.md`](../AGENTS.md), [`README.md`](../README.md), [`contratto-informativo-struttura.md`](contratto-informativo-struttura.md).
+  - *Riorganizzare la piattaforma R.O.S.S. lato RSA* ed *estratto convo fede ale*;
+  - *TOV guidelines* e *Keywords* (Marketing & Brand): tono di voce e parole da usare o evitare.
+- Documenti interni al repository: [`AGENTS.md`](../AGENTS.md), [`README.md`](../README.md), [`contratto-informativo-struttura.md`](contratto-informativo-struttura.md), [`lessico-struttura.md`](lessico-struttura.md).
