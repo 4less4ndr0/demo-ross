@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 26 settembre 2026 · stato del branch `claude/optimistic-carson-xag798` (dopo la PR #10 più le modifiche su stakeholder e domande).
+> Ultimo aggiornamento: 26 settembre 2026 · stato del branch `claude/optimistic-carson-xag798` (dopo la PR #12 più il riallineamento della vista Ospiti).
 
 ---
 
@@ -18,7 +18,7 @@
 | Barra superiore | Solo tre schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report**. Su mobile stanno sulla stessa riga dell'hamburger. |
 | Sidebar sinistra | Logo, "Residenza Aurora" e data. Nella chat contiene anche un accordion con Da osservare, Bisogni espressi, Voce della struttura, Ingaggio con ROSS e **Cosa ti dice ROSS** (guida alla lettura). In fondo: Impostazioni e card profilo con l'account del ruolo (menu con il ruolo "Sto chiedendo come", impostazioni, presentazione e ripristino dei dati). Nelle altre pagine la sidebar si riduce a una colonna di icone. |
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti, suggerimenti per ruolo, graffetta per allegare documenti, microfono simulato, menu "…". |
-| Ospiti (`/ospiti`, `/ospiti/:id`) | Schede degli ospiti e cartella con cinque tab: Sintesi · Conversazioni ROSS · Storia e interessi · Relazioni · Documenti (sola lettura). |
+| Ospiti (`/ospiti`, `/ospiti/:id`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni) con partecipazione rispetto alla media personale. Cartella con quattro tab: Come sta · Come avvicinarsi · Conversazioni ROSS (per settimana) · Documenti (sola lettura). Niente biografia, grafo o contributi della famiglia. |
 | Report (`/report`) | Report narrativo "Come sta" per ogni ospite, stampabile in A4 (`?ospite=ID`, `&stampa=1`), e report di struttura aggregato (`?ambito=struttura`). |
 | Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3; in presentazione mostra anche "Avanti". |
@@ -62,8 +62,9 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 | `src/data/careInsights.js` | **Dati conformi al contratto:** `signals`, `needs`, `facilityVoice`, `relating`, `presenceNotes`, `journeyInterest`, `cardinalPoints` e helper. È il posto dove cambiare gli insight. |
 | `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)`: testo narrativo, KPI, segnali, bisogni, come relazionarsi e serie del grafico per il report "Come sta". |
 | `src/pages/OperationalPages.jsx` | `ReportsPage`: report per ospite e `FacilityReport` (grafici aggregati). |
-| `src/pages/ResidentProfile.jsx` | Cartella: Sintesi, Conversazioni (senza argomenti), Storia e interessi (con i contributi della famiglia da verificare), Relazioni (grafo solo dalla biografia), Documenti. |
-| `src/pages/Residents.jsx` | Schede degli ospiti: ultima conversazione, "da osservare", interessi per categoria. |
+| `src/pages/ResidentProfile.jsx` | Cartella: Come sta (narrativa, benessere nel tempo, bisogni, presenza, grafico rispetto alla media), Come avvicinarsi (relazionarsi e interessi per categoria), Conversazioni ROSS (raggruppate per settimana, senza argomenti), Documenti. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
+| `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nella cartella e nel report "Come sta". |
+| `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione: ultima conversazione, partecipazione rispetto alla media, fino a 2 motivi di attenzione, interessi per categoria. |
 | `src/pages/LiveInteraction.jsx` | Sessione live avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | `src/pages/Settings.jsx` | Impostazioni unificate, con la sezione `#privacy`. |
 | `src/state/DemoContext.jsx` | Stato persistente in localStorage (`ross-rsa-demo-v2`): `role`, `documents`, `notify` con Sonner e "Annulla" (ripristina l'istantanea dello stato). |
@@ -94,18 +95,30 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 
 ## 5. Questioni aperte
 
-1. **Vista Famiglia:** mostra ancora il ricordo di Cefalù e dice che "la struttura lo sta verificando", ma la struttura non verifica più i ricordi. La brochure promette alla famiglia "con le sue parole". Va deciso che regole valgono per la famiglia (contratto, §6.1).
+1. **Vista Famiglia:** mostra ancora il ricordo di Cefalù e dice che "la struttura lo sta verificando" (`FamilyExperience.jsx`, `DemoContext.jsx`), ma dal 26/09 i contributi della famiglia vanno direttamente a ROSS e la struttura non li verifica: testi e flusso vanno riallineati. La brochure promette alla famiglia "con le sue parole". Va deciso che regole valgono per la famiglia (contratto, §6.1).
 2. **Consenso dell'ospite a condividere** un contenuto con la struttura o con la famiglia (contratto, §6.2).
 3. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
 4. **Livelli di accesso per ruolo:** oggi il perimetro è uguale per tutti i ruoli (contratto, §6.4).
 5. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
 6. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave.
-7. **Tooltip "i"** ancora presenti in Relazioni, Impostazioni e nei grafici del report: da decidere se spostare anche quelle spiegazioni in una guida.
+7. **Tooltip "i"** ancora presenti in Impostazioni e nei grafici del report di struttura (dove c'è anche il grafico "Crescita della memoria", da rivedere): da decidere se spostare anche quelle spiegazioni in una guida.
 8. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
 
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Vista Ospiti riallineata al contratto informativo
+- **Richiesta:** rivedere lista e cartella ospite con la stessa filosofia (come sta e di cosa ha bisogno, mai di cosa ha parlato; ROSS sopra il gestionale).
+- **Decisioni:** la storia esce dalla struttura; tab Relazioni eliminato; contributi della famiglia direttamente a ROSS.
+- **Modifiche:**
+  - lista: tolto "Adesso" (dato da gestionale) e il punteggio /10; partecipazione "sopra / in linea / sotto la sua media"; fino a 2 motivi di attenzione; ordine per attenzione (Antonio, oggi assente, per primo);
+  - cartella a 4 tab: **Come sta** (narrativa, benessere nel tempo con segnali positivi separati, bisogni, presenza, grafico rispetto alla media al posto delle 4 percentuali fisse), **Come avvicinarsi** (come rivolgersi, momento, durata, attenzione, cosa funziona, interessi per fonte), **Conversazioni ROSS** (per settimana, date in italiano, "Reminiscenza", solo Alta/Media/Bassa), **Documenti**;
+  - rimossi timeline della storia e "Aggiungi evento", contributi della famiglia, grafo delle relazioni (e la dipendenza `react-force-graph-2d`), indice di socialità;
+  - headline del report riscritte con i verbi ammessi (niente "è serena", "sente freddo", confronti con altri ospiti); "Spunto per lo staff" al posto di "prossimo turno";
+  - sessione live: interessi in uso dell'ospite e nuovo interesse coerente con il percorso demo (fotografia);
+  - Antonio: ultima conversazione "ieri alle 17:40", coerente con l'assenza di oggi.
+- **File:** `src/pages/Residents.jsx`, `src/pages/ResidentProfile.jsx`, `src/components/ParticipationChart.jsx`, `src/pages/OperationalPages.jsx`, `src/pages/LiveInteraction.jsx`, `src/data/reportNarrative.js`, `src/data/demoData.js`, `src/data/chatScript.js`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `package.json`.
 
 ### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Tre stakeholder e domande consigliate
 - **Richiesta:** nelle card suggerite il testo non era allineato. Domande come "Riassumimi il turno" erano troppo generiche, e nella demo non ci sono turni. Chi lavora in prima linea non ha un login, psicologa e direzione sì: operatori e coordinatori diventano una voce unica.
