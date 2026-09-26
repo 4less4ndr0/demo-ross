@@ -56,7 +56,7 @@ Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attiv
 6. Vista Famiglia.
 7. Report narrativo "Come sta" per ogni ospite (dalla cartella: "Stampa report") e report di struttura.
 
-La voce `Presentazione` riduce la navigazione e mostra il pulsante “Avanti nella demo”. È possibile aprire direttamente la modalità con `?presentation=true`.
+Il selettore **Vista demo** in basso a destra passa tra Struttura, Famiglia e ROSS (scorciatoie 1, 2, 3). La modalità presentazione (dal selettore, dal menu operatore o da Impostazioni) aggiunge il pulsante “Avanti”, disponibile in tutte le viste. È possibile aprire direttamente la modalità con `?presentation=true`.
 
 ## Struttura
 
