@@ -5,6 +5,7 @@ import { Download, Printer } from "lucide-react";
 import { dailyMetrics } from "../data/demoData";
 import { buildResidentReport } from "../data/reportNarrative";
 import { useDemo } from "../state/DemoContext";
+import { Button, Select } from "../components/ui";
 import { Avatar, InfoTip, SectionTitle } from "../components/Common";
 
 const tooltipStyle = { borderRadius: 12, border: "1px solid var(--line)", boxShadow: "var(--shadow)", background: "var(--surface)", color: "var(--text)" };
@@ -36,8 +37,8 @@ export function ReportsPage() {
   }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <div className="report-screen screen-enter">
-    <SectionTitle eyebrow="REPORT" title={facility ? "Come la struttura usa ROSS" : `Come sta ${resident.name}`} description={facility ? `Engagement aggregato degli ospiti con ROSS negli ultimi ${period} giorni, per direzione e riunioni d'équipe.` : `Report narrativo per l'équipe · ultimi ${period} giorni. Racconta solo ciò che è emerso nelle conversazioni con ROSS.`} action={<div className="action-group"><button className="primary-button" onClick={() => window.print()}><Printer size={16} /> Stampa</button><button className="ghost-button" onClick={() => window.print()}><Download size={16} /> Salva PDF</button></div>} />
-    <div className="filter-bar"><select value={facility ? "struttura" : resident.id} onChange={(e) => setScope(e.target.value)} aria-label="Ambito del report"><optgroup label="Ospiti">{state.residents.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</optgroup><option value="struttura">Struttura · aggregato</option></select><select value={period} onChange={(e) => setPeriod(e.target.value)} aria-label="Periodo"><option value="7">7 giorni</option><option value="30">30 giorni</option></select><span className="privacy-label">Dati demo · Residenza Aurora</span></div>
+    <SectionTitle eyebrow="REPORT" title={facility ? "Come la struttura usa ROSS" : `Come sta ${resident.name}`} description={facility ? `Engagement aggregato degli ospiti con ROSS negli ultimi ${period} giorni, per direzione e riunioni d'équipe.` : `Report narrativo per l'équipe · ultimi ${period} giorni. Racconta solo ciò che è emerso nelle conversazioni con ROSS.`} action={<div className="action-group"><Button variant="outline" onClick={() => window.print()}><Download size={16} /> Salva PDF</Button><Button onClick={() => window.print()}><Printer size={16} /> Stampa</Button></div>} />
+    <div className="filter-bar"><Select value={facility ? "struttura" : resident.id} onValueChange={setScope} label="Ambito del report" groups={[{ label: "Ospiti", options: state.residents.map((r) => ({ value: r.id, label: r.name })) }, { label: "Struttura", options: [{ value: "struttura", label: "Struttura · aggregato" }] }]} /><Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} /><span className="privacy-label">Dati demo · Residenza Aurora</span></div>
     {facility ? <FacilityReport period={period} /> : <ResidentReport resident={resident} report={report} period={period} />}
   </div>;
 }

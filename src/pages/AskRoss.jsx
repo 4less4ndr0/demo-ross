@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, Lightbulb, MessageCircle, Mic, Paperclip, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
+import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, Lightbulb, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
 import { DEMO_TODAY, insights } from "../data/demoData";
 import { answerQuestion, findResident, roles, suggestions, themes } from "../data/chatScript";
 import { useDemo } from "../state/DemoContext";
 import { Avatar, InfoTip } from "../components/Common";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Sheet } from "../components/ui";
 
 const insightQuestions = { i1: "Come sta Elena?", i2: "Carlo si sta chiudendo?", i3: "Quali ricordi sono da verificare?", i4: "Come stanno usando ROSS gli ospiti?" };
 const queryShortcuts = { turno: "Riassumimi il turno", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
@@ -99,16 +100,26 @@ export function AskRoss() {
 
   return (
     <div className="ask-screen">
-      <InsightRail state={state} open={railOpen} onClose={() => setRailOpen(false)} onAsk={pickFromRail} navigate={navigate} />
+      <aside className="ask-rail" aria-label="Insight aggregati"><InsightRail state={state} onAsk={pickFromRail} navigate={navigate} /></aside>
+      <Sheet open={railOpen} onOpenChange={setRailOpen} side="left" title="Il polso di ROSS" className="ask-rail-sheet"><InsightRail state={state} onAsk={pickFromRail} navigate={(to) => { setRailOpen(false); navigate(to); }} /></Sheet>
       <section className="ask-chat surface">
         <header className="ask-header">
-          <button className="ask-rail-toggle" onClick={() => setRailOpen(true)}><Lightbulb size={16} /> Insight</button>
+          <Button variant="outline" size="sm" className="ask-rail-toggle" onClick={() => setRailOpen(true)}><Lightbulb size={15} /> Insight</Button>
           <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Conversazioni ROSS e documenti della struttura</small></div></div>
           <div className="ask-role" role="group" aria-label="Sto chiedendo come">
             <span>Chiedo come</span>
-            <select value={role.id} onChange={(e) => actions.setRole(e.target.value)} aria-label="Ruolo">{roles.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}</select>
+            <Select value={role.id} onValueChange={actions.setRole} label="Ruolo" options={roles.map((r) => ({ value: r.id, label: r.label }))} />
           </div>
-          {messages.length > 0 && <button className="icon-button" title="Nuova conversazione" aria-label="Nuova conversazione" onClick={() => setMessages([])}><RotateCcw size={16} /></button>}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem icon={RotateCcw} disabled={!messages.length} onSelect={() => setMessages([])}>Nuova conversazione</DropdownMenuItem>
+              <DropdownMenuItem icon={Paperclip} onSelect={() => fileRef.current?.click()}>Allega un documento</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${scoped?.id || "elena"}`)}>Report di {(scoped || state.residents[0]).name.split(" ")[0]}</DropdownMenuItem>
+              <DropdownMenuItem icon={BarChart3} onSelect={() => navigate("/report?ambito=struttura")}>Report di struttura</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </header>
 
         <div className="ask-thread" ref={threadRef}>
@@ -149,12 +160,12 @@ function Answer({ answer, state, navigate }) {
       {answer.after && <p className="ask-after">{answer.after}</p>}
       {people.length > 0 && <div className="ask-people">{people.map((r) => <button key={r.id} onClick={() => navigate(`/ospiti/${r.id}`)}><Avatar resident={r} size="sm" />{r.name.split(" ")[0]}</button>)}</div>}
       {answer.sources?.length > 0 && <div className="ask-sources"><span>Fonti</span>{answer.sources.map((s, i) => { const Icon = sourceIcons[s.kind] || FileText; return <span key={i} className="ask-source"><Icon size={13} /><strong>{s.kind}</strong>{s.label}</span>; })}</div>}
-      {answer.action && <button className="ghost-button ask-action" onClick={() => navigate(answer.action.to)}>{answer.action.label} <ArrowRight size={15} /></button>}
+      {answer.action && <Button variant="outline" size="sm" onClick={() => navigate(answer.action.to)}>{answer.action.label} <ArrowRight size={15} /></Button>}
     </div>
   );
 }
 
-function InsightRail({ state, open, onClose, onAsk, navigate }) {
+function InsightRail({ state, onAsk, navigate }) {
   const today = state.interactions.filter((i) => i.date === DEMO_TODAY);
   const talkedToday = new Set(today.map((i) => i.residentId)).size;
   const minutes = today.reduce((sum, i) => sum + i.duration, 0);
@@ -164,9 +175,7 @@ function InsightRail({ state, open, onClose, onAsk, navigate }) {
 
   return (
     <>
-      {open && <div className="ask-rail-backdrop" onClick={onClose} />}
-      <aside className={`ask-rail ${open ? "open" : ""}`} aria-label="Insight aggregati">
-        <div className="ask-rail-head"><div><span className="eyebrow">IL POLSO DI ROSS</span><h2>Oggi in Residenza Aurora</h2></div><button className="icon-button ask-rail-close" onClick={onClose} aria-label="Chiudi"><X size={16} /></button></div>
+        <div className="ask-rail-head"><div><span className="eyebrow">IL POLSO DI ROSS</span><h2>Oggi in Residenza Aurora</h2></div></div>
         {journey.completedAt && <button className="ask-journey" onClick={() => journey.confirmedAt ? navigate("/ospiti/elena?tab=memorie") : onAsk("Cosa è emerso oggi con Elena?")}>
           <span><Sparkles size={16} /></span><div><small>NUOVO DA ROSS · ELENA</small><strong>{journey.confirmedAt ? "Il ricordo della macchina fotografica di Paolo è confermato." : "È emerso un nuovo ricordo su Cefalù."}</strong></div><ArrowRight size={15} />
         </button>}
@@ -191,7 +200,6 @@ function InsightRail({ state, open, onClose, onAsk, navigate }) {
           {insights.map((item) => <button key={item.id} className="ask-noticed" onClick={() => onAsk(insightQuestions[item.id])}><span className={`insight-dot tone-${item.tone}`} /><div><small>{item.category} · {item.period}</small><strong>{item.title}</strong></div></button>)}
         </section>
         <div className="local-note"><span className="leaf-mark">R</span><div><strong>Elaborazione locale</strong><p>ROSS si affianca al gestionale: non lo sostituisce e non ne duplica i dati.</p></div></div>
-      </aside>
     </>
   );
 }

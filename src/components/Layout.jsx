@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { FileText, Menu, MessageCircle, Palette, Play, Settings, Users, X } from "lucide-react";
+import { ChevronsUpDown, FileText, Menu, MessageCircle, Palette, Play, RotateCcw, Settings, Users } from "lucide-react";
+import { themeOptions } from "../data/demoData";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, Sheet } from "./ui";
 import { useDemo } from "../state/DemoContext";
 import { ModeBadge } from "./Common";
 
@@ -34,23 +36,45 @@ export function Layout() {
     navigate(presentationRoutes[(current + 1) % presentationRoutes.length]);
   };
 
+  const sidebar = (
+    <>
+      <div className="brand"><span className="brand-mark">R</span><strong>R.O.S.S.</strong></div>
+      <nav>{nav.map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === "/"} onClick={() => setMenuOpen(false)}><Icon size={18} /><span>{label}</span></NavLink>)}</nav>
+      <div className="sidebar-bottom">
+        <NavLink to="/impostazioni" onClick={() => setMenuOpen(false)}><Settings size={18} /><span>Impostazioni</span></NavLink>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild><button className="operator"><span>GS</span><div><strong>Giulia Serra</strong><small>Coordinatrice</small></div><ChevronsUpDown size={15} /></button></DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="start" className="ui-menu-wide">
+            <DropdownMenuLabel>Residenza Aurora</DropdownMenuLabel>
+            <DropdownMenuItem icon={Settings} onSelect={() => { setMenuOpen(false); navigate("/impostazioni"); }}>Impostazioni</DropdownMenuItem>
+            <DropdownMenuItem icon={Play} onSelect={actions.togglePresentation}>{state.presentation ? "Esci dalla presentazione" : "Modalità presentazione"}</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem icon={RotateCcw} destructive onSelect={actions.reset}>Ripristina dati demo</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </>
+  );
+
   return (
     <div className="app-shell">
-      <aside className={`sidebar ${menuOpen ? "sidebar-open" : ""}`}>
-        <div className="brand"><span className="brand-mark">R</span><strong>R.O.S.S.</strong><button className="sidebar-close" onClick={() => setMenuOpen(false)}><X size={18} /></button></div>
-        <nav>{nav.map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === "/"} onClick={() => setMenuOpen(false)}><Icon size={18} /><span>{label}</span></NavLink>)}</nav>
-        <div className="sidebar-bottom">
-          <NavLink to="/impostazioni"><Settings size={18} /><span>Impostazioni</span></NavLink>
-          <div className="operator"><span>GS</span><div><strong>Giulia Serra</strong><small>Coordinatrice</small></div></div>
-        </div>
-      </aside>
+      <aside className="sidebar">{sidebar}</aside>
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen} side="left" title="Menu" className="sidebar-sheet">{sidebar}</Sheet>
       <div className="app-main">
         <header className="topbar">
           <button className="mobile-menu" onClick={() => setMenuOpen(true)} aria-label="Apri menu"><Menu /></button>
           <div><span className="facility">RESIDENZA AURORA</span><span className="date">Lunedì, 21 settembre 2026</span></div>
           <div className="top-actions">
             <button className={`presentation-toggle ${state.presentation ? "active" : ""}`} onClick={actions.togglePresentation}><Play size={15} fill="currentColor" /> Presentazione</button>
-            <button className="theme-quick" onClick={() => navigate("/impostazioni")} title="Tema e impostazioni"><Palette size={18} /></button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild><button className="theme-quick" aria-label="Tema"><Palette size={18} /></button></DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Tema</DropdownMenuLabel>
+                <DropdownMenuRadioGroup value={state.theme} onValueChange={actions.setTheme}>{themeOptions.map((theme) => <DropdownMenuRadioItem key={theme.id} value={theme.id}>{theme.name}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem icon={Settings} onSelect={() => navigate("/impostazioni")}>Tutte le impostazioni</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <ModeBadge mode="Attiva" />
           </div>
         </header>

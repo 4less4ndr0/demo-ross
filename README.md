@@ -61,7 +61,7 @@ La voce `Presentazione` riduce la navigazione e mostra il pulsante “Avanti nel
 
 - `src/data/demoData.js`: dataset centrale, deterministico, con ospiti, memorie, biografia, attività, interazioni e metriche di 30 giorni.
 - `src/state/DemoContext.jsx`: stato persistente, temi, reset e azioni che aggiornano realmente la demo.
-- `src/components/`: layout, componenti comuni e Knowledge Graph.
+- `src/components/`: layout, componenti comuni, Knowledge Graph e `ui.jsx` (primitive in stile shadcn/ui su Radix e Sonner: Button, DropdownMenu, Select, Sheet, Toaster).
 - `src/pages/`: chat "Chiedi a ROSS", ospiti, cartella ospite, interazione live, report, impostazioni e le viste Famiglia e ROSS.
 - `src/data/chatScript.js`: ruoli, domande suggerite e risposte preparate della chat (deterministiche, con fonti). Per aggiungere una domanda: nuovo intento con parole chiave e testo per ruolo.
 - `src/styles.css`: token dei tre temi e layout responsive.
