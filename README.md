@@ -40,7 +40,7 @@ ROSS non è un gestionale sostitutivo: si affianca ai sistemi già in uso nella 
 
 - **Chiedi a ROSS** (`/`): chat al centro, insight aggregati a sinistra (su mobile in un pannello a scomparsa). Il selettore "Chiedo come" (Operatore, Coordinatrice, Psicologa, Direzione) cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
 - **Ospiti** (`/ospiti`, `/ospiti/:id`): dashboard ospiti e cartella con i tab Sintesi, Conversazioni ROSS, Memorie e storia, Relazioni, Documenti.
-- **Report** (`/report`): per ospite, oppure `?ambito=struttura` per l'engagement aggregato.
+- **Report** (`/report?ospite=ID`): report narrativo stampabile "Come sta" per ogni ospite, per l'équipe (contenuti in `src/data/reportNarrative.js`); `?ambito=struttura` per l'engagement aggregato; `&stampa=1` apre subito la stampa.
 - **Impostazioni** (`/impostazioni`): tema, presentazione, fasce delle modalità ROSS, ripristino del dataset.
 
 Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alla nuova collocazione.
@@ -48,12 +48,12 @@ Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attiv
 ## Percorso demo consigliato
 
 1. Chiedi a ROSS: cambia ruolo e prova le domande suggerite, poi "Riassumimi il turno".
-2. Allega un documento (es. `fisioterapia_elena.pdf`) e apri la cartella di Elena → Documenti.
+2. Allega un documento in chat (es. `fisioterapia_elena.pdf`) e apri la cartella di Elena → Documenti.
 3. Vista ROSS: conversazione con Elena su Cefalù.
 4. Torna in Struttura: "Cosa è emerso oggi con Elena?" → verifica e conferma il ricordo.
 5. Tab Relazioni per il Knowledge Graph.
 6. Vista Famiglia.
-7. Report per ospite e di struttura.
+7. Report narrativo "Come sta" per ogni ospite (dalla cartella: "Stampa report") e report di struttura.
 
 La voce `Presentazione` riduce la navigazione e mostra il pulsante “Avanti nella demo”. È possibile aprire direttamente la modalità con `?presentation=true`.
 

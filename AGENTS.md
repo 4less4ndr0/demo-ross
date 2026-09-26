@@ -13,5 +13,6 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - ROSS si posiziona **on top** dei sistemi della RSA: non è un gestionale e non ne duplica funzioni (niente anagrafica, note di reparto, pianificazione attività).
 - La home della Struttura è una chat a frizione zero sul modello ChatGPT ("Chiedi a ROSS"), usabile anche da telefono. Le risposte citano sempre la fonte (conversazione ROSS, documento, nota).
 - Il target non è ancora definito: il selettore di ruolo (Operatore, Coordinatrice, Psicologa, Direzione) resta finché la scelta non è fatta.
-- I documenti clinici (fisioterapia, esami) sono visibili ma secondari: il protagonista del test è la conversazione tra ROSS e l'ospite.
+- I documenti clinici (fisioterapia, esami) sono visibili ma secondari: il protagonista del test è la conversazione tra ROSS e l'ospite. Si allegano **solo dalla chat** (graffetta); il tab Documenti della cartella è in sola lettura.
+- Ogni ospite ha un **report narrativo stampabile** ("Come sta", `/report?ospite=ID`) pensato per l'équipe interna: tono osservativo, nessuna diagnosi, non cita i documenti. Si apre dalla cartella ("Stampa report"), dalla chat o dal menu Report.
 - Menu della Struttura: Chiedi a ROSS · Ospiti · Report, più Impostazioni. Non reintrodurre pagine separate per insight, consegne, analytics o interazioni: vanno accorpate nella chat, nella cartella o nel report.

@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, CalendarPlus, Check, FileText, Link2, MessageCircle, MoreHorizontal, Paperclip, Pencil, Plus, Search, Sparkles, Users } from "lucide-react";
+import { ArrowRight, CalendarPlus, Check, FileText, Link2, MessageCircle, MoreHorizontal, Paperclip, Pencil, Plus, Printer, Search, Sparkles, Users } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
 import { Avatar, DataExplanation, EmptyState, InfoTip, Modal, ModeBadge, ProgressBar } from "../components/Common";
 import { KnowledgeGraph } from "../components/KnowledgeGraph";
@@ -29,14 +29,14 @@ export function ResidentProfile() {
   return <div className="profile-screen screen-enter">
     <section className="profile-header">
       <div className="profile-person"><Avatar resident={resident} size="xl" /><div><span className="eyebrow">OSPITE · STANZA {resident.room}</span><h1>{resident.name}</h1><p>{resident.age} anni · {resident.daysWithRoss} giorni con ROSS · ultima interazione {resident.lastInteraction}</p></div></div>
-      <div className="profile-actions"><select value={resident.mode} onChange={(e) => actions.setResidentMode(resident.id, e.target.value)} aria-label="Modalità ROSS"><option>Attiva</option><option>Reattiva</option><option>Silenziosa</option></select><button className="ghost-button" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {resident.name.split(" ")[0]}</button><button className="primary-button" onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={17} /> Avvia interazione</button></div>
+      <div className="profile-actions"><select value={resident.mode} onChange={(e) => actions.setResidentMode(resident.id, e.target.value)} aria-label="Modalità ROSS"><option>Attiva</option><option>Reattiva</option><option>Silenziosa</option></select><button className="ghost-button" onClick={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}><Printer size={16} /> Stampa report</button><button className="ghost-button" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {resident.name.split(" ")[0]}</button><button className="primary-button" onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={17} /> Avvia interazione</button></div>
     </section>
     <div className="profile-tabs">{tabs.map(([id, label]) => <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>{label}{id === "documenti" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</button>)}</div>
     {tab === "sintesi" && <><Overview resident={resident} memories={residentMemories} interactions={residentInteractions} navigate={navigate} journey={state.rossJourney} onAll={() => setTab("conversazioni")} /><Trend resident={resident} /></>}
     {tab === "conversazioni" && <InteractionList interactions={residentInteractions} />}
     {tab === "memorie" && <><MemoryLibrary memories={residentMemories} actions={actions} />{resident.id === "elena" && <Story events={state.biography} onAdd={() => setEventOpen(true)} />}</>}
     {tab === "relazioni" && <Relations resident={resident} hasConfirmedRossMemory={hasConfirmedRossMemory} />}
-    {tab === "documenti" && <Documents resident={resident} documents={residentDocuments} actions={actions} navigate={navigate} />}
+    {tab === "documenti" && <Documents resident={resident} documents={residentDocuments} navigate={navigate} />}
     <Modal open={eventOpen} title="Aggiungi evento alla storia" onClose={() => setEventOpen(false)}>
       <form className="form-grid" onSubmit={(e) => { e.preventDefault(); actions.addBiographyEvent(eventForm); setEventOpen(false); }}>
         <label>Anno<input required value={eventForm.year} onChange={(e) => setEventForm({ ...eventForm, year: e.target.value })} placeholder="es. 1989" /></label>
@@ -93,18 +93,10 @@ function InteractionList({ interactions }) { return <section className="content-
 
 function Trend({ resident }) { return <section className="content-section"><div className="content-toolbar"><div><h2>Andamento personale</h2><p>Confronti sempre riferiti alla baseline di {resident.name.split(" ")[0]}.</p></div><select><option>Ultimi 30 giorni</option><option>Ultimi 90 giorni</option></select></div><div className="trend-grid">{[["Partecipazione", 76, "+6%"], ["Iniziativa conversazionale", 64, "−2%"], ["Varietà dei contesti", 82, "+9%"], ["Continuità", 71, "+3%"]].map(([label, value, delta]) => <article className="surface" key={label}><span>{label}</span><strong>{value}%</strong><ProgressBar value={value} tone="mint" /><small>{delta} rispetto alla baseline</small></article>)}</div><DataExplanation>Questi indicatori descrivono solo ciò che accade durante le interazioni con ROSS e non rappresentano valutazioni cliniche.</DataExplanation></section>; }
 
-function Documents({ resident, documents, actions, navigate }) {
-  const fileRef = useRef(null);
-  const upload = (event) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-    const name = file.name.toLowerCase();
-    const kind = /fisio|riabilit|motori/.test(name) ? "Fisioterapia" : /sangue|analisi|esami|lab/.test(name) ? "Esami del sangue" : "Documento";
-    actions.addDocument({ residentId: resident.id, kind, title: file.name.replace(/\.[^.]+$/, ""), summary: "Caricato ora. ROSS lo userà come fonte nelle risposte, citandolo." });
-  };
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Documenti</h2><p>Referti e relazioni che ROSS può citare quando lo staff fa una domanda. La cartella clinica ufficiale resta nel gestionale.</p></div><button className="primary-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Carica documento</button><input ref={fileRef} type="file" hidden accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt" onChange={upload} /></div>
-    {!documents.length ? <EmptyState title="Nessun documento" description="Carica una relazione di fisioterapia o un referto: ROSS lo userà come fonte." icon={FileText} /> : <div className="document-list">{documents.map((doc) => <article className="document-card surface" key={doc.id}><span className="document-icon"><FileText size={20} /></span><div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3><p>{doc.summary}</p><span className="document-meta">{doc.author} · {doc.pages} {doc.pages === 1 ? "pagina" : "pagine"}</span></div><button className="ghost-button" onClick={() => navigate(`/?ospite=${resident.id}&q=${encodeURIComponent(`Cosa dice ${doc.kind.toLowerCase()} di ${resident.name.split(" ")[0]}?`)}`)}><Sparkles size={15} /> Chiedi a ROSS</button></article>)}</div>}
+function Documents({ resident, documents, navigate }) {
+  const toChat = () => navigate(`/?ospite=${resident.id}`);
+  return <section className="content-section"><div className="content-toolbar"><div><h2>Documenti</h2><p>Referti e relazioni allegati in chat, che ROSS può citare come fonte. La cartella clinica ufficiale resta nel gestionale.</p></div><button className="ghost-button" onClick={toChat}><Paperclip size={16} /> Allega dalla chat</button></div>
+    {!documents.length ? <EmptyState title="Nessun documento" description="Allega referti e relazioni dalla chat: ROSS li userà come fonte." icon={FileText} /> : <div className="document-list">{documents.map((doc) => <article className="document-card surface" key={doc.id}><span className="document-icon"><FileText size={20} /></span><div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3><p>{doc.summary}</p><span className="document-meta">{doc.author} · {doc.pages} {doc.pages === 1 ? "pagina" : "pagine"}</span></div><button className="ghost-button" onClick={() => navigate(`/?ospite=${resident.id}&q=${encodeURIComponent(`Cosa dice ${doc.kind.toLowerCase()} di ${resident.name.split(" ")[0]}?`)}`)}><Sparkles size={15} /> Chiedi a ROSS</button></article>)}</div>}
     <DataExplanation>ROSS legge i documenti per rispondere alle domande dello staff e li cita come fonte. Non interpreta valori clinici e non sostituisce il gestionale.</DataExplanation>
   </section>;
 }

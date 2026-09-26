@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Download, Printer } from "lucide-react";
-import { dailyMetrics, residents } from "../data/demoData";
+import { dailyMetrics } from "../data/demoData";
+import { buildResidentReport } from "../data/reportNarrative";
 import { useDemo } from "../state/DemoContext";
 import { Avatar, InfoTip, SectionTitle } from "../components/Common";
 
@@ -23,12 +24,39 @@ export function ReportsPage() {
   const { state } = useDemo();
   const [params, setParams] = useSearchParams();
   const facility = params.get("ambito") === "struttura";
-  const scope = facility ? "Struttura · aggregato" : "Elena Bianchi";
-  const setScope = (value) => setParams(value === "Struttura · aggregato" ? { ambito: "struttura" } : {});
+  const resident = state.residents.find((r) => r.id === params.get("ospite")) || state.residents[0];
+  const setScope = (value) => setParams(value === "struttura" ? { ambito: "struttura" } : { ospite: value });
   const [period, setPeriod] = useState("30");
-  const resident = residents[0];
-  const interactions = state.interactions.filter((i) => i.residentId === "elena").slice(0, Number(period));
-  const minutes = interactions.reduce((s, i) => s + i.duration, 0);
-  const confirmedRossMemory = state.memories.some((memory) => memory.id === "ross-cefalu-camera" && memory.status === "Confermata");
-  return <div className="report-screen screen-enter"><SectionTitle eyebrow="REPORT" title={facility ? "Come la struttura usa ROSS" : `Report ${scope} · ultimi ${period} giorni`} description={facility ? `Engagement aggregato degli ospiti con ROSS negli ultimi ${period} giorni, per direzione e riunioni d'équipe.` : "Una sintesi leggibile, tracciabile e pronta da condividere."} action={<div className="action-group"><button className="ghost-button" onClick={() => window.print()}><Printer size={16} /> Stampa</button><button className="primary-button" onClick={() => window.print()}><Download size={16} /> Esporta PDF</button></div>} /><div className="filter-bar"><select value={scope} onChange={(e) => setScope(e.target.value)}><option>Elena Bianchi</option><option>Struttura · aggregato</option></select><select value={period} onChange={(e) => setPeriod(e.target.value)}><option value="7">7 giorni</option><option value="30">30 giorni</option>{!facility && <option value="90">90 giorni</option>}</select><span className="privacy-label">Dati demo · Residenza Aurora</span></div>{facility ? <FacilityReport period={period} /> : <article className="report-paper surface"><header><div><span className="brand-mark small">R</span><div><strong>R.O.S.S.</strong><small>Residenza Aurora</small></div></div><span>Generato il 21 settembre 2026</span></header><section className="report-title"><div><span>PROFILO PERSONALE</span><h1>{resident.name}</h1><p>Stanza {resident.room} · {resident.daysWithRoss} giorni con ROSS</p></div><Avatar resident={resident} size="xl" /></section><section className="report-kpis">{[[interactions.length, "interazioni"], [`${minutes} min`, "tempo complessivo"], ["9", "attività"], [state.memories.filter((m) => m.status === "Confermata").length, "memorie confermate"], ["7.8/10", "partecipazione"], ["7.2/10", "socialità"]].map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</section><section className="report-narrative"><span>SINTESI</span><h2>{confirmedRossMemory ? "Musica e fotografie hanno fatto emergere un nuovo dettaglio biografico confermato." : "Continuità positiva nelle attività legate a musica e ricordi familiari."}</h2><p>{confirmedRossMemory ? "Durante una conversazione su Cefalù Elena ha ricordato la piccola macchina fotografica rossa di Paolo. Il dettaglio è stato confermato, collegato al viaggio del 1998 e reso disponibile come spunto per future conversazioni e per la famiglia." : "Nelle ultime due settimane Elena ha partecipato più frequentemente alle attività musicali e alle conversazioni legate ai viaggi. Le menzioni della nipote Sofia e della Sicilia sono state particolarmente ricorrenti. La partecipazione alle attività di gruppo è rimasta stabile rispetto alla propria baseline."}</p></section><section className="report-columns"><div><h3>Temi ricorrenti</h3><ul><li>Sofia e fotografia <strong>14 menzioni</strong></li><li>Viaggi in Sicilia <strong>9 menzioni</strong></li>{confirmedRossMemory && <li>Fotocamera rossa di Paolo <strong>nuovo</strong></li>}<li>Musica italiana <strong>7 menzioni</strong></li></ul></div><div><h3>Attività più partecipate</h3><ul><li>Indovina la canzone <strong>94%</strong></li><li>Fotografie di viaggio <strong>91%</strong></li><li>Ricordi guidati <strong>86%</strong></li></ul></div></section><section className="report-chart"><h3>Partecipazione rispetto alla baseline personale</h3><ResponsiveContainer width="100%" height={170}><LineChart data={dailyMetrics}><XAxis dataKey="date" hide /><YAxis domain={[60, 90]} hide /><Tooltip contentStyle={tooltipStyle} /><Line type="monotone" dataKey="participation" stroke="#287e70" strokeWidth={3} dot={false} /></LineChart></ResponsiveContainer></section><footer>ROSS supporta il lavoro degli operatori e la relazione umana. Le informazioni riportate descrivono esclusivamente le interazioni avvenute attraverso il sistema.</footer></article>}</div>;
+  const report = facility ? null : buildResidentReport(state, resident, period);
+
+  useEffect(() => {
+    if (params.get("stampa") !== "1" || facility) return undefined;
+    const timer = window.setTimeout(() => { window.print(); const next = new URLSearchParams(params); next.delete("stampa"); setParams(next, { replace: true }); }, 900);
+    return () => window.clearTimeout(timer);
+  }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return <div className="report-screen screen-enter">
+    <SectionTitle eyebrow="REPORT" title={facility ? "Come la struttura usa ROSS" : `Come sta ${resident.name}`} description={facility ? `Engagement aggregato degli ospiti con ROSS negli ultimi ${period} giorni, per direzione e riunioni d'équipe.` : `Report narrativo per l'équipe · ultimi ${period} giorni. Racconta solo ciò che è emerso nelle conversazioni con ROSS.`} action={<div className="action-group"><button className="primary-button" onClick={() => window.print()}><Printer size={16} /> Stampa</button><button className="ghost-button" onClick={() => window.print()}><Download size={16} /> Salva PDF</button></div>} />
+    <div className="filter-bar"><select value={facility ? "struttura" : resident.id} onChange={(e) => setScope(e.target.value)} aria-label="Ambito del report"><optgroup label="Ospiti">{state.residents.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</optgroup><option value="struttura">Struttura · aggregato</option></select><select value={period} onChange={(e) => setPeriod(e.target.value)} aria-label="Periodo"><option value="7">7 giorni</option><option value="30">30 giorni</option></select><span className="privacy-label">Dati demo · Residenza Aurora</span></div>
+    {facility ? <FacilityReport period={period} /> : <ResidentReport resident={resident} report={report} period={period} />}
+  </div>;
+}
+
+function ResidentReport({ resident, report, period }) {
+  return <article className="report-paper surface">
+    <header><div><span className="brand-mark small">R</span><div><strong>R.O.S.S.</strong><small>Residenza Aurora · uso interno équipe</small></div></div><span>Generato il 21 settembre 2026 · ultimi {period} giorni</span></header>
+    <section className="report-title"><div><span>COME STA</span><h1>{resident.name}</h1><p>{resident.age} anni · stanza {resident.room} · {resident.daysWithRoss} giorni con ROSS</p></div><Avatar resident={resident} size="xl" /></section>
+    <section className="report-kpis">{report.kpis.map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</section>
+    <section className="report-narrative"><span>IN SINTESI</span><h2>{report.headline}</h2>{report.paragraphs.map((text) => <p key={text}>{text}</p>)}</section>
+    {report.quotes.length > 0 && <section className="report-quotes"><span>CON LE SUE PAROLE</span>{report.quotes.map((q) => <blockquote key={q}>«{q}»</blockquote>)}</section>}
+    <section className="report-columns">
+      <div><h3>Di cosa parla</h3><ul>{report.themes.map(([label, count]) => <li key={label}>{label} <strong>{typeof count === "number" ? `${count} menzioni` : count}</strong></li>)}</ul></div>
+      <div><h3>Cosa funziona</h3><ul>{report.works.map((w) => <li key={w}>{w}</li>)}</ul></div>
+      <div><h3>A cosa fare attenzione</h3><ul>{report.watch.map((w) => <li key={w}>{w}</li>)}</ul></div>
+      <div><h3>Ricordi da verificare</h3><ul>{report.pending.length ? report.pending.map((p) => <li key={p}>{p}</li>) : <li>Nessun ricordo in attesa di verifica</li>}</ul></div>
+    </section>
+    <section className="report-next"><span>SPUNTO PER IL PROSSIMO TURNO</span><p>{report.next}</p></section>
+    <section className="report-chart"><h3>Partecipazione {report.building ? "(baseline in costruzione)" : "rispetto alla sua media personale"}</h3><ResponsiveContainer width="100%" height={170}><LineChart data={report.series}><XAxis dataKey="date" tickLine={false} axisLine={false} minTickGap={24} /><YAxis domain={["dataMin - 5", "dataMax + 5"]} hide /><Tooltip contentStyle={tooltipStyle} />{!report.building && <Line type="monotone" dataKey="baseline" name="Sua media" stroke="#b6aaa1" strokeDasharray="5 5" dot={false} isAnimationActive={false} />}<Line type="monotone" dataKey="participation" name="Partecipazione" stroke="#287e70" strokeWidth={3} dot={false} isAnimationActive={false} /></LineChart></ResponsiveContainer></section>
+    <footer>Report a uso interno dell'équipe. Descrive esclusivamente ciò che è emerso nelle conversazioni con ROSS: non contiene diagnosi, valutazioni cliniche o informazioni dei documenti sanitari.</footer>
+  </article>;
 }
