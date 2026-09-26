@@ -52,11 +52,10 @@
 @media(max-width:430px){.family-brand div{display:none}.family-header{gap:10px}.family-nav{order:2;width:auto;flex:1}.family-person{order:3}.family-nav a{padding:8px}.family-nav a:nth-child(3){display:none}.family-main{width:min(100% - 20px,1180px)}.family-page-intro h1{font-size:38px}.family-story{padding:20px}.family-call-card{grid-template-columns:1fr}.call-icon{display:none}.family-memory-tile>img{height:145px}.family-timeline-row{grid-template-columns:1fr;padding-left:18px}.family-timeline-row>time,.family-timeline-row>i{display:none}.family-new-contribution>div{grid-template-columns:1fr}.shared-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.family-shared-list>button{grid-template-columns:58px 1fr}.family-shared-list img,.shared-icon{width:58px;height:58px}.family-shared-list>button>svg{display:none}.family-shared-list em{grid-column:1/-1}.family-activity-hero{min-height:330px}.ross-app{overflow-x:hidden;overflow-y:visible}.ross-halo{width:360px}.ross-presence{min-height:335px}.ross-touch-grid{gap:8px}.ross-touch-grid>button{min-height:94px}.ross-home-main{padding-bottom:0}.ross-modes{margin-bottom:0}}
 
 /* Chiedi a ROSS — chat on top della struttura */
-.ask-screen{animation:askFade .35s ease;display:grid;grid-template-columns:304px minmax(0,1fr);gap:18px;height:calc(100dvh - 238px);min-height:540px;max-width:1360px;margin:0 auto}
+.ask-screen{animation:askFade .35s ease;display:grid;grid-template-columns:minmax(0,1fr);gap:18px;height:calc(100dvh - 238px);min-height:540px;max-width:1100px;margin:0 auto}
 .ask-rail{display:flex;flex-direction:column;gap:14px;overflow-y:auto;padding-right:4px;min-height:0;scrollbar-width:thin}
 .ask-rail-head{display:flex;justify-content:space-between;align-items:flex-start}
 .ask-rail-head h2{font:600 22px/1.15 var(--serif);margin:0}
-.ask-rail-toggle{display:none!important}
 .ask-journey{display:flex;align-items:center;gap:11px;text-align:left;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));background:var(--accent-soft);color:var(--text);border-radius:14px;padding:12px}
 .ask-journey>span{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--accent);color:white}
 .ask-journey div{flex:1;display:grid;gap:3px}
@@ -162,17 +161,15 @@
 .resident-last-topic{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin:12px 0 0}
 .resident-last-topic strong{color:var(--text)}
 .settings-grid-merged{margin-top:15px;max-width:1000px}
-@media(max-width:1050px){.ask-screen{grid-template-columns:260px minmax(0,1fr)}.ask-suggestions{grid-template-columns:1fr}}
+@media(max-width:1050px){.ask-suggestions{grid-template-columns:1fr}}
 @media(max-width:900px){
-  .ask-screen{grid-template-columns:minmax(0,1fr);height:calc(100dvh - 72px - 24px - 96px)}
+  .ask-screen{height:calc(100dvh - 124px - 24px - 96px)}
   .ask-title small{display:none}
-  .ask-rail-toggle{display:inline-flex!important}
 }
 @media(max-width:650px){
-  .ask-screen{height:calc(100dvh - 72px - 24px - 84px);min-height:460px}
+  .ask-screen{height:calc(100dvh - 124px - 24px - 84px);min-height:420px}
   .ask-header{padding:10px 12px;gap:8px}
   .ask-title{display:none}
-  .ask-role{margin-left:auto}
   .ask-role>span{display:none}
   .ask-thread{padding:18px 14px}
   .ask-empty h1{font-size:28px}
@@ -250,7 +247,6 @@
 .ui-select-trigger svg{color:var(--muted);transition:transform .15s}
 .ui-select-trigger[data-state=open] svg{transform:rotate(180deg)}
 .ui-select-content{min-width:var(--radix-select-trigger-width);max-height:var(--radix-select-content-available-height);overflow:auto}
-.ask-role .ui-select-trigger{min-width:140px;border-radius:999px;background:var(--surface-2);font-weight:700}
 
 .ui-sheet-overlay{position:fixed;inset:0;z-index:180;background:rgba(18,28,25,.42);backdrop-filter:blur(2px)}
 .ui-sheet-overlay[data-state=open]{animation:uiFade .2s ease-out}
@@ -304,3 +300,37 @@
 .ui-dialog .ghost-button{background:var(--surface);border:1px solid var(--line);color:var(--text)}
 .form-grid .ui-select-trigger,.interaction-context .ui-select-trigger{width:100%;margin-top:6px}
 .interaction-context .ui-select-trigger{margin-top:0;height:32px;min-width:110px;width:auto}
+
+/* Navigazione a schede in alto + sidebar contestuale */
+.topbar{gap:20px}
+.top-tabs{display:flex;gap:2px;padding:4px;margin:0 auto;background:var(--surface-2);border:1px solid var(--line);border-radius:12px}
+.top-tabs a{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 16px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted);transition:background .15s,color .15s,box-shadow .15s;white-space:nowrap}
+.top-tabs a:hover{color:var(--text)}
+.top-tabs a.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(30,40,35,.12),0 0 0 1px var(--line)}
+.top-tabs a.active svg{color:var(--green)}
+.top-tabs a:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 28%,transparent)}
+.shell-chat .sidebar{width:320px;padding:22px 16px 18px}
+.shell-chat .app-main{margin-left:320px}
+.shell-chat .brand{padding-bottom:18px}
+.sidebar-insights{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;margin:0 -6px;padding:0 6px 14px;scrollbar-width:thin}
+.shell-slim .sidebar{width:76px;padding:22px 12px 18px;align-items:center}
+.shell-slim .app-main{margin-left:76px}
+.shell-slim .brand{padding:0 0 18px;justify-content:center}
+.shell-slim .brand strong,.shell-slim .sidebar-bottom>a span,.shell-slim .operator div,.shell-slim .operator>svg{display:none}
+.shell-slim .sidebar-bottom{width:100%}
+.shell-slim .sidebar-bottom>a{justify-content:center;padding:0}
+.shell-slim .operator{justify-content:center;padding:14px 0 4px}
+.ask-role-chip{font-size:11px;font-weight:700;color:var(--green);background:var(--green-soft);border-radius:999px;padding:5px 10px;white-space:nowrap}
+:root[data-presentation=true] .sidebar-insights{display:none}
+.sidebar-sheet .sidebar-insights{flex:none;overflow:visible;margin:0;padding:0}
+.sidebar-sheet{width:min(340px,88vw)}
+@media(max-width:1180px){.top-tabs a{padding:0 12px}.topbar .date{display:none}}
+@media(max-width:900px){
+  .topbar{height:auto;flex-wrap:wrap;padding:10px 14px 0;row-gap:10px}
+  .top-tabs{order:3;width:calc(100% + 28px);margin:0 -14px;border-radius:0;border-width:1px 0 0;background:var(--bg);padding:6px 10px;justify-content:space-around}
+  .top-tabs a{flex:1;justify-content:center;padding:0 6px;font-size:12px;gap:6px}
+  .top-actions{margin-left:auto}
+  .shell-chat .app-main,.shell-slim .app-main{margin-left:0}
+}
+@media(max-width:430px){.top-tabs a svg{display:none}.presentation-toggle{display:none}}
+@media(max-width:650px){.ask-role-chip{margin-right:auto}}

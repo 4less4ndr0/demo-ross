@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, Lightbulb, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
-import { DEMO_TODAY, insights } from "../data/demoData";
-import { answerQuestion, findResident, roles, suggestions, themes } from "../data/chatScript";
+import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
+import { answerQuestion, findResident, roles, suggestions } from "../data/chatScript";
 import { useDemo } from "../state/DemoContext";
-import { Avatar, InfoTip } from "../components/Common";
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Sheet } from "../components/ui";
+import { Avatar } from "../components/Common";
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../components/ui";
 
-const insightQuestions = { i1: "Come sta Elena?", i2: "Carlo si sta chiudendo?", i3: "Quali ricordi sono da verificare?", i4: "Come stanno usando ROSS gli ospiti?" };
 const queryShortcuts = { turno: "Riassumimi il turno", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
 const sourceIcons = { "Conversazione ROSS": MessageCircle, Documento: FileText, "Nota operatore": StickyNote, Famiglia: Heart, Memoria: BookOpen, "Dati ROSS": BarChart3 };
 
@@ -27,7 +25,6 @@ export function AskRoss() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [listening, setListening] = useState(false);
-  const [railOpen, setRailOpen] = useState(false);
   const inputRef = useRef(null);
   const fileRef = useRef(null);
   const threadRef = useRef(null);
@@ -41,6 +38,7 @@ export function AskRoss() {
     return state.rossJourney.completedAt && !scoped ? ["Cosa è emerso oggi con Elena?", ...list.slice(0, 3)] : list;
   }, [role.id, scoped, state.rossJourney.completedAt]);
 
+  const askRef = useRef(null);
   const ask = (question) => {
     const text = question.trim();
     if (!text) return;
@@ -52,6 +50,8 @@ export function AskRoss() {
     }, 650);
   };
 
+  askRef.current = ask;
+
   useEffect(() => {
     const q = params.get("q");
     if (!q || handledQuery.current === q) return;
@@ -62,8 +62,10 @@ export function AskRoss() {
   useEffect(() => {
     const focus = () => inputRef.current?.focus();
     if (location.state?.focus) focus();
+    const onAsk = (event) => askRef.current?.(event.detail);
     window.addEventListener("ross:focus-chat", focus);
-    return () => window.removeEventListener("ross:focus-chat", focus);
+    window.addEventListener("ross:ask", onAsk);
+    return () => { window.removeEventListener("ross:focus-chat", focus); window.removeEventListener("ross:ask", onAsk); };
   }, [location.state]);
 
   useEffect(() => { threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" }); }, [messages]);
@@ -96,20 +98,13 @@ export function AskRoss() {
     } }]);
   };
 
-  const pickFromRail = (question) => { setRailOpen(false); ask(question); };
 
   return (
     <div className="ask-screen">
-      <aside className="ask-rail" aria-label="Insight aggregati"><InsightRail state={state} onAsk={pickFromRail} navigate={navigate} /></aside>
-      <Sheet open={railOpen} onOpenChange={setRailOpen} side="left" title="Il polso di ROSS" className="ask-rail-sheet"><InsightRail state={state} onAsk={pickFromRail} navigate={(to) => { setRailOpen(false); navigate(to); }} /></Sheet>
       <section className="ask-chat surface">
         <header className="ask-header">
-          <Button variant="outline" size="sm" className="ask-rail-toggle" onClick={() => setRailOpen(true)}><Lightbulb size={15} /> Insight</Button>
           <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Conversazioni ROSS e documenti della struttura</small></div></div>
-          <div className="ask-role" role="group" aria-label="Sto chiedendo come">
-            <span>Chiedo come</span>
-            <Select value={role.id} onValueChange={actions.setRole} label="Ruolo" options={roles.map((r) => ({ value: r.id, label: r.label }))} />
-          </div>
+          <span className="ask-role-chip" title="Il ruolo si cambia dal profilo in basso a sinistra">come {role.label}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -162,44 +157,5 @@ function Answer({ answer, state, navigate }) {
       {answer.sources?.length > 0 && <div className="ask-sources"><span>Fonti</span>{answer.sources.map((s, i) => { const Icon = sourceIcons[s.kind] || FileText; return <span key={i} className="ask-source"><Icon size={13} /><strong>{s.kind}</strong>{s.label}</span>; })}</div>}
       {answer.action && <Button variant="outline" size="sm" onClick={() => navigate(answer.action.to)}>{answer.action.label} <ArrowRight size={15} /></Button>}
     </div>
-  );
-}
-
-function InsightRail({ state, onAsk, navigate }) {
-  const today = state.interactions.filter((i) => i.date === DEMO_TODAY);
-  const talkedToday = new Set(today.map((i) => i.residentId)).size;
-  const minutes = today.reduce((sum, i) => sum + i.duration, 0);
-  const pending = state.memories.filter((m) => m.status !== "Confermata").length;
-  const engagement = [...state.residents].sort((a, b) => (b.delta ?? -9) - (a.delta ?? -9));
-  const journey = state.rossJourney;
-
-  return (
-    <>
-        <div className="ask-rail-head"><div><span className="eyebrow">IL POLSO DI ROSS</span><h2>Oggi in Residenza Aurora</h2></div></div>
-        {journey.completedAt && <button className="ask-journey" onClick={() => journey.confirmedAt ? navigate("/ospiti/elena?tab=memorie") : onAsk("Cosa è emerso oggi con Elena?")}>
-          <span><Sparkles size={16} /></span><div><small>NUOVO DA ROSS · ELENA</small><strong>{journey.confirmedAt ? "Il ricordo della macchina fotografica di Paolo è confermato." : "È emerso un nuovo ricordo su Cefalù."}</strong></div><ArrowRight size={15} />
-        </button>}
-        <div className="ask-stats">
-          <div><strong>{talkedToday}<small>/{state.residents.length}</small></strong><span>ospiti hanno parlato con ROSS</span></div>
-          <div><strong>{minutes}<small> min</small></strong><span>di conversazione</span></div>
-          <div><strong>{pending}</strong><span>ricordi da verificare</span></div>
-        </div>
-        <section className="ask-rail-section">
-          <h3>Come ingaggiano con ROSS <InfoTip label="Rispetto a cosa?" text="Ogni ospite è confrontato solo con la propria media degli ultimi 14 giorni." /></h3>
-          {engagement.map((r) => <button key={r.id} className="ask-engage" onClick={() => onAsk(`Come sta ${r.name.split(" ")[0]}?`)}>
-            <Avatar resident={r} size="sm" /><span>{r.name}</span>
-            {r.delta == null ? <small className="ask-delta building">in costruzione</small> : <small className={`ask-delta ${r.delta >= 0 ? "up" : "down"}`}>{r.delta >= 0 ? "+" : ""}{r.delta.toFixed(1)}</small>}
-          </button>)}
-        </section>
-        <section className="ask-rail-section">
-          <h3>Di cosa parlano</h3>
-          <div className="ask-themes">{themes.map((t) => <button key={t.label} onClick={() => onAsk(`Chi parla di ${t.label.toLowerCase()}?`)}>{t.label}<small>{t.count}</small></button>)}</div>
-        </section>
-        <section className="ask-rail-section">
-          <h3>ROSS ha notato</h3>
-          {insights.map((item) => <button key={item.id} className="ask-noticed" onClick={() => onAsk(insightQuestions[item.id])}><span className={`insight-dot tone-${item.tone}`} /><div><small>{item.category} · {item.period}</small><strong>{item.title}</strong></div></button>)}
-        </section>
-        <div className="local-note"><span className="leaf-mark">R</span><div><strong>Elaborazione locale</strong><p>ROSS si affianca al gestionale: non lo sostituisce e non ne duplica i dati.</p></div></div>
-    </>
   );
 }

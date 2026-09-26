@@ -38,7 +38,8 @@ BASE_PATH=/demo-ross/ npm run build && npx vite preview --base /demo-ross/
 
 ROSS non è un gestionale sostitutivo: si affianca ai sistemi già in uso nella RSA. La vista Struttura è quindi una **chat a frizione zero** ("Chiedi a ROSS"), interrogabile anche da telefono, che risponde dalle conversazioni raccolte da ROSS e dai documenti caricati, citando sempre la fonte.
 
-- **Chiedi a ROSS** (`/`): chat al centro, insight aggregati a sinistra (su mobile in un pannello a scomparsa). Il selettore "Chiedo come" (Operatore, Coordinatrice, Psicologa, Direzione) cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
+- **Chiedi a ROSS** (`/`): chat al centro, "Il polso di ROSS" nella sidebar sinistra (su mobile dall'hamburger). Il ruolo si sceglie dalla card operatore in basso a sinistra (Operatore, Coordinatrice, Psicologa, Direzione) e cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
+- La navigazione principale è a schede al centro della barra superiore.
 - **Ospiti** (`/ospiti`, `/ospiti/:id`): dashboard ospiti e cartella con i tab Sintesi, Conversazioni ROSS, Memorie e storia, Relazioni, Documenti.
 - **Report** (`/report?ospite=ID`): report narrativo stampabile "Come sta" per ogni ospite, per l'équipe (contenuti in `src/data/reportNarrative.js`); `?ambito=struttura` per l'engagement aggregato; `&stampa=1` apre subito la stampa.
 - **Impostazioni** (`/impostazioni`): tema, presentazione, fasce delle modalità ROSS, ripristino del dataset.
