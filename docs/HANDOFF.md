@@ -19,7 +19,7 @@
 | Sidebar sinistra | Logo, "Residenza Aurora" e data. Nella chat contiene anche un accordion con Da osservare, Bisogni espressi, Voce della struttura, Ingaggio con ROSS e **Cosa ti dice ROSS** (guida alla lettura). In fondo: Impostazioni e card profilo con l'account del ruolo (menu con il ruolo "Sto chiedendo come", impostazioni, presentazione e ripristino dei dati). Nelle altre pagine la sidebar si riduce a una colonna di icone. |
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti, suggerimenti per ruolo, graffetta per allegare documenti, microfono simulato, menu "…". |
 | Ospiti (`/ospiti`, `/ospiti/:id`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni) con partecipazione rispetto alla media personale. Cartella con quattro tab: Come sta · Come avvicinarsi · Conversazioni ROSS (per settimana) · Documenti (sola lettura). Niente biografia, grafo o contributi della famiglia. |
-| Report (`/report`) | Report narrativo "Come sta" per ogni ospite, stampabile in A4 (`?ospite=ID`, `&stampa=1`), e report di struttura aggregato (`?ambito=struttura`). |
+| Report (`/report`) | Due report stampabili, scelti con i tab: **Riepilogo d'équipe** (default, anche `?ambito=struttura`): sintesi, KPI, benessere rispetto alla media di ciascuno, voce della struttura, situazione per ospite, presenza e uso di ROSS, punti da discutere. **Singolo ospite** (`?ospite=ID`, `&stampa=1`): "Come sta" con come avvicinarsi e checklist "Da osservare in équipe". |
 | Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3; in presentazione mostra anche "Avanti". |
 
@@ -60,8 +60,8 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
 | `src/data/chatScript.js` | Motore della chat: `roles`, `suggestions`, intenti a parole chiave con risposte per ruolo e fonti. L'intento `privacy` rifiuta con garbo le domande sul contenuto delle conversazioni. |
 | `src/data/careInsights.js` | **Dati conformi al contratto:** `signals`, `needs`, `facilityVoice`, `relating`, `presenceNotes`, `journeyInterest`, `cardinalPoints`, `approachGuide` (primo approccio, stile di ROSS, momenti della giornata, spunti per interesse) e helper come `hooksFor` (interessi con spunti, ordinati per coinvolgimento). È il posto dove cambiare gli insight. |
-| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)`: testo narrativo, KPI, segnali, bisogni, come relazionarsi e serie del grafico per il report "Come sta". |
-| `src/pages/OperationalPages.jsx` | `ReportsPage`: report per ospite e `FacilityReport` (grafici aggregati). |
+| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)` (narrativa, KPI, segnali, bisogni, come avvicinarsi, checklist, serie del grafico) e `buildTeamReport(state, period)` per il Riepilogo d'équipe, calcolato da `state.interactions` e dai dati di `careInsights.js`. |
+| `src/pages/OperationalPages.jsx` | `ReportsPage` con i tab Riepilogo d'équipe / Singolo ospite, `TeamReport` e `ResidentReport`. |
 | `src/pages/ResidentProfile.jsx` | Cartella: Come sta (narrativa, benessere nel tempo, bisogni, presenza, grafico rispetto alla media), Come avvicinarsi (relazionarsi e interessi per categoria), Conversazioni ROSS (raggruppate per settimana, senza argomenti), Documenti. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nella cartella e nel report "Come sta". |
 | `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione: ultima conversazione, partecipazione rispetto alla media, fino a 2 motivi di attenzione, interessi per categoria. |
@@ -101,12 +101,23 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 4. **Livelli di accesso per ruolo:** oggi il perimetro è uguale per tutti i ruoli (contratto, §6.4).
 5. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
 6. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave.
-7. **Tooltip "i"** ancora presenti in Impostazioni e nei grafici del report di struttura (dove c'è anche il grafico "Crescita della memoria", da rivedere): da decidere se spostare anche quelle spiegazioni in una guida.
+7. **Tooltip "i"** ancora presenti in Impostazioni (nei report sono stati tolti).
 8. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
 
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Report: Riepilogo d'équipe e Singolo ospite
+- **Richiesta:** rivedere la sezione Report con la stessa filosofia; l'équipe sceglie tra il report generale sulla struttura e quello del singolo ospite.
+- **Modifiche:**
+  - pagina Report con i tab **Riepilogo d'équipe** (default) · **Singolo ospite** (preimpostato sull'ospite che ha più bisogno di attenzione);
+  - Riepilogo d'équipe sui cinque punti cardinali: sintesi generata, KPI, ospiti sopra / in linea / sotto la propria media (niente baseline unica), segnali per tipo, voce della struttura con azione suggerita, situazione per ospite ordinata per attenzione, minuti al giorno e mappa oraria calcolati dalle conversazioni (tornano con la chat), punti da discutere con caselle;
+  - Singolo ospite: KPI di partecipazione rispetto alla media (via "/10"), benessere degli ultimi 7 giorni, **Come avvicinarsi** (3 passi e 2 interessi principali), checklist **Da osservare in équipe**;
+  - rimossi "Crescita della memoria", istogramma delle durate, torta delle tipologie, icone "i" e `dailyMetrics`;
+  - helper condivisi `attentionFor`, `attentionScore`, `byAttention`, `trendOf` in `careInsights.js`; `facilityVoice` ha un'azione suggerita;
+  - chat e menu: "Riepilogo d'équipe" al posto di "Report di struttura".
+- **File:** `src/pages/OperationalPages.jsx`, `src/data/reportNarrative.js`, `src/data/careInsights.js`, `src/pages/Residents.jsx`, `src/data/demoData.js`, `src/data/chatScript.js`, `src/pages/AskRoss.jsx`, `src/components/InsightRail.jsx`, `src/styles.css`, `AGENTS.md`.
 
 ### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · "Come avvicinarsi" diventa una guida pratica
 - **Richiesta:** rendere il tab più profondo e utile allo staff, con spunti concreti per ogni interesse, senza entrare nel privato.

@@ -67,19 +67,6 @@ export const interactions = Array.from({ length: 120 }, (_, index) => {
   };
 });
 
-export const dailyMetrics = Array.from({ length: 30 }, (_, index) => {
-  const date = new Date("2026-09-21T10:00:00");
-  date.setDate(date.getDate() - (29 - index));
-  const wave = [0, 9, -4, 13, 5, -7, 11][index % 7];
-  return {
-    date: date.toISOString().slice(5, 10),
-    minutes: 214 + wave + ((index * 7) % 31),
-    participation: 69 + ((index * 3) % 11) + wave / 5,
-    social: 5.8 + ((index * 4) % 12) / 10,
-    memories: 1 + (index % 4),
-    initiative: 42 + ((index * 9) % 29),
-  };
-});
 
 export const insights = [
   { id: "i1", category: "Benessere", title: "Teresa ha espresso serenità più spesso del solito", body: "Serenità espressa in 6 conversazioni su 7 questa settimana, rispetto a una media di 4.", period: "Ultimi 7 giorni", evidence: ["6 su 7", "media 4"], residentId: "teresa", action: "Apri il profilo", tone: "mint" },

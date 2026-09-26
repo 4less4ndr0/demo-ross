@@ -112,7 +112,7 @@ export function AskRoss() {
               <DropdownMenuItem icon={Paperclip} onSelect={() => fileRef.current?.click()}>Allega un documento</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${scoped?.id || "elena"}`)}>Report di {(scoped || state.residents[0]).name.split(" ")[0]}</DropdownMenuItem>
-              <DropdownMenuItem icon={BarChart3} onSelect={() => navigate("/report?ambito=struttura")}>Report di struttura</DropdownMenuItem>
+              <DropdownMenuItem icon={BarChart3} onSelect={() => navigate("/report")}>Riepilogo d'équipe</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
