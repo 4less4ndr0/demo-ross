@@ -352,3 +352,10 @@
   .ask-screen{height:calc(100dvh - 64px - 24px - 96px)}
 }
 @media(max-width:650px){.ask-screen{height:calc(100dvh - 64px - 24px - 84px)}}
+
+/* Schede sempre nello stesso punto: centrate sulla finestra, non sull'area del contenuto
+   (la sidebar cambia larghezza tra chat e altre pagine). */
+@media(min-width:901px){
+  html{scrollbar-gutter:stable}
+  .top-tabs{position:fixed;top:15px;left:50%;transform:translateX(-50%);z-index:25}
+}
