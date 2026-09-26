@@ -40,7 +40,7 @@ ROSS non è un gestionale sostitutivo: si affianca ai sistemi già in uso nella 
 
 - **Chiedi a ROSS** (`/`): chat al centro, "Il polso di ROSS" nella sidebar sinistra (su mobile dall'hamburger). Il ruolo si sceglie dalla card profilo in basso a sinistra (Staff con accesso condiviso senza login; Psicologa e Direzione con accesso personale) e cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
 - La navigazione principale è a schede al centro della barra superiore.
-- **Ospiti** (`/ospiti`, `/ospiti/:id`): dashboard ospiti e cartella con i tab Sintesi, Conversazioni ROSS, Memorie e storia, Relazioni, Documenti.
+- **Ospiti** (`/ospiti`, `/ospiti/:id`): lista ordinata per attenzione e cartella con i tab Come sta, Come avvicinarsi, Conversazioni ROSS, Documenti.
 - **Report** (`/report?ospite=ID`): report narrativo stampabile "Come sta" per ogni ospite, per l'équipe (contenuti in `src/data/reportNarrative.js`); `?ambito=struttura` per l'engagement aggregato; `&stampa=1` apre subito la stampa.
 - **Impostazioni** (`/impostazioni`): tema, presentazione, fasce delle modalità ROSS, ripristino del dataset.
 

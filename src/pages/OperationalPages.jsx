@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { ParticipationChart } from "../components/ParticipationChart";
 import { Download, Printer } from "lucide-react";
 import { dailyMetrics } from "../data/demoData";
 import { buildResidentReport } from "../data/reportNarrative";
@@ -56,8 +57,8 @@ function ResidentReport({ resident, report, period }) {
       <div><h3>Interessi</h3><ul>{report.relating?.interests.map(([label, source]) => <li key={label}>{label} <strong>{source}</strong></li>)}{report.newInterest && <li>{report.newInterest.label} <strong>nuovo · emerso con ROSS</strong></li>}</ul></div>
     </section>
     {report.presenceNotes.length > 0 && <section className="report-next report-presence"><span>PRESENZA E CONTINUITÀ</span>{report.presenceNotes.map((p) => <p key={p.text}>{p.text}</p>)}</section>}
-    <section className="report-next"><span>SPUNTO PER IL PROSSIMO TURNO</span><p>{report.next}</p></section>
-    <section className="report-chart"><h3>Partecipazione {report.building ? "(baseline in costruzione)" : "rispetto alla sua media personale"}</h3><ResponsiveContainer width="100%" height={170}><LineChart data={report.series}><XAxis dataKey="date" tickLine={false} axisLine={false} minTickGap={24} /><YAxis domain={["dataMin - 5", "dataMax + 5"]} hide /><Tooltip contentStyle={tooltipStyle} />{!report.building && <Line type="monotone" dataKey="baseline" name="Sua media" stroke="#b6aaa1" strokeDasharray="5 5" dot={false} isAnimationActive={false} />}<Line type="monotone" dataKey="participation" name="Partecipazione" stroke="#287e70" strokeWidth={3} dot={false} isAnimationActive={false} /></LineChart></ResponsiveContainer></section>
+    <section className="report-next"><span>SPUNTO PER LO STAFF</span><p>{report.next}</p></section>
+    <section className="report-chart"><h3>Partecipazione {report.building ? "(baseline in costruzione)" : "rispetto alla sua media personale"}</h3><ParticipationChart series={report.series} building={report.building} /></section>
     <footer>Report a uso interno dell'équipe. Descrive come sta la persona e di cosa ha bisogno, mai il contenuto delle sue conversazioni con ROSS. Non contiene citazioni, diagnosi, valutazioni cliniche o informazioni dei documenti sanitari.</footer>
   </article>;
 }

@@ -112,7 +112,7 @@ const intents = [
       bullets: [{ tag: "Come usarlo", text: journeyInterest.how }],
       residents: ["elena"],
       sources: [src.data("Oggi · 17:18 · 14 min")],
-      action: { label: "Apri gli interessi di Elena", to: "/ospiti/elena?tab=memorie" },
+      action: { label: "Apri gli interessi di Elena", to: "/ospiti/elena?tab=avvicinare" },
     }),
   },
   {

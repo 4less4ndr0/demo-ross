@@ -146,7 +146,7 @@ Tutto ciò che la struttura riceve rientra in una di queste cinque famiglie. Son
 
 ## 6. Aree grigie da discutere con il team
 
-1. **Famiglia e "con le sue parole".** La brochure promette alla famiglia "cosa ha detto, cosa ha ricordato, come stava, con le sue parole". Oggi la vista Famiglia della demo mostra ricordi e racconti. Va deciso se valgono regole diverse per la famiglia, magari con il consenso esplicito dell'ospite, o le stesse della struttura.
+1. **Famiglia e "con le sue parole".** La brochure promette alla famiglia "cosa ha detto, cosa ha ricordato, come stava, con le sue parole". Oggi la vista Famiglia della demo mostra ricordi e racconti. Va deciso se valgono regole diverse per la famiglia, magari con il consenso esplicito dell'ospite, o le stesse della struttura. *Decisione del 26/09:* i contributi della famiglia (ricordi, fotografie) vanno **direttamente a ROSS**; la struttura non li legge e non li verifica. La vista Famiglia va riallineata di conseguenza.
 2. **Consenso dell'ospite a condividere.** Ha senso che l'ospite possa dire a ROSS "questo raccontalo anche alla struttura" (o "a mia figlia")? È coerente con "la persona sceglie cosa raccontare e cosa tenere per sé" (brochure Notion, §3), ma va progettato.
 3. **Segnali gravi.** Cosa succede se un ospite esprime qualcosa che richiede un intervento immediato (dolore acuto, intenzioni di farsi del male, maltrattamenti)? Serve un protocollo di eccezione, con base legale e revisione di Mauro, che oggi non esiste.
 4. **Chi vede cosa.** In questa versione tutti i ruoli vedono lo stesso perimetro e il selettore di ruolo cambia solo la profondità. Da decidere se, per esempio, la psicologa debba vedere i segnali con più dettaglio.
