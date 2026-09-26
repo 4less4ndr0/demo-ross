@@ -25,7 +25,7 @@ const initialFamilyContributions = [
     place: "Cefalù",
     period: "1998",
     image: asset("cefalu-postcard.svg"),
-    status: "Confermato",
+    status: "Ripreso con Elena",
   },
   {
     id: "family-call-mina",
@@ -128,7 +128,7 @@ export function DemoProvider({ children }) {
           description: memory.description,
           place: memory.place || "—",
           people: memory.people || [],
-          source: "Contributo famiglia · verificato dalla struttura",
+          source: "Contributo della famiglia · riconosciuto da Elena",
         } : null;
         let biography = isRossCandidate && !prev.biography.some((event) => event.title === biographyEvent.title)
           ? [...prev.biography, biographyEvent]
@@ -177,8 +177,9 @@ export function DemoProvider({ children }) {
         title: "La macchina fotografica rossa di Paolo",
         category: "Ricordi",
         description: "Durante il viaggio del 1998 Paolo portava una piccola macchina fotografica rossa e fotografava Elena sul lungomare di Cefalù.",
-        source: "Conversazione con ROSS · oggi",
-        status: "Da verificare",
+        source: "Raccontato da Elena · oggi",
+        status: "Suggerita",
+        sharedWithFamily: true,
         confidence: 78,
         lastUsed: "Oggi, 17:18",
         tags: ["Cefalù", "Paolo", "fotografia", "1998"],
@@ -208,11 +209,12 @@ export function DemoProvider({ children }) {
           rossJourney: { stage: "complete", completedAt: new Date().toISOString(), candidateId: memory.id, confirmedAt: prev.rossJourney.confirmedAt },
         };
       });
-      notify("Conversazione salvata: è emerso un nuovo ricordo");
+      notify("Conversazione salvata: Elena ha scelto di condividere un nuovo ricordo con Anna");
     },
     addFamilyContribution: (contribution) => {
       const id = `family-${Date.now()}`;
-      const contributionRecord = { id, createdAt: new Date().toISOString(), status: contribution.kind === "note" ? "Inviato alla struttura" : contribution.kind === "topic" || contribution.kind === "music" ? "Disponibile a ROSS" : "Da verificare", ...contribution };
+      // I contributi della famiglia vanno direttamente a ROSS: nessuna verifica della struttura.
+      const contributionRecord = { id, createdAt: new Date().toISOString(), status: "Disponibile a ROSS", ...contribution };
       setState((prev) => {
         const createsMemory = contribution.kind === "memory" || contribution.kind === "photo";
         const memory = createsMemory ? {
@@ -223,7 +225,8 @@ export function DemoProvider({ children }) {
           category: contribution.kind === "photo" ? "Fotografie" : "Ricordi",
           description: contribution.detail,
           source: `Famiglia · ${contribution.author || "Anna"} · oggi`,
-          status: "Da verificare",
+          status: "Suggerita",
+          sharedWithFamily: true,
           confidence: 70,
           lastUsed: "Mai",
           tags: [contribution.place, contribution.period].filter(Boolean),
@@ -236,10 +239,9 @@ export function DemoProvider({ children }) {
           ...prev,
           familyContributions: [contributionRecord, ...prev.familyContributions],
           memories: memory ? [memory, ...prev.memories] : prev.memories,
-          notes: contribution.kind === "note" ? [{ id, residentId: "elena", source: "Famiglia", text: contribution.detail, time: "17:26" }, ...prev.notes] : prev.notes,
         };
       });
-      notify(contribution.kind === "memory" || contribution.kind === "photo" ? "Contributo inviato alla verifica della struttura" : "Contributo disponibile a ROSS");
+      notify("Contributo disponibile a ROSS: lo proporrà a Elena nel momento giusto");
     },
     scheduleActivity: (activity) => {
       setState((prev) => ({ ...prev, scheduledActivities: [{ id: `scheduled-${Date.now()}`, status: "Programmata", owner: "Giulia Serra", ...activity }, ...prev.scheduledActivities] }));
