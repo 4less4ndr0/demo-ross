@@ -390,11 +390,11 @@
 .compass-card header strong{font-size:13px}
 .compass-card header small{font-size:10px;color:var(--muted)}
 .compass-card .leaf-mark{display:grid;place-items:center;border-radius:50%;background:var(--green);color:white;width:28px;height:28px;flex:none}
-.compass-card>button{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;background:transparent;color:var(--text);text-align:left;font-size:12px;font-weight:600;padding:7px 8px;border-radius:8px;cursor:pointer}
-.compass-card>button:hover{background:color-mix(in srgb,var(--green) 12%,transparent)}
-.compass-card>button svg{color:var(--green)}
-.compass-card>p{display:flex;align-items:center;gap:6px;margin:8px 0 0;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--green) 22%,transparent);font-size:11px;font-weight:700;color:var(--green)}
-.compass-card>.compass-more{font-size:11px;font-weight:500;color:var(--muted);text-decoration:underline;padding:4px 8px 0}
+.compass-card .rail-item-body>button{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;background:transparent;color:var(--text);text-align:left;font-size:12px;font-weight:600;padding:7px 8px;border-radius:8px;cursor:pointer}
+.compass-card .rail-item-body>button:hover{background:color-mix(in srgb,var(--green) 12%,transparent)}
+.compass-card .rail-item-body>button svg{color:var(--green)}
+.compass-card .rail-item-body>p{display:flex;align-items:center;gap:6px;margin:8px 0 0;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--green) 22%,transparent);font-size:11px;font-weight:700;color:var(--green)}
+.compass-card .rail-item-body>.compass-more{font-size:11px;font-weight:500;color:var(--muted);text-decoration:underline;padding:4px 8px 0}
 .ask-noticed .avatar{flex:none;margin-top:1px}
 .privacy-never strong{color:var(--danger)}
 
@@ -423,3 +423,23 @@
 .ui-tooltip-arrow{fill:var(--text)}
 .ui-tooltip[data-state=delayed-open],.ui-tooltip[data-state=instant-open]{animation:uiIn .12s ease-out}
 .info-tip:focus-visible{outline:none;border-radius:50%;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 28%,transparent)}
+
+/* Sidebar insight ad accordion: solo i titoli, si aprono al clic */
+.rail-accordion{display:flex;flex-direction:column;gap:10px}
+.rail-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.rail-item.compass-card{background:var(--green-soft);border-color:transparent;padding:0;display:block}
+.rail-item-head{display:flex;align-items:center;gap:4px;margin:0;padding-right:10px}
+.rail-item-trigger{flex:1;display:flex;align-items:center;gap:7px;min-height:54px;padding:0 4px 0 15px;border:0;background:transparent;color:var(--text);font:600 15px/1.25 Inter,ui-sans-serif,system-ui,sans-serif;text-align:left;cursor:pointer;white-space:nowrap}
+.rail-item-trigger>span:first-child{flex:1}
+.rail-item-trigger:focus-visible{outline:none;box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--green) 28%,transparent);border-radius:14px}
+.rail-count{flex:none;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:var(--surface-2);color:var(--muted);font-size:12px;font-weight:700;display:grid;place-items:center}
+.rail-chevron{flex:none;color:var(--muted);transition:transform .2s}
+.rail-item-trigger[data-state=open] .rail-chevron{transform:rotate(180deg)}
+.rail-item-content{overflow:hidden}
+.rail-item-content[data-state=open]{animation:railOpen .22s cubic-bezier(.32,.72,0,1)}
+.rail-item-content[data-state=closed]{animation:railClose .16s ease-in}
+@keyframes railOpen{from{height:0;opacity:0}to{height:var(--radix-accordion-content-height);opacity:1}}
+@keyframes railClose{from{height:var(--radix-accordion-content-height);opacity:1}to{height:0;opacity:0}}
+.rail-item-body{display:grid;gap:2px;padding:0 10px 12px}
+.compass-title{display:flex;align-items:center;gap:10px}
+.compass-card .rail-item-body{padding:0 12px 14px}
