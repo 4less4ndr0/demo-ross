@@ -381,3 +381,38 @@
 @media(max-width:900px){.ask-screen{height:calc(100dvh - 64px - 24px - 76px)}}
 @media(max-width:650px){.demo-view{right:12px;bottom:12px}.demo-view-caption{display:none}.ask-screen{height:calc(100dvh - 64px - 24px - 72px)}}
 @media print{.demo-view{display:none!important}}
+.report-presence{background:var(--sand-soft)}
+
+/* Riquadro "Cosa ti dice ROSS": i cinque punti cardinali */
+.compass-card{background:var(--green-soft);border-radius:14px;padding:14px;display:grid;gap:2px}
+.compass-card header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.compass-card header div{display:grid;gap:1px}
+.compass-card header strong{font-size:13px}
+.compass-card header small{font-size:10px;color:var(--muted)}
+.compass-card .leaf-mark{display:grid;place-items:center;border-radius:50%;background:var(--green);color:white;width:28px;height:28px;flex:none}
+.compass-card>button{display:flex;align-items:center;justify-content:space-between;gap:8px;border:0;background:transparent;color:var(--text);text-align:left;font-size:12px;font-weight:600;padding:7px 8px;border-radius:8px;cursor:pointer}
+.compass-card>button:hover{background:color-mix(in srgb,var(--green) 12%,transparent)}
+.compass-card>button svg{color:var(--green)}
+.compass-card>p{display:flex;align-items:center;gap:6px;margin:8px 0 0;padding-top:9px;border-top:1px solid color-mix(in srgb,var(--green) 22%,transparent);font-size:11px;font-weight:700;color:var(--green)}
+.compass-card>.compass-more{font-size:11px;font-weight:500;color:var(--muted);text-decoration:underline;padding:4px 8px 0}
+.ask-noticed .avatar{flex:none;margin-top:1px}
+.privacy-never strong{color:var(--danger)}
+
+/* Storia e interessi */
+.interest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:16px}
+.interest-card{padding:16px;display:grid;gap:6px;align-content:start}
+.interest-card small{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.interest-card h3{font:600 19px var(--serif);margin:0}
+.interest-card p{font-size:12px;margin:0}
+.interest-card .ghost-button{justify-self:start;margin-top:6px}
+.interest-new{border-color:var(--accent);background:var(--accent-soft)}
+.interest-new small{color:var(--accent)}
+.relating-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);overflow:hidden;padding:0}
+.relating-strip>div{background:var(--surface);padding:14px;display:grid;gap:4px}
+.relating-strip span{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.relating-strip strong{font-size:13px;font-weight:600}
+.tag-cloud .tag-new{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.compact-empty{font-size:12px;margin:0}
+@media(max-width:900px){.relating-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.relating-strip{grid-template-columns:1fr}}
+.resident-watch{font-style:normal;font-weight:700;color:var(--accent)}

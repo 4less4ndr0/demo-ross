@@ -7,7 +7,7 @@ import { Avatar } from "../components/Common";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../components/ui";
 
 const queryShortcuts = { turno: "Riassumimi il turno", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
-const sourceIcons = { "Conversazione ROSS": MessageCircle, Documento: FileText, "Nota operatore": StickyNote, Famiglia: Heart, Memoria: BookOpen, "Dati ROSS": BarChart3 };
+const sourceIcons = { "Biografia d'ingresso": BookOpen, Documento: FileText, "Nota operatore": StickyNote, Famiglia: Heart, "Dati ROSS": BarChart3 };
 
 function guessKind(fileName) {
   const name = fileName.toLowerCase();
@@ -34,7 +34,7 @@ export function AskRoss() {
   const role = roles.find((r) => r.id === state.role) || roles[1];
 
   const baseSuggestions = useMemo(() => {
-    const list = scoped ? [`Cosa devo sapere su ${scoped.name.split(" ")[0]}?`, `Di cosa posso parlare con ${scoped.name.split(" ")[0]}?`, ...suggestions[role.id].filter((s) => !/elena|carlo|ada/i.test(s)).slice(0, 2)] : suggestions[role.id];
+    const list = scoped ? [`Come sta ${scoped.name.split(" ")[0]}?`, `Come posso coinvolgere ${scoped.name.split(" ")[0]}?`, ...suggestions[role.id].filter((s) => !/elena|carlo|ada|lucia|chi /i.test(s)).slice(0, 2)] : suggestions[role.id];
     return state.rossJourney.completedAt && !scoped ? ["Cosa è emerso oggi con Elena?", ...list.slice(0, 3)] : list;
   }, [role.id, scoped, state.rossJourney.completedAt]);
 
@@ -78,7 +78,7 @@ export function AskRoss() {
 
   const listen = () => {
     setListening(true);
-    window.setTimeout(() => { setListening(false); ask(scoped ? `Cosa devo sapere su ${scoped.name.split(" ")[0]}?` : "Cosa devo sapere su Elena prima di entrare?"); }, 1500);
+    window.setTimeout(() => { setListening(false); ask(scoped ? `Come sta ${scoped.name.split(" ")[0]}?` : "Come posso coinvolgere Elena?"); }, 1500);
   };
 
   const upload = (event) => {
@@ -103,7 +103,7 @@ export function AskRoss() {
     <div className="ask-screen">
       <section className="ask-chat surface">
         <header className="ask-header">
-          <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Conversazioni ROSS e documenti della struttura</small></div></div>
+          <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Come stanno gli ospiti e di cosa hanno bisogno</small></div></div>
           <span className="ask-role-chip" title="Il ruolo si cambia dal profilo in basso a sinistra">come {role.label}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger>
@@ -121,7 +121,7 @@ export function AskRoss() {
           {!messages.length ? (
             <div className="ask-empty">
               <h1>{scoped ? `Cosa vuoi sapere su ${scoped.name.split(" ")[0]}?` : "Cosa vuoi sapere oggi?"}</h1>
-              <p>{role.hint}. ROSS risponde dalle conversazioni con gli ospiti e dai documenti caricati, citando sempre la fonte.</p>
+              <p>{role.hint}. ROSS ti dice come stanno gli ospiti e di cosa hanno bisogno, mai di cosa hanno parlato.</p>
               <div className="ask-suggestions">{baseSuggestions.map((s) => <button key={s} onClick={() => ask(s)}><Sparkles size={15} />{s}</button>)}</div>
             </div>
           ) : messages.map((m) => m.from === "user"
@@ -139,7 +139,7 @@ export function AskRoss() {
             <button type="button" className={`ask-tool ${listening ? "active" : ""}`} onClick={listen} title="Detta la domanda" aria-label="Detta la domanda"><Mic size={18} /></button>
             <button className="ask-send" disabled={!input.trim()} aria-label="Invia"><ArrowUp size={18} /></button>
           </form>
-          <small className="ask-disclaimer">ROSS riporta solo ciò che ha ascoltato o che è stato caricato. Non fa valutazioni cliniche.</small>
+          <small className="ask-disclaimer">ROSS non riporta mai il contenuto delle conversazioni. Non fa valutazioni cliniche.</small>
         </footer>
       </section>
     </div>
@@ -151,7 +151,7 @@ function Answer({ answer, state, navigate }) {
   return (
     <div className="ask-answer">
       <p>{answer.text}</p>
-      {answer.bullets?.length > 0 && <ul>{answer.bullets.map((b, i) => <li key={i}>{b.tag && <span className="ask-tag">{b.tag}</span>}<span>{b.text}</span>{b.quote && <q>{b.quote}</q>}</li>)}</ul>}
+      {answer.bullets?.length > 0 && <ul>{answer.bullets.map((b, i) => <li key={i}>{b.tag && <span className="ask-tag">{b.tag}</span>}<span>{b.text}</span></li>)}</ul>}
       {answer.after && <p className="ask-after">{answer.after}</p>}
       {people.length > 0 && <div className="ask-people">{people.map((r) => <button key={r.id} onClick={() => navigate(`/ospiti/${r.id}`)}><Avatar resident={r} size="sm" />{r.name.split(" ")[0]}</button>)}</div>}
       {answer.sources?.length > 0 && <div className="ask-sources"><span>Fonti</span>{answer.sources.map((s, i) => { const Icon = sourceIcons[s.kind] || FileText; return <span key={i} className="ask-source"><Icon size={13} /><strong>{s.kind}</strong>{s.label}</span>; })}</div>}

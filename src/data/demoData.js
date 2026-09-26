@@ -25,9 +25,9 @@ export const biography = [
   { year: "1947", title: "Nasce a Padova", description: "Cresce con due sorelle in una casa vicina al centro.", place: "Padova", people: ["Famiglia"], source: "Famiglia" },
   { year: "1966", title: "Inizia a insegnare", description: "Il primo incarico in una scuola elementare di quartiere.", place: "Padova", people: ["Anna"], source: "Residente" },
   { year: "1970", title: "Matrimonio con Paolo", description: "Una festa semplice, ricordata soprattutto per la musica.", place: "Abano Terme", people: ["Paolo"], source: "Famiglia" },
-  { year: "1973", title: "Nasce la figlia Anna", description: "Elena racconta spesso le prime estati trascorse insieme.", place: "Padova", people: ["Anna", "Paolo"], source: "Famiglia" },
+  { year: "1973", title: "Nasce la figlia Anna", description: "Le prime estati in famiglia, al mare.", place: "Padova", people: ["Anna", "Paolo"], source: "Famiglia" },
   { year: "1984", title: "Trasferimento", description: "La famiglia si sposta in una casa con un grande balcone.", place: "Treviso", people: ["Anna", "Paolo"], source: "Residente" },
-  { year: "1998", title: "Viaggio in Sicilia", description: "Palermo e Cefalù diventano alcuni dei ricordi di viaggio più presenti.", place: "Sicilia", people: ["Paolo"], source: "Confermata da famiglia" },
+  { year: "1998", title: "Viaggio in Sicilia", description: "Viaggio con Paolo tra Palermo e Cefalù.", place: "Sicilia", people: ["Paolo"], source: "Confermata da famiglia" },
   { year: "2004", title: "Va in pensione", description: "Mantiene i rapporti con alcune colleghe e continua a curare il giardino.", place: "Treviso", people: ["Colleghe"], source: "Operatore" },
   { year: "2008", title: "Nasce Sofia", description: "La nipote con cui condivide oggi l'interesse per la fotografia.", place: "Treviso", people: ["Sofia", "Anna"], source: "Famiglia" },
 ];
@@ -82,10 +82,10 @@ export const dailyMetrics = Array.from({ length: 30 }, (_, index) => {
 });
 
 export const insights = [
-  { id: "i1", category: "Attività", title: "Elena partecipa con più continuità alle attività creative", body: "Questa settimana ha completato 4 attività creative su 5 proposte, +18% rispetto alla sua baseline personale.", period: "Ultimi 7 giorni", evidence: ["4 attività", "42 minuti", "+18% baseline"], residentId: "elena", action: "Apri il contesto", tone: "coral" },
-  { id: "i2", category: "Cambiamenti", title: "Carlo ha iniziato meno conversazioni", body: "Negli ultimi 4 giorni Carlo ha avviato 3 conversazioni in meno rispetto alla propria media di 14 giorni.", period: "Ultimi 4 giorni", evidence: ["2 iniziative", "media personale 5"], residentId: "carlo", action: "Osserva andamento", tone: "sand" },
-  { id: "i3", category: "Memorie", title: "Un ricordo di Cefalù ricorre più volte", body: "Elena ha citato la spiaggia di Cefalù in 3 conversazioni. Il ricordo può essere verificato con la famiglia.", period: "Ultimi 12 giorni", evidence: ["3 menzioni", "2 conversazioni collegate"], residentId: "elena", action: "Verifica memoria", tone: "mint" },
-  { id: "i4", category: "Routine", title: "La fascia 10:00–11:30 è la più utilizzata", body: "Le interazioni del mattino sono mediamente 6 minuti più lunghe, senza differenze rilevanti nella partecipazione.", period: "Ultimi 30 giorni", evidence: ["38 interazioni", "+6 min durata"], action: "Vedi dettaglio", tone: "lilac" },
+  { id: "i1", category: "Benessere", title: "Teresa ha espresso serenità più spesso del solito", body: "Serenità espressa in 6 conversazioni su 7 questa settimana, rispetto a una media di 4.", period: "Ultimi 7 giorni", evidence: ["6 su 7", "media 4"], residentId: "teresa", action: "Apri il profilo", tone: "mint" },
+  { id: "i2", category: "Benessere", title: "Carlo ha avviato meno conversazioni", body: "Negli ultimi 4 giorni Carlo ha avviato 3 conversazioni in meno rispetto alla propria media di 14 giorni.", period: "Ultimi 4 giorni", evidence: ["2 iniziative", "media personale 5"], residentId: "carlo", action: "Osserva andamento", tone: "sand" },
+  { id: "i3", category: "Benessere", title: "Lucia ha espresso stanchezza più del solito", body: "Stanchezza espressa in 3 conversazioni su 6 questa settimana (di solito 1). Da osservare di persona.", period: "Ultimi 7 giorni", evidence: ["3 su 6", "media 1"], residentId: "lucia", action: "Apri il profilo", tone: "coral" },
+  { id: "i4", category: "Presenza", title: "La fascia 10:00–11:30 è la più utilizzata", body: "Le interazioni del mattino sono mediamente 6 minuti più lunghe, senza differenze rilevanti nella partecipazione.", period: "Ultimi 30 giorni", evidence: ["38 interazioni", "+6 min durata"], action: "Vedi dettaglio", tone: "lilac" },
 ];
 
 export const dayTimeline = [
@@ -101,15 +101,15 @@ export const dayTimeline = [
 export const graphData = {
   nodes: [
     { id: "Elena", group: "residente", size: 12, detail: "Profilo centrale" },
-    { id: "Sofia", group: "persona", size: 9, detail: "Nipote · 14 menzioni negli ultimi 30 giorni" },
-    { id: "Paolo", group: "persona", size: 8, detail: "Marito · collegato a 9 memorie" },
-    { id: "Anna", group: "persona", size: 7, detail: "Figlia · fonte di 6 memorie" },
-    { id: "Palermo", group: "luogo", size: 8, detail: "Luogo · 7 menzioni" },
-    { id: "Cefalù", group: "luogo", size: 7, detail: "Luogo · 3 menzioni da verificare" },
-    { id: "Fotografia", group: "interesse", size: 8, detail: "Interesse ricorrente" },
-    { id: "Mina", group: "musica", size: 7, detail: "Musica · usata in 4 attività" },
-    { id: "Viaggio 1998", group: "evento", size: 8, detail: "Evento biografico confermato" },
-    { id: "Giardinaggio", group: "interesse", size: 6, detail: "Interesse · 4 conversazioni" },
+    { id: "Sofia", group: "persona", size: 9, detail: "Nipote · biografia d'ingresso (famiglia)" },
+    { id: "Paolo", group: "persona", size: 8, detail: "Marito · biografia d'ingresso (famiglia)" },
+    { id: "Anna", group: "persona", size: 7, detail: "Figlia · referente familiare" },
+    { id: "Palermo", group: "luogo", size: 8, detail: "Luogo · biografia d'ingresso" },
+    { id: "Cefalù", group: "luogo", size: 7, detail: "Luogo · biografia d'ingresso" },
+    { id: "Fotografia", group: "interesse", size: 8, detail: "Interesse · emerso con ROSS" },
+    { id: "Mina", group: "musica", size: 7, detail: "Musica · biografia d'ingresso" },
+    { id: "Viaggio 1998", group: "evento", size: 8, detail: "Evento · biografia d'ingresso (famiglia)" },
+    { id: "Giardinaggio", group: "interesse", size: 6, detail: "Interesse · biografia d'ingresso" },
   ],
   links: [
     ["Elena", "Sofia"], ["Elena", "Paolo"], ["Elena", "Anna"], ["Elena", "Fotografia"], ["Elena", "Mina"], ["Elena", "Giardinaggio"], ["Elena", "Viaggio 1998"], ["Viaggio 1998", "Palermo"], ["Viaggio 1998", "Cefalù"], ["Sofia", "Fotografia"], ["Paolo", "Palermo"], ["Paolo", "Mina"],
@@ -126,10 +126,11 @@ export const modeSchedule = [
 ];
 
 export const handoverEntries = [
-  { residentId: "elena", source: "ROSS", text: "Ha partecipato all'attività musicale e ha parlato spontaneamente della nipote. Partecipazione superiore alla propria media recente.", time: "16:24" },
+  { residentId: "elena", source: "ROSS", text: "Partecipazione superiore alla propria media recente; ha espresso serenità.", time: "16:24" },
   { residentId: "carlo", source: "ROSS", text: "Meno interazioni spontanee rispetto agli ultimi giorni. Nessun altro cambiamento rilevato nelle interazioni ROSS.", time: "15:50" },
   { residentId: "lucia", source: "Operatore", text: "Ha chiesto di ripetere domani l'attività sulle categorie.", time: "16:08" },
   { residentId: "teresa", source: "ROSS", text: "L'attività musicale di gruppo è durata 18 minuti, 5 in più della sua media personale.", time: "15:36" },
+  { residentId: "antonio", source: "ROSS", text: "Oggi non ha ancora parlato con ROSS; di solito entro le 11 sì. Ha espresso il desiderio di sentire un familiare in 2 conversazioni questa settimana.", time: "15:10" },
 ];
 
 export const themeOptions = [

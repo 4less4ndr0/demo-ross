@@ -21,3 +21,9 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Il **ruolo** ("Sto chiedendo come") si sceglie dal menu della card operatore in basso a sinistra; la chat mostra solo un'etichetta del ruolo attivo e il menu "…" della conversazione.
 - **Interazioni in stile shadcn/ui** nella vista Struttura: bottoni, dropdown, select (anche nei moduli), dialog, sheet laterali e toast usano le primitive di `src/components/ui.jsx` (Radix + Sonner) con i token visivi ROSS (colori caldi, serif editoriale). Non adottare il tema neutro di shadcn né Tailwind. Le azioni reversibili mostrano un toast con "Annulla". Le viste Famiglia e ROSS mantengono i propri componenti.
 - **Selettore "Vista demo"** (Struttura / Famiglia / ROSS): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3. In modalità presentazione contiene anche "Avanti". Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
+
+## Privacy by design: cosa la struttura riceve
+
+- **Regola d'oro**: la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai *di cosa ha parlato***. Il riferimento completo è `docs/contratto-informativo-struttura.md`.
+- Mai trascrizioni, citazioni, argomenti, nomi di persone o luoghi raccontati, ricordi specifici, oggetto delle emozioni, diagnosi.
+- Tutto ciò che la struttura vede rientra nei **cinque punti cardinali**: benessere nel tempo (segnali espressi, finestra ≥ 7 giorni, confronto con la media personale), come relazionarsi (interessi solo per categoria), bisogni personali (per ospite), voce della struttura (aggregata, anonima, ≥ 3 ospiti), presenza e continuità.

@@ -51,10 +51,11 @@ Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attiv
 1. Chiedi a ROSS: cambia ruolo e prova le domande suggerite, poi "Riassumimi il turno".
 2. Allega un documento in chat (es. `fisioterapia_elena.pdf`) e apri la cartella di Elena → Documenti.
 3. Vista ROSS: conversazione con Elena su Cefalù.
-4. Torna in Struttura: "Cosa è emerso oggi con Elena?" → verifica e conferma il ricordo.
-5. Tab Relazioni per il Knowledge Graph.
-6. Vista Famiglia.
-7. Report narrativo "Come sta" per ogni ospite (dalla cartella: "Stampa report") e report di struttura.
+4. Torna in Struttura: "Cosa è emerso oggi con Elena?" → nuovo interesse emerso (fotografia). Il ricordo resta tra ROSS ed Elena.
+5. Chiedi "Di cosa ha parlato Elena ieri?": ROSS spiega che il contenuto delle conversazioni resta privato.
+6. Tab Relazioni per il Knowledge Graph (solo biografia d'ingresso).
+7. Vista Famiglia.
+8. Report narrativo "Come sta" per ogni ospite (dalla cartella: "Stampa report") e report di struttura.
 
 Il selettore **Vista demo** in basso a destra passa tra Struttura, Famiglia e ROSS (scorciatoie 1, 2, 3). La modalità presentazione (dal selettore, dal menu operatore o da Impostazioni) aggiunge il pulsante “Avanti”, disponibile in tutte le viste. È possibile aprire direttamente la modalità con `?presentation=true`.
 
@@ -94,6 +95,10 @@ I token `ross`, `neutral` e `care` sono all'inizio di `src/styles.css`. Il tema 
 ## Reset
 
 Usare `Impostazioni → Ripristina dataset demo`. In alternativa cancellare la chiave `ross-rsa-demo-v2` dal localStorage del browser.
+
+## Privacy by design
+
+Cosa la struttura riceve e cosa mai è definito in `docs/contratto-informativo-struttura.md`. I dati conformi (segnali, bisogni, voce della struttura, come relazionarsi, presenza) sono in `src/data/careInsights.js`.
 
 ## Note di prodotto
 
