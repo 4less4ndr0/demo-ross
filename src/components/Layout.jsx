@@ -42,7 +42,7 @@ export function Layout() {
 
   const sidebar = (
     <>
-      <div className="brand"><span className="brand-mark">R</span><strong>R.O.S.S.</strong></div>
+      <div className="brand" title="Residenza Aurora · Lunedì, 21 settembre 2026"><span className="brand-mark">R</span><div className="brand-text"><strong>R.O.S.S.</strong><span className="brand-place">Residenza Aurora</span><span className="brand-date">Lunedì, 21 settembre 2026</span></div></div>
       {isChat && <div className="sidebar-insights"><InsightRail onDone={closeMenu} /></div>}
       <div className="sidebar-bottom">
         <NavLink to="/impostazioni" onClick={closeMenu} title="Impostazioni"><Settings size={18} /><span>Impostazioni</span></NavLink>
@@ -69,7 +69,6 @@ export function Layout() {
       <div className="app-main">
         <header className="topbar">
           <button className="mobile-menu" onClick={() => setMenuOpen(true)} aria-label="Apri menu"><Menu /></button>
-          <div className="topbar-place"><span className="facility">RESIDENZA AURORA</span><span className="date">Lunedì, 21 settembre 2026</span></div>
           <nav className="top-tabs" aria-label="Sezioni">{nav.map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === "/"}><Icon size={16} /><span>{label}</span></NavLink>)}</nav>
         </header>
         <main className="page"><Outlet /></main>
