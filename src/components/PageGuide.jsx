@@ -3,25 +3,28 @@ import { useNavigate } from "react-router-dom";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ArrowRight, ChevronDown, Compass, EyeOff } from "lucide-react";
 
-// Specchietto "Cosa ti dice ROSS" per le pagine Ospiti e Report: dà senso alla pagina,
-// spiega cosa si trova e perché è fatta così. Stesso linguaggio visivo della guida nella chat.
-const readOpen = (key) => { try { return localStorage.getItem(key) === "1"; } catch { return false; } };
+// Specchietto "Cosa ti dice ROSS" nella sidebar delle pagine Ospiti e Report: dà senso alla pagina,
+// spiega cosa si trova e perché è fatta così. Stessa card verde della guida nella chat (InsightRail).
+const readOpen = (key) => { try { return localStorage.getItem(key) !== "0"; } catch { return true; } };
 const writeOpen = (key, open) => { try { localStorage.setItem(key, open ? "1" : "0"); } catch { /* storage non disponibile */ } };
 
-export function PageGuide({ id, title = "Cosa ti dice ROSS", subtitle, intro, entries }) {
+export function SidebarGuide({ id, subtitle, intro, entries, onDone }) {
   const storageKey = `ross-guide-${id}`;
   const [open, setOpen] = useState(() => readOpen(storageKey));
   const navigate = useNavigate();
   const onChange = (value) => { const next = value === "guide"; setOpen(next); writeOpen(storageKey, next); };
-  return <AccordionPrimitive.Root type="single" collapsible value={open ? "guide" : ""} onValueChange={onChange} className="page-guide no-print">
-    <AccordionPrimitive.Item value="guide">
-      <AccordionPrimitive.Header className="page-guide-head">
-        <AccordionPrimitive.Trigger className="page-guide-trigger"><span className="leaf-mark"><Compass size={15} /></span><span className="page-guide-title"><strong>{title}</strong><small>{subtitle}</small></span><ChevronDown size={18} className="page-guide-chevron" /></AccordionPrimitive.Trigger>
+  const ask = (question) => { onDone?.(); navigate(`/?q=${encodeURIComponent(question)}`); };
+  const go = (to) => { onDone?.(); navigate(to); };
+  return <AccordionPrimitive.Root type="single" collapsible value={open ? "guide" : ""} onValueChange={onChange} className="rail-accordion">
+    <AccordionPrimitive.Item value="guide" className="rail-item compass-card">
+      <AccordionPrimitive.Header className="rail-item-head">
+        <AccordionPrimitive.Trigger className="rail-item-trigger"><span className="compass-title"><span className="leaf-mark"><Compass size={14} /></span><span className="compass-title-text">Cosa ti dice ROSS<small>{subtitle}</small></span></span><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
       </AccordionPrimitive.Header>
-      <AccordionPrimitive.Content className="page-guide-content"><div className="page-guide-body">
-        <p className="page-guide-intro">{intro}</p>
-        <div className="page-guide-grid">{entries.map((e) => <div className="page-guide-entry" key={e.title}><strong>{e.title}</strong><span>{e.text}</span>{e.question && <button onClick={() => navigate(`/?q=${encodeURIComponent(e.question)}`)}>Chiedi a ROSS: «{e.question}» <ArrowRight size={12} /></button>}</div>)}</div>
-        <p className="page-guide-foot"><EyeOff size={13} /> Mai il contenuto delle conversazioni: ciò che l'ospite racconta resta tra lui e ROSS.</p>
+      <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
+        <p className="guide-intro">{intro}</p>
+        {entries.map((e) => <div className="guide-entry" key={e.title}><strong>{e.title}</strong><span>{e.text}</span>{e.question && <button onClick={() => ask(e.question)}>Prova: «{e.question}» <ArrowRight size={12} /></button>}</div>)}
+        <p><EyeOff size={13} /> Mai il contenuto delle conversazioni</p>
+        <button className="compass-more" onClick={() => go("/impostazioni#privacy")}>Come proteggiamo gli ospiti</button>
       </div></AccordionPrimitive.Content>
     </AccordionPrimitive.Item>
   </AccordionPrimitive.Root>;

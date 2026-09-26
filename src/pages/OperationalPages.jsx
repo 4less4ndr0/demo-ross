@@ -8,7 +8,6 @@ import { buildResidentReport, buildTeamReport } from "../data/reportNarrative";
 import { useDemo } from "../state/DemoContext";
 import { Button, Select } from "../components/ui";
 import { Avatar, SectionTitle } from "../components/Common";
-import { PageGuide, reportsGuide } from "../components/PageGuide";
 
 // Report per l'équipe (docs/contratto-informativo-struttura.md): Riepilogo d'équipe sui cinque punti cardinali
 // oppure "Come sta" del singolo ospite. Mai il contenuto delle conversazioni, confronti solo con la media della persona.
@@ -36,7 +35,6 @@ export function ReportsPage() {
 
   return <div className="report-screen screen-enter">
     <SectionTitle eyebrow="REPORT" title={single ? `Come sta ${resident.name}` : "Riepilogo d'équipe"} description={single ? `Report narrativo per l'équipe · ultimi ${period} giorni. Come sta e di cosa ha bisogno, mai il contenuto delle conversazioni.` : `La situazione della struttura negli ultimi ${period} giorni: benessere, voce degli ospiti, bisogni e presenza. Per le riunioni d'équipe e la direzione.`} action={<div className="action-group"><Button variant="outline" onClick={() => window.print()}><Download size={16} /> Salva PDF</Button><Button onClick={() => window.print()}><Printer size={16} /> Stampa</Button></div>} />
-    <PageGuide {...reportsGuide} />
     <div className="filter-bar report-filters">
       <div className="report-switch" role="tablist" aria-label="Tipo di report"><button role="tab" aria-selected={!single} className={!single ? "active" : ""} onClick={showTeam}>Riepilogo d'équipe</button><button role="tab" aria-selected={single} className={single ? "active" : ""} onClick={() => showResident(resident.id)}>Singolo ospite</button></div>
       {single && <Select value={resident.id} onValueChange={showResident} label="Ospite" options={byAttention(state.residents).map((r) => ({ value: r.id, label: r.name }))} />}
