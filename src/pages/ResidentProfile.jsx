@@ -5,7 +5,7 @@ import { useDemo } from "../state/DemoContext";
 import { Avatar, DataExplanation, EmptyState, ModeBadge } from "../components/Common";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
-import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, signalsFor } from "../data/careInsights";
+import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, signalDetail, signalsFor } from "../data/careInsights";
 import { buildResidentReport } from "../data/reportNarrative";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select } from "../components/ui";
 
@@ -78,8 +78,8 @@ function Overview({ state, resident, onApproach, onConversations }) {
     </div>
     <aside className="overview-side">
       <section className="surface compact-section"><h3>Benessere nel tempo</h3>
-        {toWatch.map((s) => <div className="memory-mini" key={s.signal}><span className="memory-status pending" /><div><strong>{capitalize(s.signal)} · {s.trend}</strong><small>{s.note || `In ${s.count} conversazioni su ${s.of} · di solito ${s.usual}`}. Da osservare di persona.</small></div></div>)}
-        {positive.map((s) => <div className="memory-mini" key={s.signal}><span className="memory-status confirmed" /><div><strong>{capitalize(s.signal)} · {s.trend}</strong><small>In {s.count} conversazioni su {s.of} · di solito {s.usual}</small></div></div>)}
+        {positive.map((s) => <div className="memory-mini" key={s.signal}><span className="memory-status confirmed" /><div><strong>{capitalize(s.signal)} · {s.trend}</strong><small>{signalDetail(s)}</small></div></div>)}
+        {toWatch.map((s) => <div className="memory-mini" key={s.signal}><span className="memory-status pending" /><div><strong>{capitalize(s.signal)} · {s.trend}</strong><small>{signalDetail(s)}. Da osservare di persona.</small></div></div>)}
         {!own.length && <p className="compact-empty">{resident.participation == null ? "ROSS la sta ancora conoscendo: nessun confronto con la sua media per ora." : "Nessun segnale particolare rispetto alla sua media."}</p>}
       </section>
       <section className="surface compact-section"><h3>Bisogni espressi</h3>{ownNeeds.length ? ownNeeds.map((n) => <div className="memory-mini" key={n.text}><span className="memory-status pending" /><div><strong>{n.text}</strong><small>{n.times > 1 ? `${n.times} volte questa settimana` : "Questa settimana"}</small></div></div>) : <p className="compact-empty">Nessun bisogno particolare espresso questa settimana.</p>}</section>

@@ -35,7 +35,7 @@ export const residentsGuide = {
   subtitle: "Perché questa pagina è fatta così",
   intro: "Qui trovi ogni ospite come lo conosce ROSS: come sta e come avvicinarlo. Non è l'anagrafica, che resta nel gestionale: è ciò che serve per stare accanto alla persona nel modo giusto.",
   entries: [
-    { title: "Perché questo ordine", text: "In cima chi ha bisogno di più attenzione oggi: prima un'assenza insolita, poi i segnali da osservare, poi i bisogni espressi. Chi inizia la giornata sa da chi passare per primo.", question: "Chi ha bisogno di più attenzione oggi?" },
+    { title: "Perché questo ordine", text: "In cima chi ha bisogno di più attenzione oggi: prima un'assenza insolita, poi i segnali da osservare, poi i bisogni espressi. Chi inizia la giornata sa da chi passare per primo. Ogni scheda mostra prima ciò che va bene, in verde, e poi ciò che è da osservare: ogni persona ha entrambe le cose.", question: "Chi ha bisogno di più attenzione oggi?" },
     { title: "Ognuno confrontato con sé stesso", text: "La partecipazione è sempre rispetto alla media della persona negli ultimi 14 giorni. Niente punteggi né classifiche: una persona riservata non è «peggio» di una socievole." },
     { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio e spunti per ogni interesse), Conversazioni ROSS (quando e quanto, mai di cosa), Documenti (allegati dalla chat, in sola lettura)." },
     { title: "Cosa non trovi, e perché", text: "Niente storia di vita, grafo delle relazioni, ricordi o citazioni: sono della persona. I dettagli biografici compaiono solo se li hanno dati la famiglia o la struttura all'ingresso." },

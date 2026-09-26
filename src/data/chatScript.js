@@ -1,6 +1,6 @@
 import { DEMO_TODAY } from "./demoData";
 import { buildResidentReport } from "./reportNarrative";
-import { approachGuide, describeSignal, facilityVoice, hooksFor, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
+import { approachGuide, describeSignal, facilityVoice, groupByResident, hooksFor, journeyInterest, needs, trendOf, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
 
 // Risposte della chat secondo docs/contratto-informativo-struttura.md:
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato.
@@ -17,9 +17,9 @@ const legacyRoles = { operatore: "staff", coordinatrice: "staff" };
 export const roleFor = (id) => roles.find((r) => r.id === (legacyRoles[id] || id)) || roles[0];
 
 export const suggestions = {
-  staff: ["Chi ha bisogno di più attenzione oggi?", "Di cosa ha bisogno Antonio?", "Come posso coinvolgere Elena?", "Chi oggi non ha ancora parlato con ROSS?"],
-  psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?", "Come si sta ambientando Ada?"],
-  direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Come stanno usando ROSS gli ospiti?", "Quali bisogni ricorrono tra gli ospiti?", "Prepara il riepilogo d'équipe del mese"],
+  staff: ["Chi ha bisogno di più attenzione oggi?", "Cosa sta andando bene questa settimana?", "Come posso coinvolgere Elena?", "Di cosa ha bisogno Antonio?"],
+  psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Chi sta meglio del solito questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?"],
+  direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Cosa sta andando bene in struttura?", "Come stanno usando ROSS gli ospiti?", "Prepara il riepilogo d'équipe del mese"],
 };
 
 const src = {
@@ -71,7 +71,7 @@ function residentAnswer({ state, role, resident }) {
   const stats = residentStats(state, resident.id);
   const trend = resident.participation == null
     ? `${name} è con ROSS da ${resident.daysWithRoss} giorni: ROSS la sta ancora conoscendo, la sua media personale si sta formando.`
-    : `Partecipazione ${resident.participation}/10, ${resident.delta >= 0 ? "+" : ""}${resident.delta} rispetto alla sua media. ${stats.week} conversazioni con ROSS questa settimana (${stats.minutes} min).`;
+    : `Partecipazione ${trendOf(resident).label} (${resident.delta >= 0 ? "+" : ""}${resident.delta}). ${stats.week} conversazioni con ROSS questa settimana (${stats.minutes} min).`;
   const r = relating[resident.id];
   return {
     text: byRole(role, {
@@ -80,7 +80,7 @@ function residentAnswer({ state, role, resident }) {
       direzione: `${resident.name}: con ROSS da ${resident.daysWithRoss} giorni. ${trend}`,
     }),
     bullets: [
-      ...own.map((s) => ({ tag: s.positive ? "Benessere" : "Da osservare", text: describeSignal(s, name) })),
+      ...[...own].sort((a, b) => Number(Boolean(b.positive)) - Number(Boolean(a.positive))).map((s) => ({ tag: s.positive ? "Va bene" : "Da osservare", text: describeSignal(s, name) })),
       ...ownNeeds.map((n) => ({ tag: "Bisogno", text: `${n.text}${n.times > 1 ? ` (espresso ${n.times} volte)` : ""}` })),
       ...presence.map((p) => ({ tag: "Presenza", text: p.text })),
     ],
@@ -167,9 +167,32 @@ const intents = [
           direzione: `Oggi ${order.length} ospiti su ${state.residents.length} richiedono più attenzione dallo staff:`,
         }),
         bullets,
-        after: others.length ? `Da prendere in carico anche: ${others.map((n) => `${nameOf(state, n.residentId)} (${n.text.charAt(0).toLowerCase()}${n.text.slice(1)})`).join(", ")}. Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.` : "Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.",
+        after: `${others.length ? `Da prendere in carico anche: ${others.map((n) => `${nameOf(state, n.residentId)} (${n.text.charAt(0).toLowerCase()}${n.text.slice(1)})`).join(", ")}. ` : ""}Da valorizzare: ${groupByResident(signals.filter((s) => s.positive && s.trend === "in aumento"), (id) => nameOf(state, id))}.`,
         residents: order,
         sources: [src.data("Oggi e ultimi 7 giorni · medie personali")],
+      };
+    },
+  },
+  {
+    // Ciò che va bene: ROSS racconta anche i segnali positivi, rispetto alla media di ciascuno.
+    id: "positivi",
+    keywords: ["va bene", "andando bene", "positiv", "meglio", "buone notizie", "buon umore", "buonumore", "serenit", "sorrid"],
+    answer: ({ state, role }) => {
+      const going = signals.filter((s) => s.positive);
+      const liked = facilityVoice.filter((v) => v.tone === "positivo");
+      return {
+        text: byRole(role, {
+          staff: `Questa settimana ${new Set(going.map((s) => s.residentId)).size} ospiti su ${state.residents.length} hanno espresso qualcosa di positivo, rispetto alla propria media:`,
+          psicologa: "Segnali positivi degli ultimi 7 giorni, confrontati con la media di ciascuno:",
+          direzione: `Cosa sta andando bene: ${new Set(going.map((s) => s.residentId)).size} ospiti su ${state.residents.length} con segnali positivi e ${liked.length} temi apprezzati sulla vita in struttura.`,
+        }),
+        bullets: [
+          ...going.map((s) => ({ resident: s.residentId, tag: "Va bene", text: describeSignal(s, nameOf(state, s.residentId)) })),
+          ...liked.map((v) => ({ tag: "Apprezzato", text: `${v.count} ospiti hanno espresso ${v.text} (${v.period}).` })),
+        ],
+        after: "È ciò su cui costruire: un'attività che funziona, un complimento da condividere con lo staff.",
+        residents: [...new Set(going.map((s) => s.residentId))],
+        sources: [src.data("Ultimi 7 giorni · medie personali"), src.data("Ultime 2 settimane · aggregato anonimo")],
       };
     },
   },
