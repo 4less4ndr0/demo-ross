@@ -1,7 +1,7 @@
 # Contratto informativo ROSS → struttura
 
 > Cosa la struttura riceve da ciò che accade nelle conversazioni tra ROSS e l'ospite, in che forma, e cosa non riceve mai.
-> Versione 0.1 · 26 settembre 2026 · bozza da validare con il team
+> Versione 0.2 · 26 settembre 2026 · validata; applicata alla demo (vista Struttura)
 
 ## 1. A cosa serve la vista Struttura
 
@@ -152,9 +152,9 @@ Tutto ciò che la struttura riceve rientra in una di queste cinque famiglie. Son
 4. **Chi vede cosa.** In questa versione tutti i ruoli vedono lo stesso perimetro e il selettore di ruolo cambia solo la profondità. Da decidere se, per esempio, la psicologa debba vedere i segnali con più dettaglio.
 5. **Documenti clinici.** Restano caricabili dalla chat come supporto allo staff. Non sono dati ROSS e non entrano nel report "Come sta".
 
-## 7. Mappa d'impatto sulla demo (fase 2)
+## 7. Mappa d'impatto sulla demo (fase 2, applicata)
 
-Cosa cambia nella vista Struttura per rispettare questo contratto. La vista Famiglia è fuori da questa fase (vedi §6.1).
+Cosa è cambiato nella vista Struttura per rispettare questo contratto. I dati conformi sono in `src/data/careInsights.js`. La vista Famiglia è fuori da questa fase (vedi §6.1): mostra ancora il ricordo di Cefalù e scrive che "la struttura lo sta verificando", ma la struttura non lo verifica più.
 
 | Dove | Oggi | Problema | Diventa |
 |---|---|---|---|

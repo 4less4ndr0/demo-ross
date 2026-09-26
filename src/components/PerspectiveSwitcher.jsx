@@ -23,7 +23,7 @@ export function PerspectiveSwitcher() {
 
   const goTo = (perspective) => {
     if (perspective.id === "structure" && state.rossJourney.candidateId && !state.rossJourney.confirmedAt) {
-      navigate("/ospiti/elena?tab=memorie");
+      navigate("/?q=emerso");
       return;
     }
     navigate(perspective.path);
