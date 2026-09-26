@@ -1,9 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ArrowRight, ChevronDown, Compass, EyeOff, Sparkles } from "lucide-react";
-import { cardinalPoints, facilityVoice, journeyInterest, needs, signals } from "../data/careInsights";
+import { facilityVoice, journeyInterest, needs, signals } from "../data/careInsights";
 import { useDemo } from "../state/DemoContext";
-import { Avatar, InfoTip } from "./Common";
+import { Avatar } from "./Common";
+
+// Guida alla lettura della schermata: raccoglie le spiegazioni che prima erano nei tooltip.
+const readingGuide = [
+  { title: "La chat", text: "Chiedi di un ospite, del turno o di un documento. Ogni risposta cita la fonte: Dati ROSS, Biografia d'ingresso, Documento o Nota operatore. Il ruolo con cui chiedi si cambia dal tuo profilo, in basso.", question: "Come sta Lucia?" },
+  { title: "Da osservare", text: "Segnali espressi dall'ospite negli ultimi 7 giorni (stanchezza, solitudine, fastidio…), confrontati con la sua media personale. Mai l'argomento o il motivo: il giudizio resta a voi.", question: "Chi ha espresso segnali da osservare questa settimana?" },
+  { title: "Bisogni espressi", text: "Ciò che l'ospite ha chiesto per sé (uscire, sentire un familiare, sente freddo…), senza il contesto della conversazione.", question: "Quali bisogni hanno espresso gli ospiti?" },
+  { title: "Voce della struttura", text: "Opinioni sulla vita in struttura (pasti, rumore, attività), anonime e aggregate: un tema compare solo se lo esprimono almeno 3 ospiti.", question: "Cosa dicono gli ospiti della vita in struttura?" },
+  { title: "Ingaggio con ROSS", text: "Quanto ogni ospite partecipa alle conversazioni rispetto alla propria media degli ultimi 14 giorni: + sopra la sua media, − sotto. «In costruzione» per chi è arrivato da poco.", question: "Come stanno usando ROSS gli ospiti?" },
+  { title: "Ospiti e Report", text: "Dalle schede in alto: la cartella di ogni ospite (come coinvolgerlo, interessi, documenti) e il report «Come sta», stampabile per l'équipe." },
+];
 
 // Insight aggregati nella sidebar della chat (docs/contratto-informativo-struttura.md).
 // Ogni voce fa una domanda alla chat tramite l'evento "ross:ask".
@@ -28,7 +38,7 @@ export function InsightRail({ onDone }) {
       <AccordionPrimitive.Root type="multiple" className="rail-accordion">
         <AccordionPrimitive.Item value="osservare" className="rail-item">
           <AccordionPrimitive.Header className="rail-item-head">
-            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Da osservare</span><small className="rail-count">{toWatch.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger><InfoTip label="Come si legge" text="Segnali espressi questa settimana (ultimi 7 giorni), confrontati con la media della persona. Mai l'argomento o il motivo." />
+            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Da osservare</span><small className="rail-count">{toWatch.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
         {toWatch.map((s) => { const r = byId(s.residentId); return <button key={s.residentId} className="ask-engage" onClick={() => onAsk(`Come sta ${r.name.split(" ")[0]}?`)}>
@@ -38,7 +48,7 @@ export function InsightRail({ onDone }) {
         </AccordionPrimitive.Item>
         <AccordionPrimitive.Item value="bisogni" className="rail-item">
           <AccordionPrimitive.Header className="rail-item-head">
-            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Bisogni espressi</span><small className="rail-count">{needs.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger><InfoTip label="Per ospite" text="Bisogni che l'ospite ha espresso per sé, senza il contesto della conversazione." />
+            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Bisogni espressi</span><small className="rail-count">{needs.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
         {needs.map((n) => { const r = byId(n.residentId); return <button key={n.residentId + n.text} className="ask-noticed" onClick={() => onAsk(`Quali bisogni ha espresso ${r.name.split(" ")[0]}?`)}>
@@ -48,7 +58,7 @@ export function InsightRail({ onDone }) {
         </AccordionPrimitive.Item>
         <AccordionPrimitive.Item value="voce" className="rail-item">
           <AccordionPrimitive.Header className="rail-item-head">
-            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Voce della struttura</span><small className="rail-count">{facilityVoice.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger><InfoTip label="Anonima" text="Opinioni sulla vita in struttura, aggregate e anonime: un tema compare solo se lo esprimono almeno 3 ospiti." />
+            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Voce della struttura</span><small className="rail-count">{facilityVoice.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
         {facilityVoice.map((v) => <button key={v.topic} className="ask-noticed" onClick={() => onAsk("Cosa dicono gli ospiti della vita in struttura?")}>
@@ -58,7 +68,7 @@ export function InsightRail({ onDone }) {
         </AccordionPrimitive.Item>
         <AccordionPrimitive.Item value="ingaggio" className="rail-item">
           <AccordionPrimitive.Header className="rail-item-head">
-            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Ingaggio con ROSS</span><small className="rail-count">{state.residents.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger><InfoTip label="Rispetto a cosa?" text="Ogni ospite è confrontato solo con la propria media degli ultimi 14 giorni." />
+            <AccordionPrimitive.Trigger className="rail-item-trigger"><span>Ingaggio con ROSS</span><small className="rail-count">{state.residents.length}</small><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
         {engagement.map((r) => <button key={r.id} className="ask-engage" onClick={() => onAsk(`Come sta ${r.name.split(" ")[0]}?`)}>
@@ -72,7 +82,8 @@ export function InsightRail({ onDone }) {
             <AccordionPrimitive.Trigger className="rail-item-trigger"><span className="compass-title"><span className="leaf-mark"><Compass size={14} /></span>Cosa ti dice ROSS</span><ChevronDown size={16} className="rail-chevron" /></AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="rail-item-content"><div className="rail-item-body">
-        {cardinalPoints.map((p) => <button key={p.id} onClick={() => onAsk(p.question)} title={p.hint}><span>{p.label}</span><ArrowRight size={13} /></button>)}
+        <p className="guide-intro">Come leggere questa schermata. ROSS ti dice come stanno gli ospiti e di cosa hanno bisogno.</p>
+        {readingGuide.map((g) => <div className="guide-entry" key={g.title}><strong>{g.title}</strong><span>{g.text}</span>{g.question && <button onClick={() => onAsk(g.question)}>Prova: «{g.question}» <ArrowRight size={12} /></button>}</div>)}
         <p><EyeOff size={13} /> Mai il contenuto delle conversazioni</p>
         <button className="compass-more" onClick={() => go("/impostazioni#privacy")}>Come proteggiamo gli ospiti</button>
           </div></AccordionPrimitive.Content>
