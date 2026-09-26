@@ -5,6 +5,7 @@ import { useDemo } from "../state/DemoContext";
 import { attentionFor, attentionScore, presenceFor, relating, signalsFor, trendOf } from "../data/careInsights";
 import { Button, Select } from "../components/ui";
 import { Avatar, EmptyState, ModeBadge, SectionTitle } from "../components/Common";
+import { PageGuide, residentsGuide } from "../components/PageGuide";
 
 function Trend({ resident }) {
   if (resident.participation == null) return <span className="trend-pill">Baseline in costruzione</span>;
@@ -24,6 +25,7 @@ export function Residents() {
     .sort((a, b) => attentionScore(b.resident.id) - attentionScore(a.resident.id)), [state.residents, query, mode]);
   return <div className="screen-enter">
     <SectionTitle eyebrow="Persone" title="Ospiti" description="Come sta ogni persona e come avvicinarla. Prima chi ha bisogno di più attenzione. L'anagrafica resta nel gestionale della struttura." action={<Button variant="outline" onClick={() => navigate("/")}><Sparkles size={16} /> Chiedi a ROSS</Button>} />
+    <PageGuide {...residentsGuide} />
     <div className="filter-bar"><label><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cerca nome, stanza o interesse" /></label><div><Filter size={16} /><Select value={mode} onValueChange={setMode} label="Modalità" options={["Tutte", "Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: v === "Tutte" ? "Tutte le modalità" : v }))} /></div></div>
     {!filtered.length ? <EmptyState /> : <div className="residents-grid">{filtered.map(({ resident, attention }) => {
       const positive = signalsFor(resident.id).find((s) => s.positive);
