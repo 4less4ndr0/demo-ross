@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ChevronsUpDown, FileText, Menu, MessageCircle, Play, RotateCcw, Settings, Users } from "lucide-react";
 import { roleFor, roles } from "../data/chatScript";
 import { InsightRail } from "./InsightRail";
+import { reportsGuide, residentsGuide, SidebarGuide } from "./PageGuide";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, Sheet } from "./ui";
 import { useDemo } from "../state/DemoContext";
 
@@ -29,6 +30,9 @@ export function Layout() {
   }, [navigate]);
 
   const isChat = location.pathname === "/";
+  // Ospiti e Report: la sidebar resta larga con lo specchietto "Cosa ti dice ROSS" della pagina.
+  const guide = location.pathname === "/ospiti" ? residentsGuide : location.pathname === "/report" ? reportsGuide : null;
+  const wide = isChat || Boolean(guide);
   const role = roleFor(state.role);
   const closeMenu = () => setMenuOpen(false);
 
@@ -36,6 +40,7 @@ export function Layout() {
     <>
       <div className="brand" title="Residenza Aurora · Lunedì, 21 settembre 2026"><span className="brand-mark">R</span><div className="brand-text"><strong>R.O.S.S.</strong><span className="brand-place">Residenza Aurora</span><span className="brand-date">Lunedì, 21 settembre 2026</span></div></div>
       {isChat && <div className="sidebar-insights"><InsightRail onDone={closeMenu} /></div>}
+      {guide && <div className="sidebar-insights"><SidebarGuide key={guide.id} {...guide} onDone={closeMenu} /></div>}
       <div className="sidebar-bottom">
         <NavLink to="/impostazioni" onClick={closeMenu} title="Impostazioni"><Settings size={18} /><span>Impostazioni</span></NavLink>
         <DropdownMenu>
@@ -55,7 +60,7 @@ export function Layout() {
   );
 
   return (
-    <div className={`app-shell ${isChat ? "shell-chat" : "shell-slim"}`}>
+    <div className={`app-shell ${wide ? "shell-chat" : "shell-slim"}`}>
       <aside className="sidebar">{sidebar}</aside>
       <Sheet open={menuOpen} onOpenChange={setMenuOpen} side="left" title="Menu" className="sidebar-sheet">{sidebar}</Sheet>
       <div className="app-main">
