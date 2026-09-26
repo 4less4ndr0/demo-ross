@@ -12,7 +12,7 @@ const readingGuide = [
   { title: "Bisogni espressi", text: "Ciò che l'ospite ha chiesto per sé (uscire, sentire un familiare, sente freddo…), senza il contesto della conversazione.", question: "Quali bisogni hanno espresso gli ospiti?" },
   { title: "Voce della struttura", text: "Opinioni sulla vita in struttura (pasti, rumore, attività), anonime e aggregate: un tema compare solo se lo esprimono almeno 3 ospiti.", question: "Cosa dicono gli ospiti della vita in struttura?" },
   { title: "Ingaggio con ROSS", text: "Quanto ogni ospite partecipa alle conversazioni rispetto alla propria media degli ultimi 14 giorni: + sopra la sua media, − sotto. «In costruzione» per chi è arrivato da poco.", question: "Come stanno usando ROSS gli ospiti?" },
-  { title: "Ospiti e Report", text: "Dalle schede in alto: la cartella di ogni ospite (come coinvolgerlo, interessi, documenti) e il report «Come sta», stampabile per l'équipe." },
+  { title: "Ospiti e Report", text: "Dalle schede in alto: la cartella di ogni ospite (come sta, come avvicinarsi, conversazioni, documenti) e i report stampabili: il Riepilogo d'équipe sulla situazione della struttura e il «Come sta» del singolo ospite." },
 ];
 
 // Insight aggregati nella sidebar della chat (docs/contratto-informativo-struttura.md).

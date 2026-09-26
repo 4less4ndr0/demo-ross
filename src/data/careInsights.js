@@ -31,10 +31,10 @@ export const needs = [
 
 // Voce della struttura: solo aggregata e anonima, almeno 3 ospiti.
 export const facilityVoice = [
-  { topic: "Rumore notturno", text: "fastidio per il rumore notturno", count: 4, period: "ultime 2 settimane", tone: "negativo" },
-  { topic: "Attività musicali", text: "apprezzamento per le attività musicali del pomeriggio", count: 6, period: "ultime 2 settimane", tone: "positivo" },
-  { topic: "Pasti", text: "desiderio di più varietà nei pasti serali", count: 3, period: "ultime 2 settimane", tone: "neutro" },
-  { topic: "Spazi esterni", text: "desiderio di passare più tempo all'aperto", count: 5, period: "ultime 2 settimane", tone: "neutro" },
+  { topic: "Rumore notturno", text: "fastidio per il rumore notturno", count: 4, period: "ultime 2 settimane", tone: "negativo", action: "Valutarlo con il personale notturno" },
+  { topic: "Attività musicali", text: "apprezzamento per le attività musicali del pomeriggio", count: 6, period: "ultime 2 settimane", tone: "positivo", action: "Da mantenere, magari con un appuntamento in più" },
+  { topic: "Pasti", text: "desiderio di più varietà nei pasti serali", count: 3, period: "ultime 2 settimane", tone: "neutro", action: "Proporlo alla cucina" },
+  { topic: "Spazi esterni", text: "desiderio di passare più tempo all'aperto", count: 5, period: "ultime 2 settimane", tone: "neutro", action: "Più uscite in giardino quando il tempo lo permette" },
 ];
 
 // Come relazionarsi: indicazioni pratiche. Interessi solo per categoria, con la fonte.
@@ -153,6 +153,30 @@ export const presenceNotes = [
 export const signalsFor = (id) => signals.filter((s) => s.residentId === id);
 export const needsFor = (id) => needs.filter((n) => n.residentId === id);
 export const presenceFor = (id) => presenceNotes.filter((p) => p.residentId === id);
+
+// Motivi di attenzione per ospite, in ordine: presenza insolita, segnali da osservare, bisogni.
+export function attentionFor(residentId) {
+  return [
+    ...presenceFor(residentId).map((p) => ({ tone: "watch", text: p.kind === "assenza" ? "Oggi non ha ancora parlato con ROSS" : "Momenti di difficoltà" })),
+    ...signalsFor(residentId).filter((s) => !s.positive).map((s) => ({ tone: "watch", text: `${s.signal.charAt(0).toUpperCase()}${s.signal.slice(1)} · ${s.trend}` })),
+    ...needsFor(residentId).map((n) => ({ tone: "need", text: n.text })),
+  ];
+}
+
+// Prima l'assenza insolita di oggi, poi i segnali da osservare, poi i bisogni.
+export function attentionScore(residentId) {
+  const attention = attentionFor(residentId);
+  return (presenceFor(residentId).some((p) => p.kind === "assenza") ? 10 : 0) + attention.filter((x) => x.tone === "watch").length * 2 + attention.length;
+}
+export const byAttention = (residents) => [...residents].sort((a, b) => attentionScore(b.id) - attentionScore(a.id));
+
+// Partecipazione rispetto alla media della persona: mai valori assoluti, mai confronti tra ospiti.
+export function trendOf(resident) {
+  if (resident.participation == null) return { tone: "building", label: "baseline in costruzione" };
+  if (resident.delta >= 0.3) return { tone: "up", label: "sopra la sua media" };
+  if (resident.delta <= -0.3) return { tone: "down", label: "sotto la sua media" };
+  return { tone: "flat", label: "in linea con la sua media" };
+}
 
 // Interesse emerso dalla conversazione con ROSS nella vista demo (al posto del ricordo specifico).
 export const journeyInterest = { residentId: "elena", label: "Fotografia", how: "Funziona come avvio di conversazione: proporle di guardare insieme delle fotografie." };

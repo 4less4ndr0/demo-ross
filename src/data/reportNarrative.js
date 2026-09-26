@@ -1,5 +1,5 @@
 import { DEMO_TODAY } from "./demoData";
-import { approachGuide, journeyInterest, needsFor, presenceFor, relating, signalsFor } from "./careInsights";
+import { approachGuide, byAttention, facilityVoice, hooksFor, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor, trendOf } from "./careInsights";
 
 // Report "Come sta" per l'équipe (docs/contratto-informativo-struttura.md):
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato. Nessuna citazione, nessun argomento.
@@ -59,8 +59,7 @@ export function buildResidentReport(state, resident, period) {
       [interactions.length, "conversazioni con ROSS"],
       [`${minutes} min`, "tempo insieme"],
       [interactions.length ? `${Math.round(minutes / interactions.length)} min` : "—", "durata media"],
-      [building ? "—" : `${resident.participation.toFixed(1)}/10`, "partecipazione"],
-      [building ? "in costruzione" : `${resident.delta >= 0 ? "+" : ""}${resident.delta.toFixed(1)}`, "vs sua media"],
+      [trendOf(resident).label, "partecipazione"],
       [r ? r.bestTime : "—", "momento migliore"],
     ],
     signals: signalsFor(resident.id),
@@ -68,6 +67,15 @@ export function buildResidentReport(state, resident, period) {
     presenceNotes: presenceFor(resident.id),
     relating: r,
     firstStep: approachGuide[resident.id]?.firstSteps[0] || null,
+    firstSteps: approachGuide[resident.id]?.firstSteps || [],
+    hooks: hooksFor(resident.id, { withJourney: Boolean(state.rossJourney.completedAt) }).slice(0, 2),
+    trend: trendOf(resident),
+    // Da osservare in équipe: ROSS segnala, lo staff osserva e decide.
+    checklist: [
+      ...presenceFor(resident.id).map((p) => p.kind === "assenza" ? "Oggi non ha ancora parlato con ROSS: passare a salutarlo" : "Momenti di difficoltà in conversazione: osservare se succede anche nelle attività"),
+      ...signalsFor(resident.id).filter((x) => !x.positive).map((x) => `${x.signal.charAt(0).toUpperCase()}${x.signal.slice(1)} (${x.trend}): osservare di persona nei prossimi giorni`),
+      ...needsFor(resident.id).map((n) => `${n.text}: chi se ne occupa?`),
+    ],
     newInterest: newInterest ? journeyInterest : null,
     next: profile.next,
     series: seriesFor(resident, Number(period)),
@@ -77,4 +85,65 @@ export function buildResidentReport(state, resident, period) {
 
 export function reportSummary(state, resident) {
   return buildResidentReport(state, resident, "30").headline;
+}
+
+// Riepilogo d'équipe: la situazione della struttura sui cinque punti cardinali.
+const weekdays = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
+const bands = [["9–11", 9, 11], ["11–13", 11, 13], ["13–15", 13, 15], ["15–18", 15, 18]];
+const lower = (text) => `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
+
+export function buildTeamReport(state, period) {
+  const from = cutoff(period);
+  const residents = state.residents;
+  const nameOf = (id) => residents.find((r) => r.id === id)?.name.split(" ")[0] || "Ospite";
+  const interactions = state.interactions.filter((i) => i.date >= from && i.date <= DEMO_TODAY);
+  const minutes = interactions.reduce((sum, i) => sum + i.duration, 0);
+  const talked = new Set(interactions.map((i) => i.residentId)).size;
+  const toWatch = residents.filter((r) => signalsFor(r.id).some((x) => !x.positive) || presenceFor(r.id).length);
+  const serene = signals.filter((x) => x.positive);
+  const emerged = residents.reduce((sum, r) => sum + (relating[r.id]?.interests.filter(([, source]) => source === "Emerso con ROSS").length || 0), 0) + (state.rossJourney.completedAt ? 1 : 0);
+  const voice = [...facilityVoice].sort((a, b) => b.count - a.count);
+  const topPositive = voice.find((v) => v.tone === "positivo");
+  const topNegative = voice.find((v) => v.tone === "negativo");
+
+  const distribution = ["up", "flat", "down", "building"].map((tone) => ({ tone, label: { up: "Sopra la propria media", flat: "In linea", down: "Sotto la propria media", building: "Baseline in costruzione" }[tone], count: residents.filter((r) => trendOf(r).tone === tone).length }));
+  const signalTypes = Object.values(signals.reduce((acc, x) => { const key = x.signal; acc[key] = acc[key] || { signal: key, positive: Boolean(x.positive), count: 0 }; acc[key].count += 1; return acc; }, {})).sort((a, b) => Number(a.positive) - Number(b.positive) || b.count - a.count);
+
+  const days = Array.from({ length: Number(period) }, (_, index) => {
+    const date = new Date(`${DEMO_TODAY}T10:00:00`);
+    date.setDate(date.getDate() - (Number(period) - 1 - index));
+    const iso = date.toISOString().slice(0, 10);
+    return { date: iso.slice(5, 10), minutes: interactions.filter((i) => i.date === iso).reduce((sum, i) => sum + i.duration, 0) };
+  });
+  const heatmap = [1, 2, 3, 4, 5, 6, 0].map((day) => ({ day: weekdays[day], cells: bands.map(([label, start, end]) => ({ label, count: interactions.filter((i) => new Date(`${i.date}T12:00:00`).getDay() === day && Number(i.time.slice(0, 2)) >= start && Number(i.time.slice(0, 2)) < end).length })) }));
+
+  const rows = byAttention(residents).map((r) => ({
+    resident: r,
+    headline: (profiles[r.id] || fallback).headline,
+    trend: trendOf(r),
+    watch: [...presenceFor(r.id).map((p) => p.kind === "assenza" ? "Oggi non ha ancora parlato con ROSS" : "Momenti di difficoltà"), ...signalsFor(r.id).filter((x) => !x.positive).map((x) => `${x.signal} · ${x.trend}`)],
+    positive: signalsFor(r.id).filter((x) => x.positive).map((x) => `${x.signal} · ${x.trend}`),
+    need: needsFor(r.id)[0]?.text || null,
+    next: (profiles[r.id] || fallback).next,
+  }));
+
+  // Punti per la riunione: assenza insolita, tema della voce da migliorare, bisogni ricorrenti, segnali da osservare.
+  const discuss = [
+    ...presenceNotes.filter((p) => p.kind === "assenza").map((p) => `${nameOf(p.residentId)}: ${lower(p.text)} Chi passa a salutarlo?`),
+    ...(topNegative ? [`${topNegative.topic} (${topNegative.count} ospiti): ${lower(topNegative.action)}.`] : []),
+    ...[...needs].sort((a, b) => b.times - a.times).filter((n) => n.times > 1).slice(0, 2).map((n) => `${nameOf(n.residentId)}: ${lower(n.text)} (espresso ${n.times} volte). Chi se ne occupa?`),
+    `${toWatch.length} ospiti con segnali da osservare: confrontare in équipe ciò che si nota di persona.`,
+  ];
+
+  return {
+    summary: `Negli ultimi ${period} giorni ${talked} ospiti su ${residents.length} hanno parlato con ROSS, per ${minutes} minuti complessivi. Questa settimana ${toWatch.length} ospiti hanno espresso segnali da osservare o hanno avuto un'assenza insolita; ${serene.length} hanno espresso serenità.${topPositive && topNegative ? ` Sulla vita in struttura, i temi più sentiti sono ${topPositive.text} (${topPositive.count} ospiti) e ${topNegative.text} (${topNegative.count}).` : ""}`,
+    kpis: [
+      [`${talked}/${residents.length}`, "ospiti con ROSS"],
+      [`${minutes} min`, "tempo con ROSS"],
+      [toWatch.length, "da osservare"],
+      [needs.length, "bisogni da prendere in carico"],
+      [emerged, "interessi emersi con ROSS"],
+    ],
+    distribution, signalTypes, voice, rows, days, heatmap, discuss,
+  };
 }

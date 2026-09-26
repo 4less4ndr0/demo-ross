@@ -19,7 +19,7 @@ export const roleFor = (id) => roles.find((r) => r.id === (legacyRoles[id] || id
 export const suggestions = {
   staff: ["Chi ha bisogno di più attenzione oggi?", "Di cosa ha bisogno Antonio?", "Come posso coinvolgere Elena?", "Chi oggi non ha ancora parlato con ROSS?"],
   psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?", "Come si sta ambientando Ada?"],
-  direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Come stanno usando ROSS gli ospiti?", "Quali bisogni ricorrono tra gli ospiti?", "Prepara il report di struttura del mese"],
+  direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Come stanno usando ROSS gli ospiti?", "Quali bisogni ricorrono tra gli ospiti?", "Prepara il riepilogo d'équipe del mese"],
 };
 
 const src = {
@@ -121,16 +121,16 @@ const intents = [
   },
   {
     id: "report",
-    keywords: ["report", "stampa", "resoconto"],
+    keywords: ["report", "stampa", "resoconto", "riepilogo"],
     answer: ({ state, resident, q }) => {
-      if (!resident && q.includes("struttura")) {
+      if (!resident && (q.includes("struttura") || q.includes("riepilogo") || q.includes("equipe"))) {
         const week = state.interactions.filter((i) => i.date >= "2026-09-15");
         return {
-          text: `Il report di struttura è pronto: uso di ROSS, benessere aggregato e voce degli ospiti. Negli ultimi 7 giorni ${new Set(week.map((i) => i.residentId)).size} ospiti su ${state.residents.length} hanno parlato con ROSS; ${facilityVoice.length} temi sulla vita in struttura espressi da almeno 3 ospiti.`,
+          text: `Il riepilogo d'équipe è pronto: benessere, voce degli ospiti, bisogni e presenza. Negli ultimi 7 giorni ${new Set(week.map((i) => i.residentId)).size} ospiti su ${state.residents.length} hanno parlato con ROSS; ${facilityVoice.length} temi sulla vita in struttura espressi da almeno 3 ospiti.`,
           bullets: facilityVoice.map((v) => ({ tag: v.tone === "positivo" ? "Apprezzato" : v.tone === "negativo" ? "Da migliorare" : "Richiesta", text: `${v.topic}: ${v.count} ospiti` })),
           residents: [],
           sources: [src.data("Ultimi 7 giorni"), src.data("Ultime 2 settimane · aggregato anonimo")],
-          action: { label: "Apri il report di struttura", to: "/report?ambito=struttura" },
+          action: { label: "Apri il riepilogo d'équipe", to: "/report" },
         };
       }
       const target = resident || state.residents[0];
@@ -221,7 +221,7 @@ const intents = [
       after: "Nessun nome né stanza: i temi compaiono solo quando li esprimono almeno 3 ospiti.",
       residents: [],
       sources: [src.data("Ultime 2 settimane · aggregato anonimo")],
-      action: { label: "Apri il report di struttura", to: "/report?ambito=struttura" },
+      action: { label: "Apri il riepilogo d'équipe", to: "/report" },
     }),
   },
   {
@@ -276,7 +276,7 @@ const intents = [
         bullets: presenceNotes.map((p) => ({ resident: p.residentId, tag: p.kind === "assenza" ? "Assenza insolita" : "Momenti di difficoltà", text: `${nameOf(state, p.residentId)}: ${p.text}` })),
         residents: presenceNotes.map((p) => p.residentId),
         sources: [src.data("Ultimi 7 giorni")],
-        action: { label: "Apri il report di struttura", to: "/report?ambito=struttura" },
+        action: { label: "Apri il riepilogo d'équipe", to: "/report" },
       };
     },
   },
