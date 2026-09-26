@@ -1,4 +1,5 @@
 import { DEMO_TODAY, handoverEntries } from "./demoData";
+import { buildResidentReport } from "./reportNarrative";
 
 export const roles = [
   { id: "operatore", label: "Operatore", hint: "Contesto rapido prima di entrare in stanza" },
@@ -9,7 +10,7 @@ export const roles = [
 
 export const suggestions = {
   operatore: ["Riassumimi il turno", "Cosa devo sapere su Elena prima di entrare?", "Chi oggi ha parlato meno del solito?", "Di cosa posso parlare con Carlo?"],
-  coordinatrice: ["Chi ha bisogno di attenzione questa settimana?", "Quali ricordi sono da verificare?", "Riassumimi il turno", "Come si sta ambientando Ada?"],
+  coordinatrice: ["Chi ha bisogno di attenzione questa settimana?", "Quali ricordi sono da verificare?", "Riassumimi il turno", "Stampa il report di Elena"],
   psicologa: ["Quali temi ricorrono nelle conversazioni di Elena?", "Carlo si sta chiudendo?", "Cosa raccontano gli ospiti della famiglia?", "Cosa dice la fisioterapia di Elena?"],
   direzione: ["Come stanno usando ROSS gli ospiti?", "Cosa posso raccontare alle famiglie?", "Chi non ha ancora una baseline?", "Riassumimi il turno"],
 };
@@ -42,6 +43,20 @@ function residentStats(state, residentId) {
 }
 
 const intents = [
+  {
+    id: "report",
+    keywords: ["report", "stampa", "relazione su", "resoconto"],
+    answer: ({ state, resident }) => {
+      const target = resident || state.residents[0];
+      const report = buildResidentReport(state, target, "30");
+      return {
+        text: `Il report narrativo di ${firstName(target)} (ultimi 30 giorni) è pronto per l'équipe. In sintesi: ${report.headline.charAt(0).toLowerCase()}${report.headline.slice(1)}`,
+        residents: [target.id],
+        sources: [src.conv("Ultimi 30 giorni"), src.data("Baseline personale")],
+        action: { label: `Apri e stampa il report di ${firstName(target)}`, to: `/report?ospite=${target.id}&stampa=1` },
+      };
+    },
+  },
   {
     id: "emerso",
     keywords: ["emers", "novita", "nuovo ricordo", "macchina fotografica", "oggi con elena"],

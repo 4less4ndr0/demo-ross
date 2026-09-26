@@ -5,6 +5,7 @@ import { DemoProvider } from "./state/DemoContext";
 import { Layout } from "./components/Layout";
 import { PerspectiveSwitcher } from "./components/PerspectiveSwitcher";
 import { useDemo } from "./state/DemoContext";
+import { Toaster } from "./components/ui";
 
 const load = (module, name) => lazy(() => module().then((exports) => ({ default: exports[name] })));
 const AskRoss = load(() => import("./pages/AskRoss"), "AskRoss");
@@ -24,7 +25,9 @@ const RossConversation = load(() => import("./pages/RossExperience"), "RossConve
 
 function GlobalChrome() {
   const { toast } = useDemo();
-  return <><PerspectiveSwitcher />{toast && <div className={`toast toast-${toast.tone}`}><ClipboardCheck size={18} />{toast.message}</div>}</>;
+  const { pathname } = useLocation();
+  const legacyView = pathname.startsWith("/famiglia") || pathname.startsWith("/ross");
+  return <><PerspectiveSwitcher />{legacyView ? toast && <div className={`toast toast-${toast.tone}`}><ClipboardCheck size={18} />{toast.message}</div> : <Toaster />}</>;
 }
 
 function ScrollToTop() {

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Activity, AudioLines, BookOpen, Check, ChevronDown, Gauge, MessageSquareText, Minimize2, Pause, Play, Square, X } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
-import { Modal } from "../components/Common";
+import { Dialog as Modal, Select } from "../components/ui";
 
 export function LiveInteraction() {
   const { id } = useParams();
@@ -35,7 +35,7 @@ export function LiveInteraction() {
       </section>
       <aside className="interaction-context">
         <section><span className="eyebrow">CONTESTO IN USO</span><h3>Memorie utilizzate</h3>{["Palermo", "Viaggio del 1998", "Paolo", "Fotografia"].map((m) => <div className="context-memory" key={m}><span><BookOpen size={14} /></span><strong>{m}</strong><small>Confermata</small></div>)}</section>
-        <section><span className="eyebrow">STILE INTERAZIONE</span>{Object.entries(style).map(([key, value]) => <label key={key}><span>{({ speed: "Velocità", phrases: "Frasi", initiative: "Iniziativa ROSS", pauses: "Pause" })[key]}</span><select value={value} onChange={(e) => setStyle({ ...style, [key]: e.target.value })}>{key === "speed" ? <><option>Lenta</option><option>Normale</option></> : key === "phrases" ? <><option>Brevi</option><option>Normali</option></> : key === "initiative" ? <><option>Bassa</option><option>Media</option><option>Alta</option></> : <><option>Brevi</option><option>Lunghe</option></>}</select></label>)}</section>
+        <section><span className="eyebrow">STILE INTERAZIONE</span>{Object.entries(style).map(([key, value]) => <label key={key}><span>{({ speed: "Velocità", phrases: "Frasi", initiative: "Iniziativa ROSS", pauses: "Pause" })[key]}</span><Select value={value} onValueChange={(next) => setStyle({ ...style, [key]: next })} label={key} options={{ speed: ["Lenta", "Normale"], phrases: ["Brevi", "Normali"], initiative: ["Bassa", "Media", "Alta"], pauses: ["Brevi", "Lunghe"] }[key]} /></label>)}</section>
         <div className="adaptive-note"><Gauge size={18} /><div><strong>Adattamento in corso</strong><p>ROSS sta mantenendo pause più lunghe e un solo stimolo alla volta.</p></div></div>
       </aside>
     </main>

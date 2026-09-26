@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { toast as sonner } from "sonner";
 import { biography as initialBiography, documents as initialDocuments, interactions as initialInteractions, memories as initialMemories, modeSchedule as initialSchedule, residents as initialResidents } from "../data/demoData";
 import { asset } from "../asset.js";
 
@@ -85,6 +86,8 @@ function getInitialState() {
 export function DemoProvider({ children }) {
   const [state, setState] = useState(getInitialState);
   const [toast, setToast] = useState(null);
+  const stateRef = useRef(state);
+  stateRef.current = state;
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -92,9 +95,14 @@ export function DemoProvider({ children }) {
     document.documentElement.dataset.presentation = state.presentation ? "true" : "false";
   }, [state]);
 
-  const notify = (message, tone = "success") => {
+  const notify = (message, tone = "success", options = {}) => {
     setToast({ message, tone });
     window.setTimeout(() => setToast(null), 3200);
+    const snapshot = options.undo ? stateRef.current : null;
+    sonner(message, {
+      description: options.description,
+      action: snapshot ? { label: "Annulla", onClick: () => { setState(snapshot); sonner("Modifica annullata"); } } : undefined,
+    });
   };
 
   const actions = useMemo(() => ({
@@ -102,7 +110,7 @@ export function DemoProvider({ children }) {
     togglePresentation: () => setState((prev) => ({ ...prev, presentation: !prev.presentation })),
     setResidentMode: (residentId, mode) => {
       setState((prev) => ({ ...prev, residents: prev.residents.map((r) => r.id === residentId ? { ...r, mode, status: mode === "Silenziosa" || mode === "Riposo" ? "Riposo" : "Disponibile" } : r) }));
-      notify(`Modalità ${mode.toLowerCase()} attivata`);
+      notify(`Modalità ${mode.toLowerCase()} attivata`, "success", { undo: true });
     },
     updateSchedule: (index, patch) => setState((prev) => ({ ...prev, schedule: prev.schedule.map((item, i) => i === index ? { ...item, ...patch } : item) })),
     confirmMemory: (memory) => {
@@ -135,23 +143,23 @@ export function DemoProvider({ children }) {
           rossJourney: isRossCandidate ? { ...prev.rossJourney, confirmedAt: new Date().toISOString() } : prev.rossJourney,
         };
       });
-      notify("Memoria confermata e collegata al profilo");
+      notify("Memoria confermata e collegata al profilo", "success", { undo: true });
     },
     archiveMemory: (id) => {
       setState((prev) => ({ ...prev, memories: prev.memories.filter((m) => m.id !== id) }));
-      notify("Memoria archiviata", "neutral");
+      notify("Memoria archiviata", "neutral", { undo: true });
     },
     addMemory: (memory) => {
       setState((prev) => ({ ...prev, memories: [{ id: `manual-${Date.now()}`, residentId: "elena", category: "Ricordi", status: "Da verificare", confidence: 60, lastUsed: "Mai", tags: [], people: [], ...memory }, ...prev.memories] }));
-      notify("Nuova memoria aggiunta alla verifica");
+      notify("Nuova memoria aggiunta alla verifica", "success", { undo: true });
     },
     updateMemory: (id, patch) => {
       setState((prev) => ({ ...prev, memories: prev.memories.map((memory) => memory.id === id ? { ...memory, ...patch } : memory) }));
-      notify("Memoria aggiornata");
+      notify("Memoria aggiornata", "success", { undo: true });
     },
     addBiographyEvent: (event) => {
       setState((prev) => ({ ...prev, biography: [...prev.biography, event].sort((a, b) => a.year.localeCompare(b.year)) }));
-      notify("Evento aggiunto alla storia");
+      notify("Evento aggiunto alla storia", "success", { undo: true });
     },
     completeInteraction: (interaction) => {
       setState((prev) => ({ ...prev, interactions: [{ id: `local-${Date.now()}`, date: "2026-09-21", ...interaction }, ...prev.interactions] }));
@@ -241,11 +249,11 @@ export function DemoProvider({ children }) {
     setRole: (role) => setState((prev) => ({ ...prev, role })),
     addDocument: (document) => {
       setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Caricato da Giulia Serra", pages: 1, ...document }, ...prev.documents] }));
-      notify("Documento aggiunto alla cartella");
+      notify("Documento aggiunto alla cartella", "success", { undo: true });
     },
     takeInsight: (id) => {
       setState((prev) => ({ ...prev, takenInsights: [...new Set([...prev.takenInsights, id])] }));
-      notify("Elemento preso in carico");
+      notify("Elemento preso in carico", "success", { undo: true });
     },
     reset: () => {
       localStorage.removeItem(STORAGE_KEY);
