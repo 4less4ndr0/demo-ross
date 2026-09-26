@@ -59,7 +59,7 @@ function defaultState() {
     familyContributions: initialFamilyContributions,
     scheduledActivities: initialScheduledActivities,
     rossJourney: initialRossJourney,
-    role: "coordinatrice",
+    role: "staff",
     documents: initialDocuments,
   };
 }
@@ -77,6 +77,7 @@ function getInitialState() {
         familyContributions: parsed.familyContributions || initialFamilyContributions,
         scheduledActivities: parsed.scheduledActivities || initialScheduledActivities,
         rossJourney: { ...initialRossJourney, ...(parsed.rossJourney || {}) },
+        role: ["operatore", "coordinatrice"].includes(parsed.role) ? "staff" : parsed.role || defaults.role,
       };
     }
   } catch { /* localStorage can be unavailable in private contexts */ }
@@ -248,7 +249,7 @@ export function DemoProvider({ children }) {
     },
     setRole: (role) => setState((prev) => ({ ...prev, role })),
     addDocument: (document) => {
-      setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Caricato da Giulia Serra", pages: 1, ...document }, ...prev.documents] }));
+      setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Caricato dallo staff", pages: 1, ...document }, ...prev.documents] }));
       notify("Documento aggiunto alla cartella", "success", { undo: true });
     },
     takeInsight: (id) => {

@@ -1,22 +1,25 @@
-import { DEMO_TODAY, handoverEntries } from "./demoData";
+import { DEMO_TODAY } from "./demoData";
 import { buildResidentReport } from "./reportNarrative";
 import { describeSignal, facilityVoice, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
 
 // Risposte della chat secondo docs/contratto-informativo-struttura.md:
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato.
 
+// Tre stakeholder. Lo staff in prima linea (operatori e coordinatori) usa un accesso
+// condiviso senza login; psicologa e direzione hanno un accesso personale.
 export const roles = [
-  { id: "operatore", label: "Operatore", hint: "Contesto rapido prima di entrare in stanza" },
-  { id: "coordinatrice", label: "Coordinatrice", hint: "Chi seguire, di cosa hanno bisogno, cosa passare al turno" },
-  { id: "psicologa", label: "Psicologa", hint: "Segnali di benessere nel tempo, rispetto alla media di ognuno" },
-  { id: "direzione", label: "Direzione", hint: "Come la struttura usa ROSS e cosa chiedono gli ospiti, in aggregato" },
+  { id: "staff", label: "Staff", hint: "Chi ha bisogno di te oggi e come avvicinarlo", access: "senza login", account: { name: "Staff di reparto", initials: "SR", detail: "Accesso condiviso · senza login" } },
+  { id: "psicologa", label: "Psicologa", hint: "Segnali di benessere nel tempo, rispetto alla media di ognuno", access: "con login", account: { name: "Dott.ssa Marta Bianchi", initials: "MB", detail: "Psicologa · accesso personale" } },
+  { id: "direzione", label: "Direzione", hint: "Come la struttura usa ROSS e cosa chiedono gli ospiti, in aggregato", access: "con login", account: { name: "Paolo Ferri", initials: "PF", detail: "Direzione · accesso personale" } },
 ];
 
+const legacyRoles = { operatore: "staff", coordinatrice: "staff" };
+export const roleFor = (id) => roles.find((r) => r.id === (legacyRoles[id] || id)) || roles[0];
+
 export const suggestions = {
-  operatore: ["Riassumimi il turno", "Come posso coinvolgere Elena?", "Quali bisogni hanno espresso gli ospiti?", "Chi oggi non ha ancora parlato con ROSS?"],
-  coordinatrice: ["Chi ha espresso segnali da osservare questa settimana?", "Quali bisogni hanno espresso gli ospiti?", "Riassumimi il turno", "Stampa il report di Elena"],
-  psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Carlo si sta chiudendo?", "Come sta Lucia?", "Come si sta ambientando Ada?"],
-  direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Come stanno usando ROSS gli ospiti?", "Chi non ha ancora una baseline?", "Riassumimi il turno"],
+  staff: ["Chi ha bisogno di più attenzione oggi?", "Di cosa ha bisogno Antonio?", "Come posso coinvolgere Elena?", "Chi oggi non ha ancora parlato con ROSS?"],
+  psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?", "Come si sta ambientando Ada?"],
+  direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Come stanno usando ROSS gli ospiti?", "Quali bisogni ricorrono tra gli ospiti?", "Prepara il report di struttura del mese"],
 };
 
 const src = {
@@ -27,7 +30,7 @@ const src = {
 };
 
 const normalize = (text) => text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-const byRole = (role, variants) => variants[role] || variants.coordinatrice;
+const byRole = (role, variants) => variants[role] || variants.staff;
 const firstName = (resident) => resident.name.split(" ")[0];
 const nameOf = (state, id) => firstName(state.residents.find((r) => r.id === id));
 
@@ -41,8 +44,7 @@ function relatingAnswer(state, role, resident) {
   const name = firstName(resident);
   return {
     text: byRole(role, {
-      operatore: `Con ${name}: ${r.address}. Momento migliore: ${r.bestTime}, durata ${r.duration}.`,
-      coordinatrice: `Per coinvolgere ${name}: ${r.bestTime}, ${r.duration}. Attività che funzionano: ${r.works.join(", ").toLowerCase()}.`,
+      staff: `Con ${name}: ${r.address}. Momento migliore: ${r.bestTime}, durata ${r.duration}. Attività che funzionano: ${r.works.join(", ").toLowerCase()}.`,
       psicologa: `${name} risponde meglio con ${r.works.join(", ").toLowerCase()}, ${r.bestTime}.`,
       direzione: `${name}: attività che funzionano ${r.works.join(", ").toLowerCase()}.`,
     }),
@@ -69,8 +71,7 @@ function residentAnswer({ state, role, resident }) {
   const r = relating[resident.id];
   return {
     text: byRole(role, {
-      operatore: `${trend} Con ${name} funzionano ${r.works.join(", ").toLowerCase()}; momento migliore: ${r.bestTime}.`,
-      coordinatrice: trend,
+      staff: `${trend} Con ${name} funzionano ${r.works.join(", ").toLowerCase()}; momento migliore: ${r.bestTime}.`,
       psicologa: trend,
       direzione: `${resident.name}: con ROSS da ${resident.daysWithRoss} giorni. ${trend}`,
     }),
@@ -104,8 +105,7 @@ const intents = [
     when: (state) => Boolean(state.rossJourney.completedAt),
     answer: ({ role }) => ({
       text: byRole(role, {
-        operatore: `Con Elena è emerso un nuovo interesse: ${journeyInterest.label.toLowerCase()}. ${journeyInterest.how}`,
-        coordinatrice: `Dall'ultima conversazione con ROSS (14 min, partecipazione alta) è emerso un nuovo interesse per Elena: ${journeyInterest.label.toLowerCase()}. È già tra i suoi interessi in cartella.`,
+        staff: `Dall'ultima conversazione con ROSS (14 min, partecipazione alta) è emerso un nuovo interesse per Elena: ${journeyInterest.label.toLowerCase()}. È già tra i suoi interessi in cartella. ${journeyInterest.how}`,
         psicologa: `Conversazione di 14 minuti con partecipazione alta e serenità espressa. Nuovo interesse emerso: ${journeyInterest.label.toLowerCase()}.`,
         direzione: `Esempio di valore: in 14 minuti ROSS ha fatto emergere un nuovo interesse per Elena (${journeyInterest.label.toLowerCase()}), utile allo staff per le attività. Il contenuto della conversazione resta privato.`,
       }),
@@ -118,7 +118,17 @@ const intents = [
   {
     id: "report",
     keywords: ["report", "stampa", "resoconto"],
-    answer: ({ state, resident }) => {
+    answer: ({ state, resident, q }) => {
+      if (!resident && q.includes("struttura")) {
+        const week = state.interactions.filter((i) => i.date >= "2026-09-15");
+        return {
+          text: `Il report di struttura è pronto: uso di ROSS, benessere aggregato e voce degli ospiti. Negli ultimi 7 giorni ${new Set(week.map((i) => i.residentId)).size} ospiti su ${state.residents.length} hanno parlato con ROSS; ${facilityVoice.length} temi sulla vita in struttura espressi da almeno 3 ospiti.`,
+          bullets: facilityVoice.map((v) => ({ tag: v.tone === "positivo" ? "Apprezzato" : v.tone === "negativo" ? "Da migliorare" : "Richiesta", text: `${v.topic}: ${v.count} ospiti` })),
+          residents: [],
+          sources: [src.data("Ultimi 7 giorni"), src.data("Ultime 2 settimane · aggregato anonimo")],
+          action: { label: "Apri il report di struttura", to: "/report?ambito=struttura" },
+        };
+      }
       const target = resident || state.residents[0];
       const report = buildResidentReport(state, target, "30");
       return {
@@ -130,22 +140,32 @@ const intents = [
     },
   },
   {
-    id: "turno",
-    keywords: ["turno", "consegn", "riassum", "passaggio"],
+    // Chi seguire per primo oggi: presenza insolita, segnali da osservare e bisogni, per ospite.
+    id: "priorita",
+    keywords: ["bisogno di piu attenzione", "attenzione oggi", "priorit", "per primo", "per prima", "da chi passo", "turno", "consegn"],
     answer: ({ state, role }) => {
-      const notes = [...state.notes.map((n) => ({ ...n, source: n.source || "Operatore" })), ...handoverEntries];
-      const bullets = notes.slice(0, 6).map((entry) => ({ resident: entry.residentId, text: `${nameOf(state, entry.residentId) || "Ospite"}: ${entry.text}`, tag: entry.source === "ROSS" ? "Dati ROSS" : `Nota ${entry.source.toLowerCase()}` }));
+      const order = [...new Set([...presenceNotes.map((p) => p.residentId), ...signals.filter((s) => !s.positive).map((s) => s.residentId)])];
+      const bullets = order.map((id) => {
+        const name = nameOf(state, id);
+        const parts = [
+          ...presenceFor(id).map((p) => p.text.replace(/\.$/, "")),
+          ...signalsFor(id).filter((s) => !s.positive).map((s) => s.note ? `${s.signal}, ${s.note}` : `ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} (di solito ${s.usual})`),
+          ...needsFor(id).map((n) => `${n.text.charAt(0).toLowerCase()}${n.text.slice(1)}`),
+        ];
+        const text = parts.join("; ");
+        return { resident: id, tag: presenceFor(id).length ? "Oggi" : "Da osservare", text: `${name}: ${text.charAt(0).toLowerCase()}${text.slice(1)}.` };
+      });
+      const others = needs.filter((n) => !order.includes(n.residentId));
       return {
         text: byRole(role, {
-          operatore: "Turno pomeriggio 14–22, in breve:",
-          coordinatrice: "Sintesi del pomeriggio. I dati ROSS sono separati dalle note del team:",
-          psicologa: "Dal pomeriggio, i segnali da tenere presenti:",
-          direzione: `Pomeriggio: ${state.interactions.filter((i) => i.date === DEMO_TODAY).length} interazioni registrate da ROSS. I passaggi principali:`,
+          staff: `Oggi ${order.length} ospiti hanno bisogno di più attenzione, in ordine di priorità:`,
+          psicologa: `Oggi ${order.length} ospiti si discostano dalla propria media o da come stanno di solito:`,
+          direzione: `Oggi ${order.length} ospiti su ${state.residents.length} richiedono più attenzione dallo staff:`,
         }),
         bullets,
-        after: role === "coordinatrice" ? "Da prendere in carico: Antonio non ha ancora parlato con ROSS oggi e ha espresso il desiderio di sentire un familiare." : null,
-        residents: [...new Set(bullets.map((b) => b.resident))],
-        sources: [src.data("Pomeriggio"), src.note("Lucia · 16:08")],
+        after: others.length ? `Da prendere in carico anche: ${others.map((n) => `${nameOf(state, n.residentId)} (${n.text.charAt(0).toLowerCase()}${n.text.slice(1)})`).join(", ")}. Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.` : "Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.",
+        residents: order,
+        sources: [src.data("Oggi e ultimi 7 giorni · baseline personali")],
       };
     },
   },
@@ -156,8 +176,7 @@ const intents = [
       const toWatch = signals.filter((s) => !s.positive);
       return {
         text: byRole(role, {
-          operatore: "Questa settimana tieni d'occhio:",
-          coordinatrice: `${toWatch.length} ospiti hanno espresso segnali da osservare, rispetto alla propria media:`,
+          staff: `Questa settimana ${toWatch.length} ospiti hanno espresso segnali da osservare, rispetto alla propria media:`,
           psicologa: "Segnali espressi negli ultimi 7 giorni, confrontati con la baseline di ciascuno. Nessuna valutazione clinica:",
           direzione: `${toWatch.length} ospiti su ${state.residents.length} con segnali da osservare questa settimana:`,
         }),
@@ -175,8 +194,7 @@ const intents = [
       const list = resident ? needsFor(resident.id) : needs;
       return {
         text: list.length ? byRole(role, {
-          operatore: "Bisogni espressi dagli ospiti questa settimana:",
-          coordinatrice: "Bisogni personali espressi questa settimana, da prendere in carico:",
+          staff: "Bisogni personali espressi questa settimana, da prendere in carico:",
           psicologa: "Bisogni espressi questa settimana:",
           direzione: `${list.length} bisogni personali espressi questa settimana:`,
         }) : `${resident ? firstName(resident) : "Nessun ospite"} non ha espresso bisogni particolari questa settimana.`,
@@ -192,8 +210,7 @@ const intents = [
     answer: ({ role }) => ({
       text: byRole(role, {
         direzione: "Cosa esprimono gli ospiti sulla vita in struttura (anonimo, almeno 3 ospiti per tema):",
-        coordinatrice: "Temi sulla vita in struttura espressi da più ospiti, in forma anonima:",
-        operatore: "Cosa esprimono gli ospiti sulla struttura, in forma anonima:",
+        staff: "Temi sulla vita in struttura espressi da più ospiti, in forma anonima:",
         psicologa: "Temi espressi da più ospiti sulla vita in struttura, in forma anonima:",
       }),
       bullets: facilityVoice.map((v) => ({ tag: v.tone === "positivo" ? "Apprezzato" : v.tone === "negativo" ? "Da migliorare" : "Richiesta", text: `${v.count} ospiti hanno espresso ${v.text} (${v.period}).` })),
@@ -215,8 +232,7 @@ const intents = [
       const bridge = target.id === "elena" ? " Tra i suoi interessi (biografia d'ingresso) c'è il giardinaggio: una passeggiata al mattino verso le aiuole unisce l'obiettivo motorio a qualcosa che la coinvolge." : "";
       return {
         text: byRole(role, {
-          operatore: `${physio ? physio.summary : docs[0].summary}${bridge}`,
-          coordinatrice: `${physio ? `Dalla ${physio.title.toLowerCase()} del ${physio.date}: ${physio.summary}` : docs[0].summary}${bridge}${labs ? ` Sono caricati anche gli esami del ${labs.date}: ROSS li rende ricercabili ma non ne interpreta i valori.` : ""}`,
+          staff: `${physio ? `Dalla ${physio.title.toLowerCase()} del ${physio.date}: ${physio.summary}` : docs[0].summary}${bridge}${labs ? ` Sono caricati anche gli esami del ${labs.date}: ROSS li rende ricercabili ma non ne interpreta i valori.` : ""}`,
           psicologa: `${physio ? physio.summary : docs[0].summary}${bridge}`,
           direzione: `Per ${firstName(target)} sono caricati ${docs.length} documenti. ROSS li affianca ai dati di benessere senza sostituire la cartella clinica del gestionale.`,
         }),
@@ -232,7 +248,7 @@ const intents = [
     answer: ({ role }) => ({
       text: byRole(role, {
         psicologa: "Non posso dirlo: ROSS non valuta stati d'animo. Posso dirti cosa è cambiato: negli ultimi 4 giorni Carlo ha avviato 2 conversazioni contro una media personale di 5, e le conversazioni sono più brevi. Quando parte dai suoi interessi (sport) la durata torna nella norma. Il resto va osservato di persona.",
-        coordinatrice: "Negli ultimi 4 giorni Carlo ha avviato meno conversazioni (2 contro una media di 5). Nessun altro cambiamento rilevato nelle interazioni con ROSS.",
+        staff: "Negli ultimi 4 giorni Carlo ha avviato meno conversazioni (2 contro una media di 5). Nessun altro cambiamento rilevato nelle interazioni con ROSS.",
       }),
       residents: ["carlo"],
       sources: [src.data("Ultimi 4 giorni · baseline 14 giorni")],
@@ -250,8 +266,7 @@ const intents = [
       return {
         text: byRole(role, {
           direzione: `Negli ultimi 7 giorni ${talked} ospiti su ${state.residents.length} hanno parlato con ROSS, per ${minutes} minuti complessivi. Oggi: ${today.length} interazioni.`,
-          coordinatrice: `Questa settimana ${talked} ospiti su ${state.residents.length} hanno parlato con ROSS (${minutes} min). La fascia più usata è 10:00–11:30.`,
-          operatore: `Oggi ROSS ha fatto ${today.length} interazioni. Da notare:`,
+          staff: `Oggi ROSS ha fatto ${today.length} interazioni. Da notare:`,
           psicologa: `${talked} ospiti su ${state.residents.length} hanno parlato con ROSS questa settimana. Da notare:`,
         }),
         bullets: presenceNotes.map((p) => ({ resident: p.residentId, tag: p.kind === "assenza" ? "Assenza insolita" : "Momenti di difficoltà", text: `${nameOf(state, p.residentId)}: ${p.text}` })),
@@ -269,9 +284,8 @@ const intents = [
       return {
         text: byRole(role, {
           direzione: "Ada Moretti è l'unica ospite senza baseline: è con ROSS da 11 giorni, ne servono circa 14.",
-          coordinatrice: "Ada è con ROSS da 11 giorni: la baseline è in costruzione. Finora 6 conversazioni brevi, soprattutto al mattino.",
+          staff: "Ada è con ROSS da 11 giorni: la baseline è in costruzione. Con lei funzionano conversazioni brevi al mattino; tra i suoi interessi c'è la poesia.",
           psicologa: "Ada è con ROSS da 11 giorni: troppo presto per confronti con una sua media. Conversazioni brevi e regolari al mattino.",
-          operatore: "Ada è arrivata da poco. Con lei funzionano conversazioni brevi al mattino; tra i suoi interessi c'è la poesia.",
         }),
         bullets: needsFor("ada").map((n) => ({ tag: "Bisogno", text: n.text })),
         residents: [ada.id],
@@ -295,7 +309,7 @@ export function findResident(state, text) {
 export function answerQuestion(state, role, question, scopedResidentId) {
   const q = normalize(question);
   const resident = findResident(state, question) || state.residents.find((r) => r.id === scopedResidentId) || null;
-  const ctx = { state, role, resident };
+  const ctx = { state, role, resident, q };
   const scored = intents
     .filter((intent) => !intent.when || intent.when(state))
     .map((intent) => ({ intent, score: intent.keywords.filter((k) => q.includes(k)).length }))

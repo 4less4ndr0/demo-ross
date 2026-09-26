@@ -38,7 +38,7 @@ BASE_PATH=/demo-ross/ npm run build && npx vite preview --base /demo-ross/
 
 ROSS non è un gestionale sostitutivo: si affianca ai sistemi già in uso nella RSA. La vista Struttura è quindi una **chat a frizione zero** ("Chiedi a ROSS"), interrogabile anche da telefono, che risponde dalle conversazioni raccolte da ROSS e dai documenti caricati, citando sempre la fonte.
 
-- **Chiedi a ROSS** (`/`): chat al centro, "Il polso di ROSS" nella sidebar sinistra (su mobile dall'hamburger). Il ruolo si sceglie dalla card operatore in basso a sinistra (Operatore, Coordinatrice, Psicologa, Direzione) e cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
+- **Chiedi a ROSS** (`/`): chat al centro, "Il polso di ROSS" nella sidebar sinistra (su mobile dall'hamburger). Il ruolo si sceglie dalla card profilo in basso a sinistra (Staff con accesso condiviso senza login; Psicologa e Direzione con accesso personale) e cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
 - La navigazione principale è a schede al centro della barra superiore.
 - **Ospiti** (`/ospiti`, `/ospiti/:id`): dashboard ospiti e cartella con i tab Sintesi, Conversazioni ROSS, Memorie e storia, Relazioni, Documenti.
 - **Report** (`/report?ospite=ID`): report narrativo stampabile "Come sta" per ogni ospite, per l'équipe (contenuti in `src/data/reportNarrative.js`); `?ambito=struttura` per l'engagement aggregato; `&stampa=1` apre subito la stampa.
@@ -48,7 +48,7 @@ Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attiv
 
 ## Percorso demo consigliato
 
-1. Chiedi a ROSS: cambia ruolo e prova le domande suggerite, poi "Riassumimi il turno".
+1. Chiedi a ROSS: cambia ruolo e prova le domande suggerite, a partire da "Chi ha bisogno di più attenzione oggi?".
 2. Allega un documento in chat (es. `fisioterapia_elena.pdf`) e apri la cartella di Elena → Documenti.
 3. Vista ROSS: conversazione con Elena su Cefalù.
 4. Torna in Struttura: "Cosa è emerso oggi con Elena?" → nuovo interesse emerso (fotografia). Il ricordo resta tra ROSS ed Elena.

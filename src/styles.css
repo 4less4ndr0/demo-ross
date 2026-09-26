@@ -97,7 +97,7 @@
 .ask-empty h1{font:500 clamp(30px,4vw,44px)/1.1 var(--serif);margin-bottom:12px}
 .ask-empty p{font-size:14px;max-width:520px;margin:0 auto 24px}
 .ask-suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;text-align:left}
-.ask-suggestions button{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:14px;padding:14px;font-size:13px;line-height:1.35;transition:.15s}
+.ask-suggestions button{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:14px;padding:14px;font-size:13px;line-height:1.35;text-align:left;transition:.15s}
 .ask-suggestions button:hover{border-color:var(--green);transform:translateY(-2px)}
 .ask-suggestions svg{flex:none;color:var(--accent);margin-top:1px}
 .ask-msg{display:flex;gap:10px;max-width:760px;width:100%;margin:0 auto}
@@ -232,6 +232,7 @@
 .ui-menu-item svg{color:var(--muted);flex:none}
 .ui-menu-item>span{flex:1}
 .ui-menu-item kbd{font-size:10px;color:var(--muted);font-family:inherit}
+.role-option{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.role-option small{font-size:11px;color:var(--muted)}
 .ui-menu-item[data-highlighted]{background:var(--surface-2)}
 .ui-menu-item[data-disabled]{opacity:.45;pointer-events:none}
 .ui-menu-item-destructive,.ui-menu-item-destructive svg{color:var(--danger)}

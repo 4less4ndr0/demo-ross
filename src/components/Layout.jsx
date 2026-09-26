@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ChevronsUpDown, FileText, Menu, MessageCircle, Play, RotateCcw, Settings, Users } from "lucide-react";
-import { roles } from "../data/chatScript";
+import { roleFor, roles } from "../data/chatScript";
 import { InsightRail } from "./InsightRail";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, Sheet } from "./ui";
 import { useDemo } from "../state/DemoContext";
@@ -29,7 +29,7 @@ export function Layout() {
   }, [navigate]);
 
   const isChat = location.pathname === "/";
-  const role = roles.find((r) => r.id === state.role) || roles[1];
+  const role = roleFor(state.role);
   const closeMenu = () => setMenuOpen(false);
 
   const sidebar = (
@@ -39,10 +39,10 @@ export function Layout() {
       <div className="sidebar-bottom">
         <NavLink to="/impostazioni" onClick={closeMenu} title="Impostazioni"><Settings size={18} /><span>Impostazioni</span></NavLink>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild><button className="operator" title={`Giulia Serra · ${role.label}`}><span>GS</span><div><strong>Giulia Serra</strong><small>{role.label}</small></div><ChevronsUpDown size={15} /></button></DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild><button className="operator" title={`${role.account.name} · ${role.account.detail}`}><span>{role.account.initials}</span><div><strong>{role.account.name}</strong><small>{role.account.detail}</small></div><ChevronsUpDown size={15} /></button></DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="ui-menu-wide">
             <DropdownMenuLabel>Sto chiedendo come</DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={role.id} onValueChange={actions.setRole}>{roles.map((r) => <DropdownMenuRadioItem key={r.id} value={r.id}>{r.label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
+            <DropdownMenuRadioGroup value={role.id} onValueChange={actions.setRole}>{roles.map((r) => <DropdownMenuRadioItem key={r.id} value={r.id}><span className="role-option">{r.label}<small>{r.access}</small></span></DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem icon={Settings} onSelect={() => { closeMenu(); navigate("/impostazioni"); }}>Impostazioni</DropdownMenuItem>
             <DropdownMenuItem icon={Play} onSelect={actions.togglePresentation}>{state.presentation ? "Esci dalla presentazione" : "Modalità presentazione"}</DropdownMenuItem>
