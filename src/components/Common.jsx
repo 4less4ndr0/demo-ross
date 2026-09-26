@@ -1,5 +1,6 @@
 import { HelpCircle, Info, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 export function Avatar({ resident, size = "md" }) {
   return <span className={`avatar avatar-${size} avatar-${resident.color || "mint"}`} aria-label={resident.name}>{resident.initials}</span>;
@@ -9,12 +10,29 @@ export function ModeBadge({ mode }) {
   return <span className={`mode-badge mode-${mode.toLowerCase()}`}><span />{mode}</span>;
 }
 
+// Tooltip informativo (Radix): in un portal, evita i bordi dello schermo; hover, focus e tocco.
 export function InfoTip({ label, text }) {
+  const [open, setOpen] = useState(false);
+  const touched = useRef(false);
   return (
-    <span className="info-tip" tabIndex="0" aria-label={`${label}: ${text}`}>
-      <Info size={15} />
-      <span className="tooltip"><strong>{label}</strong>{text}</span>
-    </span>
+    <TooltipPrimitive.Provider delayDuration={150}>
+      <TooltipPrimitive.Root open={open} onOpenChange={setOpen}>
+        <TooltipPrimitive.Trigger asChild>
+          <span className="info-tip" role="button" tabIndex="0" aria-label={`${label}: ${text}`}
+            onPointerDown={(event) => { if (event.pointerType !== "mouse") { event.preventDefault(); touched.current = true; setOpen((value) => !value); } }}
+            onFocus={(event) => { if (touched.current) event.preventDefault(); }}
+            onClick={(event) => { event.preventDefault(); event.stopPropagation(); if (!touched.current) setOpen(true); touched.current = false; }}>
+            <Info size={15} />
+          </span>
+        </TooltipPrimitive.Trigger>
+        <TooltipPrimitive.Portal>
+          <TooltipPrimitive.Content className="ui-tooltip" side="bottom" align="center" sideOffset={8} collisionPadding={12} onPointerDownOutside={() => setOpen(false)}>
+            <strong>{label}</strong>{text}
+            <TooltipPrimitive.Arrow className="ui-tooltip-arrow" width={12} height={6} />
+          </TooltipPrimitive.Content>
+        </TooltipPrimitive.Portal>
+      </TooltipPrimitive.Root>
+    </TooltipPrimitive.Provider>
   );
 }
 
