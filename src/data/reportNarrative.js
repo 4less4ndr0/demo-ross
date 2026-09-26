@@ -7,10 +7,10 @@ const profiles = {
   elena: { headline: "Ha espresso serenità e partecipa volentieri: musica e fotografie la coinvolgono.", presence: "Elena partecipa volentieri alle conversazioni con ROSS e spesso le avvia lei. Le conversazioni sono lunghe e regolari, soprattutto al mattino e nel tardo pomeriggio.", next: "Proporle un'attività musicale al mattino o di guardare insieme delle fotografie." },
   carlo: { headline: "Ha avviato meno conversazioni negli ultimi giorni: da osservare di persona.", presence: "Carlo di solito risponde a ROSS più che iniziare lui. Negli ultimi quattro giorni ha avviato meno conversazioni del solito e sono più brevi; quando si parte dai suoi interessi la durata torna nella norma.", next: "Passare a salutarlo al mattino e proporgli un commento sullo sport." },
   lucia: { headline: "Partecipa con piacere, ma questa settimana ha espresso più stanchezza del solito.", presence: "Lucia parla spesso con ROSS e chiede lei di ripetere i giochi di parole. Questa settimana ha espresso stanchezza più spesso del solito.", next: "Accompagnarla in giardino, come ha chiesto più volte, e osservare la stanchezza nei prossimi giorni." },
-  mario: { headline: "Ritmi lenti e rispettati; ha riferito un fastidio fisico da verificare.", presence: "Mario passa molte ore in modalità silenziosa e ROSS rispetta il suo riposo. Quando parla lo fa senza fretta, con conversazioni lunghe e distese. Questa settimana ha riferito un fastidio fisico.", next: "Chiedergli del ginocchio al mattino e segnalarlo all'infermeria se persiste." },
+  mario: { headline: "Ritmi lenti e rispettati; ha riferito un fastidio fisico da verificare.", presence: "Mario passa molte ore in modalità silenziosa e ROSS rispetta il suo riposo. Quando parla lo fa senza fretta, con conversazioni lunghe e distese. Questa settimana ha riferito un fastidio fisico.", next: "Chiedergli del ginocchio al mattino e farlo presente a chi se ne occupa se continua." },
   teresa: { headline: "Il periodo migliore del mese: ha espresso serenità e partecipa molto.", presence: "Teresa partecipa più della sua media personale. Le attività di gruppo la coinvolgono e coinvolge a sua volta chi le sta vicino.", next: "Invitarla a proporre un canto per l'attività musicale di gruppo." },
   antonio: { headline: "Conversazioni più lunghe, ma questa settimana ha espresso solitudine.", presence: "Antonio è con ROSS da poco più di un mese. Le conversazioni si stanno allungando; questa settimana ha espresso solitudine più del solito e il desiderio di sentire un familiare.", next: "Facilitare una chiamata con un familiare e passare a trovarlo nel pomeriggio." },
-  ada: { headline: "Primi passi con ROSS: baseline in costruzione.", presence: "Ada è con ROSS da 11 giorni, quindi non è ancora possibile un confronto con la sua media personale. Finora ha fatto conversazioni brevi e regolari, soprattutto al mattino.", next: "Invitarla all'attività di lettura, come ha chiesto." },
+  ada: { headline: "Primi passi con ROSS: la sta ancora conoscendo.", presence: "Ada è con ROSS da 11 giorni, quindi non è ancora possibile un confronto con la sua media personale. Finora ha fatto conversazioni brevi e regolari, soprattutto al mattino.", next: "Invitarla all'attività di lettura, come ha chiesto." },
   bruno: { headline: "Partecipazione stabile; ha riferito di avere freddo nel pomeriggio.", presence: "Bruno alterna periodi di quiete a conversazioni lunghe e articolate. La partecipazione è stabile, appena sotto la sua media.", next: "Verificare la temperatura della stanza nel pomeriggio." },
 };
 
@@ -46,10 +46,10 @@ export function buildResidentReport(state, resident, period) {
   const newInterest = resident.id === journeyInterest.residentId && state.rossJourney.completedAt;
 
   const trend = building
-    ? `La baseline personale di ${name} è ancora in costruzione: i numeri di questo report descrivono l'avvio, non un andamento.`
+    ? `Per ora questi numeri raccontano l'inizio della conoscenza, non ancora un andamento.`
     : resident.delta >= 0.5 ? `Rispetto alla sua media personale ${name} ha partecipato più del solito (+${resident.delta.toFixed(1)}).`
     : resident.delta > 0 ? `L'andamento è stabile, leggermente sopra la sua media personale (+${resident.delta.toFixed(1)}).`
-    : resident.delta <= -0.3 ? `Rispetto alla sua media personale ${name} ha partecipato meno del solito (${resident.delta.toFixed(1)}). È un segnale da osservare di persona, non una valutazione.`
+    : resident.delta <= -0.3 ? `Rispetto alla sua media personale ${name} ha partecipato meno del solito (${resident.delta.toFixed(1)}). È un segnale da osservare di persona, non un giudizio.`
     : `L'andamento è stabile, in linea con la sua media personale (${resident.delta.toFixed(1)}).`;
 
   return {
@@ -106,7 +106,7 @@ export function buildTeamReport(state, period) {
   const topPositive = voice.find((v) => v.tone === "positivo");
   const topNegative = voice.find((v) => v.tone === "negativo");
 
-  const distribution = ["up", "flat", "down", "building"].map((tone) => ({ tone, label: { up: "Sopra la propria media", flat: "In linea", down: "Sotto la propria media", building: "Baseline in costruzione" }[tone], count: residents.filter((r) => trendOf(r).tone === tone).length }));
+  const distribution = ["up", "flat", "down", "building"].map((tone) => ({ tone, label: { up: "Sopra la propria media", flat: "In linea", down: "Sotto la propria media", building: "ROSS li sta ancora conoscendo" }[tone], count: residents.filter((r) => trendOf(r).tone === tone).length }));
   const signalTypes = Object.values(signals.reduce((acc, x) => { const key = x.signal; acc[key] = acc[key] || { signal: key, positive: Boolean(x.positive), count: 0 }; acc[key].count += 1; return acc; }, {})).sort((a, b) => Number(a.positive) - Number(b.positive) || b.count - a.count);
 
   const days = Array.from({ length: Number(period) }, (_, index) => {

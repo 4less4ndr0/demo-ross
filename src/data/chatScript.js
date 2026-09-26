@@ -70,7 +70,7 @@ function residentAnswer({ state, role, resident }) {
   const presence = presenceFor(resident.id);
   const stats = residentStats(state, resident.id);
   const trend = resident.participation == null
-    ? `${name} è con ROSS da ${resident.daysWithRoss} giorni: la baseline personale è ancora in costruzione.`
+    ? `${name} è con ROSS da ${resident.daysWithRoss} giorni: ROSS la sta ancora conoscendo, la sua media personale si sta formando.`
     : `Partecipazione ${resident.participation}/10, ${resident.delta >= 0 ? "+" : ""}${resident.delta} rispetto alla sua media. ${stats.week} conversazioni con ROSS questa settimana (${stats.minutes} min).`;
   const r = relating[resident.id];
   return {
@@ -85,8 +85,8 @@ function residentAnswer({ state, role, resident }) {
       ...presence.map((p) => ({ tag: "Presenza", text: p.text })),
     ],
     residents: [resident.id],
-    sources: [src.data("Ultimi 7 giorni · baseline personale")],
-    action: { label: `Apri la cartella di ${name}`, to: `/ospiti/${resident.id}` },
+    sources: [src.data("Ultimi 7 giorni · media personale")],
+    action: { label: `Apri il ritratto di ${name}`, to: `/ospiti/${resident.id}` },
   };
 }
 
@@ -109,7 +109,7 @@ const intents = [
     when: (state) => Boolean(state.rossJourney.completedAt),
     answer: ({ role }) => ({
       text: byRole(role, {
-        staff: `Dall'ultima conversazione con ROSS (14 min, partecipazione alta) è emerso un nuovo interesse per Elena: ${journeyInterest.label.toLowerCase()}. È già tra i suoi interessi in cartella. ${journeyInterest.how}`,
+        staff: `Dall'ultima conversazione con ROSS (14 min, partecipazione alta) è emerso un nuovo interesse per Elena: ${journeyInterest.label.toLowerCase()}. È già tra i suoi interessi nel ritratto. ${journeyInterest.how}`,
         psicologa: `Conversazione di 14 minuti con partecipazione alta e serenità espressa. Nuovo interesse emerso: ${journeyInterest.label.toLowerCase()}.`,
         direzione: `Esempio di valore: in 14 minuti ROSS ha fatto emergere un nuovo interesse per Elena (${journeyInterest.label.toLowerCase()}), utile allo staff per le attività. Il contenuto della conversazione resta privato.`,
       }),
@@ -138,7 +138,7 @@ const intents = [
       return {
         text: `Il report "Come sta" di ${firstName(target)} (ultimi 30 giorni) è pronto per l'équipe. In sintesi: ${report.headline.charAt(0).toLowerCase()}${report.headline.slice(1)}`,
         residents: [target.id],
-        sources: [src.data("Ultimi 30 giorni · baseline personale")],
+        sources: [src.data("Ultimi 30 giorni · media personale")],
         action: { label: `Apri e stampa il report di ${firstName(target)}`, to: `/report?ospite=${target.id}&stampa=1` },
       };
     },
@@ -169,7 +169,7 @@ const intents = [
         bullets,
         after: others.length ? `Da prendere in carico anche: ${others.map((n) => `${nameOf(state, n.residentId)} (${n.text.charAt(0).toLowerCase()}${n.text.slice(1)})`).join(", ")}. Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.` : "Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.",
         residents: order,
-        sources: [src.data("Oggi e ultimi 7 giorni · baseline personali")],
+        sources: [src.data("Oggi e ultimi 7 giorni · medie personali")],
       };
     },
   },
@@ -181,13 +181,13 @@ const intents = [
       return {
         text: byRole(role, {
           staff: `Questa settimana ${toWatch.length} ospiti hanno espresso segnali da osservare, rispetto alla propria media:`,
-          psicologa: "Segnali espressi negli ultimi 7 giorni, confrontati con la baseline di ciascuno. Nessuna valutazione clinica:",
+          psicologa: "Segnali espressi negli ultimi 7 giorni, confrontati con la media di ciascuno. Sono spunti da osservare, non giudizi sulla salute:",
           direzione: `${toWatch.length} ospiti su ${state.residents.length} con segnali da osservare questa settimana:`,
         }),
         bullets: toWatch.map((s) => ({ resident: s.residentId, tag: s.trend, text: describeSignal(s, nameOf(state, s.residentId)) })),
         after: "Il giudizio resta a voi: ROSS segnala, lo staff osserva e decide.",
         residents: toWatch.map((s) => s.residentId),
-        sources: [src.data("Ultimi 7 giorni · baseline personali")],
+        sources: [src.data("Ultimi 7 giorni · medie personali")],
       };
     },
   },
@@ -230,7 +230,7 @@ const intents = [
     answer: ({ state, role, resident }) => {
       const target = resident || state.residents.find((r) => r.id === "elena");
       const docs = state.documents.filter((d) => d.residentId === target.id);
-      if (!docs.length) return { text: `Nella cartella di ${firstName(target)} non ci sono ancora documenti. Puoi allegarne uno dalla graffetta qui sotto: da quel momento ROSS lo userà come fonte.`, residents: [target.id], sources: [], action: { label: "Apri la cartella", to: `/ospiti/${target.id}?tab=documenti` } };
+      if (!docs.length) return { text: `Per ${firstName(target)} non ci sono ancora documenti. Puoi allegarne uno dalla graffetta qui sotto: da quel momento ROSS lo userà come fonte.`, residents: [target.id], sources: [], action: { label: "Apri i documenti", to: `/ospiti/${target.id}?tab=documenti` } };
       const physio = docs.find((d) => d.kind === "Fisioterapia");
       const labs = docs.find((d) => d.kind === "Esami del sangue");
       const bridge = target.id === "elena" ? " Tra i suoi interessi (biografia d'ingresso) c'è il giardinaggio: una passeggiata al mattino verso le aiuole unisce l'obiettivo motorio a qualcosa che la coinvolge." : "";
@@ -238,7 +238,7 @@ const intents = [
         text: byRole(role, {
           staff: `${physio ? `Dalla ${physio.title.toLowerCase()} del ${physio.date}: ${physio.summary}` : docs[0].summary}${bridge}${labs ? ` Sono caricati anche gli esami del ${labs.date}: ROSS li rende ricercabili ma non ne interpreta i valori.` : ""}`,
           psicologa: `${physio ? physio.summary : docs[0].summary}${bridge}`,
-          direzione: `Per ${firstName(target)} sono caricati ${docs.length} documenti. ROSS li affianca ai dati di benessere senza sostituire la cartella clinica del gestionale.`,
+          direzione: `Per ${firstName(target)} sono caricati ${docs.length} documenti. ROSS li affianca a ciò che nota nelle chiacchierate, senza sostituire i documenti ufficiali del gestionale.`,
         }),
         residents: [target.id],
         sources: docs.map((d) => src.doc(`${d.kind} · ${d.date}`)).concat(target.id === "elena" ? [src.bio("Interessi")] : []),
@@ -251,11 +251,11 @@ const intents = [
     keywords: ["chiud", "isolat", "ritirat"],
     answer: ({ role }) => ({
       text: byRole(role, {
-        psicologa: "Non posso dirlo: ROSS non valuta stati d'animo. Posso dirti cosa è cambiato: negli ultimi 4 giorni Carlo ha avviato 2 conversazioni contro una media personale di 5, e le conversazioni sono più brevi. Quando parte dai suoi interessi (sport) la durata torna nella norma. Il resto va osservato di persona.",
-        staff: "Negli ultimi 4 giorni Carlo ha avviato meno conversazioni (2 contro una media di 5). Nessun altro cambiamento rilevato nelle interazioni con ROSS.",
+        psicologa: "Non posso dirlo: ROSS non interpreta l'umore di nessuno. Posso dirti cosa è cambiato: negli ultimi 4 giorni Carlo ha avviato 2 conversazioni contro una media personale di 5, e le conversazioni sono più brevi. Quando parte dai suoi interessi (sport) la durata torna nella norma. Il resto va osservato di persona.",
+        staff: "Negli ultimi 4 giorni Carlo ha avviato meno conversazioni (2 contro una media di 5). Nessun altro cambiamento notato nelle conversazioni con ROSS.",
       }),
       residents: ["carlo"],
-      sources: [src.data("Ultimi 4 giorni · baseline 14 giorni")],
+      sources: [src.data("Ultimi 4 giorni · media di 14 giorni")],
       action: { label: "Apri Carlo", to: "/ospiti/carlo" },
     }),
   },
@@ -282,18 +282,18 @@ const intents = [
   },
   {
     id: "baseline",
-    keywords: ["baseline", "ambient", "nuovo ospite", "arrivat", "appena entrat"],
+    keywords: ["baseline", "conoscendo", "ambient", "nuovo ospite", "arrivat", "appena entrat"],
     answer: ({ state, role }) => {
       const ada = state.residents.find((r) => r.id === "ada");
       return {
         text: byRole(role, {
-          direzione: "Ada Moretti è l'unica ospite senza baseline: è con ROSS da 11 giorni, ne servono circa 14.",
-          staff: "Ada è con ROSS da 11 giorni: la baseline è in costruzione. Con lei funzionano conversazioni brevi al mattino; tra i suoi interessi c'è la poesia.",
+          direzione: "Ada Moretti è l'unica ospite che ROSS sta ancora conoscendo: è con ROSS da 11 giorni, per una media personale ne servono circa 14.",
+          staff: "Ada è con ROSS da 11 giorni: ROSS la sta ancora conoscendo. Con lei funzionano conversazioni brevi al mattino; tra i suoi interessi c'è la poesia.",
           psicologa: "Ada è con ROSS da 11 giorni: troppo presto per confronti con una sua media. Conversazioni brevi e regolari al mattino.",
         }),
         bullets: needsFor("ada").map((n) => ({ tag: "Bisogno", text: n.text })),
         residents: [ada.id],
-        sources: [src.data("11 giorni · baseline in costruzione"), src.bio("Interessi")],
+        sources: [src.data("11 giorni · media in formazione"), src.bio("Interessi")],
         action: { label: "Apri Ada", to: "/ospiti/ada" },
       };
     },

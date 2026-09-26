@@ -91,7 +91,7 @@ export function AskRoss() {
     actions.addDocument({ residentId: resident.id, kind, title, summary: "Caricato ora. ROSS lo userà come fonte nelle risposte, citandolo." });
     const id = Date.now();
     setMessages((prev) => [...prev, { id, from: "user", attachment: file.name }, { id: id + 1, from: "ross", answer: {
-      text: `Ho aggiunto «${title}» alla cartella di ${resident.name.split(" ")[0]} come ${kind.toLowerCase()}. Da ora posso usarlo per rispondere e lo citerò sempre come fonte. Non interpreto valori clinici: quelli restano al medico.`,
+      text: `Ho aggiunto «${title}» ai documenti di ${resident.name.split(" ")[0]} come ${kind.toLowerCase()}. Da ora posso usarlo per rispondere e lo citerò sempre come fonte. Non interpreto i valori degli esami: restano a chi se ne occupa.`,
       residents: [resident.id],
       sources: [{ kind: "Documento", label: `${kind} · oggi` }],
       action: { label: "Apri i documenti", to: `/ospiti/${resident.id}?tab=documenti` },
@@ -104,7 +104,7 @@ export function AskRoss() {
       <section className="ask-chat surface">
         <header className="ask-header">
           <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Come stanno gli ospiti e di cosa hanno bisogno</small></div></div>
-          <span className="ask-role-chip" title="Il ruolo si cambia dal profilo in basso a sinistra">come {role.label}</span>
+          <span className="ask-role-chip" title="Il ruolo si cambia dalla card in basso a sinistra">come {role.label}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -139,7 +139,7 @@ export function AskRoss() {
             <button type="button" className={`ask-tool ${listening ? "active" : ""}`} onClick={listen} title="Detta la domanda" aria-label="Detta la domanda"><Mic size={18} /></button>
             <button className="ask-send" disabled={!input.trim()} aria-label="Invia"><ArrowUp size={18} /></button>
           </form>
-          <small className="ask-disclaimer">ROSS non riporta mai il contenuto delle conversazioni. Non fa valutazioni cliniche.</small>
+          <small className="ask-disclaimer">ROSS non riporta mai il contenuto delle conversazioni e non giudica la salute di nessuno.</small>
         </footer>
       </section>
     </div>

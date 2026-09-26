@@ -7,7 +7,7 @@ import { Button, Select } from "../components/ui";
 import { Avatar, EmptyState, ModeBadge, SectionTitle } from "../components/Common";
 
 function Trend({ resident }) {
-  if (resident.participation == null) return <span className="trend-pill">Baseline in costruzione</span>;
+  if (resident.participation == null) return <span className="trend-pill">ROSS la sta ancora conoscendo</span>;
   const { tone, label } = trendOf(resident);
   const Icon = { up: ArrowUpRight, down: ArrowDownRight, flat: Minus }[tone];
   return <span className={`trend-pill trend-${tone}`}><Icon size={14} />Partecipazione {label}</span>;
