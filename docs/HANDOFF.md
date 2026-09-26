@@ -109,6 +109,16 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 
 ## 6. Changelog (dal più recente)
 
+### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Più equilibrio tra ciò che va bene e ciò che è da osservare
+- **Richiesta:** trend e insight pendevano sul negativo; serve un buon mix, anche nello stesso ospite.
+- **Modifiche:**
+  - dati: ogni ospite ha almeno un segnale positivo (buonumore, tranquillità, gratitudine, curiosità, voglia di raccontare, più iniziativa, conversazioni più lunghe); i 4 da osservare restano; voce della struttura con il nuovo tema "Gentilezza del personale"; solo Carlo resta sotto la sua media;
+  - lista Ospiti: chip verde "Va bene" prima dei motivi di attenzione; ritratto: prima ciò che va bene, poi ciò che è da osservare;
+  - sidebar della chat: nuovo accordion "Cosa va bene" e voce nella guida;
+  - chat: intento "Cosa sta andando bene?", domande consigliate per i tre ruoli, riga "Da valorizzare" nella risposta sulle priorità; tolto l'ultimo "/10" dalle risposte;
+  - riepilogo d'équipe: sintesi che parte dal positivo, KPI "con segnali positivi", chip positivi per ospite, punto "Da valorizzare"; report del singolo ospite con la sezione "Da valorizzare".
+- **File:** `src/data/careInsights.js`, `src/data/chatScript.js`, `src/data/reportNarrative.js`, `src/data/demoData.js`, `src/pages/Residents.jsx`, `src/pages/ResidentProfile.jsx`, `src/pages/OperationalPages.jsx`, `src/components/InsightRail.jsx`, `src/components/PageGuide.jsx`, `AGENTS.md`, `docs/contratto-informativo-struttura.md`.
+
 ### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Lessico e tono di voce dalle linee guida Notion
 - **Richiesta:** togliere "cartella" e le altre parole cliniche; allineare il tono delle schede Chiedi a ROSS, Ospiti e Report alle linee guida Notion ("TOV guidelines", "Keywords").
 - **Decisione:** la pagina di un ospite si chiama **ritratto**.

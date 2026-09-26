@@ -43,6 +43,8 @@ Tutto ciò che la struttura riceve rientra in una di queste cinque famiglie. Son
 
 **Segnali ammessi.** Malinconia o tristezza, stanchezza, solitudine, preoccupazione o ansia, fastidio fisico riferito (per esempio "mi fa male il ginocchio"), fatica a seguire la conversazione. A questi si aggiungono le variazioni di partecipazione e iniziativa rispetto alla baseline.
 
+**Anche ciò che va bene (decisione del 26/09).** ROSS racconta pure i segnali positivi, con le stesse regole di forma: serenità, buonumore, gratitudine, curiosità, tranquillità, voglia di raccontare, più iniziativa, conversazioni più lunghe del solito. Ogni ospite ha di norma sia aspetti che vanno bene sia aspetti da osservare: il quadro non deve pendere sul negativo, e ciò che funziona è la base su cui l'équipe costruisce.
+
 **Forma.**
 - Finestra minima di **7 giorni**. Un segnale emotivo non si riporta mai su una singola conversazione.
 - Sempre il confronto con la **baseline personale**: in aumento, stabile, in calo.

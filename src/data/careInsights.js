@@ -17,7 +17,15 @@ export const signals = [
   { residentId: "antonio", signal: "solitudine", count: 3, of: 5, usual: 1, trend: "in aumento" },
   { residentId: "mario", signal: "fastidio fisico riferito", count: 2, of: 3, usual: 0, trend: "nuovo" },
   { residentId: "teresa", signal: "serenità", count: 6, of: 7, usual: 4, trend: "in aumento", positive: true },
+  { residentId: "teresa", signal: "più iniziativa", count: 5, of: 7, usual: 3, trend: "in aumento", positive: true, note: "5 conversazioni avviate da lei su 7, di solito 3" },
   { residentId: "elena", signal: "serenità", count: 5, of: 6, usual: 4, trend: "stabile", positive: true },
+  { residentId: "elena", signal: "gratitudine", count: 3, of: 6, usual: 1, trend: "in aumento", positive: true },
+  { residentId: "lucia", signal: "buonumore", count: 4, of: 6, usual: 4, trend: "stabile", positive: true },
+  { residentId: "carlo", signal: "buonumore", count: 3, of: 4, usual: 3, trend: "stabile", positive: true },
+  { residentId: "antonio", signal: "conversazioni più lunghe", count: 5, of: 5, usual: 10, trend: "in aumento", positive: true, note: "15 minuti in media, di solito 10" },
+  { residentId: "mario", signal: "tranquillità", count: 3, of: 3, usual: 2, trend: "in aumento", positive: true },
+  { residentId: "ada", signal: "curiosità", count: 4, of: 6, usual: null, trend: "prime settimane", positive: true },
+  { residentId: "bruno", signal: "voglia di raccontare", count: 4, of: 5, usual: 2, trend: "in aumento", positive: true },
 ];
 
 // Bisogni personali, per ospite, formulati come bisogno e senza contesto narrativo.
@@ -34,6 +42,7 @@ export const facilityVoice = [
   { topic: "Rumore notturno", text: "fastidio per il rumore notturno", count: 4, period: "ultime 2 settimane", tone: "negativo", action: "Valutarlo con il personale notturno" },
   { topic: "Attività musicali", text: "apprezzamento per le attività musicali del pomeriggio", count: 6, period: "ultime 2 settimane", tone: "positivo", action: "Da mantenere, magari con un appuntamento in più" },
   { topic: "Pasti", text: "desiderio di più varietà nei pasti serali", count: 3, period: "ultime 2 settimane", tone: "neutro", action: "Proporlo alla cucina" },
+  { topic: "Gentilezza del personale", text: "apprezzamento per la gentilezza del personale", count: 5, period: "ultime 2 settimane", tone: "positivo", action: "Da condividere con tutto lo staff" },
   { topic: "Spazi esterni", text: "desiderio di passare più tempo all'aperto", count: 5, period: "ultime 2 settimane", tone: "neutro", action: "Più uscite in giardino quando il tempo lo permette" },
 ];
 
@@ -150,6 +159,8 @@ export const presenceNotes = [
   { residentId: "lucia", kind: "difficoltà", text: "In 2 conversazioni questa settimana ha fatto fatica a seguire il filo (di solito mai). ROSS ha rallentato e semplificato." },
 ];
 
+// "Teresa (serenità, più iniziativa), Elena (gratitudine)": segnali raggruppati per ospite.
+export const groupByResident = (list, nameOf) => Object.entries(list.reduce((acc, x) => { (acc[x.residentId] = acc[x.residentId] || []).push(x.signal); return acc; }, {})).map(([id, items]) => `${nameOf(id)} (${items.join(", ")})`).join(", ");
 export const signalsFor = (id) => signals.filter((s) => s.residentId === id);
 export const needsFor = (id) => needs.filter((n) => n.residentId === id);
 export const presenceFor = (id) => presenceNotes.filter((p) => p.residentId === id);
@@ -181,8 +192,11 @@ export function trendOf(resident) {
 // Interesse emerso dalla conversazione con ROSS nella vista demo (al posto del ricordo specifico).
 export const journeyInterest = { residentId: "elena", label: "Fotografia", how: "Funziona come avvio di conversazione: proporle di guardare insieme delle fotografie." };
 
+// Testo breve del confronto con la media: "3 su 6 · di solito 1", la nota, oppure "prime settimane".
+export const signalDetail = (s) => s.note || (s.usual == null ? `In ${s.count} conversazioni su ${s.of} · prime settimane con ROSS` : `In ${s.count} conversazioni su ${s.of} · di solito ${s.usual}`);
+
 export const describeSignal = (s, name) => s.positive
-  ? `${name} ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} questa settimana (di solito ${s.usual}).`
+  ? s.note ? `${name}: ${s.signal}, ${s.note}.` : s.usual == null ? `${name} ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} (prime settimane con ROSS).` : `${name} ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} questa settimana (di solito ${s.usual}).`
   : s.note
     ? `${name}: ${s.signal}, ${s.note}. Da osservare di persona.`
     : `${name} ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} questa settimana (di solito ${s.usual}). Da osservare di persona.`;

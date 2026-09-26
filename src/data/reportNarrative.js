@@ -1,5 +1,5 @@
 import { DEMO_TODAY } from "./demoData";
-import { approachGuide, byAttention, facilityVoice, hooksFor, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor, trendOf } from "./careInsights";
+import { approachGuide, byAttention, facilityVoice, groupByResident, hooksFor, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor, trendOf } from "./careInsights";
 
 // Report "Come sta" per l'équipe (docs/contratto-informativo-struttura.md):
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato. Nessuna citazione, nessun argomento.
@@ -11,7 +11,7 @@ const profiles = {
   teresa: { headline: "Il periodo migliore del mese: ha espresso serenità e partecipa molto.", presence: "Teresa partecipa più della sua media personale. Le attività di gruppo la coinvolgono e coinvolge a sua volta chi le sta vicino.", next: "Invitarla a proporre un canto per l'attività musicale di gruppo." },
   antonio: { headline: "Conversazioni più lunghe, ma questa settimana ha espresso solitudine.", presence: "Antonio è con ROSS da poco più di un mese. Le conversazioni si stanno allungando; questa settimana ha espresso solitudine più del solito e il desiderio di sentire un familiare.", next: "Facilitare una chiamata con un familiare e passare a trovarlo nel pomeriggio." },
   ada: { headline: "Primi passi con ROSS: la sta ancora conoscendo.", presence: "Ada è con ROSS da 11 giorni, quindi non è ancora possibile un confronto con la sua media personale. Finora ha fatto conversazioni brevi e regolari, soprattutto al mattino.", next: "Invitarla all'attività di lettura, come ha chiesto." },
-  bruno: { headline: "Partecipazione stabile; ha riferito di avere freddo nel pomeriggio.", presence: "Bruno alterna periodi di quiete a conversazioni lunghe e articolate. La partecipazione è stabile, appena sotto la sua media.", next: "Verificare la temperatura della stanza nel pomeriggio." },
+  bruno: { headline: "Partecipazione stabile; ha riferito di avere freddo nel pomeriggio.", presence: "Bruno alterna periodi di quiete a conversazioni lunghe e articolate. La partecipazione è stabile, appena sopra la sua media, e questa settimana ha avuto più voglia di raccontare.", next: "Verificare la temperatura della stanza nel pomeriggio." },
 };
 
 const fallback = { headline: "Relazione con ROSS in costruzione.", presence: "Le interazioni con ROSS sono ancora poche per un quadro completo.", next: "Proseguire con conversazioni brevi sui suoi interessi." };
@@ -76,6 +76,8 @@ export function buildResidentReport(state, resident, period) {
       ...signalsFor(resident.id).filter((x) => !x.positive).map((x) => `${x.signal.charAt(0).toUpperCase()}${x.signal.slice(1)} (${x.trend}): osservare di persona nei prossimi giorni`),
       ...needsFor(resident.id).map((n) => `${n.text}: chi se ne occupa?`),
     ],
+    // Da valorizzare: ciò che va bene e su cui costruire.
+    valorize: signalsFor(resident.id).filter((x) => x.positive).map((x) => `${x.signal.charAt(0).toUpperCase()}${x.signal.slice(1)} (${x.trend}): dirlo in équipe e costruirci sopra un'attività`),
     newInterest: newInterest ? journeyInterest : null,
     next: profile.next,
     series: seriesFor(resident, Number(period)),
@@ -100,14 +102,15 @@ export function buildTeamReport(state, period) {
   const minutes = interactions.reduce((sum, i) => sum + i.duration, 0);
   const talked = new Set(interactions.map((i) => i.residentId)).size;
   const toWatch = residents.filter((r) => signalsFor(r.id).some((x) => !x.positive) || presenceFor(r.id).length);
-  const serene = signals.filter((x) => x.positive);
+  const going = signals.filter((x) => x.positive);
+  const goingResidents = new Set(going.map((x) => x.residentId));
   const emerged = residents.reduce((sum, r) => sum + (relating[r.id]?.interests.filter(([, source]) => source === "Emerso con ROSS").length || 0), 0) + (state.rossJourney.completedAt ? 1 : 0);
   const voice = [...facilityVoice].sort((a, b) => b.count - a.count);
   const topPositive = voice.find((v) => v.tone === "positivo");
   const topNegative = voice.find((v) => v.tone === "negativo");
 
   const distribution = ["up", "flat", "down", "building"].map((tone) => ({ tone, label: { up: "Sopra la propria media", flat: "In linea", down: "Sotto la propria media", building: "ROSS li sta ancora conoscendo" }[tone], count: residents.filter((r) => trendOf(r).tone === tone).length }));
-  const signalTypes = Object.values(signals.reduce((acc, x) => { const key = x.signal; acc[key] = acc[key] || { signal: key, positive: Boolean(x.positive), count: 0 }; acc[key].count += 1; return acc; }, {})).sort((a, b) => Number(a.positive) - Number(b.positive) || b.count - a.count);
+  const signalTypes = Object.values(signals.reduce((acc, x) => { const key = x.signal; acc[key] = acc[key] || { signal: key, positive: Boolean(x.positive), count: 0 }; acc[key].count += 1; return acc; }, {})).sort((a, b) => Number(b.positive) - Number(a.positive) || b.count - a.count);
 
   const days = Array.from({ length: Number(period) }, (_, index) => {
     const date = new Date(`${DEMO_TODAY}T10:00:00`);
@@ -127,8 +130,10 @@ export function buildTeamReport(state, period) {
     next: (profiles[r.id] || fallback).next,
   }));
 
-  // Punti per la riunione: assenza insolita, tema della voce da migliorare, bisogni ricorrenti, segnali da osservare.
+  // Punti per la riunione: da valorizzare, assenza insolita, tema della voce da migliorare, bisogni ricorrenti, segnali da osservare.
+  const rising = going.filter((x) => x.trend === "in aumento");
   const discuss = [
+    `Da valorizzare: ${groupByResident(rising, nameOf)}${topPositive ? `; e ${topPositive.count} ospiti apprezzano ${topPositive.text.replace(/^apprezzamento per /, "")}: dirlo a tutto lo staff` : ""}.`,
     ...presenceNotes.filter((p) => p.kind === "assenza").map((p) => `${nameOf(p.residentId)}: ${lower(p.text)} Chi passa a salutarlo?`),
     ...(topNegative ? [`${topNegative.topic} (${topNegative.count} ospiti): ${lower(topNegative.action)}.`] : []),
     ...[...needs].sort((a, b) => b.times - a.times).filter((n) => n.times > 1).slice(0, 2).map((n) => `${nameOf(n.residentId)}: ${lower(n.text)} (espresso ${n.times} volte). Chi se ne occupa?`),
@@ -136,10 +141,11 @@ export function buildTeamReport(state, period) {
   ];
 
   return {
-    summary: `Negli ultimi ${period} giorni ${talked} ospiti su ${residents.length} hanno parlato con ROSS, per ${minutes} minuti complessivi. Questa settimana ${toWatch.length} ospiti hanno espresso segnali da osservare o hanno avuto un'assenza insolita; ${serene.length} hanno espresso serenità.${topPositive && topNegative ? ` Sulla vita in struttura, i temi più sentiti sono ${topPositive.text} (${topPositive.count} ospiti) e ${topNegative.text} (${topNegative.count}).` : ""}`,
+    summary: `Negli ultimi ${period} giorni ${talked} ospiti su ${residents.length} hanno parlato con ROSS, per ${minutes} minuti complessivi. Questa settimana ${goingResidents.size} ospiti su ${residents.length} hanno espresso qualcosa di positivo rispetto alla propria media; ${toWatch.length} hanno anche aspetti da osservare o un'assenza insolita.${topPositive && topNegative ? ` Sulla vita in struttura, i temi più sentiti sono ${topPositive.text} (${topPositive.count} ospiti) e ${topNegative.text} (${topNegative.count}).` : ""}`,
     kpis: [
       [`${talked}/${residents.length}`, "ospiti con ROSS"],
       [`${minutes} min`, "tempo con ROSS"],
+      [goingResidents.size, "con segnali positivi"],
       [toWatch.length, "da osservare"],
       [needs.length, "bisogni da prendere in carico"],
       [emerged, "interessi emersi con ROSS"],
