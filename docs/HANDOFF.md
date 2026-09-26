@@ -54,6 +54,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 | `src/App.jsx` | Rotte. Le vecchie URL (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alle nuove. Mostra il `Toaster` (Sonner) nella vista Struttura e il vecchio toast nelle viste Famiglia e ROSS. |
 | `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, a icone altrove), Sheet su mobile, schede in alto, card profilo con l'account del ruolo (`roles[].account` in `chatScript.js`), scorciatoia ⌘K che porta alla chat. |
 | `src/components/InsightRail.jsx` | Accordion della sidebar e guida `readingGuide` ("Cosa ti dice ROSS"). Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
+| `src/components/PageGuide.jsx` | Specchietto verde "Cosa ti dice ROSS" per le pagine Ospiti e Report: contenuti in `residentsGuide` e `reportsGuide`; lo stato aperto/chiuso resta nel browser. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, "Avanti" in presentazione, sequenza `presentationRoutes`. |
 | `src/components/ui.jsx` | Primitive in stile shadcn: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog`, `Toaster`. |
 | `src/components/Common.jsx` | `Avatar`, `ModeBadge`, `InfoTip` (Radix Tooltip: portal, apertura al tocco), `SectionTitle`, `Modal` (usato ancora nelle viste Famiglia e ROSS), `DataExplanation`. |
@@ -107,6 +108,13 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · "Cosa ti dice ROSS" anche in Ospiti e Report
+- **Richiesta:** portare lo specchietto verde della chat anche nelle schede Ospiti e Report, per contestualizzare la filosofia: a cosa servono, cosa si trova, perché sono fatte così.
+- **Modifiche:** nuovo `PageGuide` (stesso stile verde con la bussola), chiuso di default e apribile, con 5 voci per pagina e domande da fare alla chat; nascosto in stampa.
+  - Ospiti: perché questo ordine, ognuno confrontato con sé stesso, la cartella, cosa non trovi e perché, ROSS segnala e voi decidete.
+  - Report: Riepilogo d'équipe, Singolo ospite, perché anche su carta, come si leggono i numeri, cosa non c'è.
+- **File:** `src/components/PageGuide.jsx`, `src/pages/Residents.jsx`, `src/pages/OperationalPages.jsx`, `src/styles.css`, `AGENTS.md`.
 
 ### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Report: Riepilogo d'équipe e Singolo ospite
 - **Richiesta:** rivedere la sezione Report con la stessa filosofia; l'équipe sceglie tra il report generale sulla struttura e quello del singolo ospite.
