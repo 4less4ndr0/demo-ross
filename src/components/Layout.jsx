@@ -9,7 +9,6 @@ import { useDemo } from "../state/DemoContext";
 const nav = [
   ["/", "Chiedi a ROSS", MessageCircle], ["/ospiti", "Ospiti", Users], ["/report", "Report", FileText],
 ];
-const presentationRoutes = ["/", "/ross", "/ross/conversazione", "/?q=emerso", "/ospiti/elena?tab=memorie", "/ospiti/elena?tab=relazioni", "/famiglia", "/report", "/ospiti/elena?tab=documenti"];
 
 export function Layout() {
   const { state, actions } = useDemo();
@@ -28,13 +27,6 @@ export function Layout() {
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [navigate]);
-
-  const nextPresentation = () => {
-    const here = `${location.pathname}${location.search}`;
-    const exact = presentationRoutes.indexOf(here);
-    const current = exact >= 0 ? exact : presentationRoutes.findIndex((r) => r.split("?")[0] === location.pathname);
-    navigate(presentationRoutes[(current + 1) % presentationRoutes.length]);
-  };
 
   const isChat = location.pathname === "/";
   const role = roles.find((r) => r.id === state.role) || roles[1];
@@ -73,7 +65,6 @@ export function Layout() {
         </header>
         <main className="page"><Outlet /></main>
       </div>
-      {state.presentation && <button className="demo-next" onClick={nextPresentation}>Avanti nella demo <span>→</span></button>}
     </div>
   );
 }
