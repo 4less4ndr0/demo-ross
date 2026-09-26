@@ -77,6 +77,8 @@ function getInitialState() {
         familyContributions: parsed.familyContributions || initialFamilyContributions,
         scheduledActivities: parsed.scheduledActivities || initialScheduledActivities,
         rossJourney: { ...initialRossJourney, ...(parsed.rossJourney || {}) },
+        // I dati degli ospiti vengono dalla demo: dal browser si conservano solo le scelte dell'utente.
+        residents: initialResidents.map((r) => { const saved = (parsed.residents || []).find((x) => x.id === r.id); return saved ? { ...r, mode: saved.mode, status: saved.status } : r; }),
         role: ["operatore", "coordinatrice"].includes(parsed.role) ? "staff" : parsed.role || defaults.role,
       };
     }

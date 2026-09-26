@@ -1,5 +1,5 @@
 import { DEMO_TODAY } from "./demoData";
-import { journeyInterest, needsFor, presenceFor, relating, signalsFor } from "./careInsights";
+import { approachGuide, journeyInterest, needsFor, presenceFor, relating, signalsFor } from "./careInsights";
 
 // Report "Come sta" per l'équipe (docs/contratto-informativo-struttura.md):
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato. Nessuna citazione, nessun argomento.
@@ -67,6 +67,7 @@ export function buildResidentReport(state, resident, period) {
     needs: needsFor(resident.id),
     presenceNotes: presenceFor(resident.id),
     relating: r,
+    firstStep: approachGuide[resident.id]?.firstSteps[0] || null,
     newInterest: newInterest ? journeyInterest : null,
     next: profile.next,
     series: seriesFor(resident, Number(period)),

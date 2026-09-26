@@ -485,3 +485,44 @@
 .conversation-week>header span{font-size:12px;color:var(--muted)}
 @media(max-width:900px){.approach-grid{grid-template-columns:1fr}.participation-card header{flex-direction:column}}
 @media(max-width:650px){.profile-overview .continuity-card{flex-direction:column;align-items:flex-start;gap:14px}}
+
+/* Come avvicinarsi: primo approccio, spunti per interesse, stile di ROSS, momenti della giornata */
+.approach-section{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.approach-section>*{min-width:0}
+.approach-section>.content-toolbar{margin-bottom:0}
+.first-steps{padding:18px 20px}
+.first-steps ol{margin:12px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:step}
+.first-steps li{counter-increment:step;display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45}
+.first-steps li::before{content:counter(step);flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--text);color:var(--surface);font:700 13px var(--serif)}
+.approach-heading{margin-top:10px}
+.approach-heading h3{font:600 24px var(--serif);margin:0}
+.approach-heading p{font-size:13px;color:var(--muted);margin:4px 0 0}
+.hook-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px}
+.hook-card{padding:18px;display:grid;gap:10px;align-content:start}
+.hook-card header{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.hook-card h4{font:600 22px var(--serif);margin:0}
+.hook-source{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.hook-source.hook-ross{color:var(--green)}
+.hook-card.hook-new{border-color:var(--accent)}
+.hook-card p{margin:0;font-size:13px;line-height:1.45;color:var(--text)}
+.hook-card p>span,.hook-engagement>span{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.hook-detail{background:var(--sand-soft);border-radius:10px;padding:9px 11px}
+.hook-engagement{border-top:1px solid var(--line);padding-top:10px}
+.hook-engagement small{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+.engagement-bar{position:relative;height:8px;border-radius:999px;background:var(--surface-2);overflow:visible;margin-top:4px}
+.engagement-bar i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--green)}
+.engagement-bar b{position:absolute;top:-3px;width:2px;height:14px;background:var(--text);opacity:.45}
+.approach-grid-2{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0}
+.style-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.style-grid div{display:grid;gap:2px;background:var(--surface-2);border-radius:10px;padding:10px}
+.style-grid span,.rhythm-strip span{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.style-grid strong{font-size:14px}
+.rhythm-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.rhythm-strip>div{display:grid;gap:6px;justify-items:start}
+.rhythm-strip i{position:relative;display:block;width:100%;height:44px;border-radius:10px;background:var(--surface-2);overflow:hidden}
+.rhythm-strip b{position:absolute;inset:auto 0 0 0;background:var(--green-soft)}
+.rhythm-3 b{background:var(--green);opacity:.75}
+.rhythm-strip strong{font-size:13px}
+.continuity-hook{margin-top:6px!important}
+@media(max-width:900px){.first-steps ol,.approach-grid-2,.style-grid{grid-template-columns:1fr 1fr}.first-steps ol{grid-template-columns:1fr}}
+@media(max-width:650px){.approach-grid-2{grid-template-columns:1fr}.approach-section>.content-toolbar{flex-direction:column;align-items:flex-start;gap:12px}.hook-card header{flex-direction:column;gap:2px}}
