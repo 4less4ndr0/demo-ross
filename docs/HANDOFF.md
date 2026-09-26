@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 26 settembre 2026 · stato di `main` dopo la PR #10.
+> Ultimo aggiornamento: 26 settembre 2026 · stato del branch `claude/optimistic-carson-xag798` (dopo la PR #10 più le modifiche su stakeholder e domande).
 
 ---
 
@@ -16,7 +16,7 @@
 | Zona | Cosa c'è |
 |---|---|
 | Barra superiore | Solo tre schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report**. Su mobile stanno sulla stessa riga dell'hamburger. |
-| Sidebar sinistra | Logo, "Residenza Aurora" e data. Nella chat contiene anche un accordion con Da osservare, Bisogni espressi, Voce della struttura, Ingaggio con ROSS e **Cosa ti dice ROSS** (guida alla lettura). In fondo: Impostazioni e card operatore (menu con il ruolo "Sto chiedendo come", impostazioni, presentazione e ripristino dei dati). Nelle altre pagine la sidebar si riduce a una colonna di icone. |
+| Sidebar sinistra | Logo, "Residenza Aurora" e data. Nella chat contiene anche un accordion con Da osservare, Bisogni espressi, Voce della struttura, Ingaggio con ROSS e **Cosa ti dice ROSS** (guida alla lettura). In fondo: Impostazioni e card profilo con l'account del ruolo (menu con il ruolo "Sto chiedendo come", impostazioni, presentazione e ripristino dei dati). Nelle altre pagine la sidebar si riduce a una colonna di icone. |
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti, suggerimenti per ruolo, graffetta per allegare documenti, microfono simulato, menu "…". |
 | Ospiti (`/ospiti`, `/ospiti/:id`) | Schede degli ospiti e cartella con cinque tab: Sintesi · Conversazioni ROSS · Storia e interessi · Relazioni · Documenti (sola lettura). |
 | Report (`/report`) | Report narrativo "Come sta" per ogni ospite, stampabile in A4 (`?ospite=ID`, `&stampa=1`), e report di struttura aggregato (`?ambito=struttura`). |
@@ -31,7 +31,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 
 1. **ROSS sta sopra i sistemi della RSA.** Non è un gestionale: niente anagrafica, note di reparto o pianificazione attività.
 2. **La home è una chat** interrogabile anche da telefono, e ogni risposta cita la fonte.
-3. **Target non ancora definito.** Il selettore di ruolo (Operatore, Coordinatrice, Psicologa, Direzione) serve anche a scoprire chi trae più valore dallo strumento.
+3. **Target non ancora definito.** Il selettore di ruolo serve anche a scoprire chi trae più valore dallo strumento. Tre stakeholder: **Staff** (operatori e coordinatori, accesso condiviso senza login), **Psicologa** e **Direzione** (accesso personale con login). Niente turni nella demo.
 4. **Regola d'oro della privacy:** la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai di cosa ha parlato**. Quindi niente trascrizioni, citazioni, argomenti, nomi raccontati, ricordi specifici, oggetto delle emozioni, diagnosi.
 5. **Cinque punti cardinali**, le sole cose che la struttura riceve:
    - benessere nel tempo: segnali espressi su almeno 7 giorni, confrontati con la media personale;
@@ -52,7 +52,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 | File | Ruolo |
 |---|---|
 | `src/App.jsx` | Rotte. Le vecchie URL (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alle nuove. Mostra il `Toaster` (Sonner) nella vista Struttura e il vecchio toast nelle viste Famiglia e ROSS. |
-| `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, a icone altrove), Sheet su mobile, schede in alto, card operatore con il ruolo, scorciatoia ⌘K che porta alla chat. |
+| `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, a icone altrove), Sheet su mobile, schede in alto, card profilo con l'account del ruolo (`roles[].account` in `chatScript.js`), scorciatoia ⌘K che porta alla chat. |
 | `src/components/InsightRail.jsx` | Accordion della sidebar e guida `readingGuide` ("Cosa ti dice ROSS"). Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, "Avanti" in presentazione, sequenza `presentationRoutes`. |
 | `src/components/ui.jsx` | Primitive in stile shadcn: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog`, `Toaster`. |
@@ -78,7 +78,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 **Avvio locale:** `npm install`, poi `npm run dev` (http://localhost:5173).
 **Prima di ogni PR:** `npm run build` e `npm run test:sites`. La build deve produrre `dist/client/index.html`, `dist/server/index.js` e `dist/.openai/hosting.json`.
 **Deploy:** merge su `main`, poi il workflow `.github/workflows/deploy-pages.yml` pubblica su GitHub Pages in circa 30 secondi.
-**Dati vecchi nel browser:** card operatore → "Ripristina dati demo".
+**Dati vecchi nel browser:** card profilo → "Ripristina dati demo".
 
 - **Aggiungere una domanda alla chat:** in `src/data/chatScript.js` aggiungi un oggetto a `intents`, con `id`, `keywords` normalizzate senza accenti, eventuale `when(state)` e `answer({ state, role, resident })`. L'oggetto restituisce `text`, `bullets`, `residents`, `sources` e `action`. Usa `byRole` per le varianti per ruolo. Se è una domanda suggerita, aggiungila anche a `suggestions`.
 - **Cambiare gli insight** (segnali, bisogni, voce, come relazionarsi): modifica solo `src/data/careInsights.js`. Chat, sidebar, cartella e report li leggono da lì.
@@ -106,6 +106,18 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Tre stakeholder e domande consigliate
+- **Richiesta:** nelle card suggerite il testo non era allineato. Domande come "Riassumimi il turno" erano troppo generiche, e nella demo non ci sono turni. Chi lavora in prima linea non ha un login, psicologa e direzione sì: operatori e coordinatori diventano una voce unica.
+- **Modifiche:**
+  - ruoli da quattro a tre: **Staff** (senza login), **Psicologa**, **Direzione** (con login); `roleFor()` converte i vecchi valori `operatore` e `coordinatrice` salvati nel browser;
+  - card profilo con l'account del ruolo ("Staff di reparto", "Dott.ssa Marta Bianchi", "Paolo Ferri") al posto di Giulia Serra; nel menu "senza login" o "con login";
+  - domande consigliate riscritte per stakeholder (Staff: chi seguire, di cosa ha bisogno, come coinvolgere, chi non ha parlato; Psicologa: segnali e andamento rispetto alla media; Direzione: voce della struttura, uso di ROSS, bisogni ricorrenti, report di struttura);
+  - intento `turno` sostituito da `priorita` ("Chi ha bisogno di più attenzione oggi?"): presenza insolita, segnali e bisogni per ospite; anche "turno" e `/consegne` portano lì;
+  - intento `report`: "report di struttura" apre il report aggregato;
+  - testo delle card allineato a sinistra;
+  - placeholder e guida "La chat" senza riferimenti al turno.
+- **File:** `src/data/chatScript.js`, `src/pages/AskRoss.jsx`, `src/components/Layout.jsx`, `src/components/InsightRail.jsx`, `src/state/DemoContext.jsx`, `src/styles.css`, `README.md`, `AGENTS.md`.
 
 ### PR #10 · 26/09/2026 · "Cosa ti dice ROSS" diventa la guida alla lettura
 - **Richiesta:** le spiegazioni delle icone "i" devono stare in "Cosa ti dice ROSS", che diventa un aiuto per leggere tutta la schermata.

@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
-import { answerQuestion, findResident, roles, suggestions } from "../data/chatScript";
+import { answerQuestion, findResident, roleFor, suggestions } from "../data/chatScript";
 import { useDemo } from "../state/DemoContext";
 import { Avatar } from "../components/Common";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../components/ui";
 
-const queryShortcuts = { turno: "Riassumimi il turno", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
+const queryShortcuts = { turno: "Chi ha bisogno di più attenzione oggi?", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
 const sourceIcons = { "Biografia d'ingresso": BookOpen, Documento: FileText, "Nota operatore": StickyNote, Famiglia: Heart, "Dati ROSS": BarChart3 };
 
 function guessKind(fileName) {
@@ -31,7 +31,7 @@ export function AskRoss() {
   const handledQuery = useRef(null);
   const scopeId = params.get("ospite");
   const scoped = state.residents.find((r) => r.id === scopeId) || null;
-  const role = roles.find((r) => r.id === state.role) || roles[1];
+  const role = roleFor(state.role);
 
   const baseSuggestions = useMemo(() => {
     const list = scoped ? [`Come sta ${scoped.name.split(" ")[0]}?`, `Come posso coinvolgere ${scoped.name.split(" ")[0]}?`, ...suggestions[role.id].filter((s) => !/elena|carlo|ada|lucia|chi /i.test(s)).slice(0, 2)] : suggestions[role.id];
@@ -135,7 +135,7 @@ export function AskRoss() {
           <form onSubmit={(e) => { e.preventDefault(); ask(input); }} className={listening ? "listening" : ""}>
             <button type="button" className="ask-tool" onClick={() => fileRef.current?.click()} title="Allega un documento" aria-label="Allega un documento"><Paperclip size={18} /></button>
             <input ref={fileRef} type="file" hidden accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt" onChange={upload} />
-            <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder={listening ? "In ascolto…" : scoped ? `Chiedi qualcosa su ${scoped.name.split(" ")[0]}…` : "Chiedi di un ospite, del turno, di un documento…"} aria-label="Domanda per ROSS" />
+            <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder={listening ? "In ascolto…" : scoped ? `Chiedi qualcosa su ${scoped.name.split(" ")[0]}…` : "Chiedi di un ospite, di un bisogno, di un documento…"} aria-label="Domanda per ROSS" />
             <button type="button" className={`ask-tool ${listening ? "active" : ""}`} onClick={listen} title="Detta la domanda" aria-label="Detta la domanda"><Mic size={18} /></button>
             <button className="ask-send" disabled={!input.trim()} aria-label="Invia"><ArrowUp size={18} /></button>
           </form>

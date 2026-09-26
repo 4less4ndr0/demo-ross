@@ -7,7 +7,7 @@ import { Avatar } from "./Common";
 
 // Guida alla lettura della schermata: raccoglie le spiegazioni che prima erano nei tooltip.
 const readingGuide = [
-  { title: "La chat", text: "Chiedi di un ospite, del turno o di un documento. Ogni risposta cita la fonte: Dati ROSS, Biografia d'ingresso, Documento o Nota operatore. Il ruolo con cui chiedi si cambia dal tuo profilo, in basso.", question: "Come sta Lucia?" },
+  { title: "La chat", text: "Chiedi di un ospite, di un bisogno o di un documento. Ogni risposta cita la fonte: Dati ROSS, Biografia d'ingresso, Documento o Nota operatore. Le domande consigliate cambiano per Staff (accesso condiviso, senza login), Psicologa e Direzione (accesso personale): si sceglie dal profilo, in basso.", question: "Chi ha bisogno di più attenzione oggi?" },
   { title: "Da osservare", text: "Segnali espressi dall'ospite negli ultimi 7 giorni (stanchezza, solitudine, fastidio…), confrontati con la sua media personale. Mai l'argomento o il motivo: il giudizio resta a voi.", question: "Chi ha espresso segnali da osservare questa settimana?" },
   { title: "Bisogni espressi", text: "Ciò che l'ospite ha chiesto per sé (uscire, sentire un familiare, sente freddo…), senza il contesto della conversazione.", question: "Quali bisogni hanno espresso gli ospiti?" },
   { title: "Voce della struttura", text: "Opinioni sulla vita in struttura (pasti, rumore, attività), anonime e aggregate: un tema compare solo se lo esprimono almeno 3 ospiti.", question: "Cosa dicono gli ospiti della vita in struttura?" },
