@@ -293,3 +293,14 @@
   .ui-select-trigger{min-width:0}
 }
 @media print{[data-sonner-toaster]{display:none!important}}
+.ui-dialog{position:fixed;z-index:190;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 40px);border-radius:16px;box-shadow:0 24px 70px rgba(18,28,25,.28);outline:none}
+.ui-dialog.modal-lg{width:min(820px,calc(100vw - 32px))}
+.ui-dialog.modal-xl{width:min(1040px,calc(100vw - 32px))}
+.ui-dialog[data-state=open]{animation:uiDialogIn .18s ease-out}
+.ui-dialog[data-state=closed]{animation:uiDialogIn .12s ease-in reverse}
+@keyframes uiDialogIn{from{opacity:0;transform:translate(-50%,-48%) scale(.97)}}
+.ui-dialog :is(.primary-button,.ghost-button){display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;min-height:36px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:600;width:auto;margin:0}
+.ui-dialog .primary-button{background:var(--text);color:var(--surface);border:1px solid transparent}
+.ui-dialog .ghost-button{background:var(--surface);border:1px solid var(--line);color:var(--text)}
+.form-grid .ui-select-trigger,.interaction-context .ui-select-trigger{width:100%;margin-top:6px}
+.interaction-context .ui-select-trigger{margin-top:0;height:32px;min-width:110px;width:auto}

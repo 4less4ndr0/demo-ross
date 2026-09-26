@@ -48,7 +48,22 @@ export function Sheet({ open, onOpenChange, side = "left", title, description, c
   </DialogPrimitive.Root>;
 }
 
+export function Dialog({ open, onClose, title, size = "md", children }) {
+  return <DialogPrimitive.Root open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
+    <DialogPrimitive.Portal>
+      <DialogPrimitive.Overlay className="ui-sheet-overlay ui-dialog-overlay" />
+      <DialogPrimitive.Content className={cx("modal", `modal-${size}`, "ui-dialog")} aria-describedby={undefined}>
+        <header><DialogPrimitive.Title asChild><h2>{title}</h2></DialogPrimitive.Title><DialogPrimitive.Close className="ui-button ui-button-ghost ui-button-icon" aria-label="Chiudi"><X size={17} /></DialogPrimitive.Close></header>
+        {children}
+      </DialogPrimitive.Content>
+    </DialogPrimitive.Portal>
+  </DialogPrimitive.Root>;
+}
+
+const toOptions = (values) => values.map((v) => (typeof v === "string" ? { value: v, label: v } : v));
+
 export function Select({ value, onValueChange, options, groups, label, className, placeholder }) {
+  options = options && toOptions(options);
   const all = groups ? groups.flatMap((g) => g.options) : options;
   const current = all.find((o) => o.value === value);
   return <SelectPrimitive.Root value={value} onValueChange={onValueChange}>
