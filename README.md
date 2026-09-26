@@ -34,16 +34,26 @@ Per provare la build Pages in locale:
 BASE_PATH=/demo-ross/ npm run build && npx vite preview --base /demo-ross/
 ```
 
+## Posizionamento della vista Struttura
+
+ROSS non è un gestionale sostitutivo: si affianca ai sistemi già in uso nella RSA. La vista Struttura è quindi una **chat a frizione zero** ("Chiedi a ROSS"), interrogabile anche da telefono, che risponde dalle conversazioni raccolte da ROSS e dai documenti caricati, citando sempre la fonte.
+
+- **Chiedi a ROSS** (`/`): chat al centro, insight aggregati a sinistra (su mobile in un pannello a scomparsa). Il selettore "Chiedo come" (Operatore, Coordinatrice, Psicologa, Direzione) cambia le domande suggerite e la profondità delle risposte: serve anche a capire quale figura trae più valore dallo strumento.
+- **Ospiti** (`/ospiti`, `/ospiti/:id`): dashboard ospiti e cartella con i tab Sintesi, Conversazioni ROSS, Memorie e storia, Relazioni, Documenti.
+- **Report** (`/report`): per ospite, oppure `?ambito=struttura` per l'engagement aggregato.
+- **Impostazioni** (`/impostazioni`): tema, presentazione, fasce delle modalità ROSS, ripristino del dataset.
+
+Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alla nuova collocazione.
+
 ## Percorso demo consigliato
 
-1. Panoramica struttura e sezione “ROSS ha notato”.
-2. Profilo di Elena Bianchi.
-3. Tab Relazioni per il Knowledge Graph.
-4. Tab Memorie per la Memory Library.
-5. Attività e mini-giochi.
-6. “Avvia interazione” per la conversazione immersiva.
-7. Termina, conferma la nuova memoria e apri il profilo aggiornato.
-8. Report e Passaggio consegne.
+1. Chiedi a ROSS: cambia ruolo e prova le domande suggerite, poi "Riassumimi il turno".
+2. Allega un documento (es. `fisioterapia_elena.pdf`) e apri la cartella di Elena → Documenti.
+3. Vista ROSS: conversazione con Elena su Cefalù.
+4. Torna in Struttura: "Cosa è emerso oggi con Elena?" → verifica e conferma il ricordo.
+5. Tab Relazioni per il Knowledge Graph.
+6. Vista Famiglia.
+7. Report per ospite e di struttura.
 
 La voce `Presentazione` riduce la navigazione e mostra il pulsante “Avanti nella demo”. È possibile aprire direttamente la modalità con `?presentation=true`.
 
@@ -52,7 +62,8 @@ La voce `Presentazione` riduce la navigazione e mostra il pulsante “Avanti nel
 - `src/data/demoData.js`: dataset centrale, deterministico, con ospiti, memorie, biografia, attività, interazioni e metriche di 30 giorni.
 - `src/state/DemoContext.jsx`: stato persistente, temi, reset e azioni che aggiornano realmente la demo.
 - `src/components/`: layout, componenti comuni e Knowledge Graph.
-- `src/pages/`: dashboard, ospiti, profilo, attività, interazione, insight, analytics, report e configurazione.
+- `src/pages/`: chat "Chiedi a ROSS", ospiti, cartella ospite, interazione live, report, impostazioni e le viste Famiglia e ROSS.
+- `src/data/chatScript.js`: ruoli, domande suggerite e risposte preparate della chat (deterministiche, con fonti). Per aggiungere una domanda: nuovo intento con parole chiave e testo per ruolo.
 - `src/styles.css`: token dei tre temi e layout responsive.
 
 ## Modificare la demo
@@ -69,7 +80,7 @@ Modificare gli array in `src/data/demoData.js`. Ogni ospite deve avere un `id` u
 
 ### Aggiungere attività o giochi
 
-Le attività vivono nell'array `activities`. Le attività normali aprono la simulazione di interazione. I mini-giochi presenti sono `associations`, `categories` e `memory-game`; la loro UI è in `src/pages/Activities.jsx`.
+Le attività vivono nell'array `activities` e alimentano le viste Famiglia e ROSS. La vista Struttura non ha più un Activity Center: il focus del test è la conversazione tra ROSS e l'ospite.
 
 ### Copy e navigazione
 
@@ -81,10 +92,11 @@ I token `ross`, `neutral` e `care` sono all'inizio di `src/styles.css`. Il tema 
 
 ## Reset
 
-Usare `Struttura → Ripristina dataset demo`. In alternativa cancellare la chiave `ross-rsa-demo-v2` dal localStorage del browser.
+Usare `Impostazioni → Ripristina dataset demo`. In alternativa cancellare la chiave `ross-rsa-demo-v2` dal localStorage del browser.
 
 ## Note di prodotto
 
 - Le metriche descrivono esclusivamente interazioni osservabili attraverso R.O.S.S.
+- La chat riporta solo ciò che ROSS ha ascoltato o che è stato caricato; non interpreta valori clinici dei documenti.
 - Non vengono presentate diagnosi, biometria, stato emotivo certo o valutazioni cliniche.
 - La dicitura “elaborazione locale” descrive la direzione architetturale della demo e non una certificazione tecnica o normativa.

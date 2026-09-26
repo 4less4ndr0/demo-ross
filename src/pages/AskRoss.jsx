@@ -1,0 +1,197 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, Lightbulb, MessageCircle, Mic, Paperclip, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
+import { DEMO_TODAY, insights } from "../data/demoData";
+import { answerQuestion, findResident, roles, suggestions, themes } from "../data/chatScript";
+import { useDemo } from "../state/DemoContext";
+import { Avatar, InfoTip } from "../components/Common";
+
+const insightQuestions = { i1: "Come sta Elena?", i2: "Carlo si sta chiudendo?", i3: "Quali ricordi sono da verificare?", i4: "Come stanno usando ROSS gli ospiti?" };
+const queryShortcuts = { turno: "Riassumimi il turno", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
+const sourceIcons = { "Conversazione ROSS": MessageCircle, Documento: FileText, "Nota operatore": StickyNote, Famiglia: Heart, Memoria: BookOpen, "Dati ROSS": BarChart3 };
+
+function guessKind(fileName) {
+  const name = fileName.toLowerCase();
+  if (/fisio|riabilit|motori/.test(name)) return "Fisioterapia";
+  if (/sangue|analisi|esami|lab/.test(name)) return "Esami del sangue";
+  if (/diari|consegn|nota/.test(name)) return "Diario di reparto";
+  return "Documento";
+}
+
+export function AskRoss() {
+  const { state, actions } = useDemo();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [params, setParams] = useSearchParams();
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [listening, setListening] = useState(false);
+  const [railOpen, setRailOpen] = useState(false);
+  const inputRef = useRef(null);
+  const fileRef = useRef(null);
+  const threadRef = useRef(null);
+  const handledQuery = useRef(null);
+  const scopeId = params.get("ospite");
+  const scoped = state.residents.find((r) => r.id === scopeId) || null;
+  const role = roles.find((r) => r.id === state.role) || roles[1];
+
+  const baseSuggestions = useMemo(() => {
+    const list = scoped ? [`Cosa devo sapere su ${scoped.name.split(" ")[0]}?`, `Di cosa posso parlare con ${scoped.name.split(" ")[0]}?`, ...suggestions[role.id].filter((s) => !/elena|carlo|ada/i.test(s)).slice(0, 2)] : suggestions[role.id];
+    return state.rossJourney.completedAt && !scoped ? ["Cosa è emerso oggi con Elena?", ...list.slice(0, 3)] : list;
+  }, [role.id, scoped, state.rossJourney.completedAt]);
+
+  const ask = (question) => {
+    const text = question.trim();
+    if (!text) return;
+    const id = Date.now();
+    setMessages((prev) => [...prev, { id, from: "user", text }, { id: id + 1, from: "ross", pending: true }]);
+    setInput("");
+    window.setTimeout(() => {
+      setMessages((prev) => prev.map((m) => m.id === id + 1 ? { ...m, pending: false, answer: answerQuestion(state, role.id, text, scopeId) } : m));
+    }, 650);
+  };
+
+  useEffect(() => {
+    const q = params.get("q");
+    if (!q || handledQuery.current === q) return;
+    handledQuery.current = q;
+    ask(queryShortcuts[q] || q);
+  }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const focus = () => inputRef.current?.focus();
+    if (location.state?.focus) focus();
+    window.addEventListener("ross:focus-chat", focus);
+    return () => window.removeEventListener("ross:focus-chat", focus);
+  }, [location.state]);
+
+  useEffect(() => { threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" }); }, [messages]);
+
+  const setScope = (residentId) => {
+    const next = new URLSearchParams(params);
+    if (residentId) next.set("ospite", residentId); else next.delete("ospite");
+    setParams(next);
+  };
+
+  const listen = () => {
+    setListening(true);
+    window.setTimeout(() => { setListening(false); ask(scoped ? `Cosa devo sapere su ${scoped.name.split(" ")[0]}?` : "Cosa devo sapere su Elena prima di entrare?"); }, 1500);
+  };
+
+  const upload = (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    const resident = scoped || findResident(state, file.name.replace(/[_-]/g, " ")) || state.residents[0];
+    const kind = guessKind(file.name);
+    const title = file.name.replace(/\.[^.]+$/, "");
+    actions.addDocument({ residentId: resident.id, kind, title, summary: "Caricato ora. ROSS lo userà come fonte nelle risposte, citandolo." });
+    const id = Date.now();
+    setMessages((prev) => [...prev, { id, from: "user", attachment: file.name }, { id: id + 1, from: "ross", answer: {
+      text: `Ho aggiunto «${title}» alla cartella di ${resident.name.split(" ")[0]} come ${kind.toLowerCase()}. Da ora posso usarlo per rispondere e lo citerò sempre come fonte. Non interpreto valori clinici: quelli restano al medico.`,
+      residents: [resident.id],
+      sources: [{ kind: "Documento", label: `${kind} · oggi` }],
+      action: { label: "Apri i documenti", to: `/ospiti/${resident.id}?tab=documenti` },
+    } }]);
+  };
+
+  const pickFromRail = (question) => { setRailOpen(false); ask(question); };
+
+  return (
+    <div className="ask-screen">
+      <InsightRail state={state} open={railOpen} onClose={() => setRailOpen(false)} onAsk={pickFromRail} navigate={navigate} />
+      <section className="ask-chat surface">
+        <header className="ask-header">
+          <button className="ask-rail-toggle" onClick={() => setRailOpen(true)}><Lightbulb size={16} /> Insight</button>
+          <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Conversazioni ROSS e documenti della struttura</small></div></div>
+          <div className="ask-role" role="group" aria-label="Sto chiedendo come">
+            <span>Chiedo come</span>
+            <select value={role.id} onChange={(e) => actions.setRole(e.target.value)} aria-label="Ruolo">{roles.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}</select>
+          </div>
+          {messages.length > 0 && <button className="icon-button" title="Nuova conversazione" aria-label="Nuova conversazione" onClick={() => setMessages([])}><RotateCcw size={16} /></button>}
+        </header>
+
+        <div className="ask-thread" ref={threadRef}>
+          {!messages.length ? (
+            <div className="ask-empty">
+              <h1>{scoped ? `Cosa vuoi sapere su ${scoped.name.split(" ")[0]}?` : "Cosa vuoi sapere oggi?"}</h1>
+              <p>{role.hint}. ROSS risponde dalle conversazioni con gli ospiti e dai documenti caricati, citando sempre la fonte.</p>
+              <div className="ask-suggestions">{baseSuggestions.map((s) => <button key={s} onClick={() => ask(s)}><Sparkles size={15} />{s}</button>)}</div>
+            </div>
+          ) : messages.map((m) => m.from === "user"
+            ? <div key={m.id} className="ask-msg ask-msg-user"><span className="ask-bubble">{m.attachment ? <span className="ask-attachment"><Paperclip size={14} />{m.attachment}</span> : m.text}</span></div>
+            : <div key={m.id} className="ask-msg ask-msg-ross"><span className="ask-avatar">R</span>{m.pending ? <div className="ask-typing"><i /><i /><i /><small>Cerco nelle conversazioni e nei documenti…</small></div> : <Answer answer={m.answer} state={state} navigate={navigate} />}</div>)}
+        </div>
+
+        <footer className="ask-composer">
+          {messages.length > 0 && <div className="ask-chips">{baseSuggestions.map((s) => <button key={s} onClick={() => ask(s)}>{s}</button>)}</div>}
+          {scoped && <div className="ask-scope"><Avatar resident={scoped} size="sm" />Stai chiedendo su <strong>{scoped.name}</strong><button onClick={() => setScope(null)} aria-label="Rimuovi filtro ospite"><X size={14} /></button></div>}
+          <form onSubmit={(e) => { e.preventDefault(); ask(input); }} className={listening ? "listening" : ""}>
+            <button type="button" className="ask-tool" onClick={() => fileRef.current?.click()} title="Allega un documento" aria-label="Allega un documento"><Paperclip size={18} /></button>
+            <input ref={fileRef} type="file" hidden accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt" onChange={upload} />
+            <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder={listening ? "In ascolto…" : scoped ? `Chiedi qualcosa su ${scoped.name.split(" ")[0]}…` : "Chiedi di un ospite, del turno, di un documento…"} aria-label="Domanda per ROSS" />
+            <button type="button" className={`ask-tool ${listening ? "active" : ""}`} onClick={listen} title="Detta la domanda" aria-label="Detta la domanda"><Mic size={18} /></button>
+            <button className="ask-send" disabled={!input.trim()} aria-label="Invia"><ArrowUp size={18} /></button>
+          </form>
+          <small className="ask-disclaimer">ROSS riporta solo ciò che ha ascoltato o che è stato caricato. Non fa valutazioni cliniche.</small>
+        </footer>
+      </section>
+    </div>
+  );
+}
+
+function Answer({ answer, state, navigate }) {
+  const people = (answer.residents || []).map((id) => state.residents.find((r) => r.id === id)).filter(Boolean);
+  return (
+    <div className="ask-answer">
+      <p>{answer.text}</p>
+      {answer.bullets?.length > 0 && <ul>{answer.bullets.map((b, i) => <li key={i}>{b.tag && <span className="ask-tag">{b.tag}</span>}<span>{b.text}</span>{b.quote && <q>{b.quote}</q>}</li>)}</ul>}
+      {answer.after && <p className="ask-after">{answer.after}</p>}
+      {people.length > 0 && <div className="ask-people">{people.map((r) => <button key={r.id} onClick={() => navigate(`/ospiti/${r.id}`)}><Avatar resident={r} size="sm" />{r.name.split(" ")[0]}</button>)}</div>}
+      {answer.sources?.length > 0 && <div className="ask-sources"><span>Fonti</span>{answer.sources.map((s, i) => { const Icon = sourceIcons[s.kind] || FileText; return <span key={i} className="ask-source"><Icon size={13} /><strong>{s.kind}</strong>{s.label}</span>; })}</div>}
+      {answer.action && <button className="ghost-button ask-action" onClick={() => navigate(answer.action.to)}>{answer.action.label} <ArrowRight size={15} /></button>}
+    </div>
+  );
+}
+
+function InsightRail({ state, open, onClose, onAsk, navigate }) {
+  const today = state.interactions.filter((i) => i.date === DEMO_TODAY);
+  const talkedToday = new Set(today.map((i) => i.residentId)).size;
+  const minutes = today.reduce((sum, i) => sum + i.duration, 0);
+  const pending = state.memories.filter((m) => m.status !== "Confermata").length;
+  const engagement = [...state.residents].sort((a, b) => (b.delta ?? -9) - (a.delta ?? -9));
+  const journey = state.rossJourney;
+
+  return (
+    <>
+      {open && <div className="ask-rail-backdrop" onClick={onClose} />}
+      <aside className={`ask-rail ${open ? "open" : ""}`} aria-label="Insight aggregati">
+        <div className="ask-rail-head"><div><span className="eyebrow">IL POLSO DI ROSS</span><h2>Oggi in Residenza Aurora</h2></div><button className="icon-button ask-rail-close" onClick={onClose} aria-label="Chiudi"><X size={16} /></button></div>
+        {journey.completedAt && <button className="ask-journey" onClick={() => journey.confirmedAt ? navigate("/ospiti/elena?tab=memorie") : onAsk("Cosa è emerso oggi con Elena?")}>
+          <span><Sparkles size={16} /></span><div><small>NUOVO DA ROSS · ELENA</small><strong>{journey.confirmedAt ? "Il ricordo della macchina fotografica di Paolo è confermato." : "È emerso un nuovo ricordo su Cefalù."}</strong></div><ArrowRight size={15} />
+        </button>}
+        <div className="ask-stats">
+          <div><strong>{talkedToday}<small>/{state.residents.length}</small></strong><span>ospiti hanno parlato con ROSS</span></div>
+          <div><strong>{minutes}<small> min</small></strong><span>di conversazione</span></div>
+          <div><strong>{pending}</strong><span>ricordi da verificare</span></div>
+        </div>
+        <section className="ask-rail-section">
+          <h3>Come ingaggiano con ROSS <InfoTip label="Rispetto a cosa?" text="Ogni ospite è confrontato solo con la propria media degli ultimi 14 giorni." /></h3>
+          {engagement.map((r) => <button key={r.id} className="ask-engage" onClick={() => onAsk(`Come sta ${r.name.split(" ")[0]}?`)}>
+            <Avatar resident={r} size="sm" /><span>{r.name}</span>
+            {r.delta == null ? <small className="ask-delta building">in costruzione</small> : <small className={`ask-delta ${r.delta >= 0 ? "up" : "down"}`}>{r.delta >= 0 ? "+" : ""}{r.delta.toFixed(1)}</small>}
+          </button>)}
+        </section>
+        <section className="ask-rail-section">
+          <h3>Di cosa parlano</h3>
+          <div className="ask-themes">{themes.map((t) => <button key={t.label} onClick={() => onAsk(`Chi parla di ${t.label.toLowerCase()}?`)}>{t.label}<small>{t.count}</small></button>)}</div>
+        </section>
+        <section className="ask-rail-section">
+          <h3>ROSS ha notato</h3>
+          {insights.map((item) => <button key={item.id} className="ask-noticed" onClick={() => onAsk(insightQuestions[item.id])}><span className={`insight-dot tone-${item.tone}`} /><div><small>{item.category} · {item.period}</small><strong>{item.title}</strong></div></button>)}
+        </section>
+        <div className="local-note"><span className="leaf-mark">R</span><div><strong>Elaborazione locale</strong><p>ROSS si affianca al gestionale: non lo sostituisce e non ne duplica i dati.</p></div></div>
+      </aside>
+    </>
+  );
+}

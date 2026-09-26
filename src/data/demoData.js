@@ -137,3 +137,9 @@ export const themeOptions = [
   { id: "neutral", name: "Neutral", description: "Essenziale e professionale" },
   { id: "care", name: "Care", description: "Chiaro, calmo, rassicurante" },
 ];
+
+export const documents = [
+  { id: "doc-fisio-elena", residentId: "elena", kind: "Fisioterapia", title: "Relazione fisioterapica", date: "15 set 2026", author: "Marta Villa · fisioterapista", pages: 2, summary: "Deambulazione con deambulatore, stabile. Obiettivo: due brevi passeggiate al giorno, preferibilmente al mattino." },
+  { id: "doc-esami-elena", residentId: "elena", kind: "Esami del sangue", title: "Esami ematochimici di routine", date: "10 set 2026", author: "Laboratorio convenzionato", pages: 3, summary: "Documento caricato e ricercabile. ROSS non interpreta i valori: la lettura resta al medico." },
+  { id: "doc-fisio-carlo", residentId: "carlo", kind: "Fisioterapia", title: "Aggiornamento piano motorio", date: "12 set 2026", author: "Marta Villa · fisioterapista", pages: 1, summary: "Esercizi seduti tre volte a settimana. Preferisce svolgerli nella sala lettura." },
+];

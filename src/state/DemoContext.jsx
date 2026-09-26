@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { biography as initialBiography, interactions as initialInteractions, memories as initialMemories, modeSchedule as initialSchedule, residents as initialResidents } from "../data/demoData";
+import { biography as initialBiography, documents as initialDocuments, interactions as initialInteractions, memories as initialMemories, modeSchedule as initialSchedule, residents as initialResidents } from "../data/demoData";
 import { asset } from "../asset.js";
 
 const DemoContext = createContext(null);
@@ -58,6 +58,8 @@ function defaultState() {
     familyContributions: initialFamilyContributions,
     scheduledActivities: initialScheduledActivities,
     rossJourney: initialRossJourney,
+    role: "coordinatrice",
+    documents: initialDocuments,
   };
 }
 
@@ -235,6 +237,11 @@ export function DemoProvider({ children }) {
     addNote: (note) => {
       setState((prev) => ({ ...prev, notes: [{ id: Date.now(), ...note }, ...prev.notes] }));
       notify("Nota operatore aggiunta");
+    },
+    setRole: (role) => setState((prev) => ({ ...prev, role })),
+    addDocument: (document) => {
+      setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Caricato da Giulia Serra", pages: 1, ...document }, ...prev.documents] }));
+      notify("Documento aggiunto alla cartella");
     },
     takeInsight: (id) => {
       setState((prev) => ({ ...prev, takenInsights: [...new Set([...prev.takenInsights, id])] }));
