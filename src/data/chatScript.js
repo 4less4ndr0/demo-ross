@@ -1,6 +1,6 @@
 import { DEMO_TODAY } from "./demoData";
 import { buildResidentReport } from "./reportNarrative";
-import { describeSignal, facilityVoice, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
+import { approachGuide, describeSignal, facilityVoice, hooksFor, journeyInterest, needs, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
 
 // Risposte della chat secondo docs/contratto-informativo-struttura.md:
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato.
@@ -42,6 +42,8 @@ function residentStats(state, residentId) {
 function relatingAnswer(state, role, resident) {
   const r = relating[resident.id];
   const name = firstName(resident);
+  const guide = approachGuide[resident.id];
+  const top = hooksFor(resident.id, { withJourney: Boolean(state.rossJourney.completedAt) })[0];
   return {
     text: byRole(role, {
       staff: `Con ${name}: ${r.address}. Momento migliore: ${r.bestTime}, durata ${r.duration}. Attività che funzionano: ${r.works.join(", ").toLowerCase()}.`,
@@ -49,13 +51,15 @@ function relatingAnswer(state, role, resident) {
       direzione: `${name}: attività che funzionano ${r.works.join(", ").toLowerCase()}.`,
     }),
     bullets: [
+      ...(guide ? guide.firstSteps.map((step, i) => ({ tag: `Passo ${i + 1}`, text: step })) : []),
+      ...(top?.opener ? [{ tag: "Per iniziare", text: `${top.label}: ${top.opener}${top.engagement ? ` (con ROSS conversazioni +${top.engagement.duration}% rispetto alla sua media)` : ""}` }] : []),
       { tag: "Funziona", text: r.works.join(" · ") },
       { tag: "Interessi", text: r.interests.map(([label, source]) => `${label}${source === "Emerso con ROSS" ? " (emerso con ROSS)" : ""}`).join(" · ") },
       { tag: "Attenzione", text: r.avoid },
     ],
     residents: [resident.id],
     sources: [src.data("Ultimi 30 giorni"), src.bio("Famiglia e struttura")],
-    action: { label: `Apri la cartella di ${name}`, to: `/ospiti/${resident.id}` },
+    action: { label: `Come avvicinarsi a ${name}`, to: `/ospiti/${resident.id}?tab=avvicinare` },
   };
 }
 

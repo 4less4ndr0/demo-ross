@@ -74,6 +74,14 @@ Tutto ciò che la struttura riceve rientra in una di queste cinque famiglie. Son
 - **Biografia d'ingresso**, inserita da famiglia o struttura all'onboarding: resta visibile.
 - **Interessi emersi** nelle conversazioni (F9): passano **solo come categoria**, con l'indicazione di come usarli. Il ricordo o l'episodio restano a ROSS, che li usa con l'ospite.
 
+**Spunti per interesse (decisione del 26/09).** Per ogni interesse la struttura può ricevere:
+- la **leva**, cioè che cosa coinvolge la persona ("sfida, allenare la mente", "manualità");
+- uno **spunto per iniziare** (una domanda o un gesto) e un'**attività da proporre**;
+- il **coinvolgimento con ROSS** per categoria, sempre rispetto alla media della persona ("conversazioni +40% più lunghe della sua media, partecipazione alta 4 volte su 5");
+- il **dettaglio concreto** ("seguiva le corse di rally", "da ragazzo smontava le radio") **solo se arriva dalla biografia d'ingresso**, con la fonte visibile. Mai per gli interessi emersi con ROSS.
+
+A questi si aggiungono il **primo approccio in 3 passi**, lo **stile di conversazione** a cui ROSS si è adattato (ritmo, frasi, domande, pause) e i **momenti della giornata** in cui la persona è più disponibile.
+
 | Corretto | Vietato |
 |---|---|
 | "Nuovo interesse emerso: fotografia. Funziona come avvio di conversazione." | "Elena ha ricordato la macchina fotografica rossa di Paolo a Cefalù." |

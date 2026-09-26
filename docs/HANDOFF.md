@@ -59,7 +59,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 | `src/components/Common.jsx` | `Avatar`, `ModeBadge`, `InfoTip` (Radix Tooltip: portal, apertura al tocco), `SectionTitle`, `Modal` (usato ancora nelle viste Famiglia e ROSS), `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
 | `src/data/chatScript.js` | Motore della chat: `roles`, `suggestions`, intenti a parole chiave con risposte per ruolo e fonti. L'intento `privacy` rifiuta con garbo le domande sul contenuto delle conversazioni. |
-| `src/data/careInsights.js` | **Dati conformi al contratto:** `signals`, `needs`, `facilityVoice`, `relating`, `presenceNotes`, `journeyInterest`, `cardinalPoints` e helper. È il posto dove cambiare gli insight. |
+| `src/data/careInsights.js` | **Dati conformi al contratto:** `signals`, `needs`, `facilityVoice`, `relating`, `presenceNotes`, `journeyInterest`, `cardinalPoints`, `approachGuide` (primo approccio, stile di ROSS, momenti della giornata, spunti per interesse) e helper come `hooksFor` (interessi con spunti, ordinati per coinvolgimento). È il posto dove cambiare gli insight. |
 | `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)`: testo narrativo, KPI, segnali, bisogni, come relazionarsi e serie del grafico per il report "Come sta". |
 | `src/pages/OperationalPages.jsx` | `ReportsPage`: report per ospite e `FacilityReport` (grafici aggregati). |
 | `src/pages/ResidentProfile.jsx` | Cartella: Come sta (narrativa, benessere nel tempo, bisogni, presenza, grafico rispetto alla media), Come avvicinarsi (relazionarsi e interessi per categoria), Conversazioni ROSS (raggruppate per settimana, senza argomenti), Documenti. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
@@ -107,6 +107,18 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md) e in [`contratto-informat
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · "Come avvicinarsi" diventa una guida pratica
+- **Richiesta:** rendere il tab più profondo e utile allo staff, con spunti concreti per ogni interesse, senza entrare nel privato.
+- **Decisione:** i dettagli concreti (es. "seguiva le corse di rally") compaiono solo se arrivano dalla biografia d'ingresso, con la fonte; per gli interessi emersi con ROSS solo leva, spunto, attività e coinvolgimento (contratto §3.2).
+- **Modifiche:**
+  - tab Come avvicinarsi: primo approccio in 3 passi, striscia come rivolgersi / momento / durata / attenzione, una card per interesse (cosa lo coinvolge, dettaglio d'ingresso, per iniziare, da proporre, barra del coinvolgimento con ROSS rispetto alla sua media) ordinate per coinvolgimento, "Come parla ROSS con {nome}" e momenti della giornata;
+  - dati in `approachGuide` e `hooksFor` (`src/data/careInsights.js`) per tutti gli 8 ospiti;
+  - Come sta: la card "Come avvicinarsi" mostra lo spunto dell'interesse più coinvolgente;
+  - chat: "Come posso coinvolgere X?" risponde con i 3 passi e lo spunto principale;
+  - report "Come sta": riga "Per iniziare";
+  - i dati degli ospiti salvati nel browser non sovrascrivono più quelli della demo (si conservano solo modalità e stato).
+- **File:** `src/data/careInsights.js`, `src/pages/ResidentProfile.jsx`, `src/data/chatScript.js`, `src/data/reportNarrative.js`, `src/pages/OperationalPages.jsx`, `src/state/DemoContext.jsx`, `src/styles.css`, `docs/contratto-informativo-struttura.md`, `AGENTS.md`.
 
 ### Branch `claude/optimistic-carson-xag798` · 26/09/2026 · Vista Ospiti riallineata al contratto informativo
 - **Richiesta:** rivedere lista e cartella ospite con la stessa filosofia (come sta e di cosa ha bisogno, mai di cosa ha parlato; ROSS sopra il gestionale).

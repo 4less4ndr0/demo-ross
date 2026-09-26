@@ -5,7 +5,7 @@ import { useDemo } from "../state/DemoContext";
 import { Avatar, DataExplanation, EmptyState, ModeBadge } from "../components/Common";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
-import { journeyInterest, needsFor, presenceFor, relating, signalsFor } from "../data/careInsights";
+import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, signalsFor } from "../data/careInsights";
 import { buildResidentReport } from "../data/reportNarrative";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select } from "../components/ui";
 
@@ -68,10 +68,11 @@ function Overview({ state, resident, onApproach, onConversations }) {
   const presence = presenceFor(resident.id);
   const r = relating[resident.id];
   const newInterest = state.rossJourney.completedAt && resident.id === journeyInterest.residentId;
+  const top = hooksFor(resident.id)[0];
   return <div className="profile-overview">
     <div className="overview-main">
       <article className="narrative-card surface"><span className="eyebrow">ULTIMI 7 GIORNI</span><h2>{summary.headline}</h2><p>{summary.paragraphs.join(" ")}</p><div className="narrative-stats">{summary.kpis.slice(0, 3).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div></article>
-      {r && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p></div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
+      {r && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p>{top?.opener && <p className="continuity-hook"><strong>Per iniziare · {top.label.toLowerCase()}:</strong> {top.opener}</p>}</div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
       <section className="surface participation-card"><header><div><h3>Partecipazione rispetto alla sua media</h3><p>{chart.building ? "Baseline in costruzione: servono circa 14 giorni di conversazioni." : "La linea tratteggiata è la media personale di " + name + ". Mai confronti con altri ospiti."}</p></div><Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} /></header><ParticipationChart series={chart.series} building={chart.building} height={200} /></section>
       <DataExplanation>Descrive solo ciò che accade nelle conversazioni con ROSS. Non è una valutazione clinica: ROSS segnala, lo staff osserva e decide.</DataExplanation>
     </div>
@@ -91,21 +92,33 @@ function Overview({ state, resident, onApproach, onConversations }) {
   </div>;
 }
 
+const rhythmLabels = { 1: "Bassa", 2: "Media", 3: "Alta" };
+const styleLabels = [["pace", "Ritmo"], ["sentences", "Frasi"], ["questions", "Domande"], ["pauses", "Pause"]];
+
 function Approach({ state, resident, navigate }) {
   const r = relating[resident.id];
+  const guide = approachGuide[resident.id];
   const name = resident.name.split(" ")[0];
-  const newInterest = state.rossJourney.completedAt && resident.id === journeyInterest.residentId;
-  const interests = r?.interests || resident.interests.map((i) => [i, "Biografia d'ingresso"]);
-  const fromBio = interests.filter(([, source]) => source !== "Emerso con ROSS");
-  const emerged = [...interests.filter(([, source]) => source === "Emerso con ROSS"), ...(newInterest ? [[journeyInterest.label, "Emerso con ROSS", true]] : [])];
-  return <section className="content-section">
-    <div className="content-toolbar"><div><h2>Come avvicinarsi a {name}</h2><p>Indicazioni pratiche per lo staff. I ricordi e i racconti restano tra ROSS e {name}.</p></div><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione con ROSS</Button></div>
+  const hooks = hooksFor(resident.id, { withJourney: Boolean(state.rossJourney.completedAt) });
+  const building = resident.participation == null;
+  return <section className="content-section approach-section">
+    <div className="content-toolbar"><div><h2>Come avvicinarsi a {name}</h2><p>Indicazioni pratiche per lo staff, dalla biografia d'ingresso e da come {name} risponde a ROSS. I ricordi e i racconti restano tra ROSS e {name}.</p></div><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione con ROSS</Button></div>
+    {guide && <article className="first-steps surface"><span className="eyebrow">PRIMO APPROCCIO IN 3 PASSI</span><ol>{guide.firstSteps.map((step) => <li key={step}>{step}</li>)}</ol></article>}
     {r ? <div className="relating-strip surface"><div><span>Come rivolgersi</span><strong>{r.address}</strong></div><div><span>Momento migliore</span><strong>{r.bestTime}</strong></div><div><span>Durata ideale</span><strong>{r.duration}</strong></div><div><span>Attenzione</span><strong>{r.avoid}</strong></div></div> : <EmptyState title="Indicazioni in costruzione" description="ROSS le propone dopo le prime settimane di conversazioni." />}
-    <div className="approach-grid">
-      {r && <article className="surface approach-card"><span className="eyebrow">COSA FUNZIONA</span><div className="tag-cloud">{r.works.map((w) => <span key={w}>{w}</span>)}</div></article>}
-      <article className="surface approach-card"><span className="eyebrow">INTERESSI · BIOGRAFIA D'INGRESSO</span><div className="tag-cloud">{fromBio.map(([label]) => <span key={label}>{label}</span>)}</div><small>Indicati all'ingresso da famiglia o struttura.</small></article>
-      <article className="surface approach-card"><span className="eyebrow">INTERESSI · EMERSI CON ROSS</span>{emerged.length ? <div className="tag-cloud">{emerged.map(([label, , isNew]) => <span key={label} className={isNew ? "tag-new" : ""}>{label}{isNew ? " · nuovo" : ""}</span>)}</div> : <p className="compact-empty">Ancora nessun interesse emerso.</p>}<small>{newInterest ? journeyInterest.how : "Solo la categoria: utile come spunto per attività e incontri."}</small></article>
-    </div>
+    <div className="approach-heading"><h3>Interessi e spunti</h3><p>Dall'interesse che coinvolge di più {name}. Il dettaglio concreto compare solo se arriva dalla biografia d'ingresso.</p></div>
+    <div className="hook-grid">{hooks.map((h) => <article key={h.label} className={`hook-card surface ${h.isNew ? "hook-new" : ""}`}>
+      <header><h4>{h.label}</h4><span className={`hook-source ${h.source === "Emerso con ROSS" ? "hook-ross" : ""}`}>{h.source}{h.isNew ? " · nuovo" : ""}</span></header>
+      {h.lever && <p className="hook-lever"><span>Cosa lo coinvolge</span>{h.lever}</p>}
+      {h.detail && <p className="hook-detail"><span>Dalla biografia d'ingresso</span>{h.detail}</p>}
+      {h.opener && <p><span>Per iniziare</span>{h.opener}</p>}
+      {h.activity && <p><span>Da proporre</span>{h.activity}</p>}
+      <div className="hook-engagement"><span>Con ROSS</span>{h.engagement ? <><div className="engagement-bar"><i style={{ width: `${Math.min(100, 50 + h.engagement.duration * 0.8)}%` }} /><b style={{ left: "50%" }} /></div><small>Conversazioni {h.engagement.duration >= 0 ? "+" : ""}{h.engagement.duration}% più lunghe della sua media · partecipazione alta {h.engagement.high[0]} volte su {h.engagement.high[1]}</small></> : <small>{building ? "Dati in raccolta: baseline in costruzione." : "Ancora pochi dati su questo interesse."}</small>}</div>
+    </article>)}</div>
+    {guide && <div className="approach-grid approach-grid-2">
+      <article className="surface approach-card"><span className="eyebrow">COME PARLA ROSS CON {name.toUpperCase()}</span><div className="style-grid">{styleLabels.map(([key, label]) => <div key={key}><span>{label}</span><strong>{guide.style[key]}</strong></div>)}</div><small>È lo stile a cui ROSS si è adattato: lo staff può rispecchiarlo.</small></article>
+      <article className="surface approach-card"><span className="eyebrow">MOMENTI DELLA GIORNATA</span><div className="rhythm-strip">{Object.entries(guide.rhythm).map(([moment, level]) => <div key={moment} className={`rhythm-${level}`}><span>{moment}</span><i><b style={{ height: `${level * 33}%` }} /></i><strong>{rhythmLabels[level]}</strong></div>)}</div><small>Disponibilità a conversare, ricavata da quando {name} parla con ROSS.</small></article>
+    </div>}
+    <DataExplanation>Dettagli solo dalla biografia d'ingresso, compilata da famiglia o struttura. Ciò che {name} racconta a ROSS resta tra loro: qui arrivano solo categorie e indicazioni.</DataExplanation>
   </section>;
 }
 

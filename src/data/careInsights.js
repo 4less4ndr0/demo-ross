@@ -49,6 +49,101 @@ export const relating = {
   bruno: { address: "Tu · «Bruno»", bestTime: "dopo la quiete pomeridiana", duration: "15 minuti", works: ["Chiedergli di spiegare", "Treni", "Carte"], avoid: "Non proporre attività nel primo pomeriggio", interests: [["Treni", "Biografia d'ingresso"], ["Storia locale", "Emerso con ROSS"], ["Giochi di carte", "Biografia d'ingresso"]] },
 };
 
+// Guida "Come avvicinarsi": primo approccio, stile di ROSS, momenti della giornata e spunti per interesse.
+// `detail` solo per gli interessi dalla biografia d'ingresso (famiglia o struttura), mai da ciò che l'ospite racconta a ROSS.
+// `engagement`: durata media delle conversazioni partite da quell'interesse rispetto alla media della persona (%), e partecipazione alta X volte su Y.
+export const approachGuide = {
+  elena: {
+    firstSteps: ["Salutala come «signora Elena», al mattino o dopo le 16", "Parti dalla musica italiana o da una fotografia", "Fai domande aperte e lasciala raccontare: di solito prosegue da sola"],
+    style: { pace: "Normale", sentences: "Normali", questions: "Aperte", pauses: "Brevi" },
+    rhythm: { mattino: 3, pomeriggio: 1, sera: 3 },
+    hooks: {
+      "Musica italiana": { lever: "Nostalgia, piacere di cantare", detail: "Ascoltava i cantautori italiani degli anni '60 e '70", opener: "«Che canzone le piaceva ballare?»", activity: "Ascolto musicale al mattino, anche in piccolo gruppo", engagement: { duration: 45, high: [5, 6] } },
+      Giardinaggio: { lever: "Cura, stare all'aperto", detail: "Curava un giardino dietro casa", opener: "«Mi aiuta a capire come curare questa pianta?»", activity: "Passeggiata verso le aiuole o travaso di piante", engagement: { duration: 25, high: [3, 4] } },
+      Viaggi: { lever: "Curiosità, ricordare luoghi", detail: "Ha viaggiato molto in Italia", opener: "«Qual è il posto più bello che ha visto?»", activity: "Guardare insieme cartoline o foto di città italiane", engagement: { duration: 30, high: [4, 5] } },
+      Insegnamento: { lever: "Sentirsi utile, spiegare", detail: "È stata maestra elementare per molti anni", opener: "«Come spiegherebbe questa cosa ai suoi alunni?»", activity: "Chiederle di aiutare un altro ospite in un'attività", engagement: { duration: 15, high: [2, 3] } },
+    },
+  },
+  carlo: {
+    firstSteps: ["Dagli del tu e chiamalo «Carlo», al mattino", "Parti dal giornale o dall'ultima partita", "Tieni la conversazione breve e concreta: evita domande sui sentimenti"],
+    style: { pace: "Normale", sentences: "Brevi", questions: "Concrete", pauses: "Brevi" },
+    rhythm: { mattino: 3, pomeriggio: 2, sera: 1 },
+    hooks: {
+      Calcio: { lever: "Competizione, commentare", detail: "Tifoso di calcio da sempre, seguiva le partite alla radio", opener: "«Hai visto com'è finita ieri?»", activity: "Guardare insieme la sintesi di una partita", engagement: { duration: 60, high: [4, 5] } },
+      Giornali: { lever: "Restare informato, avere un'opinione", detail: "Leggeva il quotidiano ogni mattina", opener: "«Cosa dice oggi il giornale?»", activity: "Lettura del giornale in sala lettura", engagement: { duration: 20, high: [3, 5] } },
+      Orto: { lever: "Fare con le mani, vedere crescere", opener: "Chiedergli un consiglio su cosa piantare", activity: "Coinvolgerlo nell'orto della struttura", engagement: { duration: 35, high: [2, 3] } },
+    },
+  },
+  lucia: {
+    firstSteps: ["Chiamala «Lucia», nel primo pomeriggio", "Proponi un gioco di parole o parla di cucina", "Non interromperla quando racconta: sarà lei a cambiare argomento"],
+    style: { pace: "Normale", sentences: "Normali", questions: "Aperte", pauses: "Brevi" },
+    rhythm: { mattino: 2, pomeriggio: 3, sera: 1 },
+    hooks: {
+      Cucina: { lever: "Sentirsi competente, condividere", detail: "Cucinava per tutta la famiglia la domenica", opener: "«Come si fa un buon ragù?»", activity: "Laboratorio di cucina o preparare la tavola", engagement: { duration: 40, high: [4, 5] } },
+      "Giochi di parole": { lever: "Sfida, divertimento", opener: "Proporle un indovinello o una parola da indovinare", activity: "Giochi di parole in piccolo gruppo", engagement: { duration: 55, high: [5, 6] } },
+      Teatro: { lever: "Espressività, stare in compagnia", detail: "Ha fatto parte di una compagnia teatrale amatoriale", opener: "«Le piacerebbe leggere una scena insieme?»", activity: "Lettura ad alta voce o piccola recita", engagement: { duration: 20, high: [2, 3] } },
+    },
+  },
+  mario: {
+    firstSteps: ["Rivolgiti con il «lei» e chiamalo «signor Rossi», dopo le 17", "Parti da una domanda tecnica o da un lavoro manuale", "Prenditi tempo: parla lentamente e con pause"],
+    style: { pace: "Lento", sentences: "Normali", questions: "Concrete", pauses: "Lunghe" },
+    rhythm: { mattino: 1, pomeriggio: 1, sera: 3 },
+    hooks: {
+      Montagna: { lever: "Libertà, fatica condivisa", detail: "Andava in montagna ogni estate", opener: "«Com'era salire in quota la mattina presto?»", activity: "Guardare insieme foto di montagna o un documentario", engagement: { duration: 35, high: [3, 4] } },
+      Falegnameria: { lever: "Manualità, precisione", detail: "Ha lavorato come falegname", opener: "Chiedergli come si ripara un piccolo oggetto di legno", activity: "Laboratorio manuale con legno o piccole riparazioni", engagement: { duration: 50, high: [3, 3] } },
+    },
+  },
+  teresa: {
+    firstSteps: ["Chiamala «Teresa», nel pomeriggio", "Invitala a cantare o proponi un'attività di gruppo", "Chiedile di insegnare qualcosa agli altri: la coinvolge"],
+    style: { pace: "Normale", sentences: "Normali", questions: "Aperte", pauses: "Brevi" },
+    rhythm: { mattino: 2, pomeriggio: 3, sera: 2 },
+    hooks: {
+      "Canto corale": { lever: "Stare insieme, esprimersi", detail: "Ha cantato per anni in un coro", opener: "«Mi insegna una canzone?»", activity: "Canto di gruppo nel pomeriggio", engagement: { duration: 50, high: [6, 7] } },
+      Fiori: { lever: "Bellezza, cura", detail: "Coltivava fiori sul balcone", opener: "«Che fiori metterebbe in questo vaso?»", activity: "Composizione di fiori di stagione", engagement: { duration: 25, high: [4, 5] } },
+      "Lavoro a maglia": { lever: "Concentrazione, fare per gli altri", opener: "Portarle gomitoli e ferri e chiederle un consiglio", activity: "Laboratorio di maglia in compagnia", engagement: { duration: 30, high: [3, 4] } },
+    },
+  },
+  antonio: {
+    firstSteps: ["Salutalo come «signor Greco», nel pomeriggio", "Parti dalla radio o dalle automobili", "Se all'inizio risponde a monosillabi, lasciagli tempo: poi si apre"],
+    style: { pace: "Lento", sentences: "Brevi", questions: "Concrete", pauses: "Lunghe" },
+    rhythm: { mattino: 1, pomeriggio: 3, sera: 2 },
+    hooks: {
+      Automobili: { lever: "Nostalgia, competenza tecnica", detail: "Seguiva le corse di rally; ha avuto una Lancia d'epoca", opener: "«Che macchina guidava da giovane?»", activity: "Sfogliare insieme una rivista di auto d'epoca", engagement: { duration: 40, high: [4, 5] } },
+      Radio: { lever: "Manualità, curiosità", detail: "Da ragazzo smontava e rimontava le radio", opener: "«Come funziona una radio a valvole?»", activity: "Ascoltare insieme la radio del pomeriggio, lasciandogli scegliere la stazione", engagement: { duration: 30, high: [3, 4] } },
+      Scacchi: { lever: "Sfida, allenare la mente", opener: "Proporgli una partita nel pomeriggio", activity: "Partita a scacchi con un altro ospite o con lo staff", engagement: { duration: 60, high: [4, 5] } },
+    },
+  },
+  ada: {
+    firstSteps: ["Rivolgiti con il «lei», «signora Ada», al mattino", "Proponi una poesia breve o un lavoro di cucito", "Conversazioni brevi: è arrivata da poco, meglio non insistere"],
+    style: { pace: "Lento", sentences: "Brevi", questions: "Concrete", pauses: "Lunghe" },
+    rhythm: { mattino: 3, pomeriggio: 1, sera: 1 },
+    hooks: {
+      Poesia: { lever: "Bellezza delle parole, calma", detail: "Conosce a memoria molte poesie studiate a scuola", opener: "«Mi legge una poesia che le piace?»", activity: "Attività di lettura, come ha chiesto", engagement: null },
+      Cucito: { lever: "Precisione, fare con le mani", detail: "Cuciva abiti per la famiglia", opener: "Chiederle un consiglio su un orlo o un bottone", activity: "Piccoli lavori di cucito", engagement: null },
+    },
+  },
+  bruno: {
+    firstSteps: ["Chiamalo «Bruno», dopo la quiete pomeridiana", "Chiedigli di spiegarti qualcosa: treni o storia del paese", "Lascia che guidi lui la conversazione"],
+    style: { pace: "Normale", sentences: "Normali", questions: "Aperte", pauses: "Lunghe" },
+    rhythm: { mattino: 2, pomeriggio: 2, sera: 3 },
+    hooks: {
+      Treni: { lever: "Competenza, spiegare", detail: "Ha lavorato per molti anni nelle ferrovie", opener: "«Come si organizzava un orario dei treni?»", activity: "Guardare insieme foto o video di treni storici", engagement: { duration: 45, high: [3, 4] } },
+      "Storia locale": { lever: "Memoria del territorio, raccontare", opener: "Chiedergli com'era il paese una volta", activity: "Incontro sulla storia locale con altri ospiti", engagement: { duration: 35, high: [3, 4] } },
+      "Giochi di carte": { lever: "Compagnia, strategia", detail: "Giocava a carte al bar ogni domenica", opener: "Proporgli una partita a scopa", activity: "Torneo di carte nel pomeriggio", engagement: { duration: 20, high: [2, 4] } },
+    },
+  },
+};
+
+// Interessi con i relativi spunti, ordinati da quello che coinvolge di più.
+export function hooksFor(residentId, { withJourney = false } = {}) {
+  const guide = approachGuide[residentId]?.hooks || {};
+  const list = (relating[residentId]?.interests || []).map(([label, source]) => ({ label, source, ...(guide[label] || {}) }));
+  if (withJourney && residentId === journeyInterest.residentId) list.push({ label: journeyInterest.label, source: "Emerso con ROSS", isNew: true, lever: "Ricordare attraverso le immagini", opener: journeyInterest.how, activity: "Guardare insieme delle fotografie", engagement: { duration: 50, high: [1, 1] } });
+  return list
+    .map((h) => (h.source === "Emerso con ROSS" ? { ...h, detail: undefined } : h))
+    .sort((a, b) => (b.engagement?.duration ?? -1) - (a.engagement?.duration ?? -1));
+}
+
 // Presenza e continuità: assenza di interazione insolita (F12), momenti di difficoltà (F8).
 export const presenceNotes = [
   { residentId: "antonio", kind: "assenza", text: "Oggi non ha ancora parlato con ROSS; di solito entro le 11 sì." },
