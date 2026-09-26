@@ -121,7 +121,9 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
-### Documentazione · 26/09/2026 · Passaggio di consegne aggiornato
+### PR #20 · 26/09/2026 · Passaggio di consegne aggiornato e testi narrativi allineati
+- **Controllo di coerenza:** i segnali positivi arrivano da un'unica fonte (`careInsights.js`) e compaiono nella lista, nel ritratto, nella chat e in entrambi i report; le schede e il riepilogo mostrano un positivo per ospite, il ritratto e il report tutti.
+- **Testi narrativi** (`reportNarrative.js`, usati nel ritratto e nel report) riscritti per citare anche ciò che va bene: buonumore di Lucia e Carlo, tranquillità di Mario, gratitudine di Elena, iniziativa di Teresa, curiosità di Ada.
 - Sezioni 1–5 riallineate allo stato dopo la PR #19: sidebar con "Cosa va bene" e specchietti, ritratto, due report, decisioni su equilibrio, lessico, confronti con sé stessi e "Come avvicinarsi", mappa del codice con i nuovi helper, questioni aperte (viste Famiglia e ROSS, nomi dei documenti, contenuti da validare).
 - Voci del changelog del branch etichettate con il numero di PR (#12–#19); riferimenti Notion "TOV guidelines" e "Keywords" aggiunti.
 
