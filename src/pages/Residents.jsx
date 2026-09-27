@@ -28,7 +28,7 @@ export function Residents() {
         <div className="resident-body">
           <header><div><h3>{resident.name}</h3><p>{resident.age} anni · stanza {resident.room}</p></div><ArrowRight size={18} /></header>
           <div className="resident-presence"><MessageCircle size={15} /><span>Ultima conversazione con ROSS: <strong>{absent ? resident.lastInteraction : `oggi alle ${resident.lastInteraction}`}</strong></span></div>
-          {highlight && <p className={`resident-highlight highlight-${highlight.kind}`}>{highlight.kind === "emerso" ? <Sparkles size={15} /> : <Leaf size={15} />}<span><small>{highlightLabels[highlight.kind]}</small>{highlight.text}</span></p>}
+          {highlight && <p className={`resident-bubble bubble-${highlight.kind}`} title={highlightLabels[highlight.kind]}>{highlight.kind === "emerso" ? <Sparkles size={14} /> : <Leaf size={14} />}<span>{highlight.text}</span></p>}
         </div>
       </article>;
     })}</div>}

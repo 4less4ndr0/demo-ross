@@ -195,19 +195,19 @@ export function trendOf(resident) {
 // O un interesse emerso con ROSS (solo la categoria) o una condizione del periodo (segnale, bisogno, presenza).
 // Mai argomenti, citazioni o l'oggetto delle emozioni (docs/contratto-informativo-struttura.md).
 export const highlights = {
-  antonio: { kind: "periodo", text: "Le chiacchierate si allungano: 15 minuti in media, di solito 10." },
-  lucia: { kind: "emerso", text: "I giochi di parole: è ciò che la coinvolge di più con ROSS." },
-  mario: { kind: "periodo", text: "Al mattino riferisce fastidio al ginocchio: meglio proporgli le attività nel pomeriggio." },
-  carlo: { kind: "emerso", text: "L'orto: un interesse nuovo, oltre a calcio e giornali." },
-  ada: { kind: "periodo", text: "Prime settimane con ROSS: tanta curiosità, lo sta ancora conoscendo." },
-  bruno: { kind: "emerso", text: "La storia locale: gli piace essere lui a spiegarla." },
-  elena: { kind: "periodo", text: "Ha espresso gratitudine più del solito: 3 conversazioni su 6, di solito 1." },
-  teresa: { kind: "periodo", text: "Il periodo migliore del mese: 5 conversazioni avviate da lei su 7." },
+  antonio: { kind: "periodo", text: "Chiacchierate più lunghe del solito" },
+  lucia: { kind: "emerso", text: "I giochi di parole la coinvolgono" },
+  mario: { kind: "periodo", text: "Dà il meglio di pomeriggio" },
+  carlo: { kind: "emerso", text: "Nuova passione: l'orto" },
+  ada: { kind: "periodo", text: "Tanta curiosità verso ROSS" },
+  bruno: { kind: "emerso", text: "Racconta volentieri la storia locale" },
+  elena: { kind: "periodo", text: "Esprime più gratitudine del solito" },
+  teresa: { kind: "periodo", text: "Il suo periodo migliore del mese" },
 };
 export const highlightLabels = { emerso: "Emerso con ROSS", periodo: "In questo periodo" };
 // Dopo la conversazione della vista ROSS, per Elena lo spunto diventa il nuovo interesse emerso.
 export const highlightFor = (residentId, state) => (residentId === journeyInterest.residentId && state?.rossJourney?.completedAt
-  ? { kind: "emerso", text: `${journeyInterest.label}: un interesse nuovo, emerso nell'ultima conversazione.` }
+  ? { kind: "emerso", text: `Nuova passione: la ${journeyInterest.label.toLowerCase()}` }
   : highlights[residentId] || null);
 
 export const journeyInterest = { residentId: "elena", label: "Fotografia", how: "Funziona come avvio di conversazione: proporle di guardare insieme delle fotografie." };

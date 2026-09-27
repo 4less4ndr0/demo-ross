@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato dopo la modifica "Spunto al posto dell'avviso" (branch `claude/upbeat-hawking-2yw0f2`).
+> Ultimo aggiornamento: 27 settembre 2026 · stato dopo la modifica "Spunto a fumetto" (branch `claude/upbeat-hawking-2yw0f2`).
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -235,6 +235,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Spunto a fumetto · 27/09/2026
+- **Richiesta:** descrizioni più brevi, mostrate come fumetti verdi.
+- **Modifiche:** testi di `highlights` ridotti a poche parole (es. "Nuova passione: l'orto", "Il suo periodo migliore del mese"), con i verbi ammessi dal lessico (niente "è grata", "adora"); lo spunto di Mario diventa "Dà il meglio di pomeriggio" perché il verde vuol dire "va bene"; fumetto verde (`.resident-bubble`) con la punta verso l'ultima conversazione; l'etichetta resta nel tooltip e l'icona distingue emerso / periodo.
+- **File:** `src/data/careInsights.js`, `src/pages/Residents.jsx`, `src/components/PageGuide.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Spunto al posto dell'avviso · 27/09/2026
 - **Richiesta:** l'avviso sulla scheda ospite non deve sembrare un allarme o un'emergenza da prendere in carico; meglio un insight interessante emerso con ROSS o una condizione particolare della persona.
