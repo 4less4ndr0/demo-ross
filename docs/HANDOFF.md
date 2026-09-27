@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato dopo la modifica "Panoramica" (branch `claude/upbeat-hawking-2yw0f2`).
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #26.
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -34,7 +34,7 @@ Il riferimento completo è il [contratto informativo](contratto-informativo-stru
 
 | Vista | Chi la usa | Cosa vede | Cosa non vede | Stato |
 |---|---|---|---|---|
-| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#23) |
+| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#26) |
 | **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21) |
 | **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Solo il copione** della conversazione è aggiornato; il resto va rivisto |
 
@@ -236,7 +236,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
-### Panoramica · 27/09/2026 · Le analytics della struttura escono dai Report
+### PR #26 · 27/09/2026 · Le analytics della struttura escono dai Report
 - **Richiesta:** il Riepilogo d'équipe non deve stare in Report; serve una sezione a parte, accanto a Report, organizzata come un'app (non come un foglio), con tutti i grafici e la descrizione di ognuno, non troppo complessa, sempre stampabile/scaricabile.
 - **Modifiche:**
   - nuova scheda **Panoramica** (`/panoramica`) dopo Report: sintesi, 6 numeri chiave in card, grafici in tre gruppi con "Cosa mostra" e "Come leggerlo", punti da discutere; periodo, "Scarica riepilogo" e "Stampa" in testata;
