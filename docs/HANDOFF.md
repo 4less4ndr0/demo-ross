@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato dopo la modifica "Schede ospite con foto" (branch `claude/upbeat-hawking-2yw0f2`).
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #27.
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -34,7 +34,7 @@ Il riferimento completo è il [contratto informativo](contratto-informativo-stru
 
 | Vista | Chi la usa | Cosa vede | Cosa non vede | Stato |
 |---|---|---|---|---|
-| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#26) |
+| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#27) |
 | **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21) |
 | **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Solo il copione** della conversazione è aggiornato; il resto va rivisto |
 
@@ -236,7 +236,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
-### Schede ospite con foto · 27/09/2026
+### PR #27 · 27/09/2026 · Schede ospite con foto
 - **Richiesta:** usare le foto del collage al posto delle iniziali e rendere la scheda ospite meno confusa: foto grande, nome, età, stanza, modalità, ultima conversazione con ROSS e al massimo un avviso su un tema da osservare.
 - **Modifiche:**
   - 8 foto ritagliate dal collage in `public/ospiti/ID.webp`; `Avatar` le usa ovunque (lista, ritratto, chat, report), con le iniziali come ripiego;
