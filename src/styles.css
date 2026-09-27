@@ -711,3 +711,27 @@
 @media(max-width:1100px){.overview-top{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:650px){.overview-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-kpis strong{font-size:22px}.overview-summary p{font-size:16px}}
 @media print{.report-screen>.print-offscreen{display:block!important;position:static;width:auto;visibility:visible}}
+
+/* Ospiti: foto al posto delle iniziali; scheda essenziale con foto grande, chi è, ultima conversazione e al massimo un avviso */
+.avatar-photo{overflow:hidden;padding:0;background:var(--surface-2)}
+.avatar-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
+.resident-card{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.resident-card:focus-visible{outline:none;border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 28%,transparent)}
+.resident-photo{position:relative;aspect-ratio:4/3;background:var(--surface-2)}
+.resident-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.resident-photo>span:first-child{position:absolute;inset:0;display:grid;place-items:center;font:600 40px var(--serif)}
+.resident-photo .mode-badge{position:absolute;top:12px;right:12px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(4px)}
+.resident-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.resident-card .resident-body header{display:flex;align-items:flex-start;gap:12px}
+.resident-card .resident-body header svg{flex:none;color:var(--muted);margin-top:4px;transition:transform .15s,color .15s}
+.resident-card:hover .resident-body header svg{color:var(--green);transform:translateX(2px)}
+.resident-card h3{font-size:21px}
+.resident-card p{font-size:13px}
+.resident-card .resident-presence{margin:0;padding:12px 0 0;font-size:13px}
+.resident-notice{display:flex;align-items:flex-start;gap:8px;margin:auto 0 0!important;padding:9px 12px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-size:13px!important;font-weight:600;line-height:1.35}
+.resident-notice svg{flex:none;margin-top:1px}
+.resident-photo{flex:none}
+.resident-card .resident-presence strong{white-space:nowrap}
+@media(max-width:650px){.resident-photo{aspect-ratio:3/2}}
+.resident-photo{overflow:hidden}
+.resident-photo img{position:absolute;inset:0}
