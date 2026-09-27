@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 26 settembre 2026 · stato di `main` dopo la PR #21.
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #22.
 
 ---
 
@@ -20,7 +20,7 @@
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti; 4 domande consigliate per ciascuno dei tre stakeholder (Staff, Psicologa, Direzione); graffetta per allegare documenti; microfono simulato; menu "…". |
 | Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: ultima conversazione, partecipazione rispetto alla **sua** media, chip verde "Va bene" e fino a 2 motivi di attenzione, interessi per categoria. |
 | Ritratto (`/ospiti/:id`) | Quattro tab: **Come sta** (narrativa, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, stile di ROSS, momenti della giornata) · **Conversazioni ROSS** (per settimana, mai di cosa) · **Documenti** (sola lettura). Niente biografia, grafo delle relazioni o contributi della famiglia. |
-| Report (`/report`) | Due report stampabili, scelti con i tab. **Riepilogo d'équipe** (default, anche `?ambito=struttura`): sintesi, KPI, benessere rispetto alla media di ciascuno, voce della struttura, situazione per ospite, presenza e uso di ROSS, punti da discutere (con "Da valorizzare"). **Singolo ospite** (`?ospite=ID`, `&stampa=1`): "Come sta" con come avvicinarsi, "Da valorizzare" e checklist "Da osservare in équipe". |
+| Report (`/report`) | Due report stampabili, scelti con i tab. **Riepilogo d'équipe** (default, anche `?ambito=struttura`): sintesi, KPI con tendenza e sparkline, infografiche (ognuno rispetto alla propria media, segnali della settimana, voce della struttura con soglia di anonimato, bisogni per tipo, minuti al giorno, mappa oraria, cosa coinvolge di più), situazione per ospite, punti da discutere (con "Da valorizzare"). **Singolo ospite** (`?ospite=ID`, `&stampa=1`): "Come sta" con infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3; in presentazione mostra anche "Avanti". |
@@ -63,6 +63,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, Ospiti e Report; a icone altrove), Sheet su mobile, schede in alto, card con l'account del ruolo (`roles[].account`), scorciatoia ⌘K che porta alla chat. |
 | `src/components/InsightRail.jsx` | Accordion della sidebar della chat (Da osservare, Cosa va bene, Bisogni, Voce, Presenza con ROSS) e guida `readingGuide`. Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
 | `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti e Report; testi in `residentsGuide` e `reportsGuide`. |
+| `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars`, `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, "Avanti" in presentazione, sequenza `presentationRoutes`. |
 | `src/components/ui.jsx` | Primitive in stile shadcn: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog`, `Toaster`. |
@@ -75,7 +76,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/pages/Settings.jsx` | Impostazioni unificate, con la sezione `#privacy`. |
 | `src/data/chatScript.js` | Motore della chat: `roles` (Staff, Psicologa, Direzione, con `account`), `roleFor` (converte i ruoli vecchi salvati), `suggestions`, intenti a parole chiave con risposte per ruolo e fonti (tra cui `priorita`, `positivi`, `segnali`, `bisogni`, `voce`, `presenza`, `report`, `privacy`). |
 | `src/data/careInsights.js` | **Dati conformi al contratto:** `signals` (da osservare e positivi), `needs`, `facilityVoice` (con azione suggerita), `relating`, `approachGuide` (primo approccio, stile, momenti, spunti per interesse), `presenceNotes`, `journeyInterest`, `cardinalPoints`. Helper: `hooksFor`, `attentionFor`, `attentionScore`, `byAttention`, `trendOf`, `describeSignal`, `signalDetail`, `groupByResident`. È il posto dove cambiare gli insight. |
-| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)` (narrativa, KPI, segnali, bisogni, come avvicinarsi, da valorizzare, checklist, serie del grafico) e `buildTeamReport(state, period)` per il Riepilogo d'équipe, calcolato da `state.interactions` e da `careInsights.js`. |
+| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)` (narrativa, KPI, segnali, bisogni, come avvicinarsi, da valorizzare, checklist, serie del grafico) e `buildTeamReport(state, period)` per il Riepilogo d'équipe, calcolato da `state.interactions` e da `careInsights.js`. Dati delle infografiche: `trendRows`, `signalTypes` (con `who`), `needCategories`, `activityEngagement`, tendenza dei KPI rispetto al periodo precedente; per l'ospite `weekly`, `rhythm`, `engagement`. |
 | `src/state/DemoContext.jsx` | Stato persistente in localStorage (`ross-rsa-demo-v2`): `role`, `documents`, `notify` con Sonner e "Annulla". I dati degli ospiti vengono sempre dalla demo: dal browser si conservano solo modalità e stato. |
 | `src/data/demoData.js` | Dataset fittizio: ospiti, interazioni, `documents`, più dati usati solo dalle viste Famiglia e ROSS (biografia, memorie, `graphData`, `handoverEntries`). |
 | `src/styles.css` | Stili unici; le sezioni aggiunte sono commentate (es. `/* Come avvicinarsi … */`, `/* Report: Riepilogo d'équipe … */`). |
@@ -121,6 +122,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### PR #22 · 27/09/2026 · Report più visivi: infografiche
+- **Richiesta:** nella sezione Report della Struttura mancavano grafici e infografiche.
+- **Regole:** ogni grafico confronta ciascuno con sé stesso (mai classifiche tra ospiti); la voce della struttura mostra la soglia di anonimato di 3 ospiti; colore con un solo significato e sempre con etichetta o legenda; palette validata con lo script della skill dataviz (`#1b8a70` / `#d4552f` passano tutti i controlli).
+- **Riepilogo d'équipe:**
+  - KPI "ospiti con ROSS" e "tempo con ROSS" con variazione rispetto al periodo precedente (solo se ci sono dati: a 7 giorni −5%, a 30 giorni nessun confronto) e sparkline dei minuti;
+  - "Ognuno rispetto alla propria media": barre divergenti per ospite al posto della barra impilata (Ada: "ROSS la sta ancora conoscendo");
+  - "Cosa hanno espresso questa settimana": barre per segnale, prima i positivi, nomi nel tooltip;
+  - "Voce della struttura" con linea della soglia di anonimato e "Di cosa hanno bisogno" per tipo di bisogno (nuovo campo `category` su `needs`);
+  - presenza in schede (minuti al giorno, mappa oraria) più "Cosa coinvolge di più": durata delle conversazioni per tipo di attività rispetto alla media di chi le fa.
+- **Singolo ospite:** "Questa settimana rispetto al solito" (dumbbell di solito → questa settimana; i segnali con nota restano testo), bisogni, conversazioni per settimana (solo da quando la persona conosce ROSS), momenti della giornata, "Cosa coinvolge {nome}"; legenda sul grafico della partecipazione.
+- **Stampa:** schede che non si spezzano, colori conservati, tooltip nascosti.
+- **File:** `src/components/ReportCharts.jsx` (nuovo), `src/pages/OperationalPages.jsx`, `src/data/reportNarrative.js`, `src/data/careInsights.js`, `src/components/ParticipationChart.jsx`, `src/styles.css`, `AGENTS.md`.
 
 ### PR #21 · 26/09/2026 · Vista Famiglia riallineata: consenso dell'ospite, niente struttura in mezzo
 - **Richiesta:** sistemare anche la vista Famiglia con la stessa filosofia.

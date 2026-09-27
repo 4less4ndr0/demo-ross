@@ -591,6 +591,81 @@
 @media print{.no-print{display:none!important}.team-row{grid-template-columns:minmax(140px,1fr) minmax(0,1.6fr) minmax(0,1.2fr) minmax(0,1.3fr)}.report-checklist li::before{border-color:#000}}
 .report-kpis strong.kpi-text{font:600 15px/1.25 var(--serif);align-self:end}
 
+/* Infografiche dei report (src/components/ReportCharts.jsx): verde = va bene, corallo = da osservare, grigio = in linea */
+:root{--chart-pos:#1b8a70;--chart-neg:#d4552f;--chart-mid:#a39d92;--chart-need:#a8761b;--chart-grid:#e7e2d7}
+.infographic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.report-infographics{margin-top:4px}
+.infographic-card{margin:0;min-width:0;border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--surface);display:flex;flex-direction:column;gap:10px;break-inside:avoid}
+.infographic-card.is-wide{grid-column:1/-1}
+.infographic-card figcaption h4{font:600 17px var(--serif);margin:0}
+.infographic-card figcaption p{font-size:12px;color:var(--muted);margin:3px 0 0;line-height:1.4}
+.chart-note{font-size:11px;color:var(--muted);margin-top:auto}
+.chart-empty{font-size:13px;color:var(--muted);margin:8px 0}
+.chart-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--text)}
+.chart-legend span{display:inline-flex;align-items:center;gap:6px}
+.chart-legend strong{font-weight:700}
+.chart-legend i{width:10px;height:10px;border-radius:3px;display:block}
+.swatch-pos{background:var(--chart-pos)}.swatch-neg{background:var(--chart-neg)}.swatch-mid{background:var(--chart-mid)}.swatch-need{background:var(--chart-need)}
+.chart-legend i.swatch-dash{height:0;width:12px;border-radius:0;background:none;border-top:2px dashed var(--chart-mid)}
+.chart-legend i.swatch-ring{background:var(--surface);border:2px solid var(--chart-mid);border-radius:50%}
+.chart-label{font-size:12px;color:var(--text);line-height:1.25;min-width:0;overflow-wrap:anywhere}
+.chart-value{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;text-align:right;display:grid}
+.chart-value small{font-size:10px;font-weight:500;color:var(--muted)}
+.chart-tip{position:absolute;z-index:5;left:50%;bottom:calc(100% - 2px);transform:translateX(-50%);background:var(--surface);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:10px;padding:6px 10px;font-size:12px;line-height:1.35;width:max-content;max-width:min(280px,90vw);pointer-events:none;opacity:0;transition:opacity .12s}
+.diverging-row:hover .chart-tip,.diverging-row:focus-visible .chart-tip,.hbar-row:hover .chart-tip,.hbar-row:focus-visible .chart-tip,.dumbbell-row:hover .chart-tip,.dumbbell-row:focus-visible .chart-tip{opacity:1}
+.diverging-row:focus-visible,.hbar-row:focus-visible,.dumbbell-row:focus-visible{outline:2px solid var(--chart-pos);outline-offset:2px;border-radius:6px}
+.bar-pos{background:var(--chart-pos)}.bar-neg{background:var(--chart-neg)}.bar-mid{background:var(--chart-mid)}.bar-need{background:var(--chart-need)}
+/* Barre divergenti */
+.diverging{display:grid}
+.diverging-row,.diverging-axis{position:relative;display:grid;grid-template-columns:minmax(64px,.32fr) minmax(0,1fr) 46px;gap:10px;align-items:center;min-height:28px}
+.diverging-row:hover{background:var(--surface-2);border-radius:6px}
+.diverging-track{position:relative;align-self:stretch;display:flex;align-items:center}
+.diverging-track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--muted);opacity:.55}
+.diverging-track i{position:absolute;height:14px;top:50%;transform:translateY(-50%)}
+.diverging-track i.is-right{border-radius:0 4px 4px 0}
+.diverging-track i.is-left{border-radius:4px 0 0 4px}
+.diverging-track em{position:relative;margin:0 auto;font-size:11px;font-style:normal;color:var(--muted);background:var(--surface);padding:0 6px;text-align:center;line-height:1.25}
+.diverging-row:hover .diverging-track em{background:var(--surface-2)}
+.diverging-axis{min-height:0;margin-top:4px}
+.diverging-axis>span:nth-child(2){display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;font-size:10px;color:var(--muted)}
+.diverging-axis small{font-size:10px}.diverging-axis small:last-child{text-align:right}
+.diverging-axis b{font-size:10px;font-weight:700;color:var(--text)}
+/* Barre orizzontali */
+.hbars{display:grid}
+.hbar-row{position:relative;display:grid;grid-template-columns:minmax(80px,.42fr) minmax(0,1fr) auto;gap:10px;align-items:center;min-height:28px}
+.hbar-row:not(.hbar-axis):hover{background:var(--surface-2);border-radius:6px}
+.hbar-track{position:relative;align-self:stretch;display:flex;align-items:center}
+.hbar-track i{display:block;height:14px;border-radius:0 4px 4px 0}
+.hbar-ref{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed var(--text);opacity:.6}
+.hbar-axis{min-height:18px}
+.hbar-axis small{position:absolute;top:0;transform:translateX(-50%);font-size:10px;color:var(--text);white-space:nowrap}
+/* Dumbbell: di solito → questa settimana */
+.dumbbell{display:grid}
+.dumbbell-row{position:relative;display:grid;grid-template-columns:minmax(80px,.38fr) minmax(0,1fr) 78px;gap:12px;align-items:center;min-height:34px}
+.dumbbell-row:not(.dumbbell-axis):not(.is-note):hover{background:var(--surface-2);border-radius:6px}
+.dumbbell-track{position:relative;align-self:stretch;margin:0 6px;background:linear-gradient(var(--chart-grid),var(--chart-grid)) center/100% 1px no-repeat}
+.dumbbell-track i{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%)}
+.dumbbell-link{position:absolute;top:50%;height:2px;transform:translateY(-50%);opacity:.55}
+.link-pos{background:var(--chart-pos)}.link-neg{background:var(--chart-neg)}
+.dot-pos{background:var(--chart-pos);box-shadow:0 0 0 2px var(--surface)}.dot-neg{background:var(--chart-neg);box-shadow:0 0 0 2px var(--surface)}
+.dot-usual{background:var(--surface);border:2px solid var(--chart-mid)}
+.dumbbell-row.is-note{grid-template-columns:minmax(80px,.38fr) minmax(0,1fr)}
+.dumbbell-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text)}
+.dumbbell-note i{flex:none;width:10px;height:10px;border-radius:50%}
+.dumbbell-axis{min-height:16px}
+.dumbbell-axis .dumbbell-track{background:none}
+.dumbbell-axis small{position:absolute;top:0;transform:translateX(-50%);font-size:10px;color:var(--muted)}
+.chart-list{list-style:none;padding:0;margin:0}
+.chart-list li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.chart-list li:last-child{border:0}
+/* KPI con tendenza e sparkline */
+.report-kpis div{min-width:0}
+.kpi-change{font-style:normal;font-size:11px;color:var(--muted);margin-top:2px}
+.kpi-spark{width:100%;max-width:140px;margin-top:4px}
+.participation-legend{margin-top:6px}
+@media(max-width:650px){.infographic-grid{grid-template-columns:minmax(0,1fr)}.infographic-card.is-wide{grid-column:auto}.infographic-card{padding:14px}.dumbbell-row{grid-template-columns:minmax(70px,.34fr) minmax(0,1fr) 70px;gap:8px}.hbar-row{grid-template-columns:minmax(78px,.44fr) minmax(0,1fr) auto}}
+@media print{.infographic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.infographic-card{border-color:#ccc}.chart-tip{display:none}.bar-pos,.bar-neg,.bar-mid,.bar-need,.chart-legend i,.dumbbell-track i,.dumbbell-link,.heat-line span{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
 /* Specchietto "Cosa ti dice ROSS" nella sidebar di Ospiti e Report */
 .compass-title-text{display:grid;gap:1px;text-align:left}
 .compass-title-text small{font-size:11px;font-weight:500;color:var(--muted)}
