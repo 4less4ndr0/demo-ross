@@ -37,7 +37,7 @@ export function ReportsPage() {
   const resident = state.residents.find((r) => r.id === residentId) || byAttention(state.residents)[0];
   const [period, setPeriod] = useState("30");
   const showTeam = () => setParams({});
-  const showResident = (id) => setParams({ ospite: id });
+  const showResident = (id) => { setParams({ ospite: id }); window.scrollTo({ top: 0 }); };
 
   useEffect(() => {
     if (params.get("stampa") !== "1") return undefined;
@@ -73,8 +73,9 @@ function TeamReport({ report, period, onResident }) {
     <section className="team-block"><h3>Benessere nel tempo</h3><p className="team-question">Chi sta partecipando più o meno del solito, e cosa hanno espresso gli ospiti questa settimana. Ognuno è confrontato solo con sé stesso.</p>
       <div className="infographic-grid">
         <ChartCard title="Ognuno rispetto alla propria media" question="Partecipazione negli ultimi 14 giorni. Non è una classifica: ogni barra parte dalla media di quella persona." note="Il valore indica di quanto la partecipazione si discosta dalla media personale.">
-          <DivergingBars ariaLabel="Partecipazione di ogni ospite rispetto alla propria media" rows={report.trendRows.map((r) => ({ ...r, tip: r.value == null ? `${r.label}: ROSS la sta ancora conoscendo, ancora nessun confronto` : `${r.label}: ${signed(r.value)} rispetto alla sua media` }))} format={(v) => signed(v)} />
+          <DivergingBars ariaLabel="Partecipazione di ogni ospite rispetto alla propria media" rows={report.trendRows.map((r) => ({ ...r, tip: r.value == null ? `${r.label}: ROSS la sta ancora conoscendo, ancora nessun confronto` : `${r.label}: ${signed(r.value)} rispetto alla sua media` }))} format={(v) => signed(v)} onSelect={(r) => onResident(r.id)} />
           <ChartLegend items={report.distribution.map((d) => ({ tone: d.tone, shape: d.tone === "building" ? "dash" : undefined, label: d.label, count: d.count }))} />
+          <small className="chart-hint no-print">Tocca un nome per aprire il suo report</small>
         </ChartCard>
         <ChartCard title="Cosa hanno espresso questa settimana" question="Per ogni segnale, quanti ospiti lo hanno espresso più del solito negli ultimi 7 giorni." note="Spunti da osservare di persona, non giudizi sulla salute.">
           <ChartLegend items={[{ tone: "pos", label: "Va bene" }, { tone: "neg", label: "Da osservare" }]} />

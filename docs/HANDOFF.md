@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #22.
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #23.
 
 ---
 
@@ -63,7 +63,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, Ospiti e Report; a icone altrove), Sheet su mobile, schede in alto, card con l'account del ruolo (`roles[].account`), scorciatoia ⌘K che porta alla chat. |
 | `src/components/InsightRail.jsx` | Accordion della sidebar della chat (Da osservare, Cosa va bene, Bisogni, Voce, Presenza con ROSS) e guida `readingGuide`. Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
 | `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti e Report; testi in `residentsGuide` e `reportsGuide`. |
-| `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars`, `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
+| `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, "Avanti" in presentazione, sequenza `presentationRoutes`. |
 | `src/components/ui.jsx` | Primitive in stile shadcn: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog`, `Toaster`. |
@@ -122,6 +122,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### PR #23 · 27/09/2026 · Barre cliccabili nel Riepilogo d'équipe
+- **Richiesta:** dal grafico "Ognuno rispetto alla propria media" aprire il report di ciascun ospite, così il riepilogo fa anche da indice.
+- **Modifiche:**
+  - `DivergingBars` accetta `onSelect`: le righe diventano bottoni (mouse, Invio/Spazio), con una freccia che compare al passaggio del mouse o con il focus, il nome sottolineato e "apri il report" nel tooltip;
+  - nel Riepilogo ogni riga apre `?ospite=ID`, anche Ada, che non ha barra; sotto il grafico, solo a schermo, la nota "Tocca un nome per aprire il suo report";
+  - aprendo un report, anche dal link "Report →" della tabella, la pagina torna in cima;
+  - "Cosa coinvolge di più" resta non cliccabile; in stampa niente freccia né nota.
+- **File:** `src/components/ReportCharts.jsx`, `src/pages/OperationalPages.jsx`, `src/styles.css`, `AGENTS.md`.
 
 ### PR #22 · 27/09/2026 · Report più visivi: infografiche
 - **Richiesta:** nella sezione Report della Struttura mancavano grafici e infografiche.
