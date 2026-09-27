@@ -2,8 +2,13 @@ import { HelpCircle, Info, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
+// Foto degli ospiti della demo (public/ospiti, ritagliate dal collage): dove manca restano le iniziali.
+const photoIds = new Set(["antonio", "lucia", "mario", "carlo", "ada", "bruno", "elena", "teresa"]);
+export const residentPhoto = (resident) => photoIds.has(resident.id) ? `${import.meta.env.BASE_URL}ospiti/${resident.id}.webp` : null;
+
 export function Avatar({ resident, size = "md" }) {
-  return <span className={`avatar avatar-${size} avatar-${resident.color || "mint"}`} aria-label={resident.name}>{resident.initials}</span>;
+  const photo = residentPhoto(resident);
+  return <span className={`avatar avatar-${size} avatar-${resident.color || "mint"}${photo ? " avatar-photo" : ""}`} aria-label={resident.name} role="img">{photo ? <img src={photo} alt="" loading="lazy" /> : resident.initials}</span>;
 }
 
 export function ModeBadge({ mode }) {
