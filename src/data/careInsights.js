@@ -29,12 +29,13 @@ export const signals = [
 ];
 
 // Bisogni personali, per ospite, formulati come bisogno e senza contesto narrativo.
+// `category`: famiglia di bisogno, usata solo in forma aggregata nel Riepilogo d'équipe.
 export const needs = [
-  { residentId: "lucia", text: "Desiderio di uscire in giardino", times: 3 },
-  { residentId: "antonio", text: "Desiderio di sentire un familiare", times: 2 },
-  { residentId: "mario", text: "Fastidio al ginocchio riferito al mattino", times: 2 },
-  { residentId: "bruno", text: "Sente freddo nel pomeriggio in stanza", times: 2 },
-  { residentId: "ada", text: "Vorrebbe partecipare all'attività di lettura", times: 1 },
+  { residentId: "lucia", text: "Desiderio di uscire in giardino", times: 3, category: "Stare all'aperto" },
+  { residentId: "antonio", text: "Desiderio di sentire un familiare", times: 2, category: "Vicinanza della famiglia" },
+  { residentId: "mario", text: "Fastidio al ginocchio riferito al mattino", times: 2, category: "Comfort fisico" },
+  { residentId: "bruno", text: "Sente freddo nel pomeriggio in stanza", times: 2, category: "Comfort fisico" },
+  { residentId: "ada", text: "Vorrebbe partecipare all'attività di lettura", times: 1, category: "Partecipare alle attività" },
 ];
 
 // Voce della struttura: solo aggregata e anonima, almeno 3 ospiti.

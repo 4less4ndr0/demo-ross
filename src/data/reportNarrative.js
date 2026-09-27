@@ -22,6 +22,21 @@ function cutoff(period) {
   return date.toISOString().slice(0, 10);
 }
 
+const isoDaysAgo = (days) => { const date = new Date(`${DEMO_TODAY}T10:00:00`); date.setDate(date.getDate() - days); return date.toISOString().slice(0, 10); };
+const shortDate = (iso) => `${Number(iso.slice(8, 10))} ${["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"][Number(iso.slice(5, 7)) - 1]}`;
+const typeLabels = { Conversazione: "Conversazione libera", Memoria: "Reminiscenza" };
+
+// Conversazioni e minuti per settimana (le ultime 4), per il report del singolo ospite.
+function weeklyFor(state, resident) {
+  // Solo le settimane da quando la persona conosce ROSS.
+  return [3, 2, 1, 0].filter((k) => k * 7 < resident.daysWithRoss).map((k) => {
+    const to = isoDaysAgo(k * 7);
+    const from = isoDaysAgo(k * 7 + 6);
+    const list = state.interactions.filter((i) => i.residentId === resident.id && i.date >= from && i.date <= to);
+    return { week: `${shortDate(from)} – ${shortDate(to)}`, label: k === 0 ? "Questa sett." : `${k} sett. fa`, conversations: list.length, minutes: list.reduce((sum, i) => sum + i.duration, 0) };
+  });
+}
+
 function seriesFor(resident, days) {
   const seed = [...resident.id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
   const base = (resident.participation ?? 6.5) * 10;
@@ -82,6 +97,10 @@ export function buildResidentReport(state, resident, period) {
     next: profile.next,
     series: seriesFor(resident, Number(period)),
     building,
+    // Infografiche: sempre la persona rispetto a sé stessa.
+    weekly: weeklyFor(state, resident),
+    rhythm: approachGuide[resident.id]?.rhythm || null,
+    engagement: hooksFor(resident.id, { withJourney: Boolean(state.rossJourney.completedAt) }).filter((h) => h.engagement).map((h) => ({ label: h.label, value: h.engagement.duration, isNew: Boolean(h.isNew), high: h.engagement.high })),
   };
 }
 
@@ -101,6 +120,11 @@ export function buildTeamReport(state, period) {
   const interactions = state.interactions.filter((i) => i.date >= from && i.date <= DEMO_TODAY);
   const minutes = interactions.reduce((sum, i) => sum + i.duration, 0);
   const talked = new Set(interactions.map((i) => i.residentId)).size;
+  // Periodo precedente di pari durata: solo se ci sono dati, altrimenti niente confronto.
+  const prevFrom = isoDaysAgo(Number(period) * 2 - 1);
+  const previous = state.interactions.filter((i) => i.date >= prevFrom && i.date < from);
+  const prev = previous.length ? { minutes: previous.reduce((sum, i) => sum + i.duration, 0), talked: new Set(previous.map((i) => i.residentId)).size } : null;
+  const change = (now, before) => { if (!before) return null; const pct = Math.round(((now - before) / before) * 100); return { value: pct, text: `${pct > 0 ? "+" : pct < 0 ? "−" : "±"}${Math.abs(pct)}% rispetto ai ${period} giorni prima` }; };
   const toWatch = residents.filter((r) => signalsFor(r.id).some((x) => !x.positive) || presenceFor(r.id).length);
   const going = signals.filter((x) => x.positive);
   const goingResidents = new Set(going.map((x) => x.residentId));
@@ -110,7 +134,7 @@ export function buildTeamReport(state, period) {
   const topNegative = voice.find((v) => v.tone === "negativo");
 
   const distribution = ["up", "flat", "down", "building"].map((tone) => ({ tone, label: { up: "Sopra la propria media", flat: "In linea", down: "Sotto la propria media", building: "ROSS li sta ancora conoscendo" }[tone], count: residents.filter((r) => trendOf(r).tone === tone).length }));
-  const signalTypes = Object.values(signals.reduce((acc, x) => { const key = x.signal; acc[key] = acc[key] || { signal: key, positive: Boolean(x.positive), count: 0 }; acc[key].count += 1; return acc; }, {})).sort((a, b) => Number(b.positive) - Number(a.positive) || b.count - a.count);
+  const signalTypes = Object.values(signals.reduce((acc, x) => { const key = x.signal; acc[key] = acc[key] || { signal: key, positive: Boolean(x.positive), count: 0, who: [] }; acc[key].count += 1; acc[key].who.push(nameOf(x.residentId)); return acc; }, {})).sort((a, b) => Number(b.positive) - Number(a.positive) || b.count - a.count);
 
   const days = Array.from({ length: Number(period) }, (_, index) => {
     const date = new Date(`${DEMO_TODAY}T10:00:00`);
@@ -119,6 +143,12 @@ export function buildTeamReport(state, period) {
     return { date: iso.slice(5, 10), minutes: interactions.filter((i) => i.date === iso).reduce((sum, i) => sum + i.duration, 0) };
   });
   const heatmap = [1, 2, 3, 4, 5, 6, 0].map((day) => ({ day: weekdays[day], cells: bands.map(([label, start, end]) => ({ label, count: interactions.filter((i) => new Date(`${i.date}T12:00:00`).getDay() === day && Number(i.time.slice(0, 2)) >= start && Number(i.time.slice(0, 2)) < end).length })) }));
+
+  // Infografiche del riepilogo: ognuno rispetto alla propria media, voce anonima con soglia di 3 ospiti.
+  const trendRows = [...residents].sort((a, b) => (b.delta ?? -99) - (a.delta ?? -99)).map((r) => ({ id: r.id, label: r.name.split(" ")[0], value: r.delta, tone: trendOf(r).tone }));
+  const needCategories = Object.values(needs.reduce((acc, n) => { const key = n.category || "Altro"; acc[key] = acc[key] || { label: key, value: 0, residents: new Set() }; acc[key].value += n.times; acc[key].residents.add(n.residentId); return acc; }, {})).map((c) => ({ label: c.label, value: c.value, residents: c.residents.size })).sort((a, b) => b.value - a.value);
+  const personalMean = residents.reduce((acc, r) => { const list = state.interactions.filter((i) => i.residentId === r.id); acc[r.id] = list.length ? list.reduce((sum, i) => sum + i.duration, 0) / list.length : null; return acc; }, {});
+  const activityEngagement = Object.values(interactions.reduce((acc, i) => { if (!personalMean[i.residentId]) return acc; const key = i.type; acc[key] = acc[key] || { label: typeLabels[key] || key, ratios: [] }; acc[key].ratios.push(i.duration / personalMean[i.residentId] - 1); return acc; }, {})).map((a) => ({ label: a.label, count: a.ratios.length, value: Math.round((a.ratios.reduce((sum, x) => sum + x, 0) / a.ratios.length) * 100) })).sort((a, b) => b.value - a.value);
 
   const rows = byAttention(residents).map((r) => ({
     resident: r,
@@ -143,13 +173,14 @@ export function buildTeamReport(state, period) {
   return {
     summary: `Negli ultimi ${period} giorni ${talked} ospiti su ${residents.length} hanno parlato con ROSS, per ${minutes} minuti complessivi. Questa settimana ${goingResidents.size} ospiti su ${residents.length} hanno espresso qualcosa di positivo rispetto alla propria media; ${toWatch.length} hanno anche aspetti da osservare o un'assenza insolita.${topPositive && topNegative ? ` Sulla vita in struttura, i temi più sentiti sono ${topPositive.text} (${topPositive.count} ospiti) e ${topNegative.text} (${topNegative.count}).` : ""}`,
     kpis: [
-      [`${talked}/${residents.length}`, "ospiti con ROSS"],
-      [`${minutes} min`, "tempo con ROSS"],
+      [`${talked}/${residents.length}`, "ospiti con ROSS", change(talked, prev?.talked)],
+      [`${minutes} min`, "tempo con ROSS", change(minutes, prev?.minutes)],
       [goingResidents.size, "con segnali positivi"],
       [toWatch.length, "da osservare"],
       [needs.length, "bisogni da prendere in carico"],
       [emerged, "interessi emersi con ROSS"],
     ],
     distribution, signalTypes, voice, rows, days, heatmap, discuss,
+    trendRows, needCategories, activityEngagement, total: residents.length,
   };
 }
