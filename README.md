@@ -4,6 +4,10 @@
 
 Demo web interattiva di R.O.S.S. per RSA e Senior Living. È un progetto separato dal repository canonico R.O.S.S. e usa solo dati fittizi della struttura `Residenza Aurora`.
 
+## Passaggio di consegne
+
+Contesto per il team (cos'è ROSS, filosofia, personaggi, giro della demo in 5 minuti), stato attuale, decisioni, mappa del codice e changelog completo sono in [`docs/HANDOFF.md`](docs/HANDOFF.md). Chi arriva ora parte dalla §0.
+
 ## Avvio locale
 
 Requisiti: Node.js 20 o superiore.

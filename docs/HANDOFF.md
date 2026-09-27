@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #24.
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #25.
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -233,6 +233,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### PR #25 · 27/09/2026 · Rimandi all'handoff da README e AGENTS
+- Ripresi dalla PR #11 (prima versione di questo documento, ormai superata e chiusa) i due rimandi che mancavano su `main`: sezione "Passaggio di consegne" nel `README.md`, che indica la §0 a chi arriva ora, e riga in testa ad `AGENTS.md` ("leggilo prima di lavorare").
+- Solo documentazione.
+- **File:** `README.md`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### PR #24 · 27/09/2026 · Passaggio di consegne per il team
 - **Richiesta:** aggiornare questo documento per dare il contesto al team.
