@@ -191,6 +191,25 @@ export function trendOf(resident) {
 }
 
 // Interesse emerso dalla conversazione con ROSS nella vista demo (al posto del ricordo specifico).
+// Spunto in copertina nella lista Ospiti: una cosa sola, interessante e non allarmante.
+// O un interesse emerso con ROSS (solo la categoria) o una condizione del periodo (segnale, bisogno, presenza).
+// Mai argomenti, citazioni o l'oggetto delle emozioni (docs/contratto-informativo-struttura.md).
+export const highlights = {
+  antonio: { kind: "periodo", text: "Le chiacchierate si allungano: 15 minuti in media, di solito 10." },
+  lucia: { kind: "emerso", text: "I giochi di parole: è ciò che la coinvolge di più con ROSS." },
+  mario: { kind: "periodo", text: "Al mattino riferisce fastidio al ginocchio: meglio proporgli le attività nel pomeriggio." },
+  carlo: { kind: "emerso", text: "L'orto: un interesse nuovo, oltre a calcio e giornali." },
+  ada: { kind: "periodo", text: "Prime settimane con ROSS: tanta curiosità, lo sta ancora conoscendo." },
+  bruno: { kind: "emerso", text: "La storia locale: gli piace essere lui a spiegarla." },
+  elena: { kind: "periodo", text: "Ha espresso gratitudine più del solito: 3 conversazioni su 6, di solito 1." },
+  teresa: { kind: "periodo", text: "Il periodo migliore del mese: 5 conversazioni avviate da lei su 7." },
+};
+export const highlightLabels = { emerso: "Emerso con ROSS", periodo: "In questo periodo" };
+// Dopo la conversazione della vista ROSS, per Elena lo spunto diventa il nuovo interesse emerso.
+export const highlightFor = (residentId, state) => (residentId === journeyInterest.residentId && state?.rossJourney?.completedAt
+  ? { kind: "emerso", text: `${journeyInterest.label}: un interesse nuovo, emerso nell'ultima conversazione.` }
+  : highlights[residentId] || null);
+
 export const journeyInterest = { residentId: "elena", label: "Fotografia", how: "Funziona come avvio di conversazione: proporle di guardare insieme delle fotografie." };
 
 // Testo breve del confronto con la media: "3 su 6 · di solito 1", la nota, oppure "prime settimane".
