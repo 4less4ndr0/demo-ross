@@ -40,7 +40,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 ## Passaggio di consegne
 
-- `docs/HANDOFF.md` è il documento vivo con stato attuale, mappa del codice, questioni aperte e changelog della vista Struttura. **Aggiornalo a ogni modifica**: nuova voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
+- `docs/HANDOFF.md` è il documento vivo con stato attuale, mappa del codice, questioni aperte e changelog della vista Struttura. **Aggiornalo a ogni modifica**: nuova voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5. La **§0 "Per chi arriva ora"** serve a dare il contesto al team: aggiornala quando cambiano la filosofia, le viste, i personaggi della demo o il giro della demo.
 
 ## Privacy by design: cosa la struttura riceve
 

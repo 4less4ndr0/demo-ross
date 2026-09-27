@@ -1,7 +1,116 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
-> Documento vivo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 1–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #23.
+> Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #24.
+
+**Come leggerlo.**
+- Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
+- Chi prova la demo segue il **giro della §0.5**.
+- Chi scrive codice parte dalle **§3–4**.
+- Lo storico completo, PR per PR, è nella **§6**.
+
+---
+
+## 0. Per chi arriva ora
+
+### 0.1 Cos'è ROSS e perché questa demo
+ROSS è un **compagno di conversazione su tablet per gli ospiti delle RSA**: parla con loro, ricorda i loro interessi, propone musica, giochi e ricordi, e rispetta i momenti di riposo. Intorno all'ospite ci sono altre due persone che hanno bisogno di sapere qualcosa: **lo staff della struttura** e **la famiglia**. La demo mostra le tre prospettive, e soprattutto una domanda: *cosa deve sapere la struttura, e cosa no?*
+
+**Il punto di partenza.** La prima versione della vista Struttura sembrava un gestionale parallelo: anagrafica, consegne, attività, analytics. Nella riunione "estratto convo fede ale" abbiamo deciso di cambiare rotta. ROSS **non sostituisce** i sistemi della RSA, ci **sta sopra**. Allo staff basta poter chiedere, anche da telefono: *"chi ha bisogno di più attenzione oggi?"*. Per questo la home è una chat.
+
+**Cosa non è questa demo.** I dati sono inventati (Residenza Aurora, 8 ospiti) e la chat ha risposte preparate, senza un modello AI vero. Serve a discutere il prodotto, non a testare la tecnologia.
+
+### 0.2 La filosofia in sei frasi
+1. **La struttura sa come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato.** Nella demo si legge *"Antonio ha espresso solitudine in 3 conversazioni su 5, di solito 1"*, mai *"Antonio ha parlato di sua moglie"*.
+2. **Ognuno è confrontato solo con sé stesso.** Si dice *"sopra / in linea / sotto la sua media"*: niente voti, niente classifiche. Una persona riservata non è "peggio" di una socievole.
+3. **Prima ciò che va bene.** Ogni ospite ha anche segnali positivi (serenità, buonumore, più iniziativa) e compaiono prima di ciò che è da osservare.
+4. **ROSS segnala, l'équipe osserva e decide.** Nessun giudizio sulla salute: i segnali sono spunti da verificare di persona. Nei report ci sono caselle da spuntare a penna.
+5. **Si parla come un compagno, non come un servizio sanitario.** Niente "cartella", "paziente", "monitoraggio", "diagnosi": la pagina di un ospite è il suo **ritratto** (vedi [`lessico-struttura.md`](lessico-struttura.md)).
+6. **La famiglia vede solo ciò che l'ospite sceglie di condividere.** È ROSS a chiedere a Elena *"Ti va se lo racconto anche ad Anna?"*. La struttura non fa da intermediario tra famiglia e ospite.
+
+Il riferimento completo è il [contratto informativo](contratto-informativo-struttura.md): tutto ciò che la struttura vede rientra nei **cinque punti cardinali** (benessere nel tempo, come relazionarsi, bisogni personali, voce della struttura, presenza e continuità).
+
+### 0.3 Le tre viste e chi le usa
+
+| Vista | Chi la usa | Cosa vede | Cosa non vede | Stato |
+|---|---|---|---|---|
+| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#23) |
+| **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21) |
+| **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Solo il copione** della conversazione è aggiornato; il resto va rivisto |
+
+Nella Struttura ci sono **tre stakeholder**, e il target principale non è ancora scelto: per questo esiste il selettore di ruolo.
+- **Staff**: operatori e coordinatori, accesso condiviso senza login. Domande pratiche: chi seguire, cosa serve, come avvicinarsi.
+- **Psicologa**: accesso personale con login. Domande sull'andamento rispetto alla media.
+- **Direzione**: accesso personale con login. Domande su dati aggregati, adozione e valore.
+
+### 0.4 I personaggi della demo (Residenza Aurora)
+
+| Ospite | Con ROSS da | Va bene | Da osservare | Bisogno espresso |
+|---|---|---|---|---|
+| **Antonio Greco**, 74 | 39 giorni | Conversazioni più lunghe | Oggi non ha ancora parlato con ROSS (di solito entro le 11); solitudine | Sentire un familiare |
+| **Lucia Conti**, 76 | 76 giorni | Buonumore | Stanchezza; 2 momenti in cui ha fatto fatica a seguire | Uscire in giardino (3 volte) |
+| **Mario Rossi**, 81 | 64 giorni | Tranquillità | Fastidio fisico riferito | Ginocchio al mattino |
+| **Carlo Ferri**, 83 | 92 giorni | Buonumore | Meno iniziativa (partecipazione sotto la sua media) | — |
+| **Ada Moretti**, 85 | 11 giorni | Curiosità | — (ROSS la sta ancora conoscendo) | Attività di lettura |
+| **Bruno De Angelis**, 80 | 101 giorni | Voglia di raccontare | — | Freddo nel pomeriggio |
+| **Elena Bianchi**, 79 | 118 giorni | Serenità, gratitudine | — | — |
+| **Teresa Gallo**, 88 | 143 giorni | Serenità, più iniziativa: il periodo migliore del mese | — | — |
+
+Elena è la protagonista delle viste Famiglia e ROSS, con la figlia **Anna**. Gli ospiti sono in ordine di attenzione, come nella lista Ospiti.
+
+### 0.5 Giro della demo in 5 minuti
+Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai sulla card in basso a sinistra → "Ripristina dati demo".
+
+1. **Chiedi a ROSS** (home). Clicca "Chi ha bisogno di più attenzione oggi?". La risposta cita sempre la fonte. Dalla card in basso a sinistra cambia ruolo ("Sto chiedendo come") e guarda come cambiano le domande consigliate: la Direzione, per esempio, chiede "Cosa dicono gli ospiti della vita in struttura?".
+2. **Il polso di ROSS**, la sidebar della chat. Apri "Cosa va bene" e "Da osservare": ogni voce fa una domanda alla chat. "Cosa ti dice ROSS" è la guida alla lettura.
+3. **Ospiti** (`/ospiti`). In cima c'è Antonio, perché oggi non ha ancora parlato con ROSS. Ogni scheda mostra prima il verde ("Va bene"), poi ciò che è da osservare.
+4. **Ritratto di Antonio** (`/ospiti/antonio`). Tab *Come sta* (benessere rispetto alla sua media, bisogni, presenza) e *Come avvicinarsi* (primo approccio in 3 passi e spunti per interesse; i dettagli concreti arrivano solo dalla biografia d'ingresso).
+5. **Report** (`/report`). Il Riepilogo d'équipe con le infografiche: ognuno rispetto alla propria media, segnali della settimana, voce della struttura con la soglia di anonimato, bisogni, presenza. Clicca una barra per aprire il report di quell'ospite. "Stampa" genera il PDF per la riunione.
+6. **Vista Famiglia**: tasto `2` o pillola "Vista demo" in basso a destra. Il racconto del giorno compare solo con il consenso di Elena; il resto è "tenuto per sé".
+7. **Vista ROSS**: tasto `3`. Avvia la conversazione: alla fine ROSS chiede a Elena se può raccontarlo ad Anna. Tornando alla Famiglia (`2`), il racconto ora è condiviso.
+
+**Per chi presenta:**
+- la pillola "Vista demo" (tasti `1` Struttura, `2` Famiglia, `3` ROSS);
+- la modalità presentazione, da Impostazioni o con `?presentation=true`, con il bottone "Avanti";
+- il ripristino dei dati dalla card in basso a sinistra.
+
+### 0.6 Come ci siamo arrivati
+Le tappe principali, per tema. Il dettaglio di ogni PR è nella §6.
+
+| Tema | Cosa è cambiato | PR |
+|---|---|---|
+| Da gestionale a chat | Menu da 9 a 3 voci (Chiedi a ROSS · Ospiti · Report); home "Chiedi a ROSS"; barra superiore essenziale; selettore "Vista demo" in un angolo | #1–#6 |
+| Privacy by design | Contratto informativo: regola d'oro e cinque punti cardinali; demo ricalibrata (via citazioni, argomenti, punteggi /10) | #7 |
+| Sidebar e guide alla lettura | Accordion senza icone "i"; specchietto verde "Cosa ti dice ROSS", sempre nel menu laterale, anche in Ospiti e Report | #8–#10, #16–#17 |
+| Stakeholder e domande | Tre ruoli (Staff senza login, Psicologa e Direzione con login) e domande consigliate concrete, senza turni | #12 |
+| Ospiti e ritratto | Lista per attenzione; ritratto a 4 tab; tolte storia, relazioni e contributi della famiglia; "Come avvicinarsi" diventa una guida pratica | #13–#14 |
+| Report | Riepilogo d'équipe o Singolo ospite, poi infografiche (sempre rispetto a sé stessi) e barre cliccabili | #15, #22–#23 |
+| Lessico | Tono di voce dalle linee guida Notion: "ritratto" al posto di "cartella", niente parole cliniche | #18 |
+| Equilibrio | Segnali positivi per ogni ospite, messi prima di ciò che è da osservare; testi narrativi allineati | #19–#20 |
+| Vista Famiglia | Consenso dell'ospite; contributi della famiglia direttamente a ROSS; niente struttura in mezzo | #21 |
+
+### 0.7 Cosa chiediamo al team
+Domande su cui ci serve il vostro parere (dettagli nella §5):
+1. **Target:** per chi progettiamo prima, Staff, Psicologa o Direzione?
+2. **Contenuti:** rileggere spunti di "Come avvicinarsi", segnali positivi, azioni suggerite della voce della struttura e testi degli specchietti. Sono stati scritti per la demo.
+3. **Consenso:** va progettato un "raccontalo anche alla struttura"? E come fa l'ospite a cambiare idea su ciò che ha condiviso?
+4. **Segnali gravi:** cosa succede se un ospite esprime dolore acuto, rischio per sé o maltrattamenti? Oggi non c'è un protocollo.
+5. **Accessi:** i tre ruoli devono vedere perimetri diversi, o cambiano solo le domande?
+6. **Vista ROSS:** quando e come riallinearla al lessico e al consenso?
+7. **Idee in coda:** frecce "← precedente · successivo →" nel report del singolo ospite; rivedere il percorso "Avanti" della presentazione.
+
+### 0.8 Glossario
+- **Ritratto:** la pagina di un ospite nella vista Struttura (mai "cartella").
+- **Sua media:** la media personale dell'ospite negli ultimi 14 giorni; ogni confronto parte da lì.
+- **Segnale:** qualcosa che l'ospite ha espresso in conversazione, nella forma "X conversazioni su Y, di solito Z", su almeno 7 giorni. Può essere positivo (serenità, buonumore) o da osservare (stanchezza, solitudine). Mai l'oggetto dell'emozione.
+- **Cinque punti cardinali:** le sole cose che la struttura riceve, cioè benessere nel tempo, come relazionarsi, bisogni personali, voce della struttura, presenza e continuità.
+- **Voce della struttura:** ciò che gli ospiti esprimono sulla vita in struttura (pasti, rumore, attività), anonimo e aggregato.
+- **Soglia di anonimato:** un tema della voce compare solo se lo esprimono almeno 3 ospiti.
+- **Biografia d'ingresso:** le informazioni date da famiglia o struttura all'ingresso; è l'unica fonte dei dettagli concreti in "Come avvicinarsi".
+- **Emerso con ROSS:** un interesse scoperto in conversazione. La struttura ne vede solo la categoria, mai l'episodio.
+- **Modalità Attiva / Reattiva / Silenziosa:** con Attiva ROSS propone lui; con Reattiva risponde se interpellato; con Silenziosa non avvia nulla e rispetta il riposo.
+- **Riepilogo d'équipe / Come sta:** i due report stampabili, il primo sulla struttura, il secondo sul singolo ospite.
+- **Vista demo:** la pillola in basso a destra per passare tra Struttura, Famiglia e ROSS. È un comando per chi presenta, non parte del prodotto.
 
 ---
 
@@ -115,13 +224,24 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 6. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
 7. **Livelli di accesso per ruolo:** oggi tutti i ruoli vedono lo stesso perimetro; cambiano solo domande e profondità delle risposte (contratto, §6.4).
 8. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
-9. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave.
+9. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave (vedi il punto 12).
 10. **Tooltip "i"** ancora presenti in Impostazioni.
 11. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
+12. **Percorso "Avanti" della presentazione:** `presentationRoutes` finisce sul tab Documenti e non passa dalle infografiche del Riepilogo né dalla lista Ospiti. Va riallineato al giro della §0.5.
+13. **Idea in coda:** frecce "← precedente · successivo →" nel report del singolo ospite, nello stesso ordine per attenzione, per scorrere l'équipe senza tornare al riepilogo.
 
 ---
 
 ## 6. Changelog (dal più recente)
+
+### PR #24 · 27/09/2026 · Passaggio di consegne per il team
+- **Richiesta:** aggiornare questo documento per dare il contesto al team.
+- **Modifiche:**
+  - nuova **§0 "Per chi arriva ora"**: cos'è ROSS e perché la demo, la filosofia in sei frasi con esempi, le tre viste e chi le usa, i personaggi della demo, un giro della demo in 5 minuti, le tappe per tema, le domande per il team, il glossario;
+  - guida "Come leggerlo" in testa al documento;
+  - in §5 i punti 12 (percorso "Avanti" da riallineare) e 13 (frecce precedente/successivo).
+- Solo documentazione, nessuna modifica al codice.
+- **File:** `docs/HANDOFF.md`, `AGENTS.md`.
 
 ### PR #23 · 27/09/2026 · Barre cliccabili nel Riepilogo d'équipe
 - **Richiesta:** dal grafico "Ognuno rispetto alla propria media" aprire il report di ciascun ospite, così il riepilogo fa anche da indice.
