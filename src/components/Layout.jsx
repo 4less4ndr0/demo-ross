@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ChevronsUpDown, FileText, Menu, MessageCircle, Play, RotateCcw, Settings, Users } from "lucide-react";
+import { ChevronsUpDown, FileText, LayoutDashboard, Menu, MessageCircle, Play, RotateCcw, Settings, Users } from "lucide-react";
 import { roleFor, roles } from "../data/chatScript";
 import { InsightRail } from "./InsightRail";
-import { reportsGuide, residentsGuide, SidebarGuide } from "./PageGuide";
+import { overviewGuide, reportsGuide, residentsGuide, SidebarGuide } from "./PageGuide";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, Sheet } from "./ui";
 import { useDemo } from "../state/DemoContext";
 
 const nav = [
-  ["/", "Chiedi a ROSS", MessageCircle], ["/ospiti", "Ospiti", Users], ["/report", "Report", FileText],
+  ["/", "Chiedi a ROSS", MessageCircle], ["/ospiti", "Ospiti", Users], ["/report", "Report", FileText], ["/panoramica", "Panoramica", LayoutDashboard],
 ];
 
 export function Layout() {
@@ -30,8 +30,8 @@ export function Layout() {
   }, [navigate]);
 
   const isChat = location.pathname === "/";
-  // Ospiti e Report: la sidebar resta larga con lo specchietto "Cosa ti dice ROSS" della pagina.
-  const guide = location.pathname === "/ospiti" ? residentsGuide : location.pathname === "/report" ? reportsGuide : null;
+  // Ospiti, Report e Panoramica: la sidebar resta larga con lo specchietto "Cosa ti dice ROSS" della pagina.
+  const guide = { "/ospiti": residentsGuide, "/report": reportsGuide, "/panoramica": overviewGuide }[location.pathname] || null;
   const wide = isChat || Boolean(guide);
   const role = roleFor(state.role);
   const closeMenu = () => setMenuOpen(false);

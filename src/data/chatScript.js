@@ -126,11 +126,11 @@ const intents = [
       if (!resident && (q.includes("struttura") || q.includes("riepilogo") || q.includes("equipe"))) {
         const week = state.interactions.filter((i) => i.date >= "2026-09-15");
         return {
-          text: `Il riepilogo d'équipe è pronto: benessere, voce degli ospiti, bisogni e presenza. Negli ultimi 7 giorni ${new Set(week.map((i) => i.residentId)).size} ospiti su ${state.residents.length} hanno parlato con ROSS; ${facilityVoice.length} temi sulla vita in struttura espressi da almeno 3 ospiti.`,
+          text: `Il riepilogo d'équipe è nella Panoramica, pronto da stampare: benessere, voce degli ospiti, bisogni e presenza. Negli ultimi 7 giorni ${new Set(week.map((i) => i.residentId)).size} ospiti su ${state.residents.length} hanno parlato con ROSS; ${facilityVoice.length} temi sulla vita in struttura espressi da almeno 3 ospiti.`,
           bullets: facilityVoice.map((v) => ({ tag: v.tone === "positivo" ? "Apprezzato" : v.tone === "negativo" ? "Da migliorare" : "Richiesta", text: `${v.topic}: ${v.count} ospiti` })),
           residents: [],
           sources: [src.data("Ultimi 7 giorni"), src.data("Ultime 2 settimane · aggregato anonimo")],
-          action: { label: "Apri il riepilogo d'équipe", to: "/report" },
+          action: { label: "Apri la Panoramica", to: "/panoramica" },
         };
       }
       const target = resident || state.residents[0];
@@ -244,7 +244,7 @@ const intents = [
       after: "Nessun nome né stanza: i temi compaiono solo quando li esprimono almeno 3 ospiti.",
       residents: [],
       sources: [src.data("Ultime 2 settimane · aggregato anonimo")],
-      action: { label: "Apri il riepilogo d'équipe", to: "/report" },
+      action: { label: "Apri la Panoramica", to: "/panoramica" },
     }),
   },
   {
@@ -299,7 +299,7 @@ const intents = [
         bullets: presenceNotes.map((p) => ({ resident: p.residentId, tag: p.kind === "assenza" ? "Assenza insolita" : "Momenti di difficoltà", text: `${nameOf(state, p.residentId)}: ${p.text}` })),
         residents: presenceNotes.map((p) => p.residentId),
         sources: [src.data("Ultimi 7 giorni")],
-        action: { label: "Apri il riepilogo d'équipe", to: "/report" },
+        action: { label: "Apri la Panoramica", to: "/panoramica" },
       };
     },
   },

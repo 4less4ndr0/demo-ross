@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #25.
+> Ultimo aggiornamento: 27 settembre 2026 · stato di `main` dopo la PR #26.
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -34,7 +34,7 @@ Il riferimento completo è il [contratto informativo](contratto-informativo-stru
 
 | Vista | Chi la usa | Cosa vede | Cosa non vede | Stato |
 |---|---|---|---|---|
-| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#23) |
+| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#26) |
 | **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21) |
 | **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Solo il copione** della conversazione è aggiornato; il resto va rivisto |
 
@@ -65,9 +65,10 @@ Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai su
 2. **Il polso di ROSS**, la sidebar della chat. Apri "Cosa va bene" e "Da osservare": ogni voce fa una domanda alla chat. "Cosa ti dice ROSS" è la guida alla lettura.
 3. **Ospiti** (`/ospiti`). In cima c'è Antonio, perché oggi non ha ancora parlato con ROSS. Ogni scheda mostra prima il verde ("Va bene"), poi ciò che è da osservare.
 4. **Ritratto di Antonio** (`/ospiti/antonio`). Tab *Come sta* (benessere rispetto alla sua media, bisogni, presenza) e *Come avvicinarsi* (primo approccio in 3 passi e spunti per interesse; i dettagli concreti arrivano solo dalla biografia d'ingresso).
-5. **Report** (`/report`). Il Riepilogo d'équipe con le infografiche: ognuno rispetto alla propria media, segnali della settimana, voce della struttura con la soglia di anonimato, bisogni, presenza. Clicca una barra per aprire il report di quell'ospite. "Stampa" genera il PDF per la riunione.
-6. **Vista Famiglia**: tasto `2` o pillola "Vista demo" in basso a destra. Il racconto del giorno compare solo con il consenso di Elena; il resto è "tenuto per sé".
-7. **Vista ROSS**: tasto `3`. Avvia la conversazione: alla fine ROSS chiede a Elena se può raccontarlo ad Anna. Tornando alla Famiglia (`2`), il racconto ora è condiviso.
+5. **Panoramica** (`/panoramica`). La struttura in una schermata: sintesi, numeri chiave e grafici (ognuno rispetto alla propria media, segnali della settimana, voce della struttura con la soglia di anonimato, bisogni, presenza), ciascuno con "Cosa mostra" e "Come leggerlo". Clicca una barra per aprire il report di quell'ospite. "Stampa" o "Scarica riepilogo" generano il Riepilogo d'équipe per la riunione.
+6. **Report** (`/report`). Il "Come sta" di un ospite alla volta, da stampare.
+7. **Vista Famiglia**: tasto `2` o pillola "Vista demo" in basso a destra. Il racconto del giorno compare solo con il consenso di Elena; il resto è "tenuto per sé".
+8. **Vista ROSS**: tasto `3`. Avvia la conversazione: alla fine ROSS chiede a Elena se può raccontarlo ad Anna. Tornando alla Famiglia (`2`), il racconto ora è condiviso.
 
 **Per chi presenta:**
 - la pillola "Vista demo" (tasti `1` Struttura, `2` Famiglia, `3` ROSS);
@@ -124,12 +125,13 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 
 | Zona | Cosa c'è |
 |---|---|
-| Barra superiore | Solo tre schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report**. Restano ferme quando la sidebar cambia larghezza. Su mobile stanno sulla stessa riga dell'hamburger. |
-| Sidebar sinistra | Logo, "Residenza Aurora" e data. **Chat:** accordion con Da osservare, **Cosa va bene**, Bisogni espressi, Voce della struttura, Presenza con ROSS e **Cosa ti dice ROSS** (guida alla lettura). **Ospiti (lista) e Report:** sidebar larga con lo specchietto verde "Cosa ti dice ROSS" della pagina, aperto di default. **Ritratto e Impostazioni:** colonna di icone. In fondo: Impostazioni e card con l'account del ruolo (menu "Sto chiedendo come", impostazioni, presentazione, ripristino dati). |
+| Barra superiore | Solo quattro schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report · Panoramica**. Restano ferme quando la sidebar cambia larghezza. Su mobile stanno sulla stessa riga dell'hamburger. |
+| Sidebar sinistra | Logo, "Residenza Aurora" e data. **Chat:** accordion con Da osservare, **Cosa va bene**, Bisogni espressi, Voce della struttura, Presenza con ROSS e **Cosa ti dice ROSS** (guida alla lettura). **Ospiti (lista), Report e Panoramica:** sidebar larga con lo specchietto verde "Cosa ti dice ROSS" della pagina, aperto di default. **Ritratto e Impostazioni:** colonna di icone. In fondo: Impostazioni e card con l'account del ruolo (menu "Sto chiedendo come", impostazioni, presentazione, ripristino dati). |
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti; 4 domande consigliate per ciascuno dei tre stakeholder (Staff, Psicologa, Direzione); graffetta per allegare documenti; microfono simulato; menu "…". |
 | Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: ultima conversazione, partecipazione rispetto alla **sua** media, chip verde "Va bene" e fino a 2 motivi di attenzione, interessi per categoria. |
 | Ritratto (`/ospiti/:id`) | Quattro tab: **Come sta** (narrativa, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, stile di ROSS, momenti della giornata) · **Conversazioni ROSS** (per settimana, mai di cosa) · **Documenti** (sola lettura). Niente biografia, grafo delle relazioni o contributi della famiglia. |
-| Report (`/report`) | Due report stampabili, scelti con i tab. **Riepilogo d'équipe** (default, anche `?ambito=struttura`): sintesi, KPI con tendenza e sparkline, infografiche (ognuno rispetto alla propria media, segnali della settimana, voce della struttura con soglia di anonimato, bisogni per tipo, minuti al giorno, mappa oraria, cosa coinvolge di più), situazione per ospite, punti da discutere (con "Da valorizzare"). **Singolo ospite** (`?ospite=ID`, `&stampa=1`): "Come sta" con infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
+| Report (`/report`) | Solo il **Come sta** del singolo ospite (`?ospite=ID`, `&stampa=1`), scelto da un menu in ordine di attenzione: infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
+| Panoramica (`/panoramica`) | Le analytics della struttura come schermata dell'app: sintesi, 6 numeri chiave, grafici in tre gruppi (Benessere nel tempo · Voce degli ospiti e bisogni · Presenza con ROSS), ognuno con "Cosa mostra" e "Come leggerlo", e i punti da discutere. "Stampa" / "Scarica riepilogo" stampano il **Riepilogo d'équipe** (documento completo con situazione per ospite), tenuto pronto fuori schermo. Le vecchie URL `/analytics` e `/report?ambito=struttura` portano qui. |
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3; in presentazione mostra anche "Avanti". |
@@ -171,7 +173,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/App.jsx` | Rotte. Le vecchie URL (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alle nuove. Mostra il `Toaster` (Sonner) nella vista Struttura e il vecchio toast nelle viste Famiglia e ROSS. |
 | `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, Ospiti e Report; a icone altrove), Sheet su mobile, schede in alto, card con l'account del ruolo (`roles[].account`), scorciatoia ⌘K che porta alla chat. |
 | `src/components/InsightRail.jsx` | Accordion della sidebar della chat (Da osservare, Cosa va bene, Bisogni, Voce, Presenza con ROSS) e guida `readingGuide`. Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
-| `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti e Report; testi in `residentsGuide` e `reportsGuide`. |
+| `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti, Report e Panoramica; testi in `residentsGuide`, `reportsGuide` e `overviewGuide`. |
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, "Avanti" in presentazione, sequenza `presentationRoutes`. |
@@ -180,7 +182,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
 | `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione, chip "Va bene" e motivi di attenzione. |
 | `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con i quattro tab. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
-| `src/pages/OperationalPages.jsx` | `ReportsPage` con i tab Riepilogo d'équipe / Singolo ospite, `TeamReport` e `ResidentReport`. |
+| `src/pages/OperationalPages.jsx` | `ReportsPage` (solo singolo ospite, `ResidentReport`) e `OverviewPage` (Panoramica: `Overview` a schermo, `TeamReport` fuori schermo per la stampa, classe `.print-offscreen`). |
 | `src/pages/LiveInteraction.jsx` | Sessione live: interessi dell'ospite in uso, esito con nuovo interesse per categoria (`journeyInterest` per Elena). |
 | `src/pages/Settings.jsx` | Impostazioni unificate, con la sezione `#privacy`. |
 | `src/data/chatScript.js` | Motore della chat: `roles` (Staff, Psicologa, Direzione, con `account`), `roleFor` (converte i ruoli vecchi salvati), `suggestions`, intenti a parole chiave con risposte per ruolo e fonti (tra cui `priorita`, `positivi`, `segnali`, `bisogni`, `voce`, `presenza`, `report`, `privacy`). |
@@ -233,6 +235,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### PR #26 · 27/09/2026 · Le analytics della struttura escono dai Report
+- **Richiesta:** il Riepilogo d'équipe non deve stare in Report; serve una sezione a parte, accanto a Report, organizzata come un'app (non come un foglio), con tutti i grafici e la descrizione di ognuno, non troppo complessa, sempre stampabile/scaricabile.
+- **Modifiche:**
+  - nuova scheda **Panoramica** (`/panoramica`) dopo Report: sintesi, 6 numeri chiave in card, grafici in tre gruppi con "Cosa mostra" e "Come leggerlo", punti da discutere; periodo, "Scarica riepilogo" e "Stampa" in testata;
+  - la stampa usa il Riepilogo d'équipe esistente, tenuto fuori schermo (così i grafici hanno dimensioni anche in stampa);
+  - **Report** mostra solo il "Come sta" dell'ospite scelto: tolti i tab Riepilogo d'équipe / Singolo ospite;
+  - redirect: `/analytics` e `/report?ambito=struttura` → `/panoramica`; chat, menu "…" e guida della chat puntano alla Panoramica; nuovo specchietto `overviewGuide`, `reportsGuide` riscritto; percorso "Avanti" della presentazione passa da Panoramica e dal report di Elena.
+- **File:** `src/pages/OperationalPages.jsx`, `src/App.jsx`, `src/components/Layout.jsx`, `src/components/PageGuide.jsx`, `src/components/InsightRail.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/data/chatScript.js`, `src/pages/AskRoss.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### PR #25 · 27/09/2026 · Rimandi all'handoff da README e AGENTS
 - Ripresi dalla PR #11 (prima versione di questo documento, ormai superata e chiusa) i due rimandi che mancavano su `main`: sezione "Passaggio di consegne" nel `README.md`, che indica la §0 a chi arriva ora, e riga in testa ad `AGENTS.md` ("leggilo prima di lavorare").

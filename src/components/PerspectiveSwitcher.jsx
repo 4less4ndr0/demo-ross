@@ -9,7 +9,7 @@ const perspectives = [
   { id: "family", label: "Famiglia", description: "Anna", icon: HeartHandshake, path: "/famiglia", key: "2" },
   { id: "ross", label: "ROSS", description: "Elena", icon: Sparkles, path: "/ross", key: "3" },
 ];
-const presentationRoutes = ["/", "/ross", "/ross/conversazione", "/?q=emerso", "/ospiti/elena", "/ospiti/elena?tab=avvicinare", "/famiglia", "/report", "/ospiti/elena?tab=documenti"];
+const presentationRoutes = ["/", "/ross", "/ross/conversazione", "/?q=emerso", "/ospiti/elena", "/ospiti/elena?tab=avvicinare", "/famiglia", "/panoramica", "/report?ospite=elena", "/ospiti/elena?tab=documenti"];
 
 const isTyping = (target) => target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 

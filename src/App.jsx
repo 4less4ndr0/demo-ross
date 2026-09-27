@@ -13,6 +13,7 @@ const Residents = load(() => import("./pages/Residents"), "Residents");
 const ResidentProfile = load(() => import("./pages/ResidentProfile"), "ResidentProfile");
 const LiveInteraction = load(() => import("./pages/LiveInteraction"), "LiveInteraction");
 const ReportsPage = load(() => import("./pages/OperationalPages"), "ReportsPage");
+const OverviewPage = load(() => import("./pages/OperationalPages"), "OverviewPage");
 const SettingsPage = load(() => import("./pages/Settings"), "SettingsPage");
 const FamilyExperience = load(() => import("./pages/FamilyExperience"), "FamilyExperience");
 const FamilyStory = load(() => import("./pages/FamilyExperience"), "FamilyStory");
@@ -30,6 +31,14 @@ function GlobalChrome() {
   return <><PerspectiveSwitcher />{legacyView ? toast && <div className={`toast toast-${toast.tone}`}><ClipboardCheck size={18} />{toast.message}</div> : <Toaster />}</>;
 }
 
+// Il Riepilogo d'équipe si è spostato in Panoramica: i vecchi link a /report?ambito=struttura ci portano lì.
+function ReportRoute() {
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  if (params.get("ambito") === "struttura") return <Navigate to={`/panoramica${params.get("stampa") ? "?stampa=1" : ""}`} replace />;
+  return <ReportsPage />;
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
@@ -37,5 +46,5 @@ function ScrollToTop() {
 }
 
 export function App() {
-  return <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/+$/, "")}><DemoProvider><ScrollToTop /><Suspense fallback={<div className="route-loading"><span /><p>ROSS sta preparando il contesto…</p></div>}><Routes><Route element={<Layout />}><Route path="/" element={<AskRoss />} /><Route path="/ospiti" element={<Residents />} /><Route path="/ospiti/:id" element={<ResidentProfile />} /><Route path="/report" element={<ReportsPage />} /><Route path="/impostazioni" element={<SettingsPage />} /></Route><Route path="/consegne" element={<Navigate to="/?q=turno" replace />} /><Route path="/analytics" element={<Navigate to="/report?ambito=struttura" replace />} /><Route path="/struttura" element={<Navigate to="/impostazioni" replace />} /><Route path="/insight" element={<Navigate to="/" replace />} /><Route path="/interazioni" element={<Navigate to="/ospiti" replace />} /><Route path="/attivita" element={<Navigate to="/ospiti" replace />} /><Route path="/interazione/:id" element={<LiveInteraction />} /><Route path="/famiglia" element={<FamilyExperience />} /><Route path="/famiglia/storia" element={<FamilyStory />} /><Route path="/famiglia/ricordi/:id" element={<FamilyMemoryDetail />} /><Route path="/famiglia/attivita" element={<FamilyActivities />} /><Route path="/famiglia/attivita/:id" element={<FamilyActivityDetail />} /><Route path="/famiglia/condivisi" element={<FamilyShared />} /><Route path="/ross" element={<RossHome />} /><Route path="/ross/conversazione" element={<RossConversation />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes><GlobalChrome /></Suspense></DemoProvider></BrowserRouter>;
+  return <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/+$/, "")}><DemoProvider><ScrollToTop /><Suspense fallback={<div className="route-loading"><span /><p>ROSS sta preparando il contesto…</p></div>}><Routes><Route element={<Layout />}><Route path="/" element={<AskRoss />} /><Route path="/ospiti" element={<Residents />} /><Route path="/ospiti/:id" element={<ResidentProfile />} /><Route path="/report" element={<ReportRoute />} /><Route path="/panoramica" element={<OverviewPage />} /><Route path="/impostazioni" element={<SettingsPage />} /></Route><Route path="/consegne" element={<Navigate to="/?q=turno" replace />} /><Route path="/analytics" element={<Navigate to="/panoramica" replace />} /><Route path="/struttura" element={<Navigate to="/impostazioni" replace />} /><Route path="/insight" element={<Navigate to="/" replace />} /><Route path="/interazioni" element={<Navigate to="/ospiti" replace />} /><Route path="/attivita" element={<Navigate to="/ospiti" replace />} /><Route path="/interazione/:id" element={<LiveInteraction />} /><Route path="/famiglia" element={<FamilyExperience />} /><Route path="/famiglia/storia" element={<FamilyStory />} /><Route path="/famiglia/ricordi/:id" element={<FamilyMemoryDetail />} /><Route path="/famiglia/attivita" element={<FamilyActivities />} /><Route path="/famiglia/attivita/:id" element={<FamilyActivityDetail />} /><Route path="/famiglia/condivisi" element={<FamilyShared />} /><Route path="/ross" element={<RossHome />} /><Route path="/ross/conversazione" element={<RossConversation />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes><GlobalChrome /></Suspense></DemoProvider></BrowserRouter>;
 }
