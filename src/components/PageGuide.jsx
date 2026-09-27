@@ -45,13 +45,25 @@ export const residentsGuide = {
 
 export const reportsGuide = {
   id: "report",
-  subtitle: "A cosa servono questi report",
-  intro: "Due report da stampare o salvare in PDF, pensati per il lavoro d'équipe: uno racconta la struttura, l'altro la singola persona. Trasformano ciò che ROSS osserva in qualcosa di cui parlare insieme.",
+  subtitle: "A cosa serve questo report",
+  intro: "Il «Come sta» di ogni ospite, da stampare o salvare in PDF per il lavoro d'équipe. Trasforma ciò che ROSS osserva di una persona in qualcosa di cui parlare insieme. La situazione della struttura è nella Panoramica.",
   entries: [
-    { title: "Riepilogo d'équipe", text: "Com'è la vita in struttura in questo periodo: benessere, voce degli ospiti, bisogni, presenza. Per la riunione d'équipe e la direzione: chiude con i punti da discutere.", question: "Prepara il riepilogo d'équipe del mese" },
-    { title: "Singolo ospite", text: "Il «Come sta» di una persona: com'è andato il periodo, come avvicinarla, cosa osservare. Utile per un confronto in équipe o per chi la incontra da poco." },
-    { title: "Perché anche su carta", text: "Le caselle «Da osservare» e «Da discutere» si spuntano a penna: ROSS segnala, l'équipe osserva, decide e annota." },
-    { title: "Come si leggono i numeri", text: "Ogni ospite è confrontato solo con la propria media. La voce della struttura è anonima e un tema compare solo se lo esprimono almeno 3 ospiti. Minuti e orari vengono dalle conversazioni con ROSS." },
+    { title: "Un report per ospite", text: "Com'è andato il periodo, come avvicinare la persona, cosa valorizzare e cosa osservare. Si sceglie l'ospite dal menu in alto: l'ordine è quello dell'attenzione.", question: "Prepara il report di Antonio" },
+    { title: "Perché anche su carta", text: "Le caselle «Da osservare in équipe» si spuntano a penna: ROSS segnala, l'équipe osserva, decide e annota." },
+    { title: "Come si leggono i numeri", text: "La persona è confrontata solo con la propria media degli ultimi 14 giorni. Minuti e orari vengono dalle conversazioni con ROSS." },
     { title: "Cosa non c'è", text: "Né citazioni né argomenti, né giudizi sulla salute, né i contenuti dei documenti della struttura. Il report racconta come sta la persona, non cosa ha raccontato." },
+  ],
+};
+
+export const overviewGuide = {
+  id: "panoramica",
+  subtitle: "Come leggere la Panoramica",
+  intro: "La struttura vista da ROSS, in una schermata: benessere, voce degli ospiti, bisogni e presenza. Ogni grafico dice cosa mostra e come leggerlo. Per la riunione, «Stampa» o «Scarica riepilogo» producono il Riepilogo d'équipe.",
+  entries: [
+    { title: "Ognuno rispetto a sé stesso", text: "Nessuna classifica: ogni barra parte dalla media di quella persona. Toccando un nome si apre il suo report.", question: "Chi sta meglio del solito questa settimana?" },
+    { title: "Verde e corallo", text: "Verde è ciò che va bene, corallo ciò che è da osservare di persona. Sono spunti, non giudizi sulla salute." },
+    { title: "Voce della struttura", text: "Anonima: un tema compare solo se lo esprimono almeno 3 ospiti, così nessuno è riconoscibile.", question: "Cosa dicono gli ospiti della vita in struttura?" },
+    { title: "Il riepilogo stampabile", text: "Stessi dati in forma di documento, con la situazione per ospite e i punti da discutere da spuntare a penna." },
+    { title: "Cosa non c'è", text: "Né il contenuto delle conversazioni né nomi accanto alla voce della struttura. Minuti e orari vengono dalla durata delle conversazioni, mai da cosa si sono detti." },
   ],
 };

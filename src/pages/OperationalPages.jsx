@@ -29,31 +29,98 @@ function Kpis({ kpis, days }) {
   </div>)}</section>;
 }
 
+// Report: solo il "Come sta" di ciascun ospite. Le analytics della struttura stanno in Panoramica (OverviewPage).
+const usePrintParam = (params, setParams) => useEffect(() => {
+  if (params.get("stampa") !== "1") return undefined;
+  const timer = window.setTimeout(() => { window.print(); const next = new URLSearchParams(params); next.delete("stampa"); setParams(next, { replace: true }); }, 900);
+  return () => window.clearTimeout(timer);
+}, [params]); // eslint-disable-line react-hooks/exhaustive-deps
+
+const periodOptions = [{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }];
+
 export function ReportsPage() {
   const { state } = useDemo();
   const [params, setParams] = useSearchParams();
-  const residentId = params.get("ospite");
-  const single = Boolean(residentId) || params.get("tipo") === "ospite";
-  const resident = state.residents.find((r) => r.id === residentId) || byAttention(state.residents)[0];
+  const resident = state.residents.find((r) => r.id === params.get("ospite")) || byAttention(state.residents)[0];
   const [period, setPeriod] = useState("30");
-  const showTeam = () => setParams({});
   const showResident = (id) => { setParams({ ospite: id }); window.scrollTo({ top: 0 }); };
-
-  useEffect(() => {
-    if (params.get("stampa") !== "1") return undefined;
-    const timer = window.setTimeout(() => { window.print(); const next = new URLSearchParams(params); next.delete("stampa"); setParams(next, { replace: true }); }, 900);
-    return () => window.clearTimeout(timer);
-  }, [params]); // eslint-disable-line react-hooks/exhaustive-deps
+  usePrintParam(params, setParams);
 
   return <div className="report-screen screen-enter">
-    <SectionTitle eyebrow="REPORT" title={single ? `Come sta ${resident.name}` : "Riepilogo d'équipe"} description={single ? `Report narrativo per l'équipe · ultimi ${period} giorni. Come sta e di cosa ha bisogno, mai il contenuto delle conversazioni.` : `La situazione della struttura negli ultimi ${period} giorni: benessere, voce degli ospiti, bisogni e presenza. Per le riunioni d'équipe e la direzione.`} action={<div className="action-group"><Button variant="outline" onClick={() => window.print()}><Download size={16} /> Salva PDF</Button><Button onClick={() => window.print()}><Printer size={16} /> Stampa</Button></div>} />
+    <SectionTitle eyebrow="REPORT" title={`Come sta ${resident.name}`} description={`Report narrativo per l'équipe · ultimi ${period} giorni. Come sta e di cosa ha bisogno, mai il contenuto delle conversazioni.`} action={<div className="action-group"><Button variant="outline" onClick={() => window.print()}><Download size={16} /> Salva PDF</Button><Button onClick={() => window.print()}><Printer size={16} /> Stampa</Button></div>} />
     <div className="filter-bar report-filters">
-      <div className="report-switch" role="tablist" aria-label="Tipo di report"><button role="tab" aria-selected={!single} className={!single ? "active" : ""} onClick={showTeam}>Riepilogo d'équipe</button><button role="tab" aria-selected={single} className={single ? "active" : ""} onClick={() => showResident(resident.id)}>Singolo ospite</button></div>
-      {single && <Select value={resident.id} onValueChange={showResident} label="Ospite" options={byAttention(state.residents).map((r) => ({ value: r.id, label: r.name }))} />}
-      <Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} />
+      <Select value={resident.id} onValueChange={showResident} label="Ospite" options={byAttention(state.residents).map((r) => ({ value: r.id, label: r.name }))} />
+      <Select value={period} onValueChange={setPeriod} label="Periodo" options={periodOptions} />
       <span className="privacy-label">Dati demo · Residenza Aurora</span>
     </div>
-    {single ? <ResidentReport resident={resident} report={buildResidentReport(state, resident, period)} period={period} /> : <TeamReport report={buildTeamReport(state, period)} period={period} onResident={showResident} />}
+    <ResidentReport resident={resident} report={buildResidentReport(state, resident, period)} period={period} />
+  </div>;
+}
+
+// Panoramica: le analytics della struttura come schermata dell'app. Ogni grafico dice cosa mostra e come leggerlo;
+// il riepilogo stampabile (TeamReport) resta pronto fuori schermo per "Stampa" e "Salva PDF".
+export function OverviewPage() {
+  const { state } = useDemo();
+  const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+  const [period, setPeriod] = useState("30");
+  const report = buildTeamReport(state, period);
+  const openResident = (id) => navigate(`/report?ospite=${id}`);
+  usePrintParam(params, setParams);
+
+  return <div className="report-screen overview-screen screen-enter">
+    <SectionTitle eyebrow="PANORAMICA" title="Come sta la struttura" description={`Benessere, voce degli ospiti, bisogni e presenza negli ultimi ${period} giorni. Ognuno è confrontato solo con sé stesso; mai il contenuto delle conversazioni.`} action={<div className="action-group"><Select value={period} onValueChange={setPeriod} label="Periodo" options={periodOptions} /><Button variant="outline" onClick={() => window.print()}><Download size={16} /> Scarica riepilogo</Button><Button onClick={() => window.print()}><Printer size={16} /> Stampa</Button></div>} />
+    <Overview report={report} period={period} onResident={openResident} />
+    <div className="print-offscreen" aria-hidden="true"><TeamReport report={report} period={period} onResident={openResident} /></div>
+  </div>;
+}
+
+function OverviewGroup({ title, text, children }) {
+  return <section className="overview-group"><header><h3>{title}</h3><p>{text}</p></header><div className="infographic-grid">{children}</div></section>;
+}
+
+function Overview({ report, period, onResident }) {
+  const maxHeat = Math.max(1, ...report.heatmap.flatMap((row) => row.cells.map((c) => c.count)));
+  return <div className="overview">
+    <section className="overview-top">
+      <div className="overview-summary surface"><span>IN SINTESI</span><p>{report.summary}</p></div>
+      <div className="overview-kpis">{report.kpis.map(([value, label, change]) => <div key={label} className="surface"><strong>{value}</strong><span>{label}</span>{change && <em className="kpi-change">{change.text}</em>}{label === "tempo con ROSS" && <Sparkline data={report.days} formatLabel={(d) => d && formatTick(d.date)} />}</div>)}</div>
+    </section>
+
+    <OverviewGroup title="Benessere nel tempo" text="Chi partecipa più o meno del solito e cosa hanno espresso gli ospiti questa settimana.">
+      <ChartCard title="Ognuno rispetto alla propria media" question="Cosa mostra: la partecipazione di ogni ospite negli ultimi 14 giorni rispetto alla sua media personale." note="Come leggerlo: a destra sopra la sua media, a sinistra sotto. Non è una classifica. Tocca un nome per aprire il suo report.">
+        <DivergingBars ariaLabel="Partecipazione di ogni ospite rispetto alla propria media" rows={report.trendRows.map((r) => ({ ...r, tip: r.value == null ? `${r.label}: ROSS la sta ancora conoscendo, ancora nessun confronto` : `${r.label}: ${signed(r.value)} rispetto alla sua media · apri il report` }))} format={(v) => signed(v)} onSelect={(r) => onResident(r.id)} />
+        <ChartLegend items={report.distribution.map((d) => ({ tone: d.tone, shape: d.tone === "building" ? "dash" : undefined, label: d.label, count: d.count }))} />
+      </ChartCard>
+      <ChartCard title="Cosa hanno espresso questa settimana" question="Cosa mostra: per ogni segnale, quanti ospiti lo hanno espresso più del solito negli ultimi 7 giorni." note="Come leggerlo: in verde ciò che va bene, in corallo ciò che è da osservare di persona. Non sono giudizi sulla salute.">
+        <ChartLegend items={[{ tone: "pos", label: "Va bene" }, { tone: "neg", label: "Da osservare" }]} />
+        <HorizontalBars ariaLabel="Segnali espressi questa settimana per numero di ospiti" max={Math.max(3, ...report.signalTypes.map((x) => x.count))} rows={report.signalTypes.map((x) => ({ label: capitalize(x.signal), value: x.count, tone: x.positive ? "pos" : "neg", valueLabel: ospiti(x.count), tip: `${capitalize(x.signal)}: ${x.who.join(", ")}` }))} />
+      </ChartCard>
+    </OverviewGroup>
+
+    <OverviewGroup title="Voce degli ospiti e bisogni" text="Cosa esprimono sulla vita in struttura, in forma anonima, e cosa chiedono per sé.">
+      <ChartCard title="Voce della struttura" question="Cosa mostra: quanti ospiti hanno espresso ogni tema sulla vita in struttura." note="Come leggerlo: un tema compare solo se lo esprimono almeno 3 ospiti (la linea tratteggiata), così nessuno è riconoscibile.">
+        <HorizontalBars ariaLabel="Temi della voce della struttura per numero di ospiti" max={report.total} reference={{ value: 3, label: "soglia di anonimato · 3 ospiti" }} rows={report.voice.map((v) => ({ label: v.topic, value: v.count, tone: v.tone, valueLabel: `${v.count} su ${report.total}`, tip: `${v.count} ospiti hanno espresso ${v.text} · ${v.action}` }))} />
+        <ChartLegend items={[{ tone: "positivo", label: "Apprezzato" }, { tone: "neutro", label: "Richiesta" }, { tone: "negativo", label: "Da migliorare" }]} />
+      </ChartCard>
+      <ChartCard title="Di cosa hanno bisogno" question="Cosa mostra: i bisogni espressi a ROSS, raggruppati per tipo." note="Come leggerlo: la barra conta quante volte sono stati espressi; passa sopra per vedere quanti ospiti. Chi ha chiesto cosa è nel report di ciascuno.">
+        <HorizontalBars ariaLabel="Bisogni espressi per tipo" max={Math.max(4, ...report.needCategories.map((c) => c.value))} rows={report.needCategories.map((c) => ({ label: c.label, value: c.value, tone: "need", valueLabel: `${c.value} ${c.value === 1 ? "volta" : "volte"}`, tip: `${c.label}: espresso ${c.value} ${c.value === 1 ? "volta" : "volte"} da ${ospiti(c.residents)}` }))} />
+      </ChartCard>
+    </OverviewGroup>
+
+    <OverviewGroup title="Presenza con ROSS" text="Quanto e quando gli ospiti parlano con ROSS, e cosa li coinvolge di più.">
+      <ChartCard title="Minuti al giorno" question={`Cosa mostra: il tempo passato con ROSS da tutti gli ospiti, giorno per giorno, negli ultimi ${period} giorni.`} note="Come leggerlo: un calo di più giorni vale una domanda in équipe; un giorno isolato no.">
+        <ResponsiveContainer width="100%" height={180}><AreaChart data={report.days} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}><CartesianGrid vertical={false} stroke={CHART.grid} /><XAxis dataKey="date" tickLine={false} axisLine={false} minTickGap={24} tickFormatter={formatTick} tick={{ fontSize: 11, fill: "var(--muted)" }} /><YAxis tickLine={false} axisLine={false} width={32} tick={{ fontSize: 11, fill: "var(--muted)" }} /><Tooltip contentStyle={tooltipStyle} labelFormatter={formatTick} formatter={(value) => [`${value} min`, "Tempo con ROSS"]} /><Area type="monotone" dataKey="minutes" stroke={CHART.pos} fill={CHART.pos} fillOpacity={0.12} strokeWidth={2} isAnimationActive={false} /></AreaChart></ResponsiveContainer>
+      </ChartCard>
+      <ChartCard title="Quando parlano con ROSS" question="Cosa mostra: le conversazioni per giorno della settimana e fascia oraria." note="Come leggerlo: più scuro = più conversazioni. Utile per scegliere quando proporre un'attività.">
+        <div className="team-heatmap" role="img" aria-label="Conversazioni per giorno e fascia oraria"><div className="heat-head"><span />{report.heatmap[0].cells.map((c) => <span key={c.label}>{c.label}</span>)}</div>{report.heatmap.map((row) => <div key={row.day} className="heat-line"><strong>{row.day}</strong>{row.cells.map((c) => <span key={c.label} style={{ opacity: 0.12 + (c.count / maxHeat) * 0.88 }} title={`${row.day} ${c.label}: ${c.count} conversazioni`} />)}</div>)}</div>
+      </ChartCard>
+      <ChartCard wide title="Cosa coinvolge di più" question="Cosa mostra: per ogni tipo di attività con ROSS, quanto durano le conversazioni rispetto alla media di chi le fa." note="Come leggerlo: a destra le attività che trattengono di più. Calcolato sulla durata, mai sul contenuto.">
+        <DivergingBars ariaLabel="Durata delle conversazioni per tipo di attività rispetto alla media personale" left="più brevi" right="più lunghe" center="media di ciascuno" rows={report.activityEngagement.map((a) => ({ ...a, tip: `${a.label}: conversazioni ${a.value >= 0 ? `più lunghe del ${a.value}%` : `più brevi del ${Math.abs(a.value)}%`} rispetto alla media di chi la fa · ${a.count} conversazioni` }))} format={(v) => signed(v, 0, "%")} />
+      </ChartCard>
+    </OverviewGroup>
+
+    <section className="overview-discuss surface"><header><h3>Da discutere in équipe</h3><p>Punti preparati da ROSS per la prossima riunione. Nel riepilogo stampato si spuntano a penna.</p></header><ul className="report-checklist">{report.discuss.map((d) => <li key={d}>{d}</li>)}</ul></section>
   </div>;
 }
 
@@ -75,8 +142,7 @@ function TeamReport({ report, period, onResident }) {
         <ChartCard title="Ognuno rispetto alla propria media" question="Partecipazione negli ultimi 14 giorni. Non è una classifica: ogni barra parte dalla media di quella persona." note="Il valore indica di quanto la partecipazione si discosta dalla media personale.">
           <DivergingBars ariaLabel="Partecipazione di ogni ospite rispetto alla propria media" rows={report.trendRows.map((r) => ({ ...r, tip: r.value == null ? `${r.label}: ROSS la sta ancora conoscendo, ancora nessun confronto` : `${r.label}: ${signed(r.value)} rispetto alla sua media` }))} format={(v) => signed(v)} onSelect={(r) => onResident(r.id)} />
           <ChartLegend items={report.distribution.map((d) => ({ tone: d.tone, shape: d.tone === "building" ? "dash" : undefined, label: d.label, count: d.count }))} />
-          <small className="chart-hint no-print">Tocca un nome per aprire il suo report</small>
-        </ChartCard>
+                  </ChartCard>
         <ChartCard title="Cosa hanno espresso questa settimana" question="Per ogni segnale, quanti ospiti lo hanno espresso più del solito negli ultimi 7 giorni." note="Spunti da osservare di persona, non giudizi sulla salute.">
           <ChartLegend items={[{ tone: "pos", label: "Va bene" }, { tone: "neg", label: "Da osservare" }]} />
           <HorizontalBars ariaLabel="Segnali espressi questa settimana per numero di ospiti" max={Math.max(3, ...report.signalTypes.map((x) => x.count))} rows={report.signalTypes.map((x) => ({ label: capitalize(x.signal), value: x.count, tone: x.positive ? "pos" : "neg", valueLabel: ospiti(x.count), tip: `${capitalize(x.signal)}: ${x.who.join(", ")}` }))} />
