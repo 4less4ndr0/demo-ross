@@ -1,4 +1,5 @@
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { ChevronRight } from "lucide-react";
 
 // Infografiche dei report. Regole: ognuno confrontato con sé stesso, colore con un solo significato
 // (verde = va bene / sopra la media, corallo = da osservare / sotto la media, grigio = in linea),
@@ -23,20 +24,23 @@ export function ChartLegend({ items }) {
 const Tip = ({ children }) => children ? <span className="chart-tip" role="tooltip">{children}</span> : null;
 
 // Barre divergenti attorno allo zero ("sua media"): a destra sopra, a sinistra sotto.
-export function DivergingBars({ rows, format = (v) => v, emptyLabel = "ROSS la sta ancora conoscendo", left = "sotto", right = "sopra", center = "sua media", ariaLabel }) {
+// Con `onSelect` ogni riga diventa un bottone (es. apre il report di quell'ospite).
+export function DivergingBars({ rows, format = (v) => v, emptyLabel = "ROSS la sta ancora conoscendo", left = "sotto", right = "sopra", center = "sua media", ariaLabel, onSelect }) {
   const max = Math.max(0.1, ...rows.filter((r) => r.value != null).map((r) => Math.abs(r.value)));
-  return <div className="diverging" role="img" aria-label={ariaLabel}>
+  return <div className="diverging" role={onSelect ? "list" : "img"} aria-label={ariaLabel}>
     {rows.map((row) => {
       const tone = toneOf[row.tone] || (row.value > 0 ? "pos" : row.value < 0 ? "neg" : "mid");
       const width = row.value == null ? 0 : Math.max(1.5, (Math.abs(row.value) / max) * 50);
-      return <div key={row.id || row.label} className="diverging-row" tabIndex={0}>
+      const Row = onSelect ? "button" : "div";
+      const rowProps = onSelect ? { type: "button", role: "listitem", onClick: () => onSelect(row), "aria-label": `Apri il report di ${row.label}` } : { tabIndex: 0 };
+      return <Row key={row.id || row.label} className={`diverging-row${onSelect ? " is-link" : ""}`} {...rowProps}>
         <span className="chart-label">{row.label}</span>
         <span className="diverging-track">
           {row.value == null ? <em>{emptyLabel}</em> : <i className={`bar-${tone} ${row.value < 0 ? "is-left" : "is-right"}`} style={row.value < 0 ? { right: "50%", width: `${width}%` } : { left: "50%", width: `${width}%` }} />}
         </span>
-        <span className="chart-value">{row.value == null ? "—" : format(row.value)}</span>
-        <Tip>{row.tip}</Tip>
-      </div>;
+        <span className="chart-value">{row.value == null ? "—" : format(row.value)}{onSelect && <ChevronRight size={14} className="diverging-go" aria-hidden="true" />}</span>
+        <Tip>{onSelect && row.tip ? `${row.tip} · apri il report` : row.tip}</Tip>
+      </Row>;
     })}
     <div className="diverging-axis"><span /><span><small>← {left}</small><b>{center}</b><small>{right} →</small></span><span /></div>
   </div>;
