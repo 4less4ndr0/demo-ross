@@ -51,7 +51,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - **Visita guidata** (`src/components/GuidedTour.jsx`, sostituisce la vecchia modalità presentazione): organizzata **per capitoli, uno per vista: Struttura → Famiglia → Elena (tablet ROSS)**.
   - **Benvenuto:** agenda delle tre parti, cliccabile.
   - **Ogni capitolo** si apre con una **scheda più grande**: "Parte N di 3", chi la usa, "Ora vediamo…", cosa la caratterizza, l'elenco "Cosa guarderemo" e il bottone "Guardiamoli".
-  - **Passi:** un elemento evidenziato alla volta, con lo sfondo scurito; scheda breve con lo stepper dei capitoli (cliccabile, ✓ per quelli visti), avanzamento nel capitolo ("2 di 4 · Struttura"), Indietro/Avanti, Salta e ×.
+  - **Passi:** un elemento evidenziato alla volta, con lo sfondo scurito; scheda breve con lo stepper dei capitoli (cliccabile, ✓ per quelli visti), avanzamento nel capitolo ("2 di 4 · Struttura"), Indietro/Avanti, Salta, "Indice" (torna al benvenuto con l'agenda; tasto Home) e ×.
   - **Chiusura:** sulla pillola "Vista demo".
   - **Fuori dal giro:** Report, Panoramica e Allegati.
   - **Dove si apre:** dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`.

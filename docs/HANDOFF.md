@@ -248,6 +248,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Ottobre 2026 · 20/10/2026 · Visita guidata: "Indice" per tornare all'inizio
+- **Richiesta:** oltre a "Indietro" (passo precedente) serve un modo per tornare all'inizio della visita.
+- **Modifiche:** bottone "Indice" in alto a destra di ogni scheda (accanto alla ×, tranne nel benvenuto). Riporta alla prima scheda con l'agenda cliccabile (Il metodo, Struttura, Famiglia, Elena). Da tastiera si usa il tasto Home.
+- **File:** `src/components/GuidedTour.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Ottobre 2026 · 20/10/2026 · Visita guidata più solida e metodo più chiaro
 - **Richiesta:** le schede del metodo erano poco chiare; nel video la visita "non è proprio top".
 - **Problemi visti nel video:**

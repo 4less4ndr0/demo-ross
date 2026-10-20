@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Building2, Check, DoorOpen, HeartHandshake, Sparkles, Sprout, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Check, DoorOpen, HeartHandshake, House, Sparkles, Sprout, X } from "lucide-react";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
 // Si apre da "Vista demo", dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
@@ -181,6 +181,7 @@ export function GuidedTour() {
       if (event.key === "Escape") { event.preventDefault(); close(); }
       else if (event.key === "ArrowRight") { event.preventDefault(); go(index + 1); }
       else if (event.key === "ArrowLeft") { event.preventDefault(); go(index - 1); }
+      else if (event.key === "Home") { event.preventDefault(); go(0); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -269,6 +270,7 @@ export function GuidedTour() {
       <div className="tour-blocker" aria-hidden="true" onClick={() => cardRef.current?.focus()} />
       {ready && <section key={index} ref={cardRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-body"
         className={`tour-card${big ? " tour-card-big tour-card-center" : rect ? ` tour-card-dock${dockTop ? " is-top" : ""}` : " tour-card-center"}`}>
+        {index > 0 && <button type="button" className="tour-home" onClick={() => go(0)} title="Torna all'indice della visita"><House size={14} /> Indice</button>}
         <button type="button" className="tour-close" onClick={close} aria-label="Chiudi la visita guidata"><X size={16} /></button>
         {content}
         <footer>
