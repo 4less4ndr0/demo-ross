@@ -1,15 +1,31 @@
-import { useEffect } from "react";
-import { ArrowRight, Building2, ChevronUp, HeartHandshake, MonitorPlay, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, Building2, ChevronUp, FlaskConical, HeartHandshake, MonitorPlay, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui";
+import { Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui";
 
 const perspectives = [
   { id: "structure", label: "Struttura", description: "Operatori", icon: Building2, path: "/", key: "1" },
   { id: "family", label: "Famiglia", description: "Anna", icon: HeartHandshake, path: "/famiglia", key: "2" },
   { id: "ross", label: "ROSS", description: "Elena", icon: Sparkles, path: "/ross", key: "3" },
 ];
-const presentationRoutes = ["/", "/ross", "/ross/conversazione", "/?q=emerso", "/ospiti/elena", "/ospiti/elena?tab=avvicinare", "/famiglia", "/panoramica", "/report?ospite=elena", "/ospiti/elena?tab=documenti"];
+// Il giro parte dalla persona: tablet di Elena, poi la famiglia, poi cosa riceve la struttura.
+const presentationRoutes = ["/ross", "/ross/conversazione", "/famiglia", "/famiglia/attivita", "/?q=emerso", "/ospiti/elena", "/ospiti/elena?tab=avvicinare", "/impostazioni#privacy"];
+
+// Cosa dire a chi guarda la demo: è uno strumento di ricerca, non un prodotto finito.
+const simulated = [
+  ["Dati inventati", "Residenza Aurora, gli otto ospiti, Elena e Anna non esistono."],
+  ["Risposte preparate", "La chat della struttura risponde con testi scritti in anticipo: non c'è un modello AI collegato."],
+  ["Conversazione con copione", "Il dialogo tra ROSS ed Elena è scritto e avanza a tocchi: nessun riconoscimento vocale."],
+  ["Nessun dispositivo collegato", "Niente tablet o companion reale, nessuna chiamata, nessun avviso inviato a qualcuno."],
+];
+const principles = [
+  ["La struttura sa come sta, non di cosa ha parlato", "Mai trascrizioni, citazioni o ricordi: solo segnali nel tempo, bisogni e interessi per categoria."],
+  ["La famiglia vede ciò che l'ospite sceglie", "ROSS chiede a Elena se può raccontarlo ad Anna, un racconto alla volta."],
+  ["Ognuno confrontato con sé stesso", "Niente voti né classifiche: solo \"rispetto alla sua media\"."],
+  ["Non è clinico né un sistema di emergenza", "ROSS non giudica la salute e non sostituisce campanello, personale o relazioni."],
+  ["Elaborazione sul dispositivo", "È la direzione tecnica del progetto, non una capacità già verificata."],
+];
 
 const isTyping = (target) => target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
@@ -20,6 +36,7 @@ export function PerspectiveSwitcher() {
   const { state, actions } = useDemo();
   const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : "structure";
   const current = perspectives.find((p) => p.id === active);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const goTo = (perspective) => {
     if (perspective.id === "structure" && state.rossJourney.candidateId && !state.rossJourney.confirmedAt) {
@@ -30,9 +47,9 @@ export function PerspectiveSwitcher() {
   };
 
   const next = () => {
-    const here = `${location.pathname}${location.search}`;
+    const here = `${location.pathname}${location.search}${location.hash}`;
     const exact = presentationRoutes.indexOf(here);
-    const index = exact >= 0 ? exact : presentationRoutes.findIndex((r) => r.split("?")[0] === location.pathname);
+    const index = exact >= 0 ? exact : presentationRoutes.findIndex((r) => r.split(/[?#]/)[0] === location.pathname);
     navigate(presentationRoutes[(index + 1) % presentationRoutes.length]);
   };
 
@@ -61,10 +78,18 @@ export function PerspectiveSwitcher() {
           <DropdownMenuLabel>Vista demo</DropdownMenuLabel>
           {perspectives.map((p) => <DropdownMenuItem key={p.id} icon={p.icon} shortcut={p.key} className={p.id === active ? "demo-view-current" : ""} onSelect={() => goTo(p)}>{p.label} <small>· {p.description}</small></DropdownMenuItem>)}
           <DropdownMenuSeparator />
+          <DropdownMenuItem icon={FlaskConical} onSelect={() => setAboutOpen(true)}>Cosa è reale e cosa è simulato</DropdownMenuItem>
           <DropdownMenuItem icon={MonitorPlay} onSelect={actions.togglePresentation}>{state.presentation ? "Esci dalla presentazione" : "Modalità presentazione"}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       {state.presentation && <button type="button" className="demo-view-next" onClick={next}>Avanti <ArrowRight size={15} /></button>}
+      <Dialog open={aboutOpen} onClose={() => setAboutOpen(false)} title="Cosa è reale e cosa è simulato" size="lg">
+        <div className="demo-about">
+          <p className="demo-about-lead">Questa demo è uno strumento per discutere e raccogliere reazioni: mostra come ROSS potrebbe stare accanto a Elena, ad Anna e alla struttura. Non è un prodotto finito né una prova che funzioni.</p>
+          <section><h3>Simulato</h3><ul>{simulated.map(([title, text]) => <li key={title}><strong>{title}</strong><span>{text}</span></li>)}</ul></section>
+          <section><h3>Principi che stiamo progettando</h3><ul>{principles.map(([title, text]) => <li key={title}><strong>{title}</strong><span>{text}</span></li>)}</ul></section>
+        </div>
+      </Dialog>
     </div>
   );
 }

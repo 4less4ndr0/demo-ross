@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Sparkles } from "lucide-react";
-import { useDemo } from "../state/DemoContext";
+import { ArrowRight, Camera, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Sparkles } from "lucide-react";
+import { attachmentFrom, useDemo } from "../state/DemoContext";
+import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge } from "../components/Common";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
@@ -11,8 +12,8 @@ import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMe
 
 // Ritratto dell'ospite secondo docs/contratto-informativo-struttura.md: come sta, come avvicinarsi,
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
-const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Conversazioni ROSS"], ["documenti", "Documenti"]];
-const tabAliases = { panoramica: "sintesi", andamento: "sintesi", attivita: "sintesi", interazioni: "conversazioni", storia: "avvicinare", memorie: "avvicinare", relazioni: "avvicinare", interessi: "avvicinare" };
+const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Conversazioni ROSS"], ["allegati", "Allegati"]];
+const tabAliases = { documenti: "allegati", panoramica: "sintesi", andamento: "sintesi", attivita: "sintesi", interazioni: "conversazioni", storia: "avvicinare", memorie: "avvicinare", relazioni: "avvicinare", interessi: "avvicinare" };
 const normalizeTab = (value) => { const key = (value || "sintesi").toLowerCase(); const id = tabAliases[key] || key; return tabs.some(([t]) => t === id) ? id : "sintesi"; };
 
 const typeLabels = { Conversazione: "Conversazione libera", Memoria: "Reminiscenza" };
@@ -46,13 +47,13 @@ export function ResidentProfile() {
   return <div className="profile-screen screen-enter">
     <section className="profile-header">
       <div className="profile-person"><Avatar resident={resident} size="xl" /><div><span className="eyebrow">RITRATTO · STANZA {resident.room}</span><h1>{resident.name}</h1><p>{resident.age} anni · {resident.daysWithRoss} giorni con ROSS · ultima conversazione {resident.lastInteraction}</p></div></div>
-      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} /><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => navigate(`/?ospite=${resident.id}`)}>Allega documento in chat</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
+      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} /><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
     </section>
-    <div className="profile-tabs">{tabs.map(([tabId, label]) => <button key={tabId} className={tab === tabId ? "active" : ""} onClick={() => setTab(tabId)}>{label}{tabId === "documenti" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</button>)}</div>
+    <div className="profile-tabs">{tabs.map(([tabId, label]) => <button key={tabId} className={tab === tabId ? "active" : ""} onClick={() => setTab(tabId)}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</button>)}</div>
     {tab === "sintesi" && <Overview state={state} resident={resident} onApproach={() => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
     {tab === "avvicinare" && <Approach state={state} resident={resident} navigate={navigate} />}
     {tab === "conversazioni" && <Conversations state={state} resident={resident} />}
-    {tab === "documenti" && <Documents resident={resident} documents={residentDocuments} navigate={navigate} />}
+    {tab === "allegati" && <Attachments resident={resident} documents={residentDocuments} onAdd={actions.addDocument} />}
   </div>;
 }
 
@@ -137,10 +138,19 @@ function Conversations({ state, resident }) {
   </section>;
 }
 
-function Documents({ resident, documents, navigate }) {
-  const toChat = () => navigate(`/?ospite=${resident.id}`);
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Documenti</h2><p>Referti e relazioni allegati in chat, che ROSS può citare come fonte. I documenti ufficiali restano nel gestionale della struttura.</p></div><button className="ghost-button" onClick={toChat}><Paperclip size={16} /> Allega dalla chat</button></div>
-    {!documents.length ? <EmptyState title="Nessun documento" description="Allega referti e relazioni dalla chat: ROSS li userà come fonte." icon={FileText} /> : <div className="document-list">{documents.map((doc) => <article className="document-card surface" key={doc.id}><span className="document-icon"><FileText size={20} /></span><div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3><p>{doc.summary}</p><span className="document-meta">{doc.author} · {doc.pages} {doc.pages === 1 ? "pagina" : "pagine"}</span></div><button className="ghost-button" onClick={() => navigate(`/?ospite=${resident.id}&q=${encodeURIComponent(`Cosa dice ${doc.kind.toLowerCase()} di ${resident.name.split(" ")[0]}?`)}`)}><Sparkles size={15} /> Chiedi a ROSS</button></article>)}</div>}
-    <DataExplanation>ROSS legge i documenti per rispondere alle domande dello staff e li cita come fonte. Non interpreta i valori degli esami e non sostituisce il gestionale.</DataExplanation>
+// Allegati: facoltativi e non strutturati. Una foto fatta con il telefono o un file, chi l'ha allegato e quando.
+function Attachments({ resident, documents, onAdd }) {
+  const fileRef = useRef(null);
+  const cameraRef = useRef(null);
+  const add = (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) onAdd({ residentId: resident.id, ...attachmentFrom(file) });
+  };
+  const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
+  return <section className="content-section"><div className="content-toolbar"><div><h2>Allegati</h2><p>Se vi è utile, potete allegare una foto o un file su {resident.name.split(" ")[0]}. Non è obbligatorio: i documenti ufficiali restano nel gestionale della struttura.</p></div><div className="attachment-actions"><button className="ghost-button" onClick={() => cameraRef.current?.click()}><Camera size={16} /> Scatta una foto</button><button className="ghost-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Allega un file</button></div>
+    <input ref={cameraRef} type="file" hidden accept="image/*" capture="environment" onChange={add} /><input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} /></div>
+    {!documents.length ? <EmptyState title="Nessun allegato" description="Una foto di un'attività o un'indicazione pratica: allegala da qui o dalla graffetta della chat." icon={Paperclip} /> : <div className="document-list">{documents.map((doc) => <article className="document-card surface" key={doc.id}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt={doc.title} onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<span className="document-meta">{doc.author}</span></div></article>)}</div>}
+    <DataExplanation>ROSS può citare un allegato come fonte quando serve, ma non interpreta referti né valori e non sostituisce il gestionale.</DataExplanation>
   </section>;
 }

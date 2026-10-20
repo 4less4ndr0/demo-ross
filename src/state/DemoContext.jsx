@@ -6,6 +6,9 @@ import { asset } from "../asset.js";
 const DemoContext = createContext(null);
 const STORAGE_KEY = "ross-rsa-demo-v2";
 
+// Allegati facoltativi: una foto o un file, senza classificarli per tipo.
+export const attachmentFrom = (file) => ({ kind: file.type.startsWith("image/") ? "Foto" : "Allegato", title: file.name.replace(/\.[^.]+$/, ""), image: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined });
+
 const initialRossJourney = {
   stage: "ready",
   completedAt: null,
@@ -78,7 +81,9 @@ function getInitialState() {
         scheduledActivities: parsed.scheduledActivities || initialScheduledActivities,
         rossJourney: { ...initialRossJourney, ...(parsed.rossJourney || {}) },
         // I dati degli ospiti vengono dalla demo: dal browser si conservano solo le scelte dell'utente.
-        residents: initialResidents.map((r) => { const saved = (parsed.residents || []).find((x) => x.id === r.id); return saved ? { ...r, mode: saved.mode, status: saved.status } : r; }),
+        residents: initialResidents.map((r) => { const saved = (parsed.residents || []).find((x) => x.id === r.id); return saved ? { ...r, mode: saved.mode === "Riposo" ? "Silenziosa" : saved.mode, status: saved.status } : r; }),
+        // Gli allegati della demo vengono sempre dal dataset; dal browser si conservano solo quelli aggiunti.
+        documents: [...(parsed.documents || []).filter((d) => d.uploaded), ...initialDocuments],
         role: ["operatore", "coordinatrice"].includes(parsed.role) ? "staff" : parsed.role || defaults.role,
       };
     }
@@ -209,7 +214,7 @@ export function DemoProvider({ children }) {
           rossJourney: { stage: "complete", completedAt: new Date().toISOString(), candidateId: memory.id, confirmedAt: prev.rossJourney.confirmedAt },
         };
       });
-      notify("Conversazione salvata: Elena ha scelto di condividere un nuovo ricordo con Anna");
+      notify("Elena ha scelto di condividere un nuovo ricordo con Anna; il resto della conversazione resta sul dispositivo");
     },
     addFamilyContribution: (contribution) => {
       const id = `family-${Date.now()}`;
@@ -253,8 +258,8 @@ export function DemoProvider({ children }) {
     },
     setRole: (role) => setState((prev) => ({ ...prev, role })),
     addDocument: (document) => {
-      setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Caricato dallo staff", pages: 1, ...document }, ...prev.documents] }));
-      notify("Documento aggiunto ai documenti dell'ospite", "success", { undo: true });
+      setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Allegato dallo staff", uploaded: true, ...document }, ...prev.documents] }));
+      notify("Allegato aggiunto al ritratto", "success", { undo: true });
     },
     takeInsight: (id) => {
       setState((prev) => ({ ...prev, takenInsights: [...new Set([...prev.takenInsights, id])] }));
