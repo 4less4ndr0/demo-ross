@@ -38,7 +38,7 @@ export const residentsGuide = {
     { title: "Perché questo ordine", text: "In cima chi ha bisogno di più attenzione oggi: prima un'assenza insolita, poi i segnali da osservare, poi i bisogni espressi. Chi inizia la giornata sa da chi passare per primo.", question: "Chi ha bisogno di più attenzione oggi?" },
     { title: "Una scheda essenziale", text: "In copertina solo chi è: foto, nome, età, stanza, modalità di ROSS e ultima conversazione. Se c'è qualcosa da osservare, compare un solo avviso. Cosa va bene, bisogni e interessi sono nel ritratto: ogni persona ha entrambe le cose, e lì si vedono insieme." },
     { title: "Ognuno confrontato con sé stesso", text: "Nel ritratto la partecipazione è sempre rispetto alla media della persona negli ultimi 14 giorni. Niente punteggi né classifiche: una persona riservata non è «peggio» di una socievole." },
-    { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio e spunti per ogni interesse), Conversazioni ROSS (quando e quanto, mai di cosa), Documenti (allegati dalla chat, in sola lettura)." },
+    { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio e spunti per ogni interesse), Conversazioni ROSS (quando e quanto, mai di cosa), Allegati (una foto o un file, se vi è utile; facoltativi)." },
     { title: "Cosa non trovi, e perché", text: "Niente storia di vita, grafo delle relazioni, ricordi o citazioni: sono della persona. I dettagli biografici compaiono solo se li hanno dati la famiglia o la struttura all'ingresso." },
     { title: "ROSS segnala, voi decidete", text: "ROSS non giudica la salute di nessuno: racconta la giornata e ciò che la persona esprime. I segnali sono spunti da verificare di persona: il giudizio resta all'équipe.", question: "Chi ha espresso segnali da osservare questa settimana?" },
   ],
@@ -52,7 +52,7 @@ export const reportsGuide = {
     { title: "Un report per ospite", text: "Com'è andato il periodo, come avvicinare la persona, cosa valorizzare e cosa osservare. Si sceglie l'ospite dal menu in alto: l'ordine è quello dell'attenzione.", question: "Prepara il report di Antonio" },
     { title: "Perché anche su carta", text: "Le caselle «Da osservare in équipe» si spuntano a penna: ROSS segnala, l'équipe osserva, decide e annota." },
     { title: "Come si leggono i numeri", text: "La persona è confrontata solo con la propria media degli ultimi 14 giorni. Minuti e orari vengono dalle conversazioni con ROSS." },
-    { title: "Cosa non c'è", text: "Né citazioni né argomenti, né giudizi sulla salute, né i contenuti dei documenti della struttura. Il report racconta come sta la persona, non cosa ha raccontato." },
+    { title: "Cosa non c'è", text: "Né citazioni né argomenti, né giudizi sulla salute, né i contenuti degli allegati. Il report racconta come sta la persona, non cosa ha raccontato." },
   ],
 };
 

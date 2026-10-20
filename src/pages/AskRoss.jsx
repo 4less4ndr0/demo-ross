@@ -2,20 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
 import { answerQuestion, findResident, roleFor, suggestions } from "../data/chatScript";
-import { useDemo } from "../state/DemoContext";
+import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { Avatar } from "../components/Common";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../components/ui";
 
 const queryShortcuts = { turno: "Chi ha bisogno di più attenzione oggi?", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
 const sourceIcons = { "Biografia d'ingresso": BookOpen, Documento: FileText, "Nota operatore": StickyNote, Famiglia: Heart, "Dati ROSS": BarChart3 };
 
-function guessKind(fileName) {
-  const name = fileName.toLowerCase();
-  if (/fisio|riabilit|motori/.test(name)) return "Fisioterapia";
-  if (/sangue|analisi|esami|lab/.test(name)) return "Esami del sangue";
-  if (/diari|consegn|nota/.test(name)) return "Diario di reparto";
-  return "Documento";
-}
+
 
 export function AskRoss() {
   const { state, actions } = useDemo();
@@ -86,15 +80,14 @@ export function AskRoss() {
     event.target.value = "";
     if (!file) return;
     const resident = scoped || findResident(state, file.name.replace(/[_-]/g, " ")) || state.residents[0];
-    const kind = guessKind(file.name);
-    const title = file.name.replace(/\.[^.]+$/, "");
-    actions.addDocument({ residentId: resident.id, kind, title, summary: "Caricato ora. ROSS lo userà come fonte nelle risposte, citandolo." });
+    const { kind, title, image } = attachmentFrom(file);
+    actions.addDocument({ residentId: resident.id, kind, title, image, summary: "Allegato ora dalla chat." });
     const id = Date.now();
     setMessages((prev) => [...prev, { id, from: "user", attachment: file.name }, { id: id + 1, from: "ross", answer: {
-      text: `Ho aggiunto «${title}» ai documenti di ${resident.name.split(" ")[0]} come ${kind.toLowerCase()}. Da ora posso usarlo per rispondere e lo citerò sempre come fonte. Non interpreto i valori degli esami: restano a chi se ne occupa.`,
+      text: `Ho allegato «${title}» al ritratto di ${resident.name.split(" ")[0]}. Se serve lo cito come fonte; non interpreto referti né valori: restano a chi se ne occupa.`,
       residents: [resident.id],
       sources: [{ kind: "Documento", label: `${kind} · oggi` }],
-      action: { label: "Apri i documenti", to: `/ospiti/${resident.id}?tab=documenti` },
+      action: { label: "Apri gli allegati", to: `/ospiti/${resident.id}?tab=allegati` },
     } }]);
   };
 
@@ -109,7 +102,7 @@ export function AskRoss() {
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem icon={RotateCcw} disabled={!messages.length} onSelect={() => setMessages([])}>Nuova conversazione</DropdownMenuItem>
-              <DropdownMenuItem icon={Paperclip} onSelect={() => fileRef.current?.click()}>Allega un documento</DropdownMenuItem>
+              <DropdownMenuItem icon={Paperclip} onSelect={() => fileRef.current?.click()}>Allega una foto o un file</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${scoped?.id || "elena"}`)}>Report di {(scoped || state.residents[0]).name.split(" ")[0]}</DropdownMenuItem>
               <DropdownMenuItem icon={BarChart3} onSelect={() => navigate("/panoramica")}>Panoramica della struttura</DropdownMenuItem>
@@ -126,16 +119,16 @@ export function AskRoss() {
             </div>
           ) : messages.map((m) => m.from === "user"
             ? <div key={m.id} className="ask-msg ask-msg-user"><span className="ask-bubble">{m.attachment ? <span className="ask-attachment"><Paperclip size={14} />{m.attachment}</span> : m.text}</span></div>
-            : <div key={m.id} className="ask-msg ask-msg-ross"><span className="ask-avatar">R</span>{m.pending ? <div className="ask-typing"><i /><i /><i /><small>Cerco nelle conversazioni e nei documenti…</small></div> : <Answer answer={m.answer} state={state} navigate={navigate} />}</div>)}
+            : <div key={m.id} className="ask-msg ask-msg-ross"><span className="ask-avatar">R</span>{m.pending ? <div className="ask-typing"><i /><i /><i /><small>Raccolgo quello che ROSS ha notato…</small></div> : <Answer answer={m.answer} state={state} navigate={navigate} />}</div>)}
         </div>
 
         <footer className="ask-composer">
           {messages.length > 0 && <div className="ask-chips">{baseSuggestions.map((s) => <button key={s} onClick={() => ask(s)}>{s}</button>)}</div>}
           {scoped && <div className="ask-scope"><Avatar resident={scoped} size="sm" />Stai chiedendo su <strong>{scoped.name}</strong><button onClick={() => setScope(null)} aria-label="Rimuovi filtro ospite"><X size={14} /></button></div>}
           <form onSubmit={(e) => { e.preventDefault(); ask(input); }} className={listening ? "listening" : ""}>
-            <button type="button" className="ask-tool" onClick={() => fileRef.current?.click()} title="Allega un documento" aria-label="Allega un documento"><Paperclip size={18} /></button>
-            <input ref={fileRef} type="file" hidden accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt" onChange={upload} />
-            <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder={listening ? "In ascolto…" : scoped ? `Chiedi qualcosa su ${scoped.name.split(" ")[0]}…` : "Chiedi di un ospite, di un bisogno, di un documento…"} aria-label="Domanda per ROSS" />
+            <button type="button" className="ask-tool" onClick={() => fileRef.current?.click()} title="Allega una foto o un file" aria-label="Allega una foto o un file"><Paperclip size={18} /></button>
+            <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={upload} />
+            <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder={listening ? "In ascolto…" : scoped ? `Chiedi qualcosa su ${scoped.name.split(" ")[0]}…` : "Chiedi di un ospite, di un bisogno, di un’attività…"} aria-label="Domanda per ROSS" />
             <button type="button" className={`ask-tool ${listening ? "active" : ""}`} onClick={listen} title="Detta la domanda" aria-label="Detta la domanda"><Mic size={18} /></button>
             <button className="ask-send" disabled={!input.trim()} aria-label="Invia"><ArrowUp size={18} /></button>
           </form>

@@ -158,6 +158,8 @@
 .document-meta{font-size:11px;color:var(--muted)}
 .document-icon{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--lilac-soft);color:var(--lilac)}
 .document-card .ghost-button{flex:none}
+.attachment-actions{display:flex;gap:8px;flex-wrap:wrap}
+.attachment-thumb{flex:none;width:72px;height:72px;object-fit:cover;border-radius:12px;background:var(--surface-2)}
 .resident-last-topic{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted);margin:12px 0 0}
 .resident-last-topic strong{color:var(--text)}
 .settings-grid-merged{margin-top:15px;max-width:1000px}
@@ -377,6 +379,20 @@
 .demo-view-menu small{color:var(--muted)}
 .demo-view-current{background:var(--green-soft)}
 .demo-view-trigger:focus-visible,.demo-view-next:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(40,127,112,.35)}
+/* Vista ROSS: trasparenza e aiuto (incontro Papa Luciani) */
+.ross-app .modal{color:var(--text)}
+.ross-ai-note{display:block;max-width:420px;margin:12px auto 0;font-size:11px;line-height:1.5;color:var(--ross-muted);z-index:2}
+.ross-help .ross-help-limit{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:10px 12px}
+.ross-help-actions,.ross-help-confirm .modal-actions{justify-content:center;flex-wrap:wrap}
+.ross-help-confirm>p{font-weight:600}
+/* Cosa è reale e cosa è simulato (dialog della pillola Vista demo) */
+.demo-about{display:grid;gap:18px}
+.demo-about-lead{margin:0;font-size:15px;line-height:1.55;color:var(--text)}
+.demo-about h3{margin:0 0 8px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.demo-about ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.demo-about li{display:grid;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.demo-about li strong{font-size:14px}
+.demo-about li span{font-size:13px;line-height:1.45;color:var(--muted)}
 .page{padding-bottom:84px}
 .ask-screen{height:calc(100dvh - 190px)}
 @media(max-width:900px){.ask-screen{height:calc(100dvh - 64px - 24px - 76px)}}

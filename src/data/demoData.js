@@ -127,7 +127,8 @@ export const themeOptions = [
 ];
 
 export const documents = [
-  { id: "doc-fisio-elena", residentId: "elena", kind: "Fisioterapia", title: "Relazione fisioterapica", date: "15 set 2026", author: "Marta Villa · fisioterapista", pages: 2, summary: "Deambulazione con deambulatore, stabile. Obiettivo: due brevi passeggiate al giorno, preferibilmente al mattino." },
-  { id: "doc-esami-elena", residentId: "elena", kind: "Esami del sangue", title: "Esami ematochimici di routine", date: "10 set 2026", author: "Laboratorio convenzionato", pages: 3, summary: "Documento caricato e ricercabile. ROSS non interpreta i valori: la lettura resta al medico." },
-  { id: "doc-fisio-carlo", residentId: "carlo", kind: "Fisioterapia", title: "Aggiornamento piano motorio", date: "12 set 2026", author: "Marta Villa · fisioterapista", pages: 1, summary: "Esercizi seduti tre volte a settimana. Preferisce svolgerli nella sala lettura." },
+  // Allegati facoltativi e non strutturati: foto dal telefono, indicazioni pratiche. Mai dati sanitari come requisito.
+  { id: "doc-foto-elena", residentId: "elena", kind: "Foto", title: "Elena al laboratorio dei gerani", date: "18 set 2026", author: "Giulia Serra · educatrice", image: "garden-photo.svg", summary: "Scattata con il telefono durante il travaso: si è fermata a lungo a scegliere i vasi." },
+  { id: "doc-passeggiate-elena", residentId: "elena", kind: "Allegato", title: "Indicazioni per le passeggiate", date: "15 set 2026", author: "Marta Villa · fisioterapista", summary: "Due brevi passeggiate al giorno, preferibilmente al mattino." },
+  { id: "doc-esercizi-carlo", residentId: "carlo", kind: "Allegato", title: "Esercizi da fare seduti", date: "12 set 2026", author: "Marta Villa · fisioterapista", summary: "Tre volte a settimana, con calma." },
 ];

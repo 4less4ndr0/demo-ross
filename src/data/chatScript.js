@@ -1,14 +1,15 @@
 import { DEMO_TODAY } from "./demoData";
-import { buildResidentReport } from "./reportNarrative";
+import { buildResidentReport, buildTeamReport } from "./reportNarrative";
 import { approachGuide, describeSignal, facilityVoice, groupByResident, hooksFor, journeyInterest, needs, trendOf, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
 
 // Risposte della chat secondo docs/contratto-informativo-struttura.md:
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato.
 
-// Tre stakeholder. Lo staff in prima linea (operatori e coordinatori) usa un accesso
-// condiviso senza login; psicologa e direzione hanno un accesso personale.
+// Quattro stakeholder. Lo staff in prima linea (operatori e coordinatori) usa un accesso
+// condiviso senza login; educatrice, psicologa e direzione hanno un accesso personale.
 export const roles = [
   { id: "staff", label: "Staff", hint: "Chi ha bisogno di te oggi e come avvicinarlo", access: "senza login", account: { name: "Staff di reparto", initials: "SR", detail: "Accesso condiviso · senza login" } },
+  { id: "educatrice", label: "Educatrice", hint: "Attività e interessi che coinvolgono ciascuno, e i momenti meno coperti", access: "con login", account: { name: "Giulia Serra", initials: "GS", detail: "Educatrice · accesso personale" } },
   { id: "psicologa", label: "Psicologa", hint: "Segnali di benessere nel tempo, rispetto alla media di ognuno", access: "con login", account: { name: "Dott.ssa Marta Bianchi", initials: "MB", detail: "Psicologa · accesso personale" } },
   { id: "direzione", label: "Direzione", hint: "Come la struttura usa ROSS e cosa chiedono gli ospiti, in aggregato", access: "con login", account: { name: "Paolo Ferri", initials: "PF", detail: "Direzione · accesso personale" } },
 ];
@@ -18,6 +19,7 @@ export const roleFor = (id) => roles.find((r) => r.id === (legacyRoles[id] || id
 
 export const suggestions = {
   staff: ["Chi ha bisogno di più attenzione oggi?", "Cosa sta andando bene questa settimana?", "Come posso coinvolgere Elena?", "Di cosa ha bisogno Antonio?"],
+  educatrice: ["Quali attività coinvolgono di più gli ospiti?", "Che spunto posso proporre a ciascuno?", "In quali momenti della giornata parlano meno con ROSS?", "Come posso coinvolgere Carlo?"],
   psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Chi sta meglio del solito questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?"],
   direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Cosa sta andando bene in struttura?", "Come stanno usando ROSS gli ospiti?", "Prepara il riepilogo d'équipe del mese"],
 };
@@ -248,24 +250,74 @@ const intents = [
     }),
   },
   {
-    id: "documenti",
-    keywords: ["fisio", "document", "analisi", "sangue", "esami", "cammin", "passeggiat", "deambul"],
+    // Allegati facoltativi (foto, indicazioni pratiche): ROSS li cita, non li interpreta.
+    id: "allegati",
+    keywords: ["fisio", "document", "allegat", "cammin", "passeggiat", "esercizi"],
     answer: ({ state, role, resident }) => {
       const target = resident || state.residents.find((r) => r.id === "elena");
       const docs = state.documents.filter((d) => d.residentId === target.id);
-      if (!docs.length) return { text: `Per ${firstName(target)} non ci sono ancora documenti. Puoi allegarne uno dalla graffetta qui sotto: da quel momento ROSS lo userà come fonte.`, residents: [target.id], sources: [], action: { label: "Apri i documenti", to: `/ospiti/${target.id}?tab=documenti` } };
-      const physio = docs.find((d) => d.kind === "Fisioterapia");
-      const labs = docs.find((d) => d.kind === "Esami del sangue");
-      const bridge = target.id === "elena" ? " Tra i suoi interessi (biografia d'ingresso) c'è il giardinaggio: una passeggiata al mattino verso le aiuole unisce l'obiettivo motorio a qualcosa che la coinvolge." : "";
+      if (!docs.length) return { text: `Per ${firstName(target)} non ci sono allegati. Se vi è utile potete aggiungere una foto o un file dalla graffetta qui sotto o dal suo ritratto.`, residents: [target.id], sources: [], action: { label: "Apri gli allegati", to: `/ospiti/${target.id}?tab=allegati` } };
+      const practical = docs.find((d) => d.kind === "Allegato") || docs[0];
+      const bridge = target.id === "elena" ? " Tra i suoi interessi (biografia d'ingresso) c'è il giardinaggio: una passeggiata al mattino verso le aiuole unisce le due cose." : "";
       return {
         text: byRole(role, {
-          staff: `${physio ? `Dalla ${physio.title.toLowerCase()} del ${physio.date}: ${physio.summary}` : docs[0].summary}${bridge}${labs ? ` Sono caricati anche gli esami del ${labs.date}: ROSS li rende ricercabili ma non ne interpreta i valori.` : ""}`,
-          psicologa: `${physio ? physio.summary : docs[0].summary}${bridge}`,
-          direzione: `Per ${firstName(target)} sono caricati ${docs.length} documenti. ROSS li affianca a ciò che nota nelle chiacchierate, senza sostituire i documenti ufficiali del gestionale.`,
+          staff: `Dall'allegato «${practical.title}» (${practical.author}, ${practical.date}): ${practical.summary}${bridge}`,
+          psicologa: `${practical.summary}${bridge}`,
+          direzione: `Per ${firstName(target)} ci sono ${docs.length} allegati, aggiunti dallo staff quando serviva. ROSS li cita come fonte ma non sostituisce i documenti ufficiali del gestionale.`,
         }),
+        bullets: docs.map((d) => ({ tag: d.kind, text: `${d.title} · ${d.author}, ${d.date}` })),
         residents: [target.id],
-        sources: docs.map((d) => src.doc(`${d.kind} · ${d.date}`)).concat(target.id === "elena" ? [src.bio("Interessi")] : []),
-        action: { label: "Apri i documenti", to: `/ospiti/${target.id}?tab=documenti` },
+        sources: docs.map((d) => src.doc(`${d.title} · ${d.date}`)).concat(target.id === "elena" ? [src.bio("Interessi")] : []),
+        action: { label: "Apri gli allegati", to: `/ospiti/${target.id}?tab=allegati` },
+      };
+    },
+  },
+  {
+    // Educatrice: quali attività coinvolgono, rispetto alla durata media di chi le fa.
+    id: "attivita",
+    keywords: ["quali attivita", "attivita coinvolg", "coinvolgono di piu", "attivita funzionano"],
+    answer: ({ state }) => {
+      const rows = buildTeamReport(state, "30").activityEngagement;
+      return {
+        text: "Attività con ROSS negli ultimi 30 giorni, confrontate con la durata media delle conversazioni di chi le fa:",
+        bullets: rows.map((a) => ({ tag: a.value >= 0 ? "Coinvolge di più" : "Coinvolge meno", text: `${a.label}: ${a.value >= 0 ? "+" : ""}${a.value}% rispetto alla media personale (${a.count} conversazioni).` })),
+        after: "Non è una classifica degli ospiti: dice quali proposte allungano le conversazioni di ciascuno.",
+        residents: [],
+        sources: [src.data("Ultimi 30 giorni · media personale")],
+        action: { label: "Apri la Panoramica", to: "/panoramica" },
+      };
+    },
+  },
+  {
+    // Educatrice: uno spunto per ospite, dall'interesse che coinvolge di più.
+    id: "spunti",
+    keywords: ["spunto", "spunti", "proporre a ciascuno", "da proporre"],
+    answer: ({ state }) => {
+      const rows = state.residents.map((r) => ({ r, top: hooksFor(r.id, { withJourney: Boolean(state.rossJourney.completedAt) }).find((h) => h.opener) })).filter((x) => x.top);
+      return {
+        text: "Uno spunto per ospite, dall'interesse che lo coinvolge di più con ROSS:",
+        bullets: rows.map(({ r, top }) => ({ resident: r.id, tag: top.label, text: `${firstName(r)}: ${top.opener}${top.activity ? ` · ${top.activity.charAt(0).toLowerCase()}${top.activity.slice(1)}` : ""}.` })),
+        after: "I dettagli concreti vengono dalla biografia d'ingresso; per gli interessi emersi con ROSS c'è solo la categoria.",
+        residents: rows.map(({ r }) => r.id),
+        sources: [src.data("Ultimi 30 giorni"), src.bio("Famiglia e struttura")],
+      };
+    },
+  },
+  {
+    // Educatrice: in quali fasce della giornata ROSS parla meno con gli ospiti.
+    id: "momenti",
+    keywords: ["momenti della giornata", "parlano meno", "fascia", "fasce", "orari"],
+    answer: ({ state }) => {
+      const heatmap = buildTeamReport(state, "7").heatmap;
+      const totals = heatmap[0].cells.map((cell, index) => ({ label: cell.label, count: heatmap.reduce((sum, day) => sum + day.cells[index].count, 0) }));
+      const min = Math.min(...totals.map((t) => t.count));
+      const low = totals.filter((t) => t.count === min).map((t) => t.label);
+      return {
+        text: `Negli ultimi 7 giorni ${low.length > 1 ? `le fasce con meno conversazioni con ROSS sono ${low.join(" e ")}` : `la fascia con meno conversazioni con ROSS è ${low[0]}`} (${min} ciascuna). Sono momenti in cui una proposta vostra, o un invito di ROSS, può fare la differenza.`,
+        bullets: totals.map((t) => ({ tag: t.label, text: `${t.count} conversazioni in 7 giorni` })),
+        residents: [],
+        sources: [src.data("Ultimi 7 giorni · tutti gli ospiti")],
+        action: { label: "Apri la Panoramica", to: "/panoramica" },
       };
     },
   },

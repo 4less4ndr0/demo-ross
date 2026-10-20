@@ -14,7 +14,7 @@ const conversation = [
   { speaker: "elena", state: "listening", line: "La luce della sera. Paolo portava sempre una piccola macchina fotografica rossa.", support: "Emerge un dettaglio nuovo." },
   { speaker: "ross", state: "processing", line: "Questa della macchina fotografica rossa è una cosa nuova per me. Ti va se lo racconto anche ad Anna? Credo le farebbe piacere.", support: "ROSS distingue il nuovo dettaglio da ciò che sa già e chiede a Elena se condividerlo." },
   { speaker: "elena", state: "listening", line: "Sì, raccontaglielo. Mi fotografava sul lungomare e poi rideva perché chiudevo gli occhi.", support: "Elena sceglie di condividere il ricordo con la figlia." },
-  { speaker: "ross", state: "activity", line: "La prossima volta possiamo guardare altre fotografie di Cefalù, oppure ascoltare ancora Mina. Per oggi possiamo fermarci qui.", support: "Chiude con una proposta coerente e senza insistere." },
+  { speaker: "ross", state: "activity", line: "La prossima volta possiamo guardare altre fotografie di Cefalù, oppure ascoltare ancora Mina. Stasera magari ne parli con Anna, quando ti chiama.", support: "Chiude senza insistere e rimanda alle persone vere: ROSS non prende il posto di nessuno." },
 ];
 
 const stateCopy = {
@@ -25,13 +25,16 @@ const stateCopy = {
   activity: ["Possiamo fare qualcosa", "Scegli tu"],
 };
 
+// Modalità: le stesse della struttura, dette con le parole di Elena.
+const modes = [["Attiva", "Proponimi tu"], ["Reattiva", "Quando ti chiamo"], ["Silenziosa", "Stai in silenzio"]];
+
 export function RossHome() {
   const { state, actions, notify } = useDemo();
   const navigate = useNavigate();
   const [panel, setPanel] = useState(null);
   const [rossState, setRossState] = useState("rest");
+  const [forgetAsked, setForgetAsked] = useState(false);
   const elena = state.residents.find((resident) => resident.id === "elena");
-  const modes = ["Attiva", "Reattiva", "Silenziosa", "Riposo"];
   const completed = Boolean(state.rossJourney.completedAt);
   const copy = stateCopy[rossState];
   const sharedPhoto = state.familyContributions.find((item) => item.kind === "photo" && item.image);
@@ -45,7 +48,7 @@ export function RossHome() {
 
   const chooseMode = (mode) => {
     actions.setResidentMode("elena", mode);
-    setRossState(mode === "Riposo" || mode === "Silenziosa" ? "rest" : "response");
+    setRossState(mode === "Silenziosa" ? "rest" : "response");
   };
 
   return (
@@ -62,6 +65,7 @@ export function RossHome() {
           <span className="ross-state-label"><i /> {rossState === "rest" ? "In riposo" : rossState === "listening" ? "Ti ascolto" : rossState === "processing" ? "Sto pensando" : rossState === "activity" ? "Attività" : "Con te"}</span>
           <h1>{copy[0]}, Elena.</h1>
           <p>{copy[1]}</p>
+          <small className="ross-ai-note">Sono ROSS, un programma che ti fa compagnia: non sono una persona. Quello che ci diciamo resta qui.</small>
           <button type="button" className="ross-talk" onClick={() => navigate("/ross/conversazione")}><span><Mic /></span><strong>{completed ? "Parliamo ancora" : "Parla con ROSS"}</strong><small>Tocca per iniziare</small></button>
         </section>
 
@@ -74,15 +78,19 @@ export function RossHome() {
 
         <section className="ross-modes">
           <span>COME VUOI CHE ROSS STIA CON TE?</span>
-          <div>{modes.map((mode) => <button key={mode} className={elena.mode === mode ? "active" : ""} onClick={() => chooseMode(mode)}><i />{mode}</button>)}</div>
+          <div>{modes.map(([mode, label]) => <button key={mode} className={elena.mode === mode ? "active" : ""} onClick={() => chooseMode(mode)} title={`Modalità ${mode.toLowerCase()}`}><i />{label}</button>)}</div>
         </section>
       </main>
 
-      <Modal open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => setPanel(null)} size="lg">
+      <Modal open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => { setPanel(null); setForgetAsked(false); }} size="lg">
         {panel === "memories" && <div className="ross-modal-choices"><button onClick={() => navigate("/ross/conversazione")}>{sharedPhoto?.image ? <img className="ross-choice-image" src={sharedPhoto.image} alt={`Foto condivisa dalla famiglia: ${sharedPhoto.title}`} /> : <span className="choice-art photo"><Images /></span>}<strong>{sharedPhoto?.title || "Il viaggio in Sicilia"}</strong><small>{sharedPhoto ? "Condivisa da Anna · pronta da guardare insieme" : "Palermo, Cefalù e le fotografie del 1998"}</small></button><button onClick={() => notify("Ricordo pronto per la prossima conversazione")}><img className="ross-choice-image" src={asset("garden-photo.svg")} alt="Gerani rossi sul balcone" /><strong>I gerani sul balcone</strong><small>Una piccola abitudine del mattino</small></button></div>}
         {panel === "activities" && <div className="ross-modal-choices"><button onClick={() => { notify("Attività avviata: Indovina la canzone"); setPanel(null); setRossState("activity"); }}><span className="choice-art music"><Music2 /></span><strong>Indovina la canzone</strong><small>Dieci minuti, senza fretta</small></button><button onClick={() => { notify("Attività avviata: Fotografie di viaggio"); setPanel(null); setRossState("activity"); }}><span className="choice-art photo"><Images /></span><strong>{scheduled?.title || "Fotografie di viaggio"}</strong><small>{scheduled ? `Preparata per domani alle ${scheduled.time}` : "Scegliamo una foto e ne parliamo"}</small></button></div>}
         {panel === "music" && <div className="ross-playlist">{[sharedMusic?.title, "Se telefonando · Mina", "Il cielo in una stanza · Gino Paoli", "Azzurro · Adriano Celentano"].filter(Boolean).map((track, index) => <button key={track} onClick={() => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); setPanel(null); }}><span>{index + 1}</span><strong>{track}</strong><Play fill="currentColor" /></button>)}</div>}
-        {panel === "help" && <div className="ross-help"><CircleHelp /><h3>Dimmi cosa ti serve.</h3><p>Puoi dire “chiama un operatore”, “abbassa il volume” oppure “voglio riposare”. Questa demo non effettua chiamate reali.</p><button className="primary-button" onClick={() => { chooseMode("Riposo"); setPanel(null); }}>Voglio riposare</button></div>}
+        {panel === "help" && <div className="ross-help"><CircleHelp /><h3>Dimmi cosa ti serve, con le tue parole.</h3><p>Non serve una frase precisa: “chiama qualcuno”, “non mi sento bene”, “abbassa la voce” o “voglio riposare” vanno tutte bene.</p><p className="ross-help-limit">ROSS non è un sistema di emergenza: per un aiuto urgente usa il campanello o chiama il personale. Questa demo non effettua chiamate.</p>
+          {forgetAsked
+            ? <div className="ross-help-confirm"><p>Vuoi che dimentichi quello che mi hai raccontato? Te lo chiedo perché poi non potrò ricordarlo.</p><div className="modal-actions"><button className="ghost-button" onClick={() => setForgetAsked(false)}>No, lascia così</button><button className="primary-button" onClick={() => { notify("Nella demo non viene cancellato nulla: è qui per mostrare come funzionerebbe"); setForgetAsked(false); setPanel(null); }}>Sì, dimentica</button></div></div>
+            : <div className="modal-actions ross-help-actions"><button className="ghost-button" onClick={() => setForgetAsked(true)}>Dimentica quello che ti ho detto</button><button className="primary-button" onClick={() => { chooseMode("Silenziosa"); setPanel(null); }}>Voglio riposare</button></div>}
+        </div>}
       </Modal>
     </div>
   );
@@ -122,8 +130,8 @@ export function RossConversation() {
         <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes complete" />
         <span className="completion-check"><Check /></span>
         <h1>Grazie, Elena.</h1>
-        <p>Ho salvato la nostra conversazione. Racconterò ad Anna il nuovo ricordo, come mi hai chiesto.</p>
-        <article><span>NUOVO RICORDO · CONDIVISO CON ANNA</span><h2>La macchina fotografica rossa di Paolo</h2><p>Collegata a Cefalù, al viaggio del 1998 e alle fotografie.</p><div><span>Conversazione salvata</span><ArrowRight /><span>Elena sceglie di condividerlo</span><ArrowRight /><span>Arriva alla famiglia</span></div></article>
+        <p>Mi ricorderò di quello che mi hai raccontato, e resta qui tra noi. Ad Anna racconterò solo il nuovo ricordo, come mi hai chiesto.</p>
+        <article><span>NUOVO RICORDO · CONDIVISO CON ANNA</span><h2>La macchina fotografica rossa di Paolo</h2><p>Collegata a Cefalù, al viaggio del 1998 e alle fotografie.</p><div><span>La conversazione resta qui</span><ArrowRight /><span>Elena sceglie cosa condividere</span><ArrowRight /><span>Arriva ad Anna solo il ricordo</span></div></article>
         <div className="ross-complete-actions"><button className="ross-primary-action" onClick={() => navigate("/ross")}><ArrowLeft /> Torna alla home</button><button onClick={restart}><RotateCcw /> Ripeti la demo</button></div>
       </main>
     </div>;
