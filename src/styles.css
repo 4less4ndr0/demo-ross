@@ -811,3 +811,24 @@
 .tour-secondary{background:transparent;color:var(--text);border:1px solid var(--line)}
 .tour :is(.tour-primary,.tour-secondary,.tour-close):focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 35%,transparent)}
 @media(prefers-reduced-motion:reduce){.tour-spotlight,.tour-progress i{transition:none}.tour-card{animation:none}}
+
+/* Struttura con l'estetica di Famiglia e ROSS: titoli editoriali in serif, card ampie e morbide,
+   navigazione a pillole senza cornice, più respiro. Colori invariati (token della Struttura). */
+.app-shell{--radius:24px}
+.app-shell .topbar{height:78px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(16px)}
+.app-shell .top-tabs{background:transparent;border:0;padding:0;gap:4px}
+.app-shell .top-tabs a{height:40px;padding:0 16px;border-radius:999px}
+.app-shell .top-tabs a:hover{background:var(--surface-2)}
+.app-shell .top-tabs a.active{background:var(--surface-3);box-shadow:none}
+.app-shell .page{padding-top:48px}
+.app-shell .eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:10px;margin-bottom:12px}
+.app-shell .section-heading{margin-bottom:36px}
+.app-shell .section-heading h2{font:500 clamp(42px,5vw,66px)/.98 var(--serif);letter-spacing:-.045em;margin:0 0 14px}
+.app-shell .section-heading p{font:400 17px/1.6 var(--serif);color:var(--muted);max-width:680px}
+.app-shell .surface{border-color:color-mix(in srgb,var(--line) 75%,transparent);box-shadow:0 18px 50px rgba(51,42,32,.05)}
+.app-shell .resident-card{padding:0 0 18px;overflow:hidden}
+.app-shell .resident-card:hover{box-shadow:0 24px 60px rgba(51,42,32,.1)}
+.app-shell .ask-chat{border-radius:28px;box-shadow:0 24px 70px rgba(51,42,32,.07)}
+.app-shell .sidebar{border-right-color:color-mix(in srgb,var(--line) 60%,transparent)}
+.app-shell .narrative-card>p{font:400 17px/1.65 var(--serif)}
+.app-shell .narrative-card,.app-shell .participation-card{border-radius:28px}

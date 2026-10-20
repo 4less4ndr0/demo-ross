@@ -248,6 +248,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Ottobre 2026 · 20/10/2026 · La Struttura prende l'estetica di Famiglia e ROSS
+- **Richiesta:** le viste Famiglia e ROSS non dialogavano con la Struttura; portare la loro estetica anche sulla Struttura.
+- **Modifiche (solo CSS, colori invariati):**
+  - raggio delle card a 24px (28px per chat, racconto e partecipazione) con ombra morbida;
+  - schede in alto a pillole senza cornice, come la navigazione della Famiglia; barra in alto semitrasparente;
+  - titoli di pagina in serif più grandi e descrizioni in serif; etichette in maiuscolo;
+  - racconto del ritratto in serif; più spazio in cima alle pagine.
+- **File:** `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Ottobre 2026 · 20/10/2026 · Visita guidata al posto della modalità presentazione
 - **Richiesta:** la modalità presentazione era poco utile. Serve una modalità di onboarding che spieghi passo per passo cosa si trova nelle schermate, con un elemento evidenziato e una nota ("clicca qui per…"), seguendo le buone pratiche di UI/UX.
 - **Buone pratiche applicate:**
