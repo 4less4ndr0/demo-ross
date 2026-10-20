@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ChevronsUpDown, FileText, LayoutDashboard, Menu, MessageCircle, Play, RotateCcw, Settings, Users } from "lucide-react";
+import { ChevronsUpDown, Compass, FileText, LayoutDashboard, Menu, MessageCircle, RotateCcw, Settings, Users } from "lucide-react";
 import { roleFor, roles } from "../data/chatScript";
 import { InsightRail } from "./InsightRail";
+import { startTour } from "./GuidedTour";
 import { overviewGuide, reportsGuide, residentsGuide, SidebarGuide } from "./PageGuide";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger, Sheet } from "./ui";
 import { useDemo } from "../state/DemoContext";
@@ -50,7 +51,7 @@ export function Layout() {
             <DropdownMenuRadioGroup value={role.id} onValueChange={actions.setRole}>{roles.map((r) => <DropdownMenuRadioItem key={r.id} value={r.id}><span className="role-option">{r.label}<small>{r.access}</small></span></DropdownMenuRadioItem>)}</DropdownMenuRadioGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem icon={Settings} onSelect={() => { closeMenu(); navigate("/impostazioni"); }}>Impostazioni</DropdownMenuItem>
-            <DropdownMenuItem icon={Play} onSelect={actions.togglePresentation}>{state.presentation ? "Esci dalla presentazione" : "Modalità presentazione"}</DropdownMenuItem>
+            <DropdownMenuItem icon={Compass} onSelect={startTour}>Visita guidata</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem icon={RotateCcw} destructive onSelect={actions.reset}>Ripristina dati demo</DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Building2, ChevronUp, FlaskConical, HeartHandshake, MonitorPlay, Sparkles } from "lucide-react";
+import { Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
+import { startTour } from "./GuidedTour";
 import { Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui";
 
 const perspectives = [
@@ -9,8 +10,6 @@ const perspectives = [
   { id: "family", label: "Famiglia", description: "Anna", icon: HeartHandshake, path: "/famiglia", key: "2" },
   { id: "ross", label: "ROSS", description: "Elena", icon: Sparkles, path: "/ross", key: "3" },
 ];
-// Il giro parte dalla persona: tablet di Elena, poi la famiglia, poi cosa riceve la struttura.
-const presentationRoutes = ["/ross", "/ross/conversazione", "/famiglia", "/famiglia/attivita", "/?q=emerso", "/ospiti/elena", "/ospiti/elena?tab=avvicinare", "/impostazioni#privacy"];
 
 // Cosa dire a chi guarda la demo: è uno strumento di ricerca, non un prodotto finito.
 const simulated = [
@@ -34,7 +33,7 @@ const isTyping = (target) => target instanceof HTMLElement && (target.isContentE
 export function PerspectiveSwitcher() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { state, actions } = useDemo();
+  const { state } = useDemo();
   const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : "structure";
   const current = perspectives.find((p) => p.id === active);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -47,12 +46,6 @@ export function PerspectiveSwitcher() {
     navigate(perspective.path);
   };
 
-  const next = () => {
-    const here = `${location.pathname}${location.search}${location.hash}`;
-    const exact = presentationRoutes.indexOf(here);
-    const index = exact >= 0 ? exact : presentationRoutes.findIndex((r) => r.split(/[?#]/)[0] === location.pathname);
-    navigate(presentationRoutes[(index + 1) % presentationRoutes.length]);
-  };
 
   useEffect(() => {
     const handler = (event) => {
@@ -80,10 +73,9 @@ export function PerspectiveSwitcher() {
           {perspectives.map((p) => <DropdownMenuItem key={p.id} icon={p.icon} shortcut={p.key} className={p.id === active ? "demo-view-current" : ""} onSelect={() => goTo(p)}>{p.label} <small>· {p.description}</small></DropdownMenuItem>)}
           <DropdownMenuSeparator />
           <DropdownMenuItem icon={FlaskConical} onSelect={() => setAboutOpen(true)}>Cosa è reale e cosa è simulato</DropdownMenuItem>
-          <DropdownMenuItem icon={MonitorPlay} onSelect={actions.togglePresentation}>{state.presentation ? "Esci dalla presentazione" : "Modalità presentazione"}</DropdownMenuItem>
+          <DropdownMenuItem icon={Compass} onSelect={startTour}>Visita guidata</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {state.presentation && <button type="button" className="demo-view-next" onClick={next}>Avanti <ArrowRight size={15} /></button>}
       <Dialog open={aboutOpen} onClose={() => setAboutOpen(false)} title="Cosa è reale e cosa è simulato" size="lg">
         <div className="demo-about">
           <p className="demo-about-lead">Questa demo è uno strumento per discutere e raccogliere reazioni: mostra come ROSS potrebbe stare accanto a Elena, ad Anna e alla struttura. Non è un prodotto finito né una prova che funzioni.</p>

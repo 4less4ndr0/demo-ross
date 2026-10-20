@@ -4,6 +4,7 @@ import { DemoProvider } from "./state/DemoContext";
 import { Layout } from "./components/Layout";
 import { PerspectiveSwitcher } from "./components/PerspectiveSwitcher";
 import { Toaster } from "./components/ui";
+import { GuidedTour } from "./components/GuidedTour";
 
 const load = (module, name) => lazy(() => module().then((exports) => ({ default: exports[name] })));
 const AskRoss = load(() => import("./pages/AskRoss"), "AskRoss");
@@ -22,9 +23,9 @@ const FamilyShared = load(() => import("./pages/FamilyExperience"), "FamilyShare
 const RossHome = load(() => import("./pages/RossExperience"), "RossHome");
 const RossConversation = load(() => import("./pages/RossExperience"), "RossConversation");
 
-// Toast di Sonner in tutte le viste (Struttura, Famiglia, ROSS).
+// Toast di Sonner e visita guidata in tutte le viste (Struttura, Famiglia, ROSS).
 function GlobalChrome() {
-  return <><PerspectiveSwitcher /><Toaster /></>;
+  return <><PerspectiveSwitcher /><Toaster /><GuidedTour /></>;
 }
 
 // Il Riepilogo d'équipe si è spostato in Panoramica: i vecchi link a /report?ambito=struttura ci portano lì.

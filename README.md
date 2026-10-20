@@ -46,7 +46,7 @@ ROSS non è un gestionale sostitutivo: si affianca ai sistemi già in uso nella 
 - La navigazione principale è a schede al centro della barra superiore.
 - **Ospiti** (`/ospiti`, `/ospiti/:id`): lista ordinata per attenzione e cartella con i tab Come sta, Come avvicinarsi, Conversazioni ROSS, Documenti.
 - **Report** (`/report?ospite=ID`): report narrativo stampabile "Come sta" per ogni ospite, per l'équipe (contenuti in `src/data/reportNarrative.js`); `?ambito=struttura` per l'engagement aggregato; `&stampa=1` apre subito la stampa.
-- **Impostazioni** (`/impostazioni`): tema, presentazione, fasce delle modalità ROSS, ripristino del dataset.
+- **Impostazioni** (`/impostazioni`): tema, visita guidata, fasce delle modalità ROSS, ripristino del dataset.
 
 Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alla nuova collocazione.
 
@@ -61,7 +61,7 @@ Le vecchie rotte (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attiv
 7. Vista Famiglia.
 8. Report narrativo "Come sta" per ogni ospite (dalla cartella: "Stampa report") e report di struttura.
 
-Il selettore **Vista demo** in basso a destra passa tra Struttura, Famiglia e ROSS (scorciatoie 1, 2, 3). La modalità presentazione (dal selettore, dal menu operatore o da Impostazioni) aggiunge il pulsante “Avanti”, disponibile in tutte le viste. È possibile aprire direttamente la modalità con `?presentation=true`.
+Il selettore **Vista demo** in basso a destra passa tra Struttura, Famiglia e ROSS (scorciatoie 1, 2, 3). La **visita guidata** (dal selettore, dal menu operatore o da Impostazioni) accompagna passo per passo nelle tre viste, evidenziando ciò che conta in ogni schermata. Si apre direttamente con `?visita=1`.
 
 ## Struttura
 

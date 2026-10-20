@@ -63,7 +63,6 @@ const initialScheduledActivities = [
 function defaultState() {
   return {
     theme: "ross",
-    presentation: new URLSearchParams(window.location.search).get("presentation") === "true",
     residents: initialResidents,
     memories: initialMemories,
     interactions: initialInteractions,
@@ -88,7 +87,6 @@ function getInitialState() {
       return {
         ...defaults,
         ...parsed,
-        presentation: new URLSearchParams(window.location.search).get("presentation") === "true" || Boolean(parsed.presentation),
         familyContributions: parsed.familyContributions || initialFamilyContributions,
         scheduledActivities: parsed.scheduledActivities || initialScheduledActivities,
         rossJourney: { ...initialRossJourney, ...(parsed.rossJourney || {}) },
@@ -111,7 +109,6 @@ export function DemoProvider({ children }) {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     document.documentElement.dataset.theme = state.theme;
-    document.documentElement.dataset.presentation = state.presentation ? "true" : "false";
   }, [state]);
 
   const notify = (message, tone = "success", options = {}) => {
@@ -124,7 +121,6 @@ export function DemoProvider({ children }) {
 
   const actions = useMemo(() => ({
     setTheme: (theme) => setState((prev) => ({ ...prev, theme })),
-    togglePresentation: () => setState((prev) => ({ ...prev, presentation: !prev.presentation })),
     setResidentMode: (residentId, mode) => {
       setState((prev) => ({ ...prev, residents: prev.residents.map((r) => r.id === residentId ? { ...r, mode, status: mode === "Silenziosa" || mode === "Riposo" ? "Riposo" : "Disponibile" } : r) }));
       notify(`Modalità ${mode.toLowerCase()} attivata`, "success", { undo: true });
@@ -276,7 +272,7 @@ export function DemoProvider({ children }) {
     },
     reset: () => {
       localStorage.removeItem(STORAGE_KEY);
-      setState({ ...defaultState(), presentation: false });
+      setState(defaultState());
       notify("Demo ripristinata");
     },
   }), []);

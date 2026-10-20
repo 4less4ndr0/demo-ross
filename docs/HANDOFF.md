@@ -75,10 +75,10 @@ Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai su
 
 **Per chi presenta:**
 - la pillola "Vista demo" (tasti `1` Struttura, `2` Famiglia, `3` ROSS);
-- la modalità presentazione, da Impostazioni o con `?presentation=true`, con il bottone "Avanti";
+- la **visita guidata**, dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`: evidenzia un elemento alla volta e lo spiega in poche righe;
 - il ripristino dei dati dalla card in basso a sinistra.
 
-**Giro breve per un incontro di ricerca (3 minuti, si mostra solo alla fine, dopo aver ascoltato):** modalità presentazione e "Avanti".
+**Giro breve per un incontro di ricerca (3 minuti, si mostra solo alla fine, dopo aver ascoltato):** la visita guidata segue questo ordine.
 1. **Tablet di Elena** (`/ross`): spunti del giorno (meteo, ricorrenza) e "Da Anna, per te", cioè ciò che la famiglia porta a ROSS; ROSS dice di essere un programma; "Aiuto" mostra che si chiede con parole proprie e che ROSS non è un sistema di emergenza.
 2. **Conversazione**: alla fine ROSS chiede se può raccontarlo ad Anna e rimanda Elena alle persone vere.
 3. **Famiglia** (`/famiglia`, `/famiglia/attivita`): "traduce, non trasmette", cioè un racconto e non dei dati; ciò che Elena tiene per sé resta suo.
@@ -109,7 +109,7 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 4. **Segnali gravi:** cosa succede se un ospite esprime dolore acuto, rischio per sé o maltrattamenti? Oggi non c'è un protocollo.
 5. **Accessi:** i tre ruoli devono vedere perimetri diversi, o cambiano solo le domande?
 6. **Vista ROSS:** riallineata a ottobre; resta da progettare il promemoria con avviso all'operatore (il caso di Namastè).
-7. **Idee in coda:** frecce "← precedente · successivo →" nel report del singolo ospite; rivedere il percorso "Avanti" della presentazione.
+7. **Idee in coda:** frecce "← precedente · successivo →" nel report del singolo ospite; rileggere i testi della visita guidata.
 
 ### 0.8 Glossario
 - **Ritratto:** la pagina di un ospite nella vista Struttura (mai "cartella").
@@ -144,8 +144,8 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 | Report (`/report`) | Solo il **Come sta** del singolo ospite (`?ospite=ID`, `&stampa=1`), scelto da un menu in ordine di attenzione: infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
 | Panoramica (`/panoramica`) | Le analytics della struttura come schermata dell'app: sintesi, 6 numeri chiave, grafici in tre gruppi (Benessere nel tempo · Voce degli ospiti e bisogni · Presenza con ROSS), ognuno con "Cosa mostra" e "Come leggerlo", e i punti da discutere. "Stampa" / "Scarica riepilogo" stampano il **Riepilogo d'équipe** (documento completo con situazione per ospite), tenuto pronto fuori schermo. Le vecchie URL `/analytics` e `/report?ambito=struttura` portano qui. |
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
-| Impostazioni (`/impostazioni`) | Tema, presentazione, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
-| Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3, "Cosa è reale e cosa è simulato"; in presentazione mostra anche "Avanti" (giro che parte da `/ross`). |
+| Impostazioni (`/impostazioni`) | Tema, visita guidata, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
+| Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3, "Cosa è reale e cosa è simulato", "Visita guidata". |
 | Vista Famiglia (`/famiglia`) | Oggi con Elena (racconto del giorno con il consenso visibile, spunto per la prossima chiamata, ricordi da riaprire, "Come sta questa settimana"), Storia e foto (solo ricordi condivisi da Elena o dalla famiglia), Attività (momenti condivisi o "tenuti per sé"), Condivisi da me (contributi diretti a ROSS). |
 
 ---
@@ -187,7 +187,8 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti, Report e Panoramica; testi in `residentsGuide`, `reportsGuide` e `overviewGuide`. |
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
-| `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), "Avanti" in presentazione, sequenza `presentationRoutes` che parte dalla persona. |
+| `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
+| `src/components/GuidedTour.jsx` | Visita guidata: `steps` (capitolo, rotta, selettore, testi), `startTour()` (evento `ross:tour`), avvio con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
 | `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
@@ -237,15 +238,30 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 6. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
 7. **Livelli di accesso per ruolo:** oggi tutti i ruoli vedono lo stesso perimetro; cambiano solo domande e profondità delle risposte (contratto, §6.4).
 8. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
-9. **Presentazione:** la sequenza "Avanti" è in `PerspectiveSwitcher.jsx`; va rivista se cambiano le schermate chiave (vedi il punto 12).
+9. **Visita guidata:** i passi sono in `steps` di `GuidedTour.jsx`; vanno rivisti se cambiano le schermate chiave o le classi CSS usate come bersaglio.
 10. **Tooltip "i"** ancora presenti in Impostazioni.
 11. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
-12. **Percorso "Avanti" della presentazione:** riallineato a ottobre: parte dalla persona e chiude su "cosa la struttura riceve". Report e Panoramica sono fuori dal giro, di proposito.
+12. **Ordine della visita:** parte dalla persona e chiude su "cosa la struttura riceve" e sulla pillola "Vista demo". Report e Panoramica sono fuori dal giro, di proposito.
 13. **Idea in coda:** frecce "← precedente · successivo →" nel report del singolo ospite, nello stesso ordine per attenzione, per scorrere l'équipe senza tornare al riepilogo.
 
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Ottobre 2026 · 20/10/2026 · Visita guidata al posto della modalità presentazione
+- **Richiesta:** la modalità presentazione era poco utile. Serve una modalità di onboarding che spieghi passo per passo cosa si trova nelle schermate, con un elemento evidenziato e una nota ("clicca qui per…"), seguendo le buone pratiche di UI/UX.
+- **Buone pratiche applicate:**
+  - un elemento alla volta, testi di una o due frasi, avanzamento "3 di 15";
+  - si può sempre saltare, andare indietro o chiudere;
+  - il focus entra nella scheda e il resto della pagina è `inert`;
+  - tastiera completa (Esc e frecce); niente animazioni con "riduci movimento".
+- **Modifiche:**
+  - nuovo `src/components/GuidedTour.jsx` con 15 passi in 4 capitoli: Benvenuti, il tablet di Elena (6 passi, conversazione compresa), la famiglia (3), la struttura (4), più la pillola "Vista demo";
+  - a ogni passo la visita porta alla pagina giusta, aspetta l'elemento, lo scorre al centro e lo evidenzia;
+  - la scheda si mette sotto, sopra o di fianco all'elemento; su telefono va in basso; se l'elemento non c'è (per esempio la sidebar su mobile), va al centro;
+  - si avvia dalla pillola "Vista demo", dal menu della card in basso a sinistra, da Impostazioni ("Inizia la visita") o con `?visita=1` (anche il vecchio `?presentation=true`);
+  - tolti la modalità presentazione (stato `presentation`, `togglePresentation`, bottone "Avanti", `presentationRoutes`) e le sue regole CSS.
+- **File:** `src/components/GuidedTour.jsx` (nuovo), `src/App.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/components/Layout.jsx`, `src/pages/Settings.jsx`, `src/state/DemoContext.jsx`, `src/styles.css`, `AGENTS.md`, `README.md`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · shadcn/ui in tutte le viste, colori invariati
 - **Richiesta:** applicare shadcn/ui (https://github.com/shadcn-ui/ui) senza modificare i colori. Scelta: estendere le primitive già in uso nella Struttura a Famiglia e tablet ROSS, senza Tailwind.
