@@ -420,6 +420,23 @@
 .ross-family-card>button svg{width:15px}
 .ross-home-main>.ross-touch-grid{margin-top:28px}
 @media(max-width:900px){.ross-prompt-grid,.ross-family-grid{grid-template-columns:1fr}.ross-today{gap:8px;font-size:12px}.ross-today>span:nth-of-type(2),.ross-today>i{display:none}}
+/* Vista ROSS: inviti a uscire ("Oggi, fuori da qui"), Elena fuori, ritorno */
+.ross-section-note{margin:-6px 0 12px;font-size:14px;color:var(--ross-muted)}
+.ross-invite .ross-prompt-icon{background:#e1f0ea;color:#287f70}
+.ross-invite-actions{display:flex;flex-wrap:wrap;gap:8px}
+.ross-invite-actions>button{border:0;border-radius:999px;background:var(--ross-text);color:var(--ross-bg);font-weight:700;font-size:15px;padding:13px 24px}
+.ross-invite-actions>.ross-invite-later{background:transparent;color:var(--ross-text);border:1px solid rgb(var(--ross-ink) / .18)}
+.ross-invite.is-done{background:#eef6f2;border-color:#cfe5db}
+.ross-away{margin-top:28px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:26px;border-radius:24px;background:#eef6f2;border:1px solid #cfe5db}
+.ross-away-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;background:#287f70;color:#fffdf8}
+.ross-away small{font-size:13px;color:var(--ross-muted)}
+.ross-away h2{font:500 30px/1.15 var(--serif);margin:4px 0}
+.ross-away p{margin:0;font-size:16px;color:var(--ross-muted)}
+.ross-away>button{border:0;border-radius:999px;background:var(--ross-text);color:var(--ross-bg);font-weight:700;font-size:16px;padding:15px 26px}
+.ross-return>p{font-size:16px;line-height:1.5;margin:0}
+.ross-return .modal-actions{flex-wrap:wrap;justify-content:flex-start}
+.ross-secondary-action{display:flex;align-items:center;gap:7px;border:1px solid rgb(var(--ross-ink) / .13);background:transparent;color:var(--ross-text);border-radius:999px;padding:0 16px;margin-top:20px;min-height:50px}
+@media(max-width:700px){.ross-away{grid-template-columns:1fr;text-align:left}.ross-away>button{justify-self:start}}
 /* Cosa è reale e cosa è simulato (dialog della pillola Vista demo) */
 .demo-about{display:grid;gap:18px}
 .demo-about-lead{margin:0;font-size:15px;line-height:1.55;color:var(--text)}
@@ -835,6 +852,8 @@
 .tour-agenda strong{display:block;font:600 18px var(--serif)}
 .tour-agenda small{font-size:13px;color:var(--muted)}
 .tour-card:not(.tour-card-big) .tour-stepper{margin-bottom:4px}
+.tour-chapter-hero-green{background:var(--green-soft);color:var(--green)}
+.tour-features li>span{display:block}
 @media(prefers-reduced-motion:reduce){.tour-spotlight,.tour-progress i{transition:none}.tour-card{animation:none}}
 
 /* Struttura con l'estetica di Famiglia e ROSS: titoli editoriali in serif, card ampie e morbide,
@@ -858,3 +877,4 @@
 .app-shell .narrative-card>p{font:400 17px/1.65 var(--serif)}
 .app-shell .narrative-card,.app-shell .participation-card{border-radius:28px}
 .tour-count{white-space:nowrap}
+.story-moments{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}

@@ -18,8 +18,8 @@ const legacyRoles = { operatore: "staff", coordinatrice: "staff" };
 export const roleFor = (id) => roles.find((r) => r.id === (legacyRoles[id] || id)) || roles[0];
 
 export const suggestions = {
-  staff: ["Chi ha bisogno di più attenzione oggi?", "Cosa sta andando bene questa settimana?", "Come posso coinvolgere Elena?", "Di cosa ha bisogno Antonio?"],
-  educatrice: ["Quali attività coinvolgono di più gli ospiti?", "Che spunto posso proporre a ciascuno?", "In quali momenti della giornata parlano meno con ROSS?", "Come posso coinvolgere Carlo?"],
+  staff: ["Chi ha bisogno di più attenzione oggi?", "Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?", "Come posso coinvolgere Elena?", "Di cosa ha bisogno Antonio?"],
+  educatrice: ["Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?", "Quali attività coinvolgono di più gli ospiti?", "Che spunto posso proporre a ciascuno?", "In quali momenti della giornata parlano meno con ROSS?"],
   psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Chi sta meglio del solito questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?"],
   direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Cosa sta andando bene in struttura?", "Come stanno usando ROSS gli ospiti?", "Prepara il riepilogo d'équipe del mese"],
 };
@@ -269,6 +269,29 @@ const intents = [
         residents: [target.id],
         sources: docs.map((d) => src.doc(`${d.title} · ${d.date}`)).concat(target.id === "elena" ? [src.bio("Interessi")] : []),
         action: { label: "Apri gli allegati", to: `/ospiti/${target.id}?tab=allegati` },
+      };
+    },
+  },
+  {
+    // ROSS come ponte verso la vita fuori: chi vorrebbe partecipare o uscire e ha bisogno di qualcuno che lo accompagni.
+    id: "accompagnare",
+    keywords: ["accompagn", "vorrebbe partecipare", "partecipare ma", "uscire"],
+    answer: ({ state, role }) => {
+      const wish = needs.filter((n) => ["Stare all'aperto", "Partecipare alle attività"].includes(n.category));
+      const joining = signals.filter((s) => s.positive && s.signal === "partecipazione");
+      return {
+        text: byRole(role, {
+          staff: `ROSS invita gli ospiti a partecipare alla vita della residenza. ${wish.length} ospiti vorrebbero farlo ma hanno bisogno di qualcuno che li accompagni:`,
+          educatrice: `${wish.length} ospiti hanno espresso il desiderio di partecipare o uscire: un invito tuo, e qualcuno che li accompagni, può fare la differenza.`,
+          direzione: `${wish.length} ospiti vorrebbero partecipare di più alla vita della residenza ma hanno bisogno di essere accompagnati.`,
+        }),
+        bullets: [
+          ...wish.map((n) => ({ resident: n.residentId, tag: n.category, text: `${nameOf(state, n.residentId)}: ${n.text.charAt(0).toLowerCase()}${n.text.slice(1)}${n.times > 1 ? ` (${n.times} volte)` : ""}.` })),
+          ...joining.map((s) => ({ resident: s.residentId, tag: "Va bene", text: describeSignal(s, nameOf(state, s.residentId)) })),
+        ],
+        after: "ROSS sa che qualcuno ha partecipato solo se è la persona a raccontarlo. Il successo di ROSS non è il tempo passato a parlare con lui, ma quello passato fuori.",
+        residents: [...new Set([...wish.map((n) => n.residentId), ...joining.map((s) => s.residentId)])],
+        sources: [src.data("Ultimi 7 giorni · bisogni espressi e racconti dopo gli inviti")],
       };
     },
   },

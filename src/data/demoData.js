@@ -132,3 +132,10 @@ export const documents = [
   { id: "doc-passeggiate-elena", residentId: "elena", kind: "Allegato", title: "Indicazioni per le passeggiate", date: "15 set 2026", author: "Marta Villa · fisioterapista", summary: "Due brevi passeggiate al giorno, preferibilmente al mattino." },
   { id: "doc-esercizi-carlo", residentId: "carlo", kind: "Allegato", title: "Esercizi da fare seduti", date: "12 set 2026", author: "Marta Villa · fisioterapista", summary: "Tre volte a settimana, con calma." },
 ];
+
+// Inviti a uscire per Elena: ROSS legge il calendario della residenza (non lo gestisce) e propone
+// ciò che è vicino ai suoi interessi. Oggi piove, quindi le proposte sono al coperto.
+export const outsideInvites = [
+  { id: "canto", kind: "activity", time: "Alle 17:30", place: "in salone", title: "Si canta insieme", text: "C'è anche una canzone di Mina. Ci vai? Poi mi racconti com'è andata.", cta: "Ci vado", label: "il canto in salone" },
+  { id: "anna", kind: "call", time: "Dopo cena", place: "al telefono", title: "Anna ti chiama", text: "Hai qualcosa da raccontarle? Se vuoi, te lo ricordo io prima della telefonata.", cta: "Ricordamelo" },
+];

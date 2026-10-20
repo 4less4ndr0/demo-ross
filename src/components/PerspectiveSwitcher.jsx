@@ -16,7 +16,7 @@ const simulated = [
   ["Dati inventati", "Residenza Aurora, gli otto ospiti, Elena e Anna non esistono."],
   ["Risposte preparate", "La chat della struttura risponde con testi scritti in anticipo: non c'è un modello AI collegato."],
   ["Conversazione con copione", "Il dialogo tra ROSS ed Elena è scritto e avanza a tocchi: nessun riconoscimento vocale."],
-  ["Meteo, ora e ricorrenze", "Gli spunti del giorno sul tablet di Elena sono scritti per la demo, non letti da un servizio esterno."],
+  ["Meteo, ora, ricorrenze e attività", "Gli spunti e gli inviti del tablet di Elena (meteo, ricorrenze, calendario della residenza) sono scritti per la demo, non letti da un servizio esterno."],
   ["Nessun dispositivo collegato", "Niente tablet o companion reale, nessuna chiamata, nessun avviso inviato a qualcuno."],
 ];
 const principles = [

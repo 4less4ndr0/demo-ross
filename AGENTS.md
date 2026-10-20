@@ -54,6 +54,11 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 - **Tema chiaro**: il tablet usa la stessa palette calda della Struttura (fondo crema `#f7f3e9`, testo verde scuro), non il tema scuro. Colori in `--ross-*` su `.ross-app` (`src/styles.css`); gli occhi di ROSS senza `mix-blend-mode`.
 - ROSS dichiara di essere un programma e non una persona, e che la conversazione resta sul dispositivo.
+- **ROSS è un ponte verso la vita fuori, non la meta** (Namastè: rischio di dipendenza e il "caffè con il vicino"; Borgo Mazzini: "più persone vere"). Il successo è il tempo passato fuori, non i minuti con ROSS. Meccanismo **invito → uscita → racconto**:
+  - **tablet:** sezione "Oggi, fuori da qui" con gli inviti (ROSS legge il calendario della residenza in `outsideInvites`, non lo gestisce; le proposte tengono conto del meteo). "Ci vado" porta a "Ci vediamo dopo…" e ROSS resta in silenzio; "Sono tornata" apre "Com'è andata?" e poi "Lo racconto ad Anna?". La conversazione si chiude con un invito;
+  - **Famiglia:** l'uscita compare nel racconto e nello spunto per la telefonata **solo se Elena sceglie di condividerla**;
+  - **Struttura:** segnale positivo "partecipazione" (rispetto alla sua media, da ciò che l'ospite racconta) e domanda "Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?";
+  - **in generale:** ROSS sa che qualcuno è uscito **solo se è la persona a raccontarlo**; nessun tracciamento.
 - **Home del tablet a spunti**: saluto con data, meteo e ora; "Spunti per oggi" (il meteo e le ricorrenze diventano occasioni di conversazione, per esempio la pioggia porta alle fotografie, il compleanno di un cantante porta a una sua canzone); "Da Anna, per te" con i contributi della vista Famiglia (foto, ricordi, argomenti, musica), che diventano spunti da proporre a Elena. Niente dati di salute (battito e simili) né agenda della struttura.
 - **Aiuto con parole proprie**, mai a frase fissa (Borgo Mazzini: nel panico la frase non viene in mente). ROSS **non è un sistema di emergenza**: rimanda a campanello e personale, e lo dice.
 - L'ospite può chiedere a ROSS di dimenticare ciò che ha raccontato, con una conferma.

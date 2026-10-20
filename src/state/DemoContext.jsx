@@ -73,6 +73,8 @@ function defaultState() {
     familyContributions: initialFamilyContributions,
     scheduledActivities: initialScheduledActivities,
     rossJourney: initialRossJourney,
+    // Invito a uscire: "out" mentre Elena è fuori, "back" quando ha raccontato com'è andata.
+    outing: null,
     role: "staff",
     documents: initialDocuments,
   };
@@ -179,6 +181,14 @@ export function DemoProvider({ children }) {
       notify("Interazione aggiunta allo storico");
     },
     setRossStage: (stage) => setState((prev) => ({ ...prev, rossJourney: { ...prev.rossJourney, stage } })),
+    goOut: (activityId) => {
+      setState((prev) => ({ ...prev, outing: { activityId, status: "out", shared: false } }));
+      notify("Buon divertimento: ROSS resta in silenzio finché non torni");
+    },
+    comeBack: (shared) => {
+      setState((prev) => ({ ...prev, outing: prev.outing && { ...prev.outing, status: "back", shared } }));
+      notify(shared ? "Elena ha raccontato com'è andata e ha scelto di dirlo ad Anna" : "Elena ha raccontato com'è andata e l'ha tenuto per sé");
+    },
     restartRossJourney: () => setState((prev) => ({ ...prev, rossJourney: { ...prev.rossJourney, stage: "ready" } })),
     completeRossConversation: () => {
       const memory = {

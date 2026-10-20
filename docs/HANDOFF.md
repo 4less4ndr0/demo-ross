@@ -56,7 +56,7 @@ Nella Struttura ci sono **quattro stakeholder**, e il target principale non è a
 | **Carlo Ferri**, 83 | 92 giorni | Buonumore | Meno iniziativa (partecipazione sotto la sua media) | — |
 | **Ada Moretti**, 85 | 11 giorni | Curiosità | — (ROSS la sta ancora conoscendo) | Attività di lettura |
 | **Bruno De Angelis**, 80 | 101 giorni | Voglia di raccontare | — | Freddo nel pomeriggio |
-| **Elena Bianchi**, 79 | 118 giorni | Serenità, gratitudine | — | — |
+| **Elena Bianchi**, 79 | 118 giorni | Serenità, gratitudine, partecipazione alla vita della residenza | — | — |
 | **Teresa Gallo**, 88 | 143 giorni | Serenità, più iniziativa: il periodo migliore del mese | — | — |
 
 Elena è la protagonista delle viste Famiglia e ROSS, con la figlia **Anna**. Gli ospiti sono in ordine di attenzione, come nella lista Ospiti.
@@ -247,6 +247,26 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Ottobre 2026 · 20/10/2026 · ROSS come ponte verso la vita fuori: gli inviti a uscire
+- **Richiesta:** ROSS deve incentivare la partecipazione alla vita quotidiana fuori da ROSS: uno dei problemi più grandi è che gli anziani si chiudono. Va fatto dialogare con le altre viste e messo in risalto nella visita guidata.
+- **Principio:** invito → uscita → racconto. ROSS sa che qualcuno è uscito solo se è la persona a raccontarlo.
+- **Modifiche:**
+  - **tablet:**
+    - nuova sezione "Oggi, fuori da qui" (`outsideInvites` in `demoData.js`): "Si canta insieme, alle 17:30 in salone" e "Anna ti chiama, dopo cena"; oggi piove, quindi le proposte sono al coperto;
+    - "Ci vado" porta a "Ci vediamo dopo il canto in salone" e ROSS resta in silenzio; "Sono tornata" apre "Com'è andata?" e poi "Lo racconto ad Anna?" (stato `outing`, azioni `goOut` e `comeBack`);
+    - la conversazione si chiude con l'invito al canto, e la schermata finale ha "Ci vado, al canto";
+  - **Famiglia:** se Elena condivide l'uscita, il racconto di oggi ha il momento "Al canto in salone" e lo spunto "Chiedile del canto in salone"; "Come sta questa settimana" mostra anche la partecipazione;
+  - **Struttura:**
+    - segnale positivo di Elena "partecipazione" ("ha raccontato 4 attività in residenza questa settimana, di solito 2");
+    - nuovo intento `accompagnare` ("Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?": Lucia e il giardino, Ada e la lettura, Elena da valorizzare), tra le domande consigliate di Staff ed Educatrice;
+  - **visita guidata:**
+    - nuovo passo "Chi accompagnare" nella Struttura e nuovo passo "Oggi, fuori da qui" nel tablet;
+    - testi della Famiglia e della conversazione aggiornati;
+    - prima della chiusura, una scheda grande "ROSS è un ponte verso la vita fuori" con come si vede in ognuna delle tre viste;
+  - **"Cosa è reale e cosa è simulato":** anche il calendario della residenza è simulato.
+- **Rimandati:** il contributo "Vengo a trovarti" dalla Famiglia; "inviti accolti" come indicatore principale in Panoramica.
+- **File:** `src/data/demoData.js`, `src/state/DemoContext.jsx`, `src/data/careInsights.js`, `src/data/chatScript.js`, `src/pages/RossExperience.jsx`, `src/pages/FamilyExperience.jsx`, `src/components/GuidedTour.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · Visita guidata per capitoli
 - **Richiesta:** 15 schede di fila non erano organizzate per tema. Servono capitoli, e al passaggio da una vista all'altra una scheda più grande che dica cosa caratterizza la vista e cosa guarderemo: Struttura, Famiglia, Elena.

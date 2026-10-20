@@ -20,6 +20,8 @@ export const signals = [
   { residentId: "teresa", signal: "più iniziativa", count: 5, of: 7, usual: 3, trend: "in aumento", positive: true, note: "5 conversazioni avviate da lei su 7, di solito 3" },
   { residentId: "elena", signal: "serenità", count: 5, of: 6, usual: 4, trend: "stabile", positive: true },
   { residentId: "elena", signal: "gratitudine", count: 3, of: 6, usual: 1, trend: "in aumento", positive: true },
+  // Partecipazione alla vita della residenza: ROSS lo sa solo da ciò che Elena racconta dopo un invito.
+  { residentId: "elena", signal: "partecipazione", count: 4, of: 7, usual: 2, trend: "in aumento", positive: true, note: "ha raccontato 4 attività in residenza questa settimana, di solito 2" },
   { residentId: "lucia", signal: "buonumore", count: 4, of: 6, usual: 4, trend: "stabile", positive: true },
   { residentId: "carlo", signal: "buonumore", count: 3, of: 4, usual: 3, trend: "stabile", positive: true },
   { residentId: "antonio", signal: "conversazioni più lunghe", count: 5, of: 5, usual: 10, trend: "in aumento", positive: true, note: "15 minuti in media, di solito 10" },
