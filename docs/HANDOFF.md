@@ -247,6 +247,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Ottobre 2026 · 20/10/2026 · Tablet di Elena in tema chiaro
+- **Richiesta:** passare la vista ROSS al tema chiaro.
+- **Modifiche:**
+  - variabili `--ross-*` sulla palette crema e verde scuro della Struttura, con la nuova `--ross-ink` per bordi e velature (al posto dei bianchi trasparenti);
+  - sfondo con un alone caldo arancio; occhi senza fusione `screen`;
+  - "Parla con ROSS" e la modalità attiva diventano pulsanti scuri;
+  - colori di Elena, dei badge "nuovo" e della pillola "Vista demo" leggibili sul fondo chiaro.
+- **File:** `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Ottobre 2026 · 20/10/2026 · Modali della vista Famiglia di nuovo visibili
 - **Problema:** cliccando "Condividi" nella vista Famiglia, il modale "Racconta un ricordo" compariva spostato in basso e tagliato.
 - **Causa:** `.screen-enter` animava `transform` con fill-mode `both`. L'animazione restava in effetto e il contenitore della pagina diventava il riferimento per gli elementi `position:fixed`, quindi l'overlay si centrava sull'intera pagina invece che sulla finestra.

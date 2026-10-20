@@ -37,6 +37,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 ## Vista ROSS (tablet dell'ospite)
 
+- **Tema chiaro**: il tablet usa la stessa palette calda della Struttura (fondo crema `#f7f3e9`, testo verde scuro), non il tema scuro. Colori in `--ross-*` su `.ross-app` (`src/styles.css`); gli occhi di ROSS senza `mix-blend-mode`.
 - ROSS dichiara di essere un programma e non una persona, e che la conversazione resta sul dispositivo.
 - **Aiuto con parole proprie**, mai a frase fissa (Borgo Mazzini: nel panico la frase non viene in mente). ROSS **non è un sistema di emergenza**: rimanda a campanello e personale, e lo dice.
 - L'ospite può chiedere a ROSS di dimenticare ciò che ha raccontato, con una conferma.
