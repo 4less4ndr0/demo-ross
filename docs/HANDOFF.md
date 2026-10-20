@@ -188,7 +188,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
-| `src/components/GuidedTour.jsx` | Visita guidata: `steps` (capitolo, rotta, selettore, testi), `startTour()` (evento `ross:tour`), avvio con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
+| `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
 | `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
@@ -247,6 +247,16 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Ottobre 2026 · 20/10/2026 · Visita guidata per capitoli
+- **Richiesta:** 15 schede di fila non erano organizzate per tema. Servono capitoli, e al passaggio da una vista all'altra una scheda più grande che dica cosa caratterizza la vista e cosa guarderemo: Struttura, Famiglia, Elena.
+- **Modifiche:**
+  - **ordine e struttura:** benvenuto con l'agenda delle tre parti (cliccabile), poi Struttura (4 passi), Famiglia (3), Elena (6), chiusura sulla pillola "Vista demo"; 18 schede in tutto;
+  - **schede d'apertura dei capitoli:** "Parte N di 3 · chi la usa", "Ora vediamo…", una frase su cosa caratterizza la vista, "Cosa guarderemo" numerato e il bottone "Guardiamoli"; la pagina della vista resta visibile, scurita, dietro la scheda;
+  - **passi:** stepper dei capitoli (corrente, visti con ✓, cliccabile per saltare) e avanzamento nel capitolo ("2 di 4 · Struttura");
+  - **dati:** in `chapters` (capitolo, testi, `features`, `steps`), da cui si ricava la sequenza.
+- **Nota:** l'ordine ora parte dalla Struttura, come chiesto. Prima la visita partiva dal tablet di Elena.
+- **File:** `src/components/GuidedTour.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · La Struttura prende l'estetica di Famiglia e ROSS
 - **Richiesta:** le viste Famiglia e ROSS non dialogavano con la Struttura; portare la loro estetica anche sulla Struttura.

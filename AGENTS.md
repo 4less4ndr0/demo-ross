@@ -40,7 +40,15 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 ## La demo come strumento di ricerca (da ottobre 2026)
 
 - La demo serve a discutere e raccogliere reazioni, non a vendere un gestionale (sintesi strategica Notion del 19–20/10: si torna al compagno vocale per la persona; lo strumento per lo staff resta un'ipotesi aperta). Dice sempre **cosa è reale e cosa è simulato**: voce "Cosa è reale e cosa è simulato" nella pillola "Vista demo".
-- **Visita guidata** (`src/components/GuidedTour.jsx`, sostituisce la vecchia modalità presentazione): un passo alla volta, l'elemento evidenziato con lo sfondo scurito e una scheda breve (capitolo, titolo, una o due frasi, "3 di 15", Indietro/Avanti, Salta, ×). Parte dalla persona: tablet di Elena → conversazione → Famiglia → struttura (chat, polso, ritratto, Impostazioni#privacy) → pillola "Vista demo". Report, Panoramica e Allegati non sono nel giro. Si apre dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`. Accessibilità: il resto della pagina è `inert`, il focus entra nella scheda, Esc chiude, le frecce scorrono i passi; su telefono la scheda è in basso; niente animazioni con "riduci movimento"; se l'elemento non c'è la scheda va al centro. Per aggiungere un passo: un oggetto in `steps` con `chapter`, `route`, `target` (selettore CSS), `title`, `body`.
+- **Visita guidata** (`src/components/GuidedTour.jsx`, sostituisce la vecchia modalità presentazione): organizzata **per capitoli, uno per vista: Struttura → Famiglia → Elena (tablet ROSS)**.
+  - **Benvenuto:** agenda delle tre parti, cliccabile.
+  - **Ogni capitolo** si apre con una **scheda più grande**: "Parte N di 3", chi la usa, "Ora vediamo…", cosa la caratterizza, l'elenco "Cosa guarderemo" e il bottone "Guardiamoli".
+  - **Passi:** un elemento evidenziato alla volta, con lo sfondo scurito; scheda breve con lo stepper dei capitoli (cliccabile, ✓ per quelli visti), avanzamento nel capitolo ("2 di 4 · Struttura"), Indietro/Avanti, Salta e ×.
+  - **Chiusura:** sulla pillola "Vista demo".
+  - **Fuori dal giro:** Report, Panoramica e Allegati.
+  - **Dove si apre:** dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`.
+  - **Accessibilità:** il resto della pagina è `inert`, il focus entra nella scheda, Esc chiude, le frecce scorrono i passi; su telefono la scheda è in basso; niente animazioni con "riduci movimento".
+  - **Per aggiungere un passo:** un oggetto in `chapters[].steps` (`route`, `target`, `title`, `body`); per un capitolo, una voce in `chapters` con `title`, `body` e `features`.
 
 ## Vista ROSS (tablet dell'ospite)
 
