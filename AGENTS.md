@@ -39,6 +39,14 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 ## La demo come strumento di ricerca (da ottobre 2026)
 
+- **Metodo: salutogenesi** (Antonovsky), riferimento in `docs/salutogenesi.md`.
+  - **Cosa significa:** prima le risorse che aiutano la persona a stare bene, poi ciò che è da osservare. Il senso di coerenza è sentire la vita comprensibile, gestibile e significativa; vale il co-power (decide la persona) e la famiglia è una risorsa reciproca.
+  - **Dove si vede:**
+    - nella Struttura e nella Famiglia: card "Le risorse di …" nel ritratto, voce "Il metodo" negli specchietti, "Risorse da valorizzare" nel report, "Come puoi esserle vicina" nella Famiglia;
+    - nella visita guidata: il capitolo "Il metodo" e l'etichetta "lente" su ogni passo;
+    - **non** nei testi del tablet di Elena: lì si vive, non si spiega.
+  - **Come si presenta:** sempre come cornice di progetto, mai come prova di efficacia o promessa di salute.
+
 - La demo serve a discutere e raccogliere reazioni, non a vendere un gestionale (sintesi strategica Notion del 19–20/10: si torna al compagno vocale per la persona; lo strumento per lo staff resta un'ipotesi aperta). Dice sempre **cosa è reale e cosa è simulato**: voce "Cosa è reale e cosa è simulato" nella pillola "Vista demo".
 - **Visita guidata** (`src/components/GuidedTour.jsx`, sostituisce la vecchia modalità presentazione): organizzata **per capitoli, uno per vista: Struttura → Famiglia → Elena (tablet ROSS)**.
   - **Benvenuto:** agenda delle tre parti, cliccabile.

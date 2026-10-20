@@ -30,7 +30,7 @@ ROSS è un **compagno di conversazione su tablet per gli ospiti delle RSA**: par
 5. **Si parla come un compagno, non come un servizio sanitario.** Niente "cartella", "paziente", "monitoraggio", "diagnosi": la pagina di un ospite è il suo **ritratto** (vedi [`lessico-struttura.md`](lessico-struttura.md)).
 6. **La famiglia vede solo ciò che l'ospite sceglie di condividere.** È ROSS a chiedere a Elena *"Ti va se lo racconto anche ad Anna?"*. La struttura non fa da intermediario tra famiglia e ospite.
 
-Il riferimento completo è il [contratto informativo](contratto-informativo-struttura.md): tutto ciò che la struttura vede rientra nei **cinque punti cardinali** (benessere nel tempo, come relazionarsi, bisogni personali, voce della struttura, presenza e continuità).
+Il metodo con cui è pensata è la **salutogenesi** ([`salutogenesi.md`](salutogenesi.md)): prima le risorse che aiutano la persona a stare bene. Il riferimento completo per la privacy è il [contratto informativo](contratto-informativo-struttura.md): tutto ciò che la struttura vede rientra nei **cinque punti cardinali** (benessere nel tempo, come relazionarsi, bisogni personali, voce della struttura, presenza e continuità).
 
 ### 0.3 Le tre viste e chi le usa
 
@@ -247,6 +247,24 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Ottobre 2026 · 20/10/2026 · La salutogenesi nella demo
+- **Richiesta:** il workspace Notion ha molto materiale sulla salutogenesi. Va aggiunta a Struttura e Famiglia (non al tablet di Elena) e spiegata nella visita guidata.
+- **Fonti:** Notion "Ricerca su Salutogenesi" (Garista, Antonovsky, Eriksson & Lindström), "Studiare la salutogenesi", landing B2C ("cornice, non prova di efficacia").
+- **Modifiche:**
+  - **visita guidata:**
+    - nuovo capitolo "Il metodo" dopo il benvenuto: "Partiamo da ciò che fa stare bene" e "Comprensibile, gestibile, significativa", con il co-power;
+    - un'etichetta "lente" su ogni passo (Comprensibile, Gestibile, Significativo, Risorse, Prima le risorse, Decide la persona, Reciprocità);
+    - nuovo passo Famiglia "Come puoi esserle vicina"; il ritratto punta alla card delle risorse; la scheda "ponte verso la vita fuori" richiama la stessa lente;
+  - **Struttura:**
+    - card "Le risorse di …" in cima a "Come sta" (cosa dà significato, cosa aiuta a farcela, cosa va bene, dai dati esistenti);
+    - voce "Il metodo: la salutogenesi" in tutti gli specchietti "Cosa ti dice ROSS";
+    - "Risorse da valorizzare" nel report;
+    - riga "Metodo" in Impostazioni#privacy;
+  - **Famiglia:** card "Come puoi esserle vicina" con 3 spunti (significativo, gestibile, reciprocità: "Chiedile un consiglio"); riga sul metodo in "Come sta questa settimana";
+  - **"Cosa è reale e cosa è simulato":** principio "Lente salutogenica";
+  - **documentazione:** nuovo `docs/salutogenesi.md`; testi in `src/data/salutogenesis.js`.
+- **File:** `src/data/salutogenesis.js` (nuovo), `src/components/GuidedTour.jsx`, `src/pages/ResidentProfile.jsx`, `src/pages/FamilyExperience.jsx`, `src/pages/OperationalPages.jsx`, `src/pages/Settings.jsx`, `src/components/InsightRail.jsx`, `src/components/PageGuide.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `docs/salutogenesi.md` (nuovo), `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · ROSS come ponte verso la vita fuori: gli inviti a uscire
 - **Richiesta:** ROSS deve incentivare la partecipazione alla vita quotidiana fuori da ROSS: uno dei problemi più grandi è che gli anziani si chiudono. Va fatto dialogare con le altre viste e messo in risalto nella visita guidata.

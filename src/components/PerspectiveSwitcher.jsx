@@ -24,6 +24,7 @@ const principles = [
   ["La famiglia vede ciò che l'ospite sceglie", "ROSS chiede a Elena se può raccontarlo ad Anna, un racconto alla volta."],
   ["Ognuno confrontato con sé stesso", "Niente voti né classifiche: solo \"rispetto alla sua media\"."],
   ["Non è clinico né un sistema di emergenza", "ROSS non giudica la salute e non sostituisce campanello, personale o relazioni."],
+  ["Lente salutogenica", "Progettiamo partendo dalle risorse della persona (Antonovsky): è la cornice, non una prova che ROSS migliori la salute."],
   ["Elaborazione sul dispositivo", "È la direzione tecnica del progetto, non una capacità già verificata."],
 ];
 

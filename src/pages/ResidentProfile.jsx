@@ -70,8 +70,15 @@ function Overview({ state, resident, onApproach, onConversations }) {
   const r = relating[resident.id];
   const newInterest = state.rossJourney.completedAt && resident.id === journeyInterest.residentId;
   const top = hooksFor(resident.id)[0];
+  // Lente salutogenica: prima le risorse che ci sono già (interessi, cosa funziona, cosa va bene), poi il resto.
+  const resources = [
+    ["Cosa dà significato", hooksFor(resident.id, { withJourney: Boolean(state.rossJourney.completedAt) }).slice(0, 2).map((h) => `${h.label}${h.lever ? ` (${h.lever.toLowerCase()})` : ""}`).join(" · ")],
+    ["Cosa aiuta a farcela", r ? `${r.works.join(", ")} · ${r.bestTime}` : ""],
+    ["Cosa va bene", positive.length ? positive.map((s) => s.signal).join(", ") : "Da scoprire con il tempo"],
+  ].filter(([, text]) => text);
   return <div className="profile-overview">
     <div className="overview-main">
+      <section className="resident-resources surface"><span className="eyebrow">LE RISORSE DI {name.toUpperCase()}</span><h3>Cosa aiuta {name} a stare bene</h3><div className="resources-grid">{resources.map(([title, text]) => <div key={title}><strong>{title}</strong><span>{text}</span></div>)}</div><p className="resources-note">Lente salutogenica: si parte da ciò che c'è già e funziona, poi da ciò che è da osservare.</p></section>
       <article className="narrative-card surface"><span className="eyebrow">ULTIMI 7 GIORNI</span><h2>{summary.headline}</h2><p>{summary.paragraphs.join(" ")}</p><div className="narrative-stats">{summary.kpis.slice(0, 3).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div></article>
       {r && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p>{top?.opener && <p className="continuity-hook"><strong>Per iniziare · {top.label.toLowerCase()}:</strong> {top.opener}</p>}</div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
       <section className="surface participation-card"><header><div><h3>Partecipazione rispetto alla sua media</h3><p>{chart.building ? "ROSS la sta ancora conoscendo: per una media personale servono circa 14 giorni di chiacchierate." : "La linea tratteggiata è la media personale di " + name + ". Mai confronti con altri ospiti."}</p></div><Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} /></header><ParticipationChart series={chart.series} building={chart.building} height={200} /></section>

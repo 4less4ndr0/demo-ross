@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Building2, Check, DoorOpen, HeartHandshake, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Check, DoorOpen, HeartHandshake, Sparkles, Sprout, X } from "lucide-react";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
 // Si apre da "Vista demo", dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
@@ -16,24 +16,25 @@ const chapters = [
     id: "struttura", label: "Struttura", who: "Lo staff della residenza", icon: Building2, route: "/",
     title: "Ora vediamo la struttura",
     body: "Quello che vede l'équipe: come sta ogni ospite e di cosa ha bisogno, mai di cosa ha parlato con ROSS. ROSS sta sopra i sistemi della residenza, non li sostituisce.",
-    features: ["Chiedi a ROSS: domande a parole proprie, anche dal telefono", "Chi accompagnare: chi vorrebbe partecipare alla vita della residenza", "Il polso: cosa va bene e cosa è da osservare", "Il ritratto di ogni ospite", "Cosa la struttura riceve, e cosa no"],
+    features: ["Chiedi a ROSS: domande a parole proprie, anche dal telefono", "Chi accompagnare: chi vorrebbe partecipare alla vita della residenza", "Il polso: cosa va bene e cosa è da osservare", "Il ritratto di ogni ospite, a partire dalle sue risorse", "Cosa la struttura riceve, e cosa no"],
     steps: [
-      { route: "/", target: ".ask-empty, .ask-chat", title: "Chiedi a ROSS", body: "Lo staff chiede a parole sue, anche dal telefono: chi ha bisogno di più attenzione, come avvicinare qualcuno. Ogni risposta cita la fonte." },
-      { route: "/", target: ".ask-suggestions", title: "Chi accompagnare", body: "ROSS invita gli ospiti a partecipare; lo staff chiede «Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?» e sa dove serve un braccio, un invito, una sedia in più." },
-      { route: "/", target: ".sidebar .sidebar-insights", title: "Il polso di ROSS", body: "Cosa va bene e cosa è da osservare, ognuno rispetto alla sua media. ROSS segnala, l'équipe osserva e decide." },
-      { route: "/ospiti/elena", target: ".profile-tabs", title: "Il ritratto di Elena", body: "Come sta, come avvicinarla, quando parla con ROSS. Mai di cosa ha parlato." },
-      { route: "/impostazioni#privacy", target: "#privacy", title: "Cosa riceve la struttura", body: "Come sta e di cosa ha bisogno ogni ospite, mai il contenuto delle conversazioni. È la regola d'oro di ROSS." },
+      { route: "/", target: ".ask-empty, .ask-chat", title: "Chiedi a ROSS", lens: "Comprensibile", body: "Lo staff chiede a parole sue, anche dal telefono: chi ha bisogno di più attenzione, come avvicinare qualcuno. Ogni risposta cita la fonte." },
+      { route: "/", target: ".ask-suggestions", title: "Chi accompagnare", lens: "Gestibile", body: "ROSS invita gli ospiti a partecipare; lo staff chiede «Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?» e sa dove serve un braccio, un invito, una sedia in più." },
+      { route: "/", target: ".sidebar .sidebar-insights", title: "Il polso di ROSS", lens: "Prima le risorse", body: "Cosa va bene e cosa è da osservare, ognuno rispetto alla sua media. ROSS segnala, l'équipe osserva e decide." },
+      { route: "/ospiti/elena", target: ".resident-resources", title: "Il ritratto di Elena", lens: "Risorse", body: "In cima le sue risorse: cosa le dà significato, cosa la aiuta a farcela, cosa va bene. Poi come sta, come avvicinarla, quando parla con ROSS. Mai di cosa ha parlato." },
+      { route: "/impostazioni#privacy", target: "#privacy", title: "Cosa riceve la struttura", lens: "Decide la persona", body: "Come sta e di cosa ha bisogno ogni ospite, mai il contenuto delle conversazioni. È la regola d'oro di ROSS." },
     ],
   },
   {
     id: "famiglia", label: "Famiglia", who: "Anna, la figlia di Elena", icon: HeartHandshake, route: "/famiglia",
     title: "Ora vediamo la famiglia",
     body: "Quello che vede Anna: un racconto, non dei dati. Solo ciò che Elena sceglie di condividere, e la struttura non sta in mezzo.",
-    features: ["Il racconto di oggi, anche di ciò che Elena ha fatto fuori da ROSS", "Come sta questa settimana: solo ciò che va bene, partecipazione compresa", "Condividi: foto, ricordi e canzoni che arrivano a ROSS"],
+    features: ["Il racconto di oggi, anche di ciò che Elena ha fatto fuori da ROSS", "Come sta questa settimana: solo ciò che va bene, partecipazione compresa", "Come puoi esserle vicina: la famiglia come risorsa, in tutte e due le direzioni", "Condividi: foto, ricordi e canzoni che arrivano a ROSS"],
     steps: [
-      { route: "/famiglia", target: ".family-story", title: "Il racconto di oggi", body: "Anna non riceve dati né trascrizioni: un breve racconto, solo di ciò che Elena ha scelto di condividere. Se Elena va al canto e decide di dirlo, compare anche qui." },
-      { route: "/famiglia", target: ".family-residence-note", title: "Come sta questa settimana", body: "Solo ciò che va bene, rispetto al solito di Elena: questa settimana anche più partecipazione alla vita della residenza. Niente dati da controllare." },
-      { route: "/famiglia", target: ".family-add-button", title: "Condividi con ROSS", body: "Anna può mandare una foto, un ricordo, un argomento o una canzone: ROSS li proporrà a Elena nel momento giusto." },
+      { route: "/famiglia", target: ".family-story", title: "Il racconto di oggi", lens: "Significativo", body: "Anna non riceve dati né trascrizioni: un breve racconto, solo di ciò che Elena ha scelto di condividere. Se Elena va al canto e decide di dirlo, compare anche qui." },
+      { route: "/famiglia", target: ".family-residence-note", title: "Come sta questa settimana", lens: "Prima le risorse", body: "Solo ciò che va bene, rispetto al solito di Elena: questa settimana anche più partecipazione alla vita della residenza. Niente dati da controllare." },
+      { route: "/famiglia", target: ".family-resource-card", title: "Come puoi esserle vicina", lens: "Reciprocità", body: "Anche Anna è una risorsa, e lo è anche Elena per lei: tre spunti concreti, dal ricordo che la accende al consiglio da chiederle." },
+      { route: "/famiglia", target: ".family-add-button", title: "Condividi con ROSS", lens: "Risorse", body: "Anna può mandare una foto, un ricordo, un argomento o una canzone: ROSS li proporrà a Elena nel momento giusto." },
     ],
   },
   {
@@ -42,13 +43,13 @@ const chapters = [
     body: "Il cuore di ROSS: un compagno di conversazione che non vuole tenere Elena davanti allo schermo. Porta spunti, ascolta e la invita a uscire e partecipare. Qui decide lei.",
     features: ["Oggi, fuori da qui: gli inviti a uscire e partecipare", "Spunti per oggi, dal meteo e dalle ricorrenze", "Da Anna, per te: ciò che la famiglia ha condiviso", "Aiuto con parole proprie, e quanto ROSS si fa sentire", "Una conversazione, e il consenso a condividere"],
     steps: [
-      { route: "/ross", target: ".ross-hero", title: "Un compagno di conversazione", body: "Elena tocca «Parla con ROSS» e parla con la sua voce. ROSS dice sempre di essere un programma, e che quello che si dicono resta lì." },
-      { route: "/ross", target: ".ross-outside, .ross-away", title: "Oggi, fuori da qui", body: "ROSS è un ponte, non la meta: legge il calendario della residenza e invita Elena a ciò che le piace. Lei va, ROSS resta in silenzio, e al ritorno le chiede com'è andata. Elena decide se dirlo ad Anna." },
-      { route: "/ross", target: ".ross-outside ~ .ross-section .ross-prompt-grid, .ross-away ~ .ross-section .ross-prompt-grid", title: "Spunti per oggi", body: "Il meteo e le ricorrenze diventano occasioni per chiacchierare: la pioggia porta alle fotografie, il compleanno di un cantante a una sua canzone." },
-      { route: "/ross", target: ".ross-family-grid", title: "Da Anna, per te", body: "Quello che la famiglia ha condiviso arriva qui come spunto. ROSS lo propone nel momento giusto; Elena decide se parlarne." },
-      { route: "/ross", target: ".ross-touch-grid > button:last-child", title: "Aiuto, con parole proprie", body: "Non servono frasi fisse. ROSS non è un sistema di emergenza e lo dice: per un aiuto urgente ci sono il campanello e il personale." },
-      { route: "/ross", target: ".ross-modes", title: "Decide Elena", body: "È lei a scegliere quanto ROSS si fa sentire: propone, aspetta di essere chiamato o resta in silenzio." },
-      { route: "/ross/conversazione", target: ".ross-dialogue, .ross-conversation-complete article", title: "Una conversazione", body: "ROSS riprende ciò che conosce e lascia scegliere. Quando emerge un ricordo nuovo chiede a Elena se può raccontarlo ad Anna, e chiude con un invito: alle 17:30 in salone si canta." },
+      { route: "/ross", target: ".ross-hero", title: "Un compagno di conversazione", lens: "Comprensibile", body: "Elena tocca «Parla con ROSS» e parla con la sua voce. ROSS dice sempre di essere un programma, e che quello che si dicono resta lì." },
+      { route: "/ross", target: ".ross-outside, .ross-away", title: "Oggi, fuori da qui", lens: "Gestibile", body: "ROSS è un ponte, non la meta: legge il calendario della residenza e invita Elena a ciò che le piace. Lei va, ROSS resta in silenzio, e al ritorno le chiede com'è andata. Elena decide se dirlo ad Anna." },
+      { route: "/ross", target: ".ross-outside ~ .ross-section .ross-prompt-grid, .ross-away ~ .ross-section .ross-prompt-grid", title: "Spunti per oggi", lens: "Significativo", body: "Il meteo e le ricorrenze diventano occasioni per chiacchierare: la pioggia porta alle fotografie, il compleanno di un cantante a una sua canzone." },
+      { route: "/ross", target: ".ross-family-grid", title: "Da Anna, per te", lens: "Risorse", body: "Quello che la famiglia ha condiviso arriva qui come spunto. ROSS lo propone nel momento giusto; Elena decide se parlarne." },
+      { route: "/ross", target: ".ross-touch-grid > button:last-child", title: "Aiuto, con parole proprie", lens: "Gestibile", body: "Non servono frasi fisse. ROSS non è un sistema di emergenza e lo dice: per un aiuto urgente ci sono il campanello e il personale." },
+      { route: "/ross", target: ".ross-modes", title: "Decide Elena", lens: "Decide la persona", body: "È lei a scegliere quanto ROSS si fa sentire: propone, aspetta di essere chiamato o resta in silenzio." },
+      { route: "/ross/conversazione", target: ".ross-dialogue, .ross-conversation-complete article", title: "Una conversazione", lens: "Significativo", body: "ROSS riprende ciò che conosce e lascia scegliere. Quando emerge un ricordo nuovo chiede a Elena se può raccontarlo ad Anna, e chiude con un invito: alle 17:30 in salone si canta." },
     ],
   },
 ];
@@ -56,12 +57,28 @@ const chapters = [
 // Sequenza piatta: benvenuto, poi per ogni capitolo la sua scheda d'apertura e i suoi passi, infine la chiusura.
 const sequence = [
   { kind: "welcome", route: "/" },
+  { kind: "method", page: 0, route: "/" },
+  { kind: "method", page: 1, route: "/" },
   ...chapters.flatMap((chapter, c) => [
     { kind: "chapter", chapter: c, route: chapter.route },
     ...chapter.steps.map((step, i) => ({ kind: "step", chapter: c, position: i, ...step })),
   ]),
   { kind: "theme", route: "/ross" },
   { kind: "end", route: null, target: "[data-testid=perspective-switcher]", title: "Fine della visita", body: "Da questa pillola passate tra le tre viste (tasti 1, 2, 3) e trovate «Cosa è reale e cosa è simulato»: in questa demo dati e risposte sono preparati." },
+];
+const methodStart = 1;
+// Il metodo: la salutogenesi (Antonovsky) come cornice di progetto, non come prova di efficacia.
+const method = [
+  {
+    title: "Partiamo da ciò che fa stare bene",
+    body: "ROSS è progettato con la lente della salutogenesi (Aaron Antonovsky): non chiederci solo che cosa manca a una persona, ma quali risorse la aiutano a stare bene. Interessi, persone, attività, abitudini: spesso ci sono già, ma vanno riconosciute e rese raggiungibili. ROSS fa da ponte verso queste risorse, non le sostituisce.",
+    points: [["Risorse prima", "In tutta la demo ciò che va bene viene prima di ciò che è da osservare."], ["Ognuno rispetto a sé stesso", "Il benessere è un equilibrio personale che cambia nel tempo: niente classifiche."], ["Cosa non è", "Non è pensiero positivo e non è una promessa di salute: è la cornice con cui progettiamo, da verificare sul campo."]],
+  },
+  {
+    title: "Comprensibile, gestibile, significativa",
+    body: "Il cuore del metodo è il senso di coerenza: la persona sente la propria vita comprensibile, gestibile e significativa. Nella visita, un'etichetta su ogni passo indica a quale di queste dimensioni risponde.",
+    points: [["Comprensibile", "Capisco cosa succede: il racconto per Anna, i confronti con la propria media, ROSS che dice cos'è."], ["Gestibile", "Posso farcela con ciò che ho: inviti piccoli, aiuto con parole proprie, chi accompagnare."], ["Significativa", "Ne vale la pena: spunti dagli interessi e dalla storia di Elena."], ["Decide la persona", "Co-power: non si «dà» autonomia, si creano con Elena le condizioni per esercitarla. Può scegliere, rifiutare, tenere per sé."]],
+  },
 ];
 const chapterStart = (c) => sequence.findIndex((item) => item.kind === "chapter" && item.chapter === c);
 
@@ -167,7 +184,7 @@ export function GuidedTour() {
 
   if (!active) return null;
   const last = index === sequence.length - 1;
-  const big = step.kind === "welcome" || step.kind === "chapter" || step.kind === "theme";
+  const big = ["welcome", "method", "chapter", "theme"].includes(step.kind);
   const pos = !big && box && placePopover(rect, box, { width: window.innerWidth, height: window.innerHeight });
   const spot = rect && !big ? { top: rect.top - PAD, left: rect.left - PAD, width: rect.width + PAD * 2, height: rect.height + PAD * 2 } : null;
   const chapter = step.chapter != null ? chapters[step.chapter] : null;
@@ -187,8 +204,17 @@ export function GuidedTour() {
     content = <>
       <span className="tour-chapter">Visita guidata</span>
       <h2 id="tour-title">Una visita in tre parti</h2>
-      <p id="tour-body">Vediamo ROSS da tre punti di vista, uno alla volta, e il filo che li lega: ROSS invita a uscire e partecipare, non a restare davanti allo schermo. Potete saltare a una parte o uscire quando volete con Esc.</p>
-      <ol className="tour-agenda">{chapters.map((item, c) => { const Icon = item.icon; return <li key={item.id}><button type="button" onClick={() => go(chapterStart(c))}><span className="tour-agenda-icon"><Icon size={18} /></span><span><strong>{item.label}</strong><small>{item.who}</small></span><ArrowRight size={15} /></button></li>; })}</ol>
+      <p id="tour-body">Prima il metodo con cui è pensato, poi ROSS da tre punti di vista, uno alla volta, e il filo che li lega: ROSS invita a uscire e partecipare, non a restare davanti allo schermo. Potete saltare a una parte o uscire quando volete con Esc.</p>
+      <ol className="tour-agenda"><li><button type="button" onClick={() => go(methodStart)}><span className="tour-agenda-icon tour-agenda-icon-green"><Sprout size={18} /></span><span><strong>Il metodo</strong><small>La salutogenesi, in due schede</small></span><ArrowRight size={15} /></button></li>{chapters.map((item, c) => { const Icon = item.icon; return <li key={item.id}><button type="button" onClick={() => go(chapterStart(c))}><span className="tour-agenda-icon"><Icon size={18} /></span><span><strong>{item.label}</strong><small>{item.who}</small></span><ArrowRight size={15} /></button></li>; })}</ol>
+    </>;
+  } else if (step.kind === "method") {
+    const page = method[step.page];
+    content = <>
+      <span className="tour-chapter-hero tour-chapter-hero-green"><Sprout size={22} /></span>
+      <span className="tour-chapter">Il metodo · {step.page + 1} di {method.length}</span>
+      <h2 id="tour-title">{page.title}</h2>
+      <p id="tour-body">{page.body}</p>
+      <ul className="tour-points">{page.points.map(([title, text]) => <li key={title}><strong>{title}</strong><span>{text}</span></li>)}</ul>
     </>;
   } else if (step.kind === "theme") {
     content = <>
@@ -196,7 +222,7 @@ export function GuidedTour() {
       <span className="tour-chapter-hero tour-chapter-hero-green"><DoorOpen size={22} /></span>
       <span className="tour-chapter">Il filo che lega le tre viste</span>
       <h2 id="tour-title">ROSS è un ponte verso la vita fuori</h2>
-      <p id="tour-body">Il successo di ROSS non è il tempo passato a parlare con lui, ma quello passato fuori: alle attività, in giardino, al telefono con chi si vuole bene.</p>
+      <p id="tour-body">Il successo di ROSS non è il tempo passato a parlare con lui, ma quello passato fuori: alle attività, in giardino, al telefono con chi si vuole bene. È la stessa lente salutogenica: attivare le risorse della persona, non sostituirle.</p>
       <h3 className="tour-features-title">Come si vede in ogni vista</h3>
       <ol className="tour-features">
         <li><span><strong>Elena:</strong> ROSS la invita al canto, resta in silenzio mentre è fuori e al ritorno le chiede com'è andata.</span></li>
@@ -217,6 +243,7 @@ export function GuidedTour() {
   } else {
     content = <>
       {chapter && stepper}
+      {step.lens && <span className="tour-lens"><Sprout size={12} /> {step.lens}</span>}
       <h2 id="tour-title">{step.title}</h2>
       <p id="tour-body">{step.body}</p>
       {chapter && <div className="tour-progress" aria-hidden="true"><i style={{ width: `${((step.position + 1) / chapter.steps.length) * 100}%` }} /></div>}

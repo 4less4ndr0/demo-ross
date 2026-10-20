@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ArrowRight, ChevronDown, Compass, EyeOff } from "lucide-react";
+import { methodGuideEntry } from "../data/salutogenesis";
 
 // Specchietto "Cosa ti dice ROSS" nella sidebar delle pagine Ospiti e Report: dà senso alla pagina,
 // spiega cosa si trova e perché è fatta così. Stessa card verde della guida nella chat (InsightRail).
@@ -35,6 +36,7 @@ export const residentsGuide = {
   subtitle: "Perché questa pagina è fatta così",
   intro: "Qui trovi ogni ospite come lo conosce ROSS: come sta e come avvicinarlo. Non è l'anagrafica, che resta nel gestionale: è ciò che serve per stare accanto alla persona nel modo giusto.",
   entries: [
+    methodGuideEntry,
     { title: "Perché questo ordine", text: "In cima chi ha bisogno di più attenzione oggi: prima un'assenza insolita, poi i segnali da osservare, poi i bisogni espressi. Chi inizia la giornata sa da chi passare per primo.", question: "Chi ha bisogno di più attenzione oggi?" },
     { title: "Una scheda essenziale", text: "In copertina solo chi è: foto, nome, età, stanza, modalità di ROSS e ultima conversazione. Se c'è qualcosa da osservare, compare un solo avviso. Cosa va bene, bisogni e interessi sono nel ritratto: ogni persona ha entrambe le cose, e lì si vedono insieme." },
     { title: "Ognuno confrontato con sé stesso", text: "Nel ritratto la partecipazione è sempre rispetto alla media della persona negli ultimi 14 giorni. Niente punteggi né classifiche: una persona riservata non è «peggio» di una socievole." },
@@ -49,6 +51,7 @@ export const reportsGuide = {
   subtitle: "A cosa serve questo report",
   intro: "Il «Come sta» di ogni ospite, da stampare o salvare in PDF per il lavoro d'équipe. Trasforma ciò che ROSS osserva di una persona in qualcosa di cui parlare insieme. La situazione della struttura è nella Panoramica.",
   entries: [
+    methodGuideEntry,
     { title: "Un report per ospite", text: "Com'è andato il periodo, come avvicinare la persona, cosa valorizzare e cosa osservare. Si sceglie l'ospite dal menu in alto: l'ordine è quello dell'attenzione.", question: "Prepara il report di Antonio" },
     { title: "Perché anche su carta", text: "Le caselle «Da osservare in équipe» si spuntano a penna: ROSS segnala, l'équipe osserva, decide e annota." },
     { title: "Come si leggono i numeri", text: "La persona è confrontata solo con la propria media degli ultimi 14 giorni. Minuti e orari vengono dalle conversazioni con ROSS." },
@@ -61,6 +64,7 @@ export const overviewGuide = {
   subtitle: "Come leggere la Panoramica",
   intro: "La struttura vista da ROSS, in una schermata: benessere, voce degli ospiti, bisogni e presenza. Ogni grafico dice cosa mostra e come leggerlo. Per la riunione, «Stampa» o «Scarica riepilogo» producono il Riepilogo d'équipe.",
   entries: [
+    methodGuideEntry,
     { title: "Ognuno rispetto a sé stesso", text: "Nessuna classifica: ogni barra parte dalla media di quella persona. Toccando un nome si apre il suo report.", question: "Chi sta meglio del solito questa settimana?" },
     { title: "Verde e corallo", text: "Verde è ciò che va bene, corallo ciò che è da osservare di persona. Sono spunti, non giudizi sulla salute." },
     { title: "Voce della struttura", text: "Anonima: un tema compare solo se lo esprimono almeno 3 ospiti, così nessuno è riconoscibile.", question: "Cosa dicono gli ospiti della vita in struttura?" },

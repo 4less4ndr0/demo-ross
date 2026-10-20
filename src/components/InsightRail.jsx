@@ -2,11 +2,13 @@ import { useNavigate } from "react-router-dom";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ArrowRight, ChevronDown, Compass, EyeOff, Sparkles } from "lucide-react";
 import { facilityVoice, journeyInterest, needs, signals } from "../data/careInsights";
+import { methodGuideEntry } from "../data/salutogenesis";
 import { useDemo } from "../state/DemoContext";
 import { Avatar } from "./Common";
 
 // Guida alla lettura della schermata: raccoglie le spiegazioni che prima erano nei tooltip.
 const readingGuide = [
+  methodGuideEntry,
   { title: "La chat", text: "Chiedi di un ospite, di un bisogno o di un documento. Ogni risposta cita la fonte: Dati ROSS, Biografia d'ingresso, Documento o Nota operatore. Le domande consigliate cambiano per Staff (accesso condiviso, senza login), Psicologa e Direzione (accesso personale): si sceglie dalla card in basso a sinistra.", question: "Chi ha bisogno di più attenzione oggi?" },
   { title: "Cosa va bene", text: "Ciò che l'ospite ha espresso di positivo negli ultimi 7 giorni (serenità, buonumore, curiosità, voglia di raccontare…) o che fa più volentieri del solito. ROSS racconta anche questo: è ciò su cui costruire.", question: "Cosa sta andando bene questa settimana?" },
   { title: "Da osservare", text: "Segnali espressi dall'ospite negli ultimi 7 giorni (stanchezza, solitudine, fastidio…), confrontati con la sua media personale. Mai l'argomento o il motivo: il giudizio resta a voi.", question: "Chi ha espresso segnali da osservare questa settimana?" },
