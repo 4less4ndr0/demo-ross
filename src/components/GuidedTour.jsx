@@ -18,7 +18,7 @@ const chapters = [
     body: "Quello che vede l'équipe: come sta ogni ospite e di cosa ha bisogno, mai di cosa ha parlato con ROSS. ROSS sta sopra i sistemi della residenza, non li sostituisce.",
     features: ["Chiedi a ROSS: domande a parole proprie, anche dal telefono", "Chi accompagnare: chi vorrebbe partecipare alla vita della residenza", "Il polso: cosa va bene e cosa è da osservare", "Il ritratto di ogni ospite, a partire dalle sue risorse", "Cosa la struttura riceve, e cosa no"],
     steps: [
-      { route: "/", target: ".ask-empty, .ask-chat", title: "Chiedi a ROSS", lens: "Comprensibile", body: "Lo staff chiede a parole sue, anche dal telefono: chi ha bisogno di più attenzione, come avvicinare qualcuno. Ogni risposta cita la fonte." },
+      { route: "/", target: ".ask-empty", title: "Chiedi a ROSS", lens: "Comprensibile", body: "Lo staff chiede a parole sue, anche dal telefono: chi ha bisogno di più attenzione, come avvicinare qualcuno. Ogni risposta cita la fonte." },
       { route: "/", target: ".ask-suggestions", title: "Chi accompagnare", lens: "Gestibile", body: "ROSS invita gli ospiti a partecipare; lo staff chiede «Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?» e sa dove serve un braccio, un invito, una sedia in più." },
       { route: "/", target: ".sidebar .sidebar-insights", title: "Il polso di ROSS", lens: "Prima le risorse", body: "Cosa va bene e cosa è da osservare, ognuno rispetto alla sua media. ROSS segnala, l'équipe osserva e decide." },
       { route: "/ospiti/elena", target: ".resident-resources", title: "Il ritratto di Elena", lens: "Risorse", body: "In cima le sue risorse: cosa le dà significato, cosa la aiuta a farcela, cosa va bene. Poi come sta, come avvicinarla, quando parla con ROSS. Mai di cosa ha parlato." },
@@ -71,35 +71,32 @@ const methodStart = 1;
 const method = [
   {
     title: "Partiamo da ciò che fa stare bene",
-    body: "ROSS è progettato con la lente della salutogenesi (Aaron Antonovsky): non chiederci solo che cosa manca a una persona, ma quali risorse la aiutano a stare bene. Interessi, persone, attività, abitudini: spesso ci sono già, ma vanno riconosciute e rese raggiungibili. ROSS fa da ponte verso queste risorse, non le sostituisce.",
-    points: [["Risorse prima", "In tutta la demo ciò che va bene viene prima di ciò che è da osservare."], ["Ognuno rispetto a sé stesso", "Il benessere è un equilibrio personale che cambia nel tempo: niente classifiche."], ["Cosa non è", "Non è pensiero positivo e non è una promessa di salute: è la cornice con cui progettiamo, da verificare sul campo."]],
+    compare: [["La domanda di sempre", "Che cosa non va?"], ["La domanda di ROSS", "Che cosa aiuta Elena a stare bene?"]],
+    example: "Per Elena: la musica, le fotografie, Anna, il canto in salone. Ci sono già: ROSS l'aiuta a ritrovarle e a raggiungerle, non le sostituisce.",
+    note: "Si chiama salutogenesi (Aaron Antonovsky). È il modo in cui progettiamo ROSS, non una promessa di salute.",
   },
   {
-    title: "Comprensibile, gestibile, significativa",
-    body: "Il cuore del metodo è il senso di coerenza: la persona sente la propria vita comprensibile, gestibile e significativa. Nella visita, un'etichetta su ogni passo indica a quale di queste dimensioni risponde.",
-    points: [["Comprensibile", "Capisco cosa succede: il racconto per Anna, i confronti con la propria media, ROSS che dice cos'è."], ["Gestibile", "Posso farcela con ciò che ho: inviti piccoli, aiuto con parole proprie, chi accompagnare."], ["Significativa", "Ne vale la pena: spunti dagli interessi e dalla storia di Elena."], ["Decide la persona", "Co-power: non si «dà» autonomia, si creano con Elena le condizioni per esercitarla. Può scegliere, rifiutare, tenere per sé."]],
+    title: "Tre domande che ROSS si fa",
+    questions: [["Comprensibile", "Elena capisce cosa succede?", "ROSS dice cos'è; Anna riceve un racconto, non dei dati."], ["Gestibile", "Ce la fa con quello che ha?", "Inviti piccoli, aiuto con parole sue, qualcuno che la accompagna."], ["Significativo", "Ne vale la pena, per lei?", "Spunti dai suoi interessi e dalla sua storia."], ["Decide la persona", "E chi decide?", "Elena: può scegliere, rifiutare, tenere per sé."]],
+    note: "Nella visita, l'etichetta verde su ogni passo dice a quale domanda risponde.",
   },
 ];
 const chapterStart = (c) => sequence.findIndex((item) => item.kind === "chapter" && item.chapter === c);
 
 const PAD = 8;
-const GAP = 14;
+const HEADER = 92; // barra in alto delle viste
 const visibleRect = (el) => { const r = el?.getBoundingClientRect(); return r && r.width > 0 && r.height > 0 ? r : null; };
 const reducedMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+const inFixedLayer = (el) => { for (let node = el; node && node !== document.body; node = node.parentElement) { const { position } = getComputedStyle(node); if (position === "fixed" || position === "sticky") return true; } return false; };
 
-function placePopover(rect, box, viewport) {
-  if (!rect || viewport.width < 640) return null; // senza bersaglio o su telefono: scheda in basso
-  const clampTop = (top) => Math.min(Math.max(16, top), viewport.height - box.height - 16);
-  const clampLeft = (left) => Math.min(Math.max(16, left), viewport.width - box.width - 16);
-  const below = rect.bottom + GAP;
-  const above = rect.top - GAP - box.height;
-  if (below + box.height <= viewport.height - 16) return { top: below, left: clampLeft(rect.left + rect.width / 2 - box.width / 2) };
-  if (above >= 16) return { top: above, left: clampLeft(rect.left + rect.width / 2 - box.width / 2) };
-  // Elementi alti (sidebar, chat): la scheda va di fianco, se c'è posto.
-  const middle = clampTop(rect.top + rect.height / 2 - box.height / 2);
-  if (rect.right + GAP + box.width <= viewport.width - 16) return { top: middle, left: rect.right + GAP };
-  if (rect.left - GAP - box.width >= 16) return { top: middle, left: rect.left - GAP - box.width };
-  return { top: viewport.height - box.height - 16, left: clampLeft(rect.left + rect.width / 2 - box.width / 2) };
+// Porta il bersaglio nella zona libera sopra la scheda (o sotto la barra), senza animazioni lunghe.
+function bringIntoView(el, cardHeight) {
+  if (inFixedLayer(el)) return;
+  const rect = el.getBoundingClientRect();
+  const areaTop = HEADER;
+  const areaHeight = window.innerHeight - cardHeight - 48 - areaTop;
+  const desiredTop = rect.height <= areaHeight ? areaTop + (areaHeight - rect.height) / 2 : areaTop;
+  window.scrollTo({ top: window.scrollY + rect.top - desiredTop, behavior: reducedMotion() ? "auto" : "smooth" });
 }
 
 export function GuidedTour() {
@@ -108,11 +105,12 @@ export function GuidedTour() {
   const [index, setIndex] = useState(null);
   const [rect, setRect] = useState(null);
   const [box, setBox] = useState(null);
+  const [ready, setReady] = useState(false);
   const cardRef = useRef(null);
   const active = index !== null;
   const step = active ? sequence[index] : null;
 
-  const close = useCallback(() => { setIndex(null); setRect(null); }, []);
+  const close = useCallback(() => { setIndex(null); setRect(null); setReady(false); }, []);
   const go = useCallback((next) => setIndex(next < 0 ? 0 : next >= sequence.length ? null : next), []);
 
   // Avvio: evento dai menu o ?visita=1 (anche il vecchio ?presentation=true).
@@ -132,25 +130,31 @@ export function GuidedTour() {
     return () => { root.inert = false; };
   }, [active]);
 
-  // Cambio passo: porta alla pagina giusta e aspetta che l'elemento compaia.
+  // Cambio passo: porta alla pagina giusta, aspetta l'elemento, lo porta in vista e solo allora
+  // mostra scheda ed evidenziazione (niente schede sulla pagina sbagliata, niente salti).
   useEffect(() => {
     if (!step) return undefined;
+    setReady(false);
     const [path, hash = ""] = (step.route || "").split("#");
     if (step.route && (location.pathname !== path || (hash && location.hash !== `#${hash}`))) { navigate(step.route); return undefined; }
-    setRect(null);
-    let frame; let tries = 0; let settled;
+    let frame; let tries = 0; let stable = 0; let last = null;
+    if (!step.target) { setRect(null); window.scrollTo({ top: 0 }); setReady(true); return undefined; }
+    const settle = (el) => {
+      const r = visibleRect(el);
+      const same = r && last && Math.abs(r.top - last.top) < 0.5 && Math.abs(r.height - last.height) < 0.5;
+      stable = same ? stable + 1 : 0;
+      last = r;
+      if (stable >= 4 || tries++ > 90) { setRect(r); setReady(true); return; }
+      frame = requestAnimationFrame(() => settle(el));
+    };
     const find = () => {
-      const el = step.target ? document.querySelector(step.target) : null;
-      if (el && visibleRect(el)) {
-        el.scrollIntoView({ block: window.innerWidth < 640 ? "start" : "center", behavior: reducedMotion() ? "auto" : "smooth" });
-        settled = window.setTimeout(() => setRect(visibleRect(el)), reducedMotion() ? 0 : 380);
-        return;
-      }
-      if (step.target && tries++ < 90) { frame = requestAnimationFrame(find); return; }
-      setRect(null); // bersaglio assente: la scheda resta al centro
+      const el = document.querySelector(step.target);
+      if (el && visibleRect(el)) { bringIntoView(el, box?.height || 230); frame = requestAnimationFrame(() => settle(el)); return; }
+      if (tries++ < 90) { frame = requestAnimationFrame(find); return; }
+      setRect(null); setReady(true); // bersaglio assente: la scheda va al centro
     };
     find();
-    return () => { cancelAnimationFrame(frame); window.clearTimeout(settled); };
+    return () => cancelAnimationFrame(frame);
   }, [step, location.pathname, location.hash, navigate]);
 
   // Segue l'elemento se la finestra cambia o la pagina scorre.
@@ -170,7 +174,7 @@ export function GuidedTour() {
   });
 
   // Il focus entra nella scheda a ogni passo; tastiera: Esc, frecce, Tab confinato nella scheda.
-  useEffect(() => { if (active) cardRef.current?.focus(); }, [active, index]);
+  useEffect(() => { if (active && ready) cardRef.current?.focus(); }, [active, index, ready]);
   useEffect(() => {
     if (!active) return undefined;
     const onKey = (event) => {
@@ -185,8 +189,13 @@ export function GuidedTour() {
   if (!active) return null;
   const last = index === sequence.length - 1;
   const big = ["welcome", "method", "chapter", "theme"].includes(step.kind);
-  const pos = !big && box && placePopover(rect, box, { width: window.innerWidth, height: window.innerHeight });
-  const spot = rect && !big ? { top: rect.top - PAD, left: rect.left - PAD, width: rect.width + PAD * 2, height: rect.height + PAD * 2 } : null;
+  // Scheda agganciata in basso al centro; in alto se in basso coprirebbe l'elemento evidenziato.
+  const cardHeight = box?.height || 230;
+  const dockTop = rect && rect.bottom > window.innerHeight - cardHeight - 40 && rect.top > cardHeight + HEADER;
+  const spotTop = rect ? Math.max(rect.top - PAD, 8) : 0;
+  // Elementi più alti dello spazio libero: si evidenzia solo la parte visibile sopra la scheda.
+  const spotBottom = rect ? Math.min(rect.bottom + PAD, dockTop ? window.innerHeight - 8 : window.innerHeight - cardHeight - 32) : 0;
+  const spot = rect && !big && ready ? { top: spotTop, left: rect.left - PAD, width: rect.width + PAD * 2, height: Math.max(spotBottom - spotTop, 24) } : null;
   const chapter = step.chapter != null ? chapters[step.chapter] : null;
   const ChapterIcon = chapter?.icon;
 
@@ -213,8 +222,10 @@ export function GuidedTour() {
       <span className="tour-chapter-hero tour-chapter-hero-green"><Sprout size={22} /></span>
       <span className="tour-chapter">Il metodo · {step.page + 1} di {method.length}</span>
       <h2 id="tour-title">{page.title}</h2>
-      <p id="tour-body">{page.body}</p>
-      <ul className="tour-points">{page.points.map(([title, text]) => <li key={title}><strong>{title}</strong><span>{text}</span></li>)}</ul>
+      {page.compare && <div className="tour-compare" id="tour-body">{page.compare.map(([label, question], i) => <div key={label} className={i ? "is-ross" : ""}><small>{label}</small><strong>{question}</strong></div>)}</div>}
+      {page.example && <p className="tour-example">{page.example}</p>}
+      {page.questions && <ul className="tour-questions" id="tour-body">{page.questions.map(([lens, question, how]) => <li key={lens}><span className="tour-lens"><Sprout size={12} /> {lens}</span><strong>{question}</strong><span>{how}</span></li>)}</ul>}
+      <p className="tour-note">{page.note}</p>
     </>;
   } else if (step.kind === "theme") {
     content = <>
@@ -256,8 +267,8 @@ export function GuidedTour() {
     <div className="tour" data-testid="guided-tour">
       {spot ? <div className="tour-spotlight" style={spot} aria-hidden="true" /> : <div className="tour-dim" aria-hidden="true" />}
       <div className="tour-blocker" aria-hidden="true" onClick={() => cardRef.current?.focus()} />
-      <section ref={cardRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-body"
-        className={`tour-card${big ? " tour-card-big tour-card-center" : pos ? "" : rect ? " tour-card-sheet" : " tour-card-center"}`} style={pos || undefined}>
+      {ready && <section key={index} ref={cardRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-body"
+        className={`tour-card${big ? " tour-card-big tour-card-center" : rect ? ` tour-card-dock${dockTop ? " is-top" : ""}` : " tour-card-center"}`}>
         <button type="button" className="tour-close" onClick={close} aria-label="Chiudi la visita guidata"><X size={16} /></button>
         {content}
         <footer>
@@ -268,7 +279,7 @@ export function GuidedTour() {
             <button type="button" className="tour-primary" onClick={() => go(index + 1)}>{primary}{!last && <ArrowRight size={15} />}</button>
           </div>
         </footer>
-      </section>
+      </section>}
     </div>,
     document.body,
   );

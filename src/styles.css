@@ -909,3 +909,30 @@
 .family-resource-card strong{font:600 18px var(--serif);color:var(--family-ink)}
 .family-resource-card li>span{font-size:13px;line-height:1.5;color:var(--family-muted)}
 @media(max-width:800px){.family-resource-card{grid-template-columns:1fr;padding:22px}}
+
+/* Visita guidata v2: scheda agganciata (in basso al centro, o in alto se coprirebbe l'elemento),
+   compare solo quando la pagina è pronta; evidenziazione che entra in dissolvenza. */
+.tour-card-dock{left:50%;bottom:24px;width:min(460px,calc(100vw - 32px));transform:translateX(-50%);animation:tourCardIn .22s ease-out}
+.tour-card-dock.is-top{bottom:auto;top:92px}
+.tour-card-big{animation:tourCardInCenter .22s ease-out}
+.tour-spotlight{animation:tourSpotIn .25s ease-out}
+@keyframes tourCardIn{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes tourCardInCenter{from{opacity:0;transform:translate(-50%,-48%)}to{opacity:1;transform:translate(-50%,-50%)}}
+@keyframes tourSpotIn{from{opacity:0}to{opacity:1}}
+@media(max-width:640px){.tour-card-dock{left:12px;right:12px;bottom:12px;width:auto;transform:none;animation:none}.tour-card-dock.is-top{top:72px}}
+@media(prefers-reduced-motion:reduce){.tour-card-dock,.tour-card-big,.tour-spotlight{animation:none}}
+/* Il metodo, più chiaro: confronto tra due domande, esempio concreto, tre domande di ROSS */
+.tour-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.tour-compare>div{display:grid;gap:6px;padding:16px;border-radius:16px;background:var(--surface-2)}
+.tour-compare>div.is-ross{background:var(--green-soft)}
+.tour-compare small{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.tour-compare .is-ross small{color:var(--green)}
+.tour-compare strong{font:600 20px/1.25 var(--serif)}
+.tour-example{margin:14px 0 0;font:400 16px/1.6 var(--serif);color:var(--text)!important}
+.tour-note{margin:14px 0 0!important;font-size:13px!important;line-height:1.5;color:var(--muted)}
+.tour-questions{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px}
+.tour-questions li{display:grid;justify-items:start;gap:4px;padding:12px 14px;border-radius:14px;background:var(--surface-2)}
+.tour-questions .tour-lens{margin-top:0}
+.tour-questions strong{font:600 18px/1.25 var(--serif)}
+.tour-questions li>span:last-child{font-size:13px;line-height:1.45;color:var(--muted)}
+@media(max-width:640px){.tour-compare{grid-template-columns:1fr}}

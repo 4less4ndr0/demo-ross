@@ -248,6 +248,23 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Ottobre 2026 · 20/10/2026 · Visita guidata più solida e metodo più chiaro
+- **Richiesta:** le schede del metodo erano poco chiare; nel video la visita "non è proprio top".
+- **Problemi visti nel video:**
+  - la scheda di un passo compariva per un attimo sulla pagina sbagliata, prima del cambio di pagina;
+  - l'evidenziazione inseguiva lo scroll;
+  - la scheda ancorata all'elemento a volte lo copriva o finiva in un angolo.
+- **Modifiche:**
+  - la scheda e l'evidenziazione compaiono **solo quando la pagina è pronta** (pagina giusta, elemento trovato, scroll fermo per qualche fotogramma); intanto resta lo sfondo scurito;
+  - **scheda agganciata** in basso al centro (in alto se in basso coprirebbe l'elemento); su telefono a tutta larghezza; entra con una breve dissolvenza;
+  - lo scroll porta l'elemento nello spazio libero sopra la scheda; gli elementi più alti dello spazio vengono evidenziati solo nella parte visibile; i livelli fissi (barra, pillola) non fanno scorrere la pagina;
+  - "Chiedi a ROSS" punta alle domande consigliate, non a tutta la chat;
+  - **metodo riscritto:**
+    - scheda 1: due domande a confronto ("Che cosa non va?" e "Che cosa aiuta Elena a stare bene?"), l'esempio di Elena e una nota su salutogenesi e Antonovsky;
+    - scheda 2: "Tre domande che ROSS si fa" (Elena capisce cosa succede? Ce la fa con quello che ha? Ne vale la pena, per lei? E chi decide?).
+- **Verifica:** script Playwright su computer e telefono con 24 passi; nessuna scheda sulla pagina sbagliata, nessuna sovrapposizione tra scheda ed evidenziazione, nessun errore.
+- **File:** `src/components/GuidedTour.jsx`, `src/styles.css`, `docs/HANDOFF.md`.
+
 ### Ottobre 2026 · 20/10/2026 · La salutogenesi nella demo
 - **Richiesta:** il workspace Notion ha molto materiale sulla salutogenesi. Va aggiunta a Struttura e Famiglia (non al tablet di Elena) e spiegata nella visita guidata.
 - **Fonti:** Notion "Ricerca su Salutogenesi" (Garista, Antonovsky, Eriksson & Lindström), "Studiare la salutogenesi", landing B2C ("cornice, non prova di efficacia").
