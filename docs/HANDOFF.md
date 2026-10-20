@@ -247,6 +247,12 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Ottobre 2026 · 20/10/2026 · Modali della vista Famiglia di nuovo visibili
+- **Problema:** cliccando "Condividi" nella vista Famiglia, il modale "Racconta un ricordo" compariva spostato in basso e tagliato.
+- **Causa:** `.screen-enter` animava `transform` con fill-mode `both`. L'animazione restava in effetto e il contenitore della pagina diventava il riferimento per gli elementi `position:fixed`, quindi l'overlay si centrava sull'intera pagina invece che sulla finestra.
+- **Fix:** fill-mode `backwards` in `src/styles.css`. L'entrata resta uguale; finita l'animazione l'overlay torna fisso sulla finestra. Vale anche per i modali della vista ROSS.
+- **File:** `src/styles.css`, `docs/HANDOFF.md`.
+
 ### Ottobre 2026 · 20/10/2026 · Demo per l'incontro con Papa Luciani / Promozione Lavoro
 - **Richiesta:** rivedere la demo alla luce del workspace Notion (sintesi strategica e audit del 19–20/10, brief Papa Luciani, protocolli Namastè e Borgo Mazzini) per l'incontro del 21/10.
 - **Perché:** la demo deve diventare uno strumento di ricerca centrato sulla persona; lo strumento per lo staff non va proposto come prodotto; va detto cosa è simulato.
