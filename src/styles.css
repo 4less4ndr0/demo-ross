@@ -387,17 +387,13 @@
 .ross-today>span{display:inline-flex;align-items:center;gap:6px}
 .ross-today>span svg{width:17px;height:17px}
 .ross-today>i{width:1px;height:18px;background:rgb(var(--ross-ink) / .15)}
-.ross-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);align-items:center;gap:24px;padding:18px 0 8px}
+.ross-hero{padding:18px 0 8px}
 .ross-hero-copy{display:flex;flex-direction:column;align-items:flex-start;position:relative;z-index:2}
 .ross-hero-date{font-size:14px;color:var(--ross-muted)}
 .ross-hero-copy h1{font:500 clamp(40px,5.2vw,66px)/1.02 var(--serif);letter-spacing:-.03em;margin:8px 0 10px}
 .ross-hero-copy>p{font-size:17px;line-height:1.5;color:var(--ross-muted);margin:0;max-width:560px}
 .ross-hero-copy .ross-talk{margin-top:22px}
 .ross-hero-copy .ross-ai-note{margin:12px 0 0;text-align:left}
-.ross-hero .ross-presence{min-height:300px}
-.ross-hero .ross-eyes{width:min(480px,100%)}
-.ross-hero .ross-halo{width:380px;height:240px}
-.ross-hero .ross-state-label{margin-top:-30px}
 .ross-section{margin-top:28px}
 .ross-section-title{font:500 26px var(--serif);margin:0 0 12px}
 .ross-prompt-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -420,7 +416,7 @@
 .ross-family-card>button{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:1px solid rgb(var(--ross-ink) / .18);border-radius:999px;background:transparent;color:var(--ross-text);font-weight:700;font-size:14px;padding:10px 16px}
 .ross-family-card>button svg{width:15px}
 .ross-home-main>.ross-touch-grid{margin-top:28px}
-@media(max-width:900px){.ross-hero{grid-template-columns:1fr}.ross-hero .ross-presence{order:-1;min-height:170px}.ross-hero .ross-eyes{width:300px}.ross-hero .ross-state-label{margin-top:-24px}.ross-prompt-grid,.ross-family-grid{grid-template-columns:1fr}.ross-today{gap:8px;font-size:12px}.ross-today>span:nth-of-type(2),.ross-today>i{display:none}}
+@media(max-width:900px){.ross-prompt-grid,.ross-family-grid{grid-template-columns:1fr}.ross-today{gap:8px;font-size:12px}.ross-today>span:nth-of-type(2),.ross-today>i{display:none}}
 /* Cosa è reale e cosa è simulato (dialog della pillola Vista demo) */
 .demo-about{display:grid;gap:18px}
 .demo-about-lead{margin:0;font-size:15px;line-height:1.55;color:var(--text)}

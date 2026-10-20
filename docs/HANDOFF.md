@@ -247,11 +247,16 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Ottobre 2026 · 20/10/2026 · Home del tablet senza occhi
+- **Richiesta:** togliere dalla home del tablet gli occhi di ROSS e l'etichetta "Con te".
+- **Modifiche:** il saluto occupa tutta la larghezza; gli occhi restano solo nella conversazione e nella schermata finale.
+- **File:** `src/pages/RossExperience.jsx`, `src/styles.css`, `docs/HANDOFF.md`.
+
 ### Ottobre 2026 · 20/10/2026 · Home del tablet a spunti di conversazione
 - **Richiesta:** la home di ROSS deve proporre spunti, come nel riferimento condiviso: meteo spiegato come occasione ("oggi piove, è il giorno giusto per…"), ricorrenze (il compleanno di un cantante → una sua canzone) e soprattutto i contributi che la famiglia sceglie di condividere.
 - **Modifiche:**
   - **testata:** meteo e ora;
-  - **saluto:** "Buon pomeriggio, Elena." con la data; gli occhi di ROSS a fianco;
+  - **saluto:** "Buon pomeriggio, Elena." con la data;
   - **"Spunti per oggi":** "Oggi piove: un pomeriggio da fotografie" porta alla conversazione su Cefalù; "Il 23 settembre nasceva Gino Paoli" propone «Il cielo in una stanza» di Mina;
   - **"Da Anna, per te":** fino a 3 contributi da `state.familyContributions` (foto, ricordo, argomento, musica), con quelli non ancora ripresi per primi; ciò che Anna aggiunge dalla vista Famiglia compare subito qui;
   - **dati:** nuovo contributo demo "Quando eri la maestra di quinta";

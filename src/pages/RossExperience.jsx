@@ -77,11 +77,6 @@ export function RossHome() {
             <button type="button" className="ross-talk" onClick={() => navigate("/ross/conversazione")}><span><Mic /></span><strong>{completed ? "Parliamo ancora" : "Parla con ROSS"}</strong><small>Tocca per iniziare</small></button>
             <small className="ross-ai-note">Sono ROSS, un programma che ti fa compagnia: non sono una persona. Quello che ci diciamo resta qui.</small>
           </div>
-          <div className="ross-presence">
-            <div className="ross-halo" />
-            <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
-            <span className="ross-state-label"><i /> {rossState === "rest" ? "In riposo" : rossState === "activity" ? "Attività" : "Con te"}</span>
-          </div>
         </section>
 
         <section className="ross-section" aria-label="Spunti per oggi">
