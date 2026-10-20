@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, BookHeart, Check, CircleHelp, Headphones, Images, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, Volume2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarHeart, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, Mic, Music2, Pause, Play, RotateCcw, Sparkles, Volume2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "../components/Common";
 import { useDemo } from "../state/DemoContext";
@@ -17,16 +17,24 @@ const conversation = [
   { speaker: "ross", state: "activity", line: "La prossima volta possiamo guardare altre fotografie di Cefalù, oppure ascoltare ancora Mina. Stasera magari ne parli con Anna, quando ti chiama.", support: "Chiude senza insistere e rimanda alle persone vere: ROSS non prende il posto di nessuno." },
 ];
 
-const stateCopy = {
-  rest: ["Sono qui", "Prenditi il tuo tempo"],
-  listening: ["Ti ascolto", "Puoi parlare con calma"],
-  processing: ["Sto collegando il ricordo", "Un momento…"],
-  response: ["Parliamo insieme", "Una cosa alla volta"],
-  activity: ["Possiamo fare qualcosa", "Scegli tu"],
-};
-
 // Modalità: le stesse della struttura, dette con le parole di Elena.
 const modes = [["Attiva", "Proponimi tu"], ["Reattiva", "Quando ti chiamo"], ["Silenziosa", "Stai in silenzio"]];
+
+// Spunti del giorno: meteo e ricorrenze diventano occasioni di conversazione (dati simulati nella demo).
+const today = { date: "Lunedì 21 settembre", time: "16:40", weather: "Pioggia leggera", temp: "17°" };
+const dayPrompts = [
+  { id: "meteo", icon: CloudRain, kicker: "Oggi piove", title: "Un pomeriggio da fotografie", text: "I gerani sul balcone si annaffiano da soli. Ti va di guardare le foto di Cefalù e raccontarmi la luce della sera?", cta: "Raccontami", talk: true },
+  { id: "ricorrenza", icon: CalendarHeart, kicker: "Mercoledì è una ricorrenza", title: "Il 23 settembre nasceva Gino Paoli", text: "Ha scritto «Il cielo in una stanza», la canzone che Mina ha portato al successo nel 1960. La ascoltiamo insieme?", cta: "Ascoltiamola", track: "Il cielo in una stanza · Mina" },
+];
+
+// I contributi di Anna arrivano qui come spunti: la famiglia sceglie cosa portare a Elena, ROSS lo propone.
+const familyPrompt = {
+  photo: { icon: Images, lead: "Anna ti ha mandato una foto", ask: "La guardiamo insieme?", cta: "Guardiamola" },
+  memory: { icon: Heart, lead: "Anna ti ha raccontato un ricordo", ask: "Me lo racconti anche tu?", cta: "Raccontami" },
+  topic: { icon: Lightbulb, lead: "Anna ti propone un argomento", ask: "Ti va di parlarne?", cta: "Parliamone" },
+  music: { icon: Music2, lead: "Anna ti ha suggerito una canzone", ask: "La ascoltiamo insieme?", cta: "Ascoltiamola" },
+};
+const alreadyShared = (item) => item.status === "Ripreso con Elena" || item.status === "Confermato";
 
 export function RossHome() {
   const { state, actions, notify } = useDemo();
@@ -36,10 +44,10 @@ export function RossHome() {
   const [forgetAsked, setForgetAsked] = useState(false);
   const elena = state.residents.find((resident) => resident.id === "elena");
   const completed = Boolean(state.rossJourney.completedAt);
-  const copy = stateCopy[rossState];
   const sharedPhoto = state.familyContributions.find((item) => item.kind === "photo" && item.image);
   const sharedMusic = state.familyContributions.find((item) => item.kind === "music");
   const scheduled = state.scheduledActivities.find((item) => item.residentId === "elena");
+  const fromAnna = [...state.familyContributions].sort((a, b) => Number(alreadyShared(a)) - Number(alreadyShared(b))).slice(0, 3);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setRossState("response"), 900);
@@ -50,24 +58,49 @@ export function RossHome() {
     actions.setResidentMode("elena", mode);
     setRossState(mode === "Silenziosa" ? "rest" : "response");
   };
+  const play = (track) => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); };
+  const usePrompt = (item) => (item.kind === "music" ? play(item.title) : navigate("/ross/conversazione"));
 
   return (
     <div className="ross-app screen-enter" data-ross-state={rossState}>
       <header className="ross-header">
         <div className="ross-wordmark"><span>R</span><strong>ROSS</strong></div>
-        <button type="button" className="ross-volume" aria-label="Volume"><Volume2 /></button>
+        <div className="ross-today"><span><CloudRain /> {today.temp} · {today.weather}</span><i /><span><Clock3 /> {today.time}</span><button type="button" className="ross-volume" aria-label="Volume"><Volume2 /></button></div>
       </header>
 
       <main className="ross-home-main">
-        <section className="ross-presence">
-          <div className="ross-halo" />
-          <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
-          <span className="ross-state-label"><i /> {rossState === "rest" ? "In riposo" : rossState === "listening" ? "Ti ascolto" : rossState === "processing" ? "Sto pensando" : rossState === "activity" ? "Attività" : "Con te"}</span>
-          <h1>{copy[0]}, Elena.</h1>
-          <p>{copy[1]}</p>
-          <small className="ross-ai-note">Sono ROSS, un programma che ti fa compagnia: non sono una persona. Quello che ci diciamo resta qui.</small>
-          <button type="button" className="ross-talk" onClick={() => navigate("/ross/conversazione")}><span><Mic /></span><strong>{completed ? "Parliamo ancora" : "Parla con ROSS"}</strong><small>Tocca per iniziare</small></button>
+        <section className="ross-hero">
+          <div className="ross-hero-copy">
+            <span className="ross-hero-date">{today.date}</span>
+            <h1>Buon pomeriggio, Elena.</h1>
+            <p>{completed ? "Che bella chiacchierata, prima. Se vuoi, continuiamo quando ti va." : "Ho pensato a qualche spunto per oggi. Scegli tu, oppure parliamo di quello che vuoi."}</p>
+            <button type="button" className="ross-talk" onClick={() => navigate("/ross/conversazione")}><span><Mic /></span><strong>{completed ? "Parliamo ancora" : "Parla con ROSS"}</strong><small>Tocca per iniziare</small></button>
+            <small className="ross-ai-note">Sono ROSS, un programma che ti fa compagnia: non sono una persona. Quello che ci diciamo resta qui.</small>
+          </div>
+          <div className="ross-presence">
+            <div className="ross-halo" />
+            <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
+            <span className="ross-state-label"><i /> {rossState === "rest" ? "In riposo" : rossState === "activity" ? "Attività" : "Con te"}</span>
+          </div>
         </section>
+
+        <section className="ross-section" aria-label="Spunti per oggi">
+          <h2 className="ross-section-title">Spunti per oggi</h2>
+          <div className="ross-prompt-grid">{dayPrompts.map((item) => { const Icon = item.icon; return <article key={item.id} className="ross-prompt-card">
+            <header><span className="ross-prompt-icon"><Icon /></span><div><small>{item.kicker}</small><h3>{item.title}</h3></div></header>
+            <p>{item.text}</p>
+            <button type="button" onClick={() => (item.track ? play(item.track) : navigate("/ross/conversazione"))}>{item.cta}</button>
+          </article>; })}</div>
+        </section>
+
+        {fromAnna.length > 0 && <section className="ross-section" aria-label="Da Anna, per te">
+          <h2 className="ross-section-title">Da Anna, per te</h2>
+          <div className="ross-family-grid">{fromAnna.map((item) => { const kind = familyPrompt[item.kind] || familyPrompt.memory; const Icon = kind.icon; return <article key={item.id} className="ross-family-card">
+            {item.image ? <img src={item.image} alt={item.title} /> : <span className="ross-family-icon"><Icon /></span>}
+            <div><small>{kind.lead}</small><h3>{item.title}</h3><p>{alreadyShared(item) ? "Ne abbiamo già parlato: possiamo riprenderlo quando vuoi." : kind.ask}</p></div>
+            <button type="button" onClick={() => usePrompt(item)}>{kind.cta} <ArrowRight /></button>
+          </article>; })}</div>
+        </section>}
 
         <section className="ross-touch-grid" aria-label="Cosa vuoi fare">
           <button onClick={() => setPanel("memories")}><Images /><span><strong>Ricordi e foto</strong><small>Guardiamo insieme</small></span><ArrowRight /></button>

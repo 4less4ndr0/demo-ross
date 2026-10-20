@@ -42,6 +42,18 @@ const initialFamilyContributions = [
     period: "Anni 80",
     status: "Disponibile a ROSS",
   },
+  {
+    id: "family-maestra",
+    createdAt: "2026-09-18T19:05:00.000Z",
+    kind: "memory",
+    title: "Quando eri la maestra di quinta",
+    detail: "Anna ricorda le recite di fine anno che la mamma preparava con i suoi alunni, con i costumi cuciti a mano.",
+    author: "Anna",
+    people: ["Anna"],
+    place: "Scuola elementare",
+    period: "Anni 70",
+    status: "Disponibile a ROSS",
+  },
 ];
 
 const initialScheduledActivities = [

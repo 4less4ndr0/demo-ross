@@ -79,7 +79,7 @@ Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai su
 - il ripristino dei dati dalla card in basso a sinistra.
 
 **Giro breve per un incontro di ricerca (3 minuti, si mostra solo alla fine, dopo aver ascoltato):** modalità presentazione e "Avanti".
-1. **Tablet di Elena** (`/ross`): ROSS dice di essere un programma; "Aiuto" mostra che si chiede con parole proprie e che ROSS non è un sistema di emergenza.
+1. **Tablet di Elena** (`/ross`): spunti del giorno (meteo, ricorrenza) e "Da Anna, per te", cioè ciò che la famiglia porta a ROSS; ROSS dice di essere un programma; "Aiuto" mostra che si chiede con parole proprie e che ROSS non è un sistema di emergenza.
 2. **Conversazione**: alla fine ROSS chiede se può raccontarlo ad Anna e rimanda Elena alle persone vere.
 3. **Famiglia** (`/famiglia`, `/famiglia/attivita`): "traduce, non trasmette", cioè un racconto e non dei dati; ciò che Elena tiene per sé resta suo.
 4. **Struttura** (`/?q=emerso`, ritratto di Elena): sa come sta e come avvicinarla, mai di cosa ha parlato.
@@ -246,6 +246,32 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Ottobre 2026 · 20/10/2026 · Home del tablet a spunti di conversazione
+- **Richiesta:** la home di ROSS deve proporre spunti, come nel riferimento condiviso: meteo spiegato come occasione ("oggi piove, è il giorno giusto per…"), ricorrenze (il compleanno di un cantante → una sua canzone) e soprattutto i contributi che la famiglia sceglie di condividere.
+- **Modifiche:**
+  - **testata:** meteo e ora;
+  - **saluto:** "Buon pomeriggio, Elena." con la data; gli occhi di ROSS a fianco;
+  - **"Spunti per oggi":** "Oggi piove: un pomeriggio da fotografie" porta alla conversazione su Cefalù; "Il 23 settembre nasceva Gino Paoli" propone «Il cielo in una stanza» di Mina;
+  - **"Da Anna, per te":** fino a 3 contributi da `state.familyContributions` (foto, ricordo, argomento, musica), con quelli non ancora ripresi per primi; ciò che Anna aggiunge dalla vista Famiglia compare subito qui;
+  - **dati:** nuovo contributo demo "Quando eri la maestra di quinta";
+  - **"Cosa è reale e cosa è simulato":** aggiunta la voce su meteo, ora e ricorrenze.
+- **File:** `src/pages/RossExperience.jsx`, `src/state/DemoContext.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Ottobre 2026 · 20/10/2026 · Tablet di Elena in tema chiaro
+- **Richiesta:** passare la vista ROSS al tema chiaro.
+- **Modifiche:**
+  - variabili `--ross-*` sulla palette crema e verde scuro della Struttura, con la nuova `--ross-ink` per bordi e velature (al posto dei bianchi trasparenti);
+  - sfondo con un alone caldo arancio; occhi senza fusione `screen`;
+  - "Parla con ROSS" e la modalità attiva diventano pulsanti scuri;
+  - colori di Elena, dei badge "nuovo" e della pillola "Vista demo" leggibili sul fondo chiaro.
+- **File:** `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Ottobre 2026 · 20/10/2026 · Modali della vista Famiglia di nuovo visibili
+- **Problema:** cliccando "Condividi" nella vista Famiglia, il modale "Racconta un ricordo" compariva spostato in basso e tagliato.
+- **Causa:** `.screen-enter` animava `transform` con fill-mode `both`. L'animazione restava in effetto e il contenitore della pagina diventava il riferimento per gli elementi `position:fixed`, quindi l'overlay si centrava sull'intera pagina invece che sulla finestra.
+- **Fix:** fill-mode `backwards` in `src/styles.css`. L'entrata resta uguale; finita l'animazione l'overlay torna fisso sulla finestra. Vale anche per i modali della vista ROSS.
+- **File:** `src/styles.css`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · Demo per l'incontro con Papa Luciani / Promozione Lavoro
 - **Richiesta:** rivedere la demo alla luce del workspace Notion (sintesi strategica e audit del 19–20/10, brief Papa Luciani, protocolli Namastè e Borgo Mazzini) per l'incontro del 21/10.
