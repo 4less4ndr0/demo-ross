@@ -39,6 +39,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 - **Tema chiaro**: il tablet usa la stessa palette calda della Struttura (fondo crema `#f7f3e9`, testo verde scuro), non il tema scuro. Colori in `--ross-*` su `.ross-app` (`src/styles.css`); gli occhi di ROSS senza `mix-blend-mode`.
 - ROSS dichiara di essere un programma e non una persona, e che la conversazione resta sul dispositivo.
+- **Home del tablet a spunti**: saluto con data, meteo e ora; "Spunti per oggi" (il meteo e le ricorrenze diventano occasioni di conversazione, per esempio la pioggia porta alle fotografie, il compleanno di un cantante porta a una sua canzone); "Da Anna, per te" con i contributi della vista Famiglia (foto, ricordi, argomenti, musica), che diventano spunti da proporre a Elena. Niente dati di salute (battito e simili) né agenda della struttura.
 - **Aiuto con parole proprie**, mai a frase fissa (Borgo Mazzini: nel panico la frase non viene in mente). ROSS **non è un sistema di emergenza**: rimanda a campanello e personale, e lo dice.
 - L'ospite può chiedere a ROSS di dimenticare ciò che ha raccontato, con una conferma.
 - ROSS chiude le conversazioni verso le persone vere (Anna, gli altri ospiti), mai come "migliore amico" (Namastè: rischio di dipendenza).

@@ -382,6 +382,45 @@
 .ross-help .ross-help-limit{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:10px;padding:10px 12px}
 .ross-help-actions,.ross-help-confirm .modal-actions{justify-content:center;flex-wrap:wrap}
 .ross-help-confirm>p{font-weight:600}
+/* Vista ROSS: home con spunti del giorno e contributi della famiglia */
+.ross-today{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--ross-muted)}
+.ross-today>span{display:inline-flex;align-items:center;gap:6px}
+.ross-today>span svg{width:17px;height:17px}
+.ross-today>i{width:1px;height:18px;background:rgb(var(--ross-ink) / .15)}
+.ross-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);align-items:center;gap:24px;padding:18px 0 8px}
+.ross-hero-copy{display:flex;flex-direction:column;align-items:flex-start;position:relative;z-index:2}
+.ross-hero-date{font-size:14px;color:var(--ross-muted)}
+.ross-hero-copy h1{font:500 clamp(40px,5.2vw,66px)/1.02 var(--serif);letter-spacing:-.03em;margin:8px 0 10px}
+.ross-hero-copy>p{font-size:17px;line-height:1.5;color:var(--ross-muted);margin:0;max-width:560px}
+.ross-hero-copy .ross-talk{margin-top:22px}
+.ross-hero-copy .ross-ai-note{margin:12px 0 0;text-align:left}
+.ross-hero .ross-presence{min-height:300px}
+.ross-hero .ross-eyes{width:min(480px,100%)}
+.ross-hero .ross-halo{width:380px;height:240px}
+.ross-hero .ross-state-label{margin-top:-30px}
+.ross-section{margin-top:28px}
+.ross-section-title{font:500 26px var(--serif);margin:0 0 12px}
+.ross-prompt-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ross-prompt-card{display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:24px;border:1px solid rgb(var(--ross-ink) / .1);border-radius:22px;background:var(--ross-panel)}
+.ross-prompt-card header{display:flex;align-items:center;gap:14px}
+.ross-prompt-icon{width:52px;height:52px;flex:none;display:grid;place-items:center;border-radius:50%;background:#fde7d6;color:#d8664c}
+.ross-prompt-icon svg{width:24px;height:24px}
+.ross-prompt-card small{font-size:13px;color:var(--ross-muted)}
+.ross-prompt-card h3{font:600 23px var(--serif);margin:2px 0 0}
+.ross-prompt-card p{font-size:16px;line-height:1.55;margin:0;flex:1}
+.ross-prompt-card>button{border:0;border-radius:999px;background:var(--ross-text);color:var(--ross-bg);font-weight:700;font-size:15px;padding:13px 24px}
+.ross-family-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ross-family-card{display:flex;flex-direction:column;gap:12px;padding:18px;border:1px solid rgb(var(--ross-ink) / .1);border-radius:20px;background:var(--ross-panel)}
+.ross-family-card>img{width:100%;height:120px;object-fit:cover;border-radius:14px}
+.ross-family-icon{width:100%;height:120px;display:grid;place-items:center;border-radius:14px;background:#fbe9e1;color:#d8664c}
+.ross-family-icon svg{width:34px;height:34px}
+.ross-family-card small{font-size:12px;font-weight:700;color:#b5481f}
+.ross-family-card h3{font:600 19px/1.2 var(--serif);margin:4px 0}
+.ross-family-card p{font-size:14px;color:var(--ross-muted);margin:0}
+.ross-family-card>button{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;border:1px solid rgb(var(--ross-ink) / .18);border-radius:999px;background:transparent;color:var(--ross-text);font-weight:700;font-size:14px;padding:10px 16px}
+.ross-family-card>button svg{width:15px}
+.ross-home-main>.ross-touch-grid{margin-top:28px}
+@media(max-width:900px){.ross-hero{grid-template-columns:1fr}.ross-hero .ross-presence{order:-1;min-height:170px}.ross-hero .ross-eyes{width:300px}.ross-hero .ross-state-label{margin-top:-24px}.ross-prompt-grid,.ross-family-grid{grid-template-columns:1fr}.ross-today{gap:8px;font-size:12px}.ross-today>span:nth-of-type(2),.ross-today>i{display:none}}
 /* Cosa è reale e cosa è simulato (dialog della pillola Vista demo) */
 .demo-about{display:grid;gap:18px}
 .demo-about-lead{margin:0;font-size:15px;line-height:1.55;color:var(--text)}
