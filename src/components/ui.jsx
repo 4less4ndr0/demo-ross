@@ -3,6 +3,7 @@ import { forwardRef } from "react";
 import * as DropdownPrimitive from "@radix-ui/react-dropdown-menu";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { Toaster as SonnerToaster } from "sonner";
 import { Check, ChevronDown, X } from "lucide-react";
 
@@ -48,11 +49,11 @@ export function Sheet({ open, onOpenChange, side = "left", title, description, c
   </DialogPrimitive.Root>;
 }
 
-export function Dialog({ open, onClose, title, size = "md", children }) {
+export function Dialog({ open, onClose, title, size = "md", className, children }) {
   return <DialogPrimitive.Root open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="ui-sheet-overlay ui-dialog-overlay" />
-      <DialogPrimitive.Content className={cx("modal", `modal-${size}`, "ui-dialog")} aria-describedby={undefined}>
+      <DialogPrimitive.Content className={cx("modal", `modal-${size}`, "ui-dialog", className)} aria-describedby={undefined}>
         <header><DialogPrimitive.Title asChild><h2>{title}</h2></DialogPrimitive.Title><DialogPrimitive.Close className="ui-button ui-button-ghost ui-button-icon" aria-label="Chiudi"><X size={17} /></DialogPrimitive.Close></header>
         {children}
       </DialogPrimitive.Content>
@@ -87,6 +88,24 @@ export function Select({ value, onValueChange, options, groups, label, className
     </SelectPrimitive.Portal>
   </SelectPrimitive.Root>;
 }
+
+// Campi di testo: stessi colori dei campi esistenti, anello di focus come i bottoni.
+export const Input = forwardRef(function Input({ className, ...props }, ref) {
+  return <input ref={ref} className={cx("ui-input", className)} {...props} />;
+});
+export const Textarea = forwardRef(function Textarea({ className, ...props }, ref) {
+  return <textarea ref={ref} className={cx("ui-input", className)} {...props} />;
+});
+
+// Schede: Radix Tabs (frecce da tastiera, ruoli ARIA). Le classi esistenti restano, così i colori non cambiano.
+export const Tabs = TabsPrimitive.Root;
+export const TabsContent = TabsPrimitive.Content;
+export function TabsList({ className, ...props }) {
+  return <TabsPrimitive.List className={cx("ui-tabs-list", className)} {...props} />;
+}
+export const TabsTrigger = forwardRef(function TabsTrigger({ className, value, active, ...props }, ref) {
+  return <TabsPrimitive.Trigger ref={ref} value={value} className={cx("ui-tabs-trigger", active && "active", className)} {...props} />;
+});
 
 export function Toaster() {
   return <SonnerToaster position="bottom-right" offset={{ bottom: 96, right: 24 }} mobileOffset={{ bottom: 96 }} closeButton toastOptions={{ classNames: { toast: "ui-toast", title: "ui-toast-title", description: "ui-toast-description", actionButton: "ui-toast-action", closeButton: "ui-toast-close" } }} />;

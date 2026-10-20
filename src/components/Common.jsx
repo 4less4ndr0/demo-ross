@@ -1,5 +1,5 @@
-import { HelpCircle, Info, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { HelpCircle, Info } from "lucide-react";
+import { useRef, useState } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 // Foto degli ospiti della demo (public/ospiti, ritagliate dal collage): dove manca restano le iniziali.
@@ -61,29 +61,6 @@ export function Metric({ icon: Icon, value, label, detail, tip, tone = "mint" })
 
 export function EmptyState({ title = "Nessun risultato", description = "Prova a cambiare filtri o ricerca.", icon: Icon = HelpCircle }) {
   return <div className="empty-state"><Icon size={28} /><strong>{title}</strong><p>{description}</p></div>;
-}
-
-export function Modal({ open, title, onClose, children, size = "md" }) {
-  const closeRef = useRef(null);
-  const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
-  useEffect(() => {
-    if (!open) return undefined;
-    const previous = document.activeElement;
-    const handler = (event) => { if (event.key === "Escape") onCloseRef.current(); };
-    document.addEventListener("keydown", handler);
-    window.setTimeout(() => closeRef.current?.focus(), 0);
-    return () => { document.removeEventListener("keydown", handler); previous?.focus?.(); };
-  }, [open]);
-  if (!open) return null;
-  return (
-    <div className="overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <section className={`modal modal-${size}`} role="dialog" aria-modal="true" aria-label={title}>
-        <header><h2>{title}</h2><button ref={closeRef} className="icon-button" onClick={onClose} aria-label="Chiudi"><X size={18} /></button></header>
-        {children}
-      </section>
-    </div>
-  );
 }
 
 export function ProgressBar({ value, tone = "mint" }) {

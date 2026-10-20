@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, CalendarHeart, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, Mic, Music2, Pause, Play, RotateCcw, Sparkles, Volume2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "../components/Common";
+import { Dialog } from "../components/ui";
 import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 
@@ -110,7 +110,7 @@ export function RossHome() {
         </section>
       </main>
 
-      <Modal open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => { setPanel(null); setForgetAsked(false); }} size="lg">
+      <Dialog open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => { setPanel(null); setForgetAsked(false); }} size="lg">
         {panel === "memories" && <div className="ross-modal-choices"><button onClick={() => navigate("/ross/conversazione")}>{sharedPhoto?.image ? <img className="ross-choice-image" src={sharedPhoto.image} alt={`Foto condivisa dalla famiglia: ${sharedPhoto.title}`} /> : <span className="choice-art photo"><Images /></span>}<strong>{sharedPhoto?.title || "Il viaggio in Sicilia"}</strong><small>{sharedPhoto ? "Condivisa da Anna · pronta da guardare insieme" : "Palermo, Cefalù e le fotografie del 1998"}</small></button><button onClick={() => notify("Ricordo pronto per la prossima conversazione")}><img className="ross-choice-image" src={asset("garden-photo.svg")} alt="Gerani rossi sul balcone" /><strong>I gerani sul balcone</strong><small>Una piccola abitudine del mattino</small></button></div>}
         {panel === "activities" && <div className="ross-modal-choices"><button onClick={() => { notify("Attività avviata: Indovina la canzone"); setPanel(null); setRossState("activity"); }}><span className="choice-art music"><Music2 /></span><strong>Indovina la canzone</strong><small>Dieci minuti, senza fretta</small></button><button onClick={() => { notify("Attività avviata: Fotografie di viaggio"); setPanel(null); setRossState("activity"); }}><span className="choice-art photo"><Images /></span><strong>{scheduled?.title || "Fotografie di viaggio"}</strong><small>{scheduled ? `Preparata per domani alle ${scheduled.time}` : "Scegliamo una foto e ne parliamo"}</small></button></div>}
         {panel === "music" && <div className="ross-playlist">{[sharedMusic?.title, "Se telefonando · Mina", "Il cielo in una stanza · Gino Paoli", "Azzurro · Adriano Celentano"].filter(Boolean).map((track, index) => <button key={track} onClick={() => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); setPanel(null); }}><span>{index + 1}</span><strong>{track}</strong><Play fill="currentColor" /></button>)}</div>}
@@ -119,7 +119,7 @@ export function RossHome() {
             ? <div className="ross-help-confirm"><p>Vuoi che dimentichi quello che mi hai raccontato? Te lo chiedo perché poi non potrò ricordarlo.</p><div className="modal-actions"><button className="ghost-button" onClick={() => setForgetAsked(false)}>No, lascia così</button><button className="primary-button" onClick={() => { notify("Nella demo non viene cancellato nulla: è qui per mostrare come funzionerebbe"); setForgetAsked(false); setPanel(null); }}>Sì, dimentica</button></div></div>
             : <div className="modal-actions ross-help-actions"><button className="ghost-button" onClick={() => setForgetAsked(true)}>Dimentica quello che ti ho detto</button><button className="primary-button" onClick={() => { chooseMode("Silenziosa"); setPanel(null); }}>Voglio riposare</button></div>}
         </div>}
-      </Modal>
+      </Dialog>
     </div>
   );
 }

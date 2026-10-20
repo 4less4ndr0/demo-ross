@@ -1,10 +1,8 @@
 import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { ClipboardCheck } from "lucide-react";
 import { DemoProvider } from "./state/DemoContext";
 import { Layout } from "./components/Layout";
 import { PerspectiveSwitcher } from "./components/PerspectiveSwitcher";
-import { useDemo } from "./state/DemoContext";
 import { Toaster } from "./components/ui";
 
 const load = (module, name) => lazy(() => module().then((exports) => ({ default: exports[name] })));
@@ -24,11 +22,9 @@ const FamilyShared = load(() => import("./pages/FamilyExperience"), "FamilyShare
 const RossHome = load(() => import("./pages/RossExperience"), "RossHome");
 const RossConversation = load(() => import("./pages/RossExperience"), "RossConversation");
 
+// Toast di Sonner in tutte le viste (Struttura, Famiglia, ROSS).
 function GlobalChrome() {
-  const { toast } = useDemo();
-  const { pathname } = useLocation();
-  const legacyView = pathname.startsWith("/famiglia") || pathname.startsWith("/ross");
-  return <><PerspectiveSwitcher />{legacyView ? toast && <div className={`toast toast-${toast.tone}`}><ClipboardCheck size={18} />{toast.message}</div> : <Toaster />}</>;
+  return <><PerspectiveSwitcher /><Toaster /></>;
 }
 
 // Il Riepilogo d'équipe si è spostato in Panoramica: i vecchi link a /report?ambito=struttura ci portano lì.

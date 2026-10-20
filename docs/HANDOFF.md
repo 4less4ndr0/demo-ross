@@ -188,8 +188,8 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), "Avanti" in presentazione, sequenza `presentationRoutes` che parte dalla persona. |
-| `src/components/ui.jsx` | Primitive in stile shadcn: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog`, `Toaster`. |
-| `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `Modal` (viste Famiglia e ROSS), `DataExplanation`. |
+| `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
+| `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
 | `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione; scheda con foto, chi è, ultima conversazione e un solo avviso. |
 | `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con i quattro tab. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
@@ -246,6 +246,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Ottobre 2026 · 20/10/2026 · shadcn/ui in tutte le viste, colori invariati
+- **Richiesta:** applicare shadcn/ui (https://github.com/shadcn-ui/ui) senza modificare i colori. Scelta: estendere le primitive già in uso nella Struttura a Famiglia e tablet ROSS, senza Tailwind.
+- **Modifiche:**
+  - **`ui.jsx`:**
+    - `Dialog` accetta `className`;
+    - nuove primitive `Input` e `Textarea` (stessi colori, anello di focus come i bottoni);
+    - nuove `Tabs`, `TabsList` e `TabsTrigger` (Radix Tabs, nuova dipendenza `@radix-ui/react-tabs`: frecce da tastiera e ruoli ARIA), che conservano le classi esistenti;
+  - **Famiglia:** i modali (nuovo contributo, dettaglio dei condivisi) diventano `Dialog` con la classe `family-dialog`, che porta le variabili `--family-*`; i campi del modulo diventano `Input` e `Textarea`; "Oggi / Settimana / Mese" e i filtri di Storia e foto diventano `Tabs`;
+  - **ROSS:** i pannelli (ricordi, attività, musica, aiuto) diventano `Dialog`;
+  - **Struttura:** le schede del ritratto diventano `Tabs` e gli orari in Impostazioni diventano `Input`;
+  - **toast di Sonner in tutte le viste:** tolti il vecchio toast di Famiglia e ROSS (`toast` in `DemoContext`) e il componente `Modal` di `Common.jsx`.
+- **File:** `src/components/ui.jsx`, `src/components/Common.jsx`, `src/App.jsx`, `src/state/DemoContext.jsx`, `src/pages/FamilyExperience.jsx`, `src/pages/RossExperience.jsx`, `src/pages/LiveInteraction.jsx`, `src/pages/ResidentProfile.jsx`, `src/pages/Settings.jsx`, `src/styles.css`, `package.json`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · Home del tablet senza occhi
 - **Richiesta:** togliere dalla home del tablet gli occhi di ROSS e l'etichetta "Con te".

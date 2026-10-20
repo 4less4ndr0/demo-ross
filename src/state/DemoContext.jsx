@@ -105,7 +105,6 @@ function getInitialState() {
 
 export function DemoProvider({ children }) {
   const [state, setState] = useState(getInitialState);
-  const [toast, setToast] = useState(null);
   const stateRef = useRef(state);
   stateRef.current = state;
 
@@ -116,8 +115,6 @@ export function DemoProvider({ children }) {
   }, [state]);
 
   const notify = (message, tone = "success", options = {}) => {
-    setToast({ message, tone });
-    window.setTimeout(() => setToast(null), 3200);
     const snapshot = options.undo ? stateRef.current : null;
     sonner(message, {
       description: options.description,
@@ -284,7 +281,7 @@ export function DemoProvider({ children }) {
     },
   }), []);
 
-  return <DemoContext.Provider value={{ state, actions, toast, notify }}>{children}</DemoContext.Provider>;
+  return <DemoContext.Provider value={{ state, actions, notify }}>{children}</DemoContext.Provider>;
 }
 
 export const useDemo = () => useContext(DemoContext);
