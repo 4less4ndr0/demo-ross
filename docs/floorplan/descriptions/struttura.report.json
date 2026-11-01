@@ -1,0 +1,16 @@
+{
+  "files": {
+    "src/components/ParticipationChart.jsx": {
+      "name": "Grafico partecipazione",
+      "description": "Mostra nel tempo quanto un ospite partecipa alla vita della residenza rispetto alla sua media."
+    },
+    "src/components/ReportCharts.jsx": {
+      "name": "Infografiche",
+      "description": "Grafici che confrontano ogni ospite solo con la sua media: verde va bene, corallo da osservare."
+    },
+    "src/pages/OperationalPages.jsx": {
+      "name": "Report e Panoramica",
+      "description": "Il report \"Come sta\" per ogni ospite e le analytics della struttura, stampabili come Riepilogo d'équipe."
+    }
+  }
+}

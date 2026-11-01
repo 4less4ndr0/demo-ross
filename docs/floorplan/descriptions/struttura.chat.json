@@ -1,0 +1,12 @@
+{
+  "files": {
+    "src/components/InsightRail.jsx": {
+      "name": "Il polso di ROSS",
+      "description": "Colonna laterale con gli spunti aggregati sugli ospiti; un clic li trasforma in domanda per la chat."
+    },
+    "src/pages/AskRoss.jsx": {
+      "name": "Chat \"Chiedi a ROSS\"",
+      "description": "La home della Struttura: si fa una domanda, anche da telefono, e ROSS risponde citando la fonte."
+    }
+  }
+}

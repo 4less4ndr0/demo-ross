@@ -1,0 +1,295 @@
+{
+  "$schema": "floorplan/architecture@1",
+  "audience": "everyone",
+  "project": {
+    "name": "ROSS · demo RSA",
+    "summary": "Demo cliccabile di ROSS, il compagno di conversazione su tablet per gli ospiti delle RSA, vista da tre prospettive: la Struttura (staff, educatrice, psicologa, direzione), la Famiglia e il tablet dell'ospite. Non c'è un server né un modello AI: dati e risposte della chat sono preparati e vivono tutti nel browser.",
+    "entrypoints": [
+      "src/main.jsx",
+      "src/App.jsx"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "guscio",
+      "label": "Guscio dell'app",
+      "kind": "ui",
+      "summary": "Avvia l'app, decide quale schermata mostrare per ogni indirizzo e porta gli elementi presenti in tutte le viste.",
+      "paths": [
+        "src/main.jsx",
+        "src/App.jsx",
+        "src/asset.js",
+        "src/styles.css",
+        "index.html"
+      ]
+    },
+    {
+      "id": "struttura",
+      "label": "Vista Struttura",
+      "kind": "ui",
+      "summary": "Lo strumento per l'équipe della RSA: chiedere a ROSS, vedere come sta ogni ospite rispetto alla sua media, leggere report e panoramica. Mai il contenuto delle conversazioni."
+    },
+    {
+      "id": "struttura.chat",
+      "parent": "struttura",
+      "label": "Chiedi a ROSS",
+      "kind": "feature",
+      "summary": "La home: una chat a frizione zero con domande consigliate per ruolo e la colonna \"Il polso di ROSS\".",
+      "paths": [
+        "src/pages/AskRoss.jsx",
+        "src/components/InsightRail.jsx"
+      ]
+    },
+    {
+      "id": "struttura.ospiti",
+      "parent": "struttura",
+      "label": "Ospiti e ritratto",
+      "kind": "feature",
+      "summary": "La lista degli ospiti in ordine di attenzione e il ritratto di ciascuno con i suoi quattro tab.",
+      "paths": [
+        "src/pages/Residents.jsx",
+        "src/pages/ResidentProfile.jsx",
+        "src/pages/LiveInteraction.jsx"
+      ]
+    },
+    {
+      "id": "struttura.report",
+      "parent": "struttura",
+      "label": "Report e Panoramica",
+      "kind": "feature",
+      "summary": "Il report \"Come sta\" di ogni ospite e le analytics della struttura, con infografiche che confrontano ognuno solo con sé stesso.",
+      "paths": [
+        "src/pages/OperationalPages.jsx",
+        "src/components/ReportCharts.jsx",
+        "src/components/ParticipationChart.jsx"
+      ]
+    },
+    {
+      "id": "struttura.cornice",
+      "parent": "struttura",
+      "label": "Cornice e impostazioni",
+      "kind": "feature",
+      "summary": "Barra con le quattro schede, sidebar contestuale con lo specchietto \"Cosa ti dice ROSS\" e la pagina Impostazioni.",
+      "paths": [
+        "src/components/Layout.jsx",
+        "src/components/PageGuide.jsx",
+        "src/pages/Settings.jsx"
+      ]
+    },
+    {
+      "id": "famiglia",
+      "label": "Vista Famiglia",
+      "kind": "ui",
+      "summary": "Cosa vede Anna, la figlia di Elena: solo i racconti che Elena ha scelto di condividere, come sta questa settimana, e i contributi da mandare direttamente a ROSS.",
+      "paths": [
+        "src/pages/FamilyExperience.jsx"
+      ]
+    },
+    {
+      "id": "tablet",
+      "label": "Tablet di ROSS",
+      "kind": "ui",
+      "summary": "Lo schermo che usa l'ospite: spunti per oggi, inviti fuori dalla stanza e la conversazione con ROSS.",
+      "paths": [
+        "src/pages/RossExperience.jsx"
+      ]
+    },
+    {
+      "id": "condivisi",
+      "label": "Pezzi comuni",
+      "kind": "library",
+      "summary": "Bottoni, menu, finestre e avvisi in stile shadcn usati da tutte le viste, più il selettore \"Vista demo\", la visita guidata e la vista Mappa.",
+      "paths": [
+        "src/components/ui.jsx",
+        "src/components/Common.jsx",
+        "src/components/PerspectiveSwitcher.jsx",
+        "src/components/GuidedTour.jsx",
+        "src/pages/DemoMap.jsx"
+      ]
+    },
+    {
+      "id": "stato",
+      "label": "Memoria della demo",
+      "kind": "data",
+      "summary": "Tiene in un unico posto tutto ciò che cambia mentre si usa la demo (ruolo, tema, conversazioni, allegati, ricordi condivisi) e lo salva nel browser.",
+      "paths": [
+        "src/state"
+      ]
+    },
+    {
+      "id": "dati",
+      "label": "Contenuti della demo",
+      "kind": "data",
+      "summary": "La Residenza Aurora inventata: ospiti, segnali positivi e da osservare, risposte preparate della chat, testi dei report e il metodo salutogenico.",
+      "paths": [
+        "src/data"
+      ]
+    },
+    {
+      "id": "pubblicazione",
+      "label": "Pubblicazione",
+      "kind": "infra",
+      "summary": "Prepara la build per Sites e la serve online, rimandando ogni indirizzo sconosciuto all'app.",
+      "paths": [
+        "worker",
+        "scripts",
+        "vite.config.mjs"
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Controlli",
+      "kind": "test",
+      "summary": "Verifica che il pacchetto per Sites sia completo e che il server di pubblicazione rimandi correttamente all'app.",
+      "paths": [
+        "tests"
+      ]
+    },
+    {
+      "id": "browser",
+      "label": "Memoria del browser",
+      "kind": "external",
+      "summary": "Lo spazio locale del browser dove la demo conserva le scelte fatte, così sopravvivono a un ricaricamento."
+    },
+    {
+      "id": "sites",
+      "label": "Hosting Sites",
+      "kind": "external",
+      "summary": "Il servizio che ospita la demo online e passa le richieste al piccolo server di pubblicazione."
+    }
+  ],
+  "edges": [
+    {
+      "from": "stato",
+      "to": "browser",
+      "kind": "data",
+      "label": "salva e rilegge",
+      "description": "Le scelte fatte nella demo restano nel browser di chi la usa: nessun dato esce dal dispositivo."
+    },
+    {
+      "from": "sites",
+      "to": "pubblicazione",
+      "kind": "http",
+      "label": "ogni visita",
+      "description": "Sites passa le visite al server di pubblicazione, che serve i file dell'app o rimanda alla pagina principale."
+    }
+  ],
+  "annotations": [
+    {
+      "path": "src/data/chatScript.js",
+      "note": "Qui stanno tutte le risposte della chat \"Chiedi a ROSS\": non c'è un modello AI, ogni domanda è riconosciuta e risposta da questo copione.",
+      "tags": [
+        "hotspot"
+      ]
+    },
+    {
+      "path": "src/state/DemoContext.jsx",
+      "note": "Il punto unico da cui passano tutte le modifiche fatte durante la demo; quasi ogni schermata dipende da qui.",
+      "tags": [
+        "hotspot"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "chiedi",
+      "title": "Lo staff chiede a ROSS",
+      "description": "Un operatore fa una domanda nella chat della Struttura e riceve una risposta con la fonte.",
+      "steps": [
+        {
+          "node": "guscio",
+          "note": "L'indirizzo \"/\" apre la home della Struttura."
+        },
+        {
+          "node": "struttura.chat",
+          "note": "L'operatore sceglie una domanda consigliata o ne scrive una."
+        },
+        {
+          "node": "dati",
+          "note": "Il copione riconosce l'ospite e il tema e compone la risposta, citando sempre la fonte."
+        },
+        {
+          "node": "stato",
+          "note": "La conversazione viene aggiunta alla memoria della demo."
+        },
+        {
+          "node": "browser",
+          "note": "E resta salvata nel browser per il prossimo ricaricamento."
+        }
+      ]
+    },
+    {
+      "id": "ritratto",
+      "title": "Dal ritratto al report",
+      "description": "Dalla lista degli ospiti al ritratto di uno di loro, fino al report stampabile \"Come sta\".",
+      "steps": [
+        {
+          "node": "struttura.ospiti",
+          "note": "La lista mette prima chi ha bisogno di più attenzione; si apre il ritratto."
+        },
+        {
+          "node": "dati",
+          "note": "Il ritratto legge i segnali dell'ospite rispetto alla sua media e la guida \"Come avvicinarsi\"."
+        },
+        {
+          "node": "struttura.report",
+          "note": "\"Stampa report\" apre il racconto narrativo per l'équipe, con le infografiche."
+        }
+      ]
+    },
+    {
+      "id": "condivisione",
+      "title": "Elena racconta, Anna legge",
+      "description": "Un racconto nato sul tablet arriva alla famiglia solo se Elena sceglie di condividerlo.",
+      "steps": [
+        {
+          "node": "tablet",
+          "note": "Elena parla con ROSS; alla fine ROSS chiede \"Lo racconto ad Anna?\"."
+        },
+        {
+          "node": "stato",
+          "note": "Il consenso viene registrato insieme al ricordo."
+        },
+        {
+          "node": "famiglia",
+          "note": "Anna vede il racconto con il badge \"Elena ha voluto raccontartelo\"; senza consenso solo com'è andata."
+        }
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "node": "guscio",
+      "title": "Cos'è questa demo",
+      "note": "Una sola app web con tre viste (Struttura, Famiglia e il tablet dell'ospite) più questa Mappa per chi presenta. Non c'è un server né un'intelligenza artificiale: dati e risposte sono preparati."
+    },
+    {
+      "node": "struttura",
+      "title": "La vista Struttura",
+      "note": "Lo strumento per l'équipe: chiedere a ROSS, leggere il ritratto di ogni ospite, report e panoramica. La regola d'oro: come sta, mai di cosa ha parlato."
+    },
+    {
+      "node": "tablet",
+      "title": "Il tablet di ROSS",
+      "note": "Quello che vede l'ospite: spunti per oggi, inviti fuori dalla stanza e la conversazione."
+    },
+    {
+      "node": "famiglia",
+      "title": "La vista Famiglia",
+      "note": "Anna vede solo ciò che Elena ha scelto di raccontarle e può mandare ricordi e musica direttamente a ROSS."
+    },
+    {
+      "node": "dati",
+      "title": "I contenuti",
+      "note": "La Residenza Aurora inventata e il copione della chat: per cambiare cosa dice la demo si parte da qui."
+    },
+    {
+      "node": "src/data/chatScript.js",
+      "title": "Il copione della chat",
+      "note": "Ogni risposta di \"Chiedi a ROSS\" nasce in questo file."
+    }
+  ],
+  "ignore": [
+    "public/mappa-ross.html"
+  ]
+}

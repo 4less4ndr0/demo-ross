@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Sparkles } from "lucide-react";
+import { Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
 import { startTour } from "./GuidedTour";
@@ -9,6 +9,7 @@ const perspectives = [
   { id: "structure", label: "Struttura", description: "Operatori", icon: Building2, path: "/", key: "1" },
   { id: "family", label: "Famiglia", description: "Anna", icon: HeartHandshake, path: "/famiglia", key: "2" },
   { id: "ross", label: "ROSS", description: "Elena", icon: Sparkles, path: "/ross", key: "3" },
+  { id: "map", label: "Mappa", description: "come è fatta la demo", icon: MapIcon, path: "/mappa", key: "4" },
 ];
 
 // Cosa dire a chi guarda la demo: è uno strumento di ricerca, non un prodotto finito.
@@ -35,7 +36,7 @@ export function PerspectiveSwitcher() {
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = useDemo();
-  const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : "structure";
+  const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : location.pathname.startsWith("/mappa") ? "map" : "structure";
   const current = perspectives.find((p) => p.id === active);
   const [aboutOpen, setAboutOpen] = useState(false);
 
