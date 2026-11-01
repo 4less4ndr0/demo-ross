@@ -1,0 +1,16 @@
+{
+  "files": {
+    "scripts/prepare-sites-build.mjs": {
+      "name": "Preparazione per Sites",
+      "description": "Mette insieme app, server e configurazione nel pacchetto da consegnare a Sites."
+    },
+    "vite.config.mjs": {
+      "name": "Impostazioni di build",
+      "description": "Dice come costruire l'app e dove metterla, anche quando è pubblicata in una sottocartella."
+    },
+    "worker/index.js": {
+      "name": "Server di pubblicazione",
+      "description": "Serve i file della demo online e rimanda ogni indirizzo sconosciuto alla pagina principale dell'app."
+    }
+  }
+}

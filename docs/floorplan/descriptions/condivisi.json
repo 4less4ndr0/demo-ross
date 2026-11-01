@@ -1,0 +1,20 @@
+{
+  "files": {
+    "src/components/Common.jsx": {
+      "name": "Elementi ricorrenti",
+      "description": "Foto o iniziali dell'ospite, titoli di sezione, indicatori e stati vuoti condivisi tra le schermate."
+    },
+    "src/components/GuidedTour.jsx": {
+      "name": "Visita guidata",
+      "description": "Accompagna chi guarda la demo capitolo per capitolo, evidenziando un elemento alla volta nelle tre viste."
+    },
+    "src/components/PerspectiveSwitcher.jsx": {
+      "name": "Pillola \"Vista demo\"",
+      "description": "Passa tra Struttura, Famiglia e tablet, spiega cosa è reale e cosa è simulato e avvia la visita guidata."
+    },
+    "src/components/ui.jsx": {
+      "name": "Kit dell'interfaccia",
+      "description": "Bottoni, menu a tendina, finestre, schede, campi e avvisi con \"Annulla\" usati in tutte e tre le viste."
+    }
+  }
+}

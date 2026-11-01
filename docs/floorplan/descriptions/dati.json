@@ -1,0 +1,24 @@
+{
+  "files": {
+    "src/data/careInsights.js": {
+      "name": "Segnali e guida per ospite",
+      "description": "Per ogni ospite: cosa va bene, cosa osservare rispetto alla sua media, bisogni espressi e la guida \"Come avvicinarsi\"."
+    },
+    "src/data/chatScript.js": {
+      "name": "Copione della chat",
+      "description": "Domande consigliate per ruolo e tutte le risposte preparate di \"Chiedi a ROSS\", sempre con la fonte citata."
+    },
+    "src/data/demoData.js": {
+      "name": "Residenza Aurora inventata",
+      "description": "Gli otto ospiti, i loro ricordi, le conversazioni con ROSS, gli allegati e gli inviti fuori dalla stanza."
+    },
+    "src/data/reportNarrative.js": {
+      "name": "Testi dei report",
+      "description": "Scrive in forma di racconto il report \"Come sta\" di ogni ospite e il Riepilogo d'équipe della struttura."
+    },
+    "src/data/salutogenesis.js": {
+      "name": "Il metodo salutogenico",
+      "description": "Spiega in breve il metodo negli specchietti e suggerisce alla famiglia come essere vicina all'ospite."
+    }
+  }
+}

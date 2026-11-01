@@ -179,6 +179,8 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 3. Mappa del codice
 
+> **Mappa interattiva:** [`docs/floorplan/mappa-ross.html`](floorplan/mappa-ross.html) mostra parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
+
 | File | Ruolo |
 |---|---|
 | `src/App.jsx` | Rotte. Le vecchie URL (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alle nuove. Mostra il `Toaster` (Sonner) nella vista Struttura e il vecchio toast nelle viste Famiglia e ROSS. |
@@ -247,6 +249,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 01/11/2026 · Mappa interattiva del codice con Floorplan
+- **Richiesta:** applicare [Floorplan](https://github.com/haydenschmitty/floorplan) alla demo.
+- **Modifiche:**
+  - mappa del codice in `docs/floorplan/mappa-ross.html` (file unico, offline): 9 parti più due servizi esterni (memoria del browser, hosting Sites), 32 file descritti in italiano, 15 schermate rilevate;
+  - tre percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge") e un giro "Start here";
+  - "Recent work" evidenzia le ultime modifiche (salutogenesi, visita guidata);
+  - controllo automatico pulito: nessun problema trovato.
+- **File:** `docs/floorplan/` (sorgenti della mappa e README per aggiornarla), `docs/HANDOFF.md`. Nessun file dell'app è cambiato.
 
 ### Ottobre 2026 · 20/10/2026 · Visita guidata: "Indice" per tornare all'inizio
 - **Richiesta:** oltre a "Indietro" (passo precedente) serve un modo per tornare all'inizio della visita.

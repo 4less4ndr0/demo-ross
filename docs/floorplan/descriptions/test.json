@@ -1,0 +1,8 @@
+{
+  "files": {
+    "tests/sites-worker.test.mjs": {
+      "name": "Controlli di pubblicazione",
+      "description": "Verifica che il server online rimandi le pagine all'app e che il pacchetto per Sites sia completo."
+    }
+  }
+}

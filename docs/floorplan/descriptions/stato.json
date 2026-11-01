@@ -1,0 +1,8 @@
+{
+  "files": {
+    "src/state/DemoContext.jsx": {
+      "name": "Memoria condivisa della demo",
+      "description": "Tiene ruolo, tema, conversazioni, allegati e consensi, li salva nel browser e mostra gli avvisi con \"Annulla\"."
+    }
+  }
+}
