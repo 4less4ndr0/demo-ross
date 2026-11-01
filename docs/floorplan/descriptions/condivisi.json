@@ -15,6 +15,10 @@
     "src/components/ui.jsx": {
       "name": "Kit dell'interfaccia",
       "description": "Bottoni, menu a tendina, finestre, schede, campi e avvisi con \"Annulla\" usati in tutte e tre le viste."
+    },
+    "src/pages/DemoMap.jsx": {
+      "name": "Vista Mappa",
+      "description": "Mostra a tutto schermo la mappatura della demo: parti, schermate, collegamenti e percorsi guidati."
     }
   }
 }

@@ -944,3 +944,7 @@
 .tour-card .tour-stepper{margin-right:130px}
 .tour-card h2{margin-right:0}
 .tour-card-big .tour-chapter-hero,.tour-card-big>.tour-chapter:first-child{margin-top:4px}
+
+/* Vista demo "Mappa": la mappatura della demo a tutto schermo (Floorplan, public/mappa-ross.html) */
+.demo-map { position: fixed; inset: 0; background: #f4f3ef; }
+.demo-map iframe { display: block; width: 100%; height: 100%; border: 0; }

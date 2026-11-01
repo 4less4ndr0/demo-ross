@@ -179,7 +179,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 3. Mappa del codice
 
-> **Mappa interattiva:** [`docs/floorplan/mappa-ross.html`](floorplan/mappa-ross.html) mostra parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
+> **Mappa interattiva:** vista **Mappa** della demo (pillola "Vista demo" → Mappa, tasto 4, indirizzo `/mappa`; file `public/mappa-ross.html`): parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
 
 | File | Ruolo |
 |---|---|
@@ -250,14 +250,13 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
-### Novembre 2026 · 01/11/2026 · Mappa interattiva del codice con Floorplan
-- **Richiesta:** applicare [Floorplan](https://github.com/haydenschmitty/floorplan) alla demo.
+### Novembre 2026 · 01/11/2026 · Vista "Mappa": la mappatura della demo
+- **Richiesta:** usare [Floorplan](https://github.com/haydenschmitty/floorplan) per una nuova visualizzazione della demo con la sua mappatura.
 - **Modifiche:**
-  - mappa del codice in `docs/floorplan/mappa-ross.html` (file unico, offline): 9 parti più due servizi esterni (memoria del browser, hosting Sites), 32 file descritti in italiano, 15 schermate rilevate;
-  - tre percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge") e un giro "Start here";
-  - "Recent work" evidenzia le ultime modifiche (salutogenesi, visita guidata);
-  - controllo automatico pulito: nessun problema trovato.
-- **File:** `docs/floorplan/` (sorgenti della mappa e README per aggiornarla), `docs/HANDOFF.md`. Nessun file dell'app è cambiato.
+  - nuova vista **Mappa** nella pillola "Vista demo" (quarta voce, tasto 4, indirizzo `/mappa`): mostra a tutto schermo la mappa generata con Floorplan, con la pillola sempre in basso a destra;
+  - la mappa ha 9 parti più due servizi esterni (memoria del browser, hosting Sites), 33 file descritti in italiano, 16 schermate rilevate, tre percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge"), un giro "Start here" e "Recent work";
+  - controllo automatico di Floorplan pulito: nessun problema trovato.
+- **File:** `src/pages/DemoMap.jsx`, `src/App.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `public/mappa-ross.html`, `docs/floorplan/` (sorgenti della mappa e README per aggiornarla), `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Ottobre 2026 · 20/10/2026 · Visita guidata: "Indice" per tornare all'inizio
 - **Richiesta:** oltre a "Indietro" (passo precedente) serve un modo per tornare all'inizio della visita.
