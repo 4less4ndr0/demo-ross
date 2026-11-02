@@ -1,11 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
-import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Heart, Home, Images, Lightbulb, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi } from "lucide-react";
+import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Heart, Home, Images, Flashlight, Lightbulb, Lock, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
 import { Dialog, Input, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
 import { asset } from "../asset.js";
 import { signalDetail, signalsFor } from "../data/careInsights";
 import { familyResourceTips } from "../data/salutogenesis";
+import { consumeLockScreen } from "../state/lockScreen";
 
 // Vista Famiglia come app per iPhone (Apple HIG): margini 16pt, tocchi ≥ 44pt, testo di base 17pt,
 // barra di navigazione in alto, tab bar in basso, sheet dal basso. Su schermi larghi l'app sta in una cornice iPhone.
@@ -40,6 +41,57 @@ function StatusBar() {
   return <div className="fam-statusbar" aria-hidden="true"><span>17:20</span><i className="fam-island" /><span className="fam-status-icons"><Signal size={16} /><Wifi size={16} /><BatteryFull size={20} /></span></div>;
 }
 
+// Il racconto di oggi cambia con ciò che Elena ha scelto di condividere (conversazione con ROSS, uscita).
+function todayLines(state) {
+  const conversationDone = Boolean(state.rossJourney.completedAt);
+  // Un'uscita raccontata a ROSS arriva ad Anna solo se Elena ha scelto di condividerla.
+  const outingShared = state.outing?.status === "back" && state.outing.shared;
+  const basePrompt = conversationDone ? "Chiedile della piccola macchina fotografica rossa che Paolo portava sul lungomare." : "Chiedile delle passeggiate sul lungomare di Cefalù e delle fotografie del 1998.";
+  return {
+    conversationDone, outingShared,
+    prompt: outingShared ? "Chiedile del canto in salone: cosa avete cantato?" : basePrompt,
+    story: (conversationDone ? "Elena ha ripreso il viaggio in Sicilia e ha voluto raccontarti della piccola macchina fotografica rossa che Paolo portava sul lungomare." : "Elena ha scelto Mina per iniziare il pomeriggio. Più tardi ha sfogliato fotografie di viaggio e ricordato le passeggiate serali a Cefalù con Paolo.") + (outingShared ? " Poi è andata al canto in salone, come le aveva proposto ROSS, e al ritorno gliel'ha raccontato." : ""),
+    headline: outingShared ? (conversationDone ? "Un ricordo ritrovato, poi tutti a cantare." : "Musica, fotografie e poi tutti a cantare.") : conversationDone ? "Una macchina fotografica rossa riapre un ricordo." : "Musica, fotografie e una passeggiata sul mare.",
+    // Il sorriso di oggi: un solo momento, e solo tra quelli che Elena ha scelto di condividere.
+    smile: outingShared ? "al canto in salone, e al ritorno ha voluto raccontarlo." : conversationDone ? "la macchina fotografica rossa di Paolo, ritrovata in un ricordo." : "Mina, riconosciuta dopo poche note.",
+  };
+}
+
+const tourActive = () => Boolean(document.getElementById("root")?.inert) || new URLSearchParams(window.location.search).has("visita");
+
+// Schermata di blocco: la prima cosa che Anna vede è una notifica, e arriva solo perché Elena ha scelto di raccontare.
+function LockScreen({ lines, onOpen }) {
+  const [leaving, setLeaving] = useState(false);
+  const lockRef = useRef(null);
+  const start = useRef(null);
+  useEffect(() => { lockRef.current?.focus({ preventScroll: true }); }, []);
+  const open = (to) => {
+    if (leaving) return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    setLeaving(true);
+    window.setTimeout(() => onOpen(to), reduced ? 0 : 380);
+  };
+  return <div ref={lockRef} tabIndex={-1} className={`fam-lock${leaving ? " is-leaving" : ""}`} role="dialog" aria-modal="true" aria-label="Schermata di blocco dell'iPhone di Anna"
+    onKeyDown={(event) => { if (event.key === "Escape") open(null); }}
+    onWheel={(event) => { if (event.deltaY > 30) open(null); }}
+    onPointerDown={(event) => { start.current = event.clientY; }}
+    onPointerUp={(event) => { if (start.current != null && start.current - event.clientY > 60) open(null); start.current = null; }}>
+    <div className="fam-lock-clock"><Lock size={16} aria-hidden="true" /><span>lunedì 21 settembre</span><strong>17:20</strong></div>
+    <div className="fam-lock-stack">
+      <button type="button" className="fam-lock-note" onClick={() => open("/famiglia")}>
+        <span className="fam-lock-app" aria-hidden="true">R</span>
+        <span className="fam-lock-text"><span className="fam-lock-meta"><strong>ROSS</strong><small>ora</small></span><strong>Elena ha voluto raccontarti una cosa</strong><span>Il sorriso di oggi: {lines.smile}</span></span>
+      </button>
+      <button type="button" className="fam-lock-note is-older" onClick={() => open("/famiglia/attivita/cartolina")}>
+        <span className="fam-lock-app" aria-hidden="true">R</span>
+        <span className="fam-lock-text"><span className="fam-lock-meta"><strong>ROSS</strong><small>ieri</small></span><strong>La tua cartolina è arrivata a Elena</strong><span>Ha riconosciuto subito Cefalù: guarda com'è andata.</span></span>
+      </button>
+    </div>
+    <div className="fam-lock-bottom" aria-hidden="true"><span><Flashlight size={20} /></span><span><Camera size={20} /></span></div>
+    <button type="button" className="fam-lock-hint" onClick={() => open(null)}>Scorri verso l'alto per aprire</button>
+  </div>;
+}
+
 function FamilyShell({ title, back, onContribute, children }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -55,11 +107,19 @@ function FamilyShell({ title, back, onContribute, children }) {
     fit(); window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
   }, [phone]);
+  const [locked, setLocked] = useState(() => phone && pathname === "/famiglia" && !tourActive() && consumeLockScreen());
+  useEffect(() => {
+    const show = () => { if (consumeLockScreen()) setLocked(true); };
+    const hide = () => setLocked(false);
+    window.addEventListener("ross:lockscreen", show); window.addEventListener("ross:tour", hide);
+    return () => { window.removeEventListener("ross:lockscreen", show); window.removeEventListener("ross:tour", hide); };
+  }, []);
+  const unlock = (to) => { setLocked(false); if (to && to !== pathname) navigate(to); };
   return <div className={`family-app ${phone ? "is-phone" : "is-full"}`} style={phone ? { "--fam-scale": scale } : undefined}><div className="fam-stage">
     <p className="fam-stage-caption" aria-hidden="true"><strong>Vista Famiglia</strong>L'app di Anna, sul suo iPhone</p>
-    <div className="fam-device"><div className="fam-screen" ref={setScreen}><PhoneScreen.Provider value={screen}>
+    <div className="fam-device"><div className={`fam-screen${locked ? " is-locked" : ""}`} ref={setScreen}><PhoneScreen.Provider value={screen}>
       <StatusBar />
-      <div className="fam-scroll" onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 64)}>
+      <div className="fam-scroll" inert={locked || undefined} onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 64)}>
         <header className={`fam-navbar${scrolled ? " is-scrolled" : ""}`}>
           <div className="fam-navbar-side">{back ? <button type="button" className="fam-nav-back" onClick={() => navigate(back.to)}><ChevronLeft size={26} strokeWidth={2.2} />{back.label}</button> : <NavLink className="fam-brand" to="/famiglia" aria-label="ROSS per la famiglia: Oggi"><span>R</span><small>ROSS</small></NavLink>}</div>
           <strong className="fam-navbar-title" aria-hidden={!scrolled}>{title}</strong>
@@ -67,7 +127,8 @@ function FamilyShell({ title, back, onContribute, children }) {
         </header>
         <main className="fam-main screen-enter">{children}</main>
       </div>
-      <nav className="fam-tabbar" aria-label="Navigazione famiglia">{familyTabs.map(({ to, label, icon: Icon, match }) => { const active = match(pathname); return <NavLink key={to} to={to} end={to === "/famiglia"} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={24} strokeWidth={active ? 2.3 : 1.8} /><span>{label}</span></NavLink>; })}</nav>
+      <nav className="fam-tabbar" aria-label="Navigazione famiglia" inert={locked || undefined}>{familyTabs.map(({ to, label, icon: Icon, match }) => { const active = match(pathname); return <NavLink key={to} to={to} end={to === "/famiglia"} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={24} strokeWidth={active ? 2.3 : 1.8} /><span>{label}</span></NavLink>; })}</nav>
+      {locked && phone && <LockScreen lines={todayLines(state)} onOpen={unlock} />}
       <span className="fam-home-indicator" aria-hidden="true" />
     </PhoneScreen.Provider></div></div>
   </div></div>;
@@ -112,18 +173,10 @@ export function FamilyExperience() {
   const { state, actions } = useDemo();
   const navigate = useNavigate();
   const contribution = useContributionSheet();
-  const conversationDone = Boolean(state.rossJourney.completedAt);
+  const { conversationDone, outingShared, prompt, story, headline, smile } = todayLines(state);
   const weekSignals = signalsFor("elena").filter((item) => item.positive);
   const activityCount = useMemo(() => Math.max(3, state.interactions.filter((item) => item.residentId === "elena" && item.date === "2026-09-21").length), [state.interactions]);
-  // Un'uscita raccontata a ROSS arriva ad Anna solo se Elena ha scelto di condividerla.
-  const outingShared = state.outing?.status === "back" && state.outing.shared;
   const listIt = (items) => items.length > 1 ? `${items.slice(0, -1).join(", ")} e ${items[items.length - 1]}` : items[0];
-  const basePrompt = conversationDone ? "Chiedile della piccola macchina fotografica rossa che Paolo portava sul lungomare." : "Chiedile delle passeggiate sul lungomare di Cefalù e delle fotografie del 1998.";
-  const prompt = outingShared ? "Chiedile del canto in salone: cosa avete cantato?" : basePrompt;
-  const baseStory = conversationDone ? "Elena ha ripreso il viaggio in Sicilia e ha voluto raccontarti della piccola macchina fotografica rossa che Paolo portava sul lungomare." : "Elena ha scelto Mina per iniziare il pomeriggio. Più tardi ha sfogliato fotografie di viaggio e ricordato le passeggiate serali a Cefalù con Paolo.";
-  const headline = outingShared ? (conversationDone ? "Un ricordo ritrovato, poi tutti a cantare." : "Musica, fotografie e poi tutti a cantare.") : conversationDone ? "Una macchina fotografica rossa riapre un ricordo." : "Musica, fotografie e una passeggiata sul mare.";
-  // Il sorriso di oggi: un solo momento, e solo tra quelli che Elena ha scelto di condividere.
-  const smile = outingShared ? "al canto in salone, e al ritorno ha voluto raccontarlo." : conversationDone ? "la macchina fotografica rossa di Paolo, ritrovata in un ricordo." : "Mina, riconosciuta dopo poche note.";
   // Oggi rimanda a Momenti invece di ripeterne l'elenco.
   const momentsLine = ["Mina", "fotografie di viaggio", conversationDone ? "la macchina fotografica rossa" : "Cefalù", ...(outingShared ? ["il canto in salone"] : [])];
   return <FamilyShell title="Oggi" onContribute={() => contribution.openContribution("memory")}>
@@ -134,7 +187,7 @@ export function FamilyExperience() {
     <section className="fam-card fam-story">
       <div className="fam-card-head"><span className="fam-kicker">Il racconto di oggi</span><small>Alle 17:18</small></div>
       <h2>{headline}</h2>
-      <p>{baseStory}{outingShared ? " Poi è andata al canto in salone, come le aveva proposto ROSS, e al ritorno gliel'ha raccontato." : ""}</p>
+      <p>{story}</p>
       <SharedBadge />
       <div className="fam-list fam-inset"><Row icon={<Sparkles size={20} />} title="Rivedi i momenti di oggi" subtitle={listIt(momentsLine)} onClick={() => navigate("/famiglia/attivita")} /></div>
       <dl className="fam-stats"><div><dt>momenti condivisi</dt><dd>{activityCount}</dd></div><div><dt>con ROSS</dt><dd>40 min</dd></div><div><dt>ricordi ripresi</dt><dd>2</dd></div></dl>

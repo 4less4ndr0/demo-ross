@@ -250,6 +250,16 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Famiglia: notifica sulla schermata di blocco
+- **Richiesta:** mostrare come arriva ad Anna un racconto di Elena, con una notifica sulla schermata di blocco dell'iPhone.
+- **Modifiche:**
+  - la prima volta che si apre Oggi (con la cornice iPhone accesa) compare la schermata di blocco: data, ora e due notifiche di ROSS, cioè "Elena ha voluto raccontarti una cosa · Il sorriso di oggi: …" (ora) e "La tua cartolina è arrivata a Elena" (ieri);
+  - toccando la prima si apre Oggi, toccando la seconda si apre il momento "La cartolina di Anna"; si sblocca anche scorrendo verso l'alto, con la rotella o con Esc;
+  - il testo segue lo stato della demo (conversazione con ROSS, uscita condivisa), come il "sorriso di oggi" della pagina; la logica del racconto di oggi è in `todayLines`;
+  - si richiama da "Vista demo" → **"Notifica sulla schermata di blocco"**, che accende anche la cornice iPhone; non compare durante la visita guidata e si chiude se la visita parte;
+  - stile: sfondo caldo con i colori della Famiglia, notifiche in vetro in stile iOS, torcia e fotocamera decorative; senza animazioni con "riduci movimento"; il resto dell'app è `inert` finché il telefono è bloccato.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/state/lockScreen.js`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Famiglia: Momenti ha una settimana e un mese da mostrare
 - **Richiesta:** in Momenti, Settimana e Mese ripetevano i momenti di oggi; inventare contenuti per entrambe.
 - **Modifiche:**

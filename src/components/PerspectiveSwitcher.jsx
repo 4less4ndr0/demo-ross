@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, Smartphone, Sparkles } from "lucide-react";
+import { BellRing, Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, Smartphone, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
 import { startTour } from "./GuidedTour";
+import { requestLockScreen } from "../state/lockScreen";
 import { Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSwitchItem, DropdownMenuTrigger } from "./ui";
 
 const perspectives = [
@@ -76,6 +77,7 @@ export function PerspectiveSwitcher() {
           {perspectives.map((p) => <DropdownMenuItem key={p.id} icon={p.icon} shortcut={p.key} className={p.id === active ? "demo-view-current" : ""} onSelect={() => goTo(p)}>{p.label} <small>· {p.description}</small></DropdownMenuItem>)}
           <DropdownMenuSeparator />
           <DropdownMenuSwitchItem icon={Smartphone} shortcut="I" checked={state.familyPhone} onCheckedChange={actions.setFamilyPhone}>Famiglia su iPhone</DropdownMenuSwitchItem>
+          <DropdownMenuItem icon={BellRing} onSelect={() => { actions.setFamilyPhone(true); requestLockScreen(); if (location.pathname !== "/famiglia") navigate("/famiglia"); }}>Notifica sulla schermata di blocco</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem icon={FlaskConical} onSelect={() => setAboutOpen(true)}>Cosa è reale e cosa è simulato</DropdownMenuItem>
           <DropdownMenuItem icon={Compass} onSelect={startTour}>Visita guidata</DropdownMenuItem>
