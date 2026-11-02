@@ -254,7 +254,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 - **Richiesta:** togliere l'ordine per attenzione dalla lista Ospiti e mostrare, in "Come avvicinarsi", attività del calendario collegate agli interessi condivisi (anteprima approvata, senza riquadri sulle schede).
 - **Modifiche:**
   - lista Ospiti in ordine alfabetico; sottotitolo aggiornato; tolta dallo specchietto la voce "Perché questo ordine";
-  - ritratto → Come avvicinarsi: nuova sezione **"Attività che potrebbero interessarle"** sotto "Interessi e spunti" (dati in `src/data/activities.js`, per ora solo Elena; per gli altri uno stato vuoto). Finestre **Dettagli attività** (prenotazione, accompagnamento, referente) e **Come ROSS potrebbe proporla** (esempio simulato con "sì" e "no", banda "nessun invito è stato inviato"); "Vedi tutte le attività" apre il calendario di esempio;
+  - ritratto → Come avvicinarsi: nuova sezione **"Attività che potrebbero interessarle"** sotto "Interessi e spunti" (dati in `src/data/activities.js`: due attività per ogni ospite, legate a interessi della biografia d'ingresso, negli orari del suo momento migliore e con il tu o il Lei che preferisce; se un ospite non ne ha, compare uno stato vuoto). Finestre **Dettagli attività** (prenotazione, accompagnamento, referente) e **Come ROSS potrebbe proporla** (esempio simulato con "sì" e "no", banda "nessun invito è stato inviato"); "Vedi tutte le attività" apre il calendario di esempio;
   - tutti i dati sono dimostrativi: nessun collegamento a un calendario reale, nessun invito inviato, un "sì" non è una prenotazione.
 
 ### Novembre 2026 · 02/11/2026 · Tablet: niente voce automatica

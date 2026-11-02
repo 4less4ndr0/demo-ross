@@ -1255,4 +1255,4 @@
 .sim-choices button.picked{background:var(--text);color:var(--surface);border-color:var(--text)}
 .sim-note{font-size:12px;color:var(--muted);margin:12px 0 0}
 @media(max-width:650px){.activity-detail dl{grid-template-columns:1fr;gap:2px}.activity-detail dd{margin-bottom:8px}}
-.activity-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}.activity-list li{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}.activity-list strong{font-size:14px}.activity-list span{font-size:13px;color:var(--muted)}
+.activity-list{list-style:none;padding:0 4px 0 0;margin:14px 0 0;display:grid;gap:10px;max-height:min(52vh,460px);overflow-y:auto}.activity-list li{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}.activity-list strong{font-size:14px}.activity-list span{font-size:13px;color:var(--muted)}
