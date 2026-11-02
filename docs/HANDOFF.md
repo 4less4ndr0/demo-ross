@@ -250,6 +250,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Famiglia: "Giornata" diventa "Momenti"
+- **Richiesta:** "Oggi" e "Giornata" si sovrapponevano come nomi.
+- **Modifiche:** la scheda diventa **Momenti** (Oggi · Ricordi · Momenti · Da te), con il titolo "I momenti di Elena" e l'etichetta "Racconti, non misurazioni". Copre giorno, settimana e mese, e riprende parole già usate nell'app ("momenti condivisi", "Rivedi i momenti").
+- **File:** `src/pages/FamilyExperience.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Famiglia: nomi e contenuti presi dal vecchio mockup
 - **Richiesta:** valutare cosa prendere dal vecchio mockup ("La giornata di Maria", Benessere, Avvisi, Mente e ricordi) **senza cambiare l'estetica attuale**.
 - **Modifiche:**

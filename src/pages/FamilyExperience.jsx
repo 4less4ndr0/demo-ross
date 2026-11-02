@@ -20,7 +20,7 @@ const contributionTypes = {
 const familyTabs = [
   { to: "/famiglia", label: "Oggi", icon: Home, match: (path) => path === "/famiglia" },
   { to: "/famiglia/storia", label: "Ricordi", icon: Images, match: (path) => path.startsWith("/famiglia/storia") || path.startsWith("/famiglia/ricordi") },
-  { to: "/famiglia/attivita", label: "Giornata", icon: Sparkles, match: (path) => path.startsWith("/famiglia/attivita") },
+  { to: "/famiglia/attivita", label: "Momenti", icon: Sparkles, match: (path) => path.startsWith("/famiglia/attivita") },
   { to: "/famiglia/condivisi", label: "Da te", icon: Heart, match: (path) => path.startsWith("/famiglia/condivisi") },
 ];
 
@@ -230,8 +230,8 @@ export function FamilyActivities() {
   const { state } = useDemo(); const navigate = useNavigate(); const contribution = useContributionSheet(); const [period, setPeriod] = useState("Oggi"); const conversationDone = Boolean(state.rossJourney.completedAt);
   const rows = Object.entries(activityDetails);
   const days = { Oggi: ["Lunedì 21 settembre", "Una giornata con musica e fotografie"], Settimana: ["15–21 settembre", "Sette giorni, cinque momenti da ricordare"], Mese: ["Settembre 2026", "Un mese raccontato attraverso interessi e persone"] };
-  return <FamilyShell title="Giornata" onContribute={() => contribution.openContribution("topic")}>
-    <LargeTitle kicker="Momenti, non misurazioni" title="La giornata di Elena">Com'è andata con ROSS, nelle sue parole: solo i racconti che ha voluto condividere con te.</LargeTitle>
+  return <FamilyShell title="Momenti" onContribute={() => contribution.openContribution("topic")}>
+    <LargeTitle kicker="Racconti, non misurazioni" title="I momenti di Elena">Con ROSS, giorno per giorno: solo i racconti che ha voluto condividere con te.</LargeTitle>
     <Tabs value={period} onValueChange={setPeriod}><TabsList className="fam-segmented" aria-label="Periodo">{Object.keys(days).map((item) => <TabsTrigger key={item} value={item} active={period === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
     <section className="fam-section">
       <header className="fam-day"><CalendarDays size={20} /><div><span className="fam-kicker">{days[period][0]}</span><h2>{days[period][1]}</h2></div></header>
@@ -245,7 +245,7 @@ export function FamilyActivityDetail() {
   const { id } = useParams(); const contribution = useContributionSheet(); const { state } = useDemo();
   const item = activityDetails[id] || gardenActivity;
   const shared = isShared(item, Boolean(state.rossJourney.completedAt));
-  return <FamilyShell title={item.title} back={{ to: "/famiglia/attivita", label: "Giornata" }} onContribute={() => contribution.openContribution("topic")}>
+  return <FamilyShell title={item.title} back={{ to: "/famiglia/attivita", label: "Momenti" }} onContribute={() => contribution.openContribution("topic")}>
     <article className="fam-detail">
       <header className="fam-activity-hero"><Sparkles size={30} /><span className="fam-kicker">Attività con ROSS</span><h1>{item.title}</h1><p>{item.time} · {item.duration}</p></header>
       {shared ? <>
