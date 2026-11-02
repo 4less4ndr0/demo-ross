@@ -34,13 +34,13 @@ export function SidebarGuide({ id, subtitle, intro, entries, onDone }) {
 export const residentsGuide = {
   id: "ospiti",
   subtitle: "Perché questa pagina è fatta così",
-  intro: "Qui trovi ogni ospite come lo conosce ROSS: come sta e come avvicinarlo. Non è l'anagrafica, che resta nel gestionale: è ciò che serve per stare accanto alla persona nel modo giusto.",
+  intro: "Qui trovi ogni ospite come ha scelto di farsi conoscere: chi è e come avvicinarlo. Non è l'anagrafica, che resta nel gestionale: è ciò che serve per stare accanto alla persona nel modo giusto.",
   entries: [
     methodGuideEntry,
-    { title: "Perché questo ordine", text: "In cima chi ha bisogno di più attenzione oggi: prima un'assenza insolita, poi i segnali da osservare, poi i bisogni espressi. Chi inizia la giornata sa da chi passare per primo.", question: "Chi ha bisogno di più attenzione oggi?" },
+    { title: "Perché in ordine alfabetico", text: "Nessuna classifica: nessuno sta in cima perché «ha bisogno di più attenzione». Le persone sono in ordine di nome, così ognuno si trova subito con la ricerca o scorrendo.", question: "Come posso coinvolgere Elena?" },
     { title: "Una scheda essenziale", text: "In copertina solo chi è: foto, nome, età, stanza, modalità di ROSS e ultima conversazione. Niente avvisi sulla persona: ROSS non fa da sistema di allerta. Cosa va bene, bisogni e interessi sono nel ritratto: ogni persona ha entrambe le cose, e lì si vedono insieme." },
     { title: "Ognuno confrontato con sé stesso", text: "Nel ritratto la partecipazione è sempre rispetto alla media della persona negli ultimi 14 giorni. Niente punteggi né classifiche: una persona riservata non è «peggio» di una socievole." },
-    { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio e spunti per ogni interesse), Conversazioni ROSS (quando e quanto, mai di cosa), Allegati (una foto o un file, se vi è utile; facoltativi)." },
+    { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio, spunti per ogni interesse e attività che potrebbero interessare), Conversazioni ROSS (quando e quanto, mai di cosa), Allegati (una foto o un file, se vi è utile; facoltativi)." },
     { title: "Cosa non trovi, e perché", text: "Niente storia di vita, grafo delle relazioni, ricordi o citazioni: sono della persona. I dettagli biografici compaiono solo se li hanno dati la famiglia o la struttura all'ingresso." },
     { title: "ROSS segnala, voi decidete", text: "ROSS non giudica la salute di nessuno: racconta la giornata e ciò che la persona esprime. I segnali sono spunti da verificare di persona: il giudizio resta all'équipe.", question: "Chi ha espresso segnali da osservare questa settimana?" },
   ],

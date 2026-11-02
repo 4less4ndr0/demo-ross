@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, Camera, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Sparkles } from "lucide-react";
+import { ArrowRight, Camera, Clock, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Sparkles } from "lucide-react";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge } from "../components/Common";
@@ -8,7 +8,8 @@ import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
 import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, signalDetail, signalsFor } from "../data/careInsights";
 import { buildResidentReport } from "../data/reportNarrative";
-import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Tabs, TabsList, TabsTrigger } from "../components/ui";
+import { scheduledActivities, suggestedActivities } from "../data/activities";
+import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Tabs, TabsList, TabsTrigger } from "../components/ui";
 
 // Ritratto dell'ospite secondo docs/contratto-informativo-struttura.md: come sta, come avvicinarsi,
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
@@ -122,6 +123,7 @@ function Approach({ state, resident, navigate }) {
       {h.activity && <p><span>Da proporre</span>{h.activity}</p>}
       <div className="hook-engagement"><span>Con ROSS</span>{h.engagement ? <><div className="engagement-bar"><i style={{ width: `${Math.min(100, 50 + h.engagement.duration * 0.8)}%` }} /><b style={{ left: "50%" }} /></div><small>Conversazioni {h.engagement.duration >= 0 ? "+" : ""}{h.engagement.duration}% più lunghe della sua media · partecipazione alta {h.engagement.high[0]} volte su {h.engagement.high[1]}</small></> : <small>{building ? "Dati in raccolta: ROSS la sta ancora conoscendo." : "Ancora pochi dati su questo interesse."}</small>}</div>
     </article>)}</div>
+    <ActivitySuggestions resident={resident} name={name} />
     {guide && <div className="approach-grid approach-grid-2">
       <article className="surface approach-card"><span className="eyebrow">COME PARLA ROSS CON {name.toUpperCase()}</span><div className="style-grid">{styleLabels.map(([key, label]) => <div key={key}><span>{label}</span><strong>{guide.style[key]}</strong></div>)}</div><small>È lo stile a cui ROSS si è adattato: lo staff può rispecchiarlo.</small></article>
       <article className="surface approach-card"><span className="eyebrow">MOMENTI DELLA GIORNATA</span><div className="rhythm-strip">{Object.entries(guide.rhythm).map(([moment, level]) => <div key={moment} className={`rhythm-${level}`}><span>{moment}</span><i><b style={{ height: `${level * 33}%` }} /></i><strong>{rhythmLabels[level]}</strong></div>)}</div><small>Disponibilità a conversare, ricavata da quando {name} parla con ROSS.</small></article>
@@ -160,4 +162,45 @@ function Attachments({ resident, documents, onAdd }) {
     {!documents.length ? <EmptyState title="Nessun allegato" description="Una foto di un'attività o un'indicazione pratica: allegala da qui o dalla graffetta della chat." icon={Paperclip} /> : <div className="document-list">{documents.map((doc) => <article className="document-card surface" key={doc.id}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt={doc.title} onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<span className="document-meta">{doc.author}</span></div></article>)}</div>}
     <DataExplanation>ROSS può citare un allegato come fonte quando serve, ma non interpreta referti né valori e non sostituisce il gestionale.</DataExplanation>
   </section>;
+}
+
+// Attività dal calendario demo, collegate solo agli interessi condivisi. Nessun collegamento reale.
+function ActivitySuggestions({ resident, name }) {
+  const items = suggestedActivities[resident.id] || [];
+  const [detail, setDetail] = useState(null);
+  const [proposal, setProposal] = useState(null);
+  const [answer, setAnswer] = useState(null);
+  const [all, setAll] = useState(false);
+  const her = ["carlo", "mario", "antonio", "bruno"].includes(resident.id) ? "interessargli" : "interessarle";
+  return <div className="activity-section">
+    <div className="approach-heading"><h3>Attività che potrebbero {her}</h3><p>Proposte dal calendario della struttura, collegate agli interessi che {name} ha condiviso.</p></div>
+    {items.length ? <div className="activity-grid">{items.map((a) => <article key={a.id} className="activity-card surface">
+      <h4>{a.title}</h4>
+      <div className="activity-meta"><span><Clock size={13} />{a.when}</span><span><MapPin size={13} />{a.where}</span></div>
+      <p>{a.description}</p>
+      <p className="activity-reason"><span>PERCHÉ È SUGGERITA</span>{a.reason}</p>
+      <div className="activity-actions"><Button variant="outline" onClick={() => setDetail(a)}><Info size={15} /> Dettagli attività</Button><Button variant="outline" onClick={() => { setAnswer(null); setProposal(a); }}><MessageCircle size={15} /> Mostra come lo proporrebbe</Button></div>
+    </article>)}</div> : <div className="activity-empty surface"><p>Nessun suggerimento disponibile per ora. Puoi comunque consultare le attività in programma.</p><button className="text-link" onClick={() => setAll(true)}>Vedi tutte le attività <ArrowRight size={14} /></button></div>}
+    {items.length > 0 && <div className="activity-footer"><small>Le attività sono suggerimenti, non impegni. {name} può scegliere liberamente se partecipare.</small><button className="text-link" onClick={() => setAll(true)}>Vedi tutte le attività <ArrowRight size={14} /></button></div>}
+    <Dialog open={all} onClose={() => setAll(false)} title="Attività in programma" size="sm">
+      <div className="activity-detail"><span className="preview-tag">DATI DIMOSTRATIVI</span><ul className="activity-list">{scheduledActivities.map((a) => <li key={a.title}><strong>{a.title}</strong><span>{a.when} · {a.where}</span></li>)}</ul><p className="sim-note">Calendario di esempio: la demo non è collegata al calendario della struttura.</p></div>
+    </Dialog>
+    <Dialog open={Boolean(detail)} onClose={() => setDetail(null)} title={detail?.title || ""} size="sm">
+      {detail && <div className="activity-detail"><span className="preview-tag">DATI DIMOSTRATIVI</span><p style={{ margin: "12px 0 0" }}>{detail.description}</p><dl>
+        <dt>Quando</dt><dd>{detail.when}</dd><dt>Dove</dt><dd>{detail.where}</dd><dt>Prenotazione</dt><dd>{detail.booking}</dd><dt>Accompagnamento</dt><dd>{detail.escort}</dd><dt>Referente</dt><dd>{detail.contact}</dd>
+      </dl><p className="sim-note">Calendario di esempio: la demo non è collegata al calendario della struttura. Proporre l'attività non è una prenotazione.</p></div>}
+    </Dialog>
+    <Dialog open={Boolean(proposal)} onClose={() => setProposal(null)} title="Come ROSS potrebbe proporla" size="sm">
+      {proposal && <div><div className="sim-banner"><Info size={16} /> Esempio simulato: nessun invito è stato inviato.</div>
+        <div className="sim-chat">
+          <p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.invite}»</p>
+          {!answer && <div className="sim-choices"><button onClick={() => setAnswer("si")}>Sì, dimmi di più</button><button onClick={() => setAnswer("no")}>No grazie, oggi preferisco stare qui</button></div>}
+          {answer === "si" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«Sì, dimmi di più.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.description} Se ti va, puoi andarci; puoi anche decidere più tardi.»</p></>}
+          {answer === "no" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«No grazie, oggi preferisco stare qui.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«Va bene, nessun problema.»</p></>}
+        </div>
+        <p className="sim-note">Due risposte possibili, entrambe valide. Un «sì» non è una prenotazione e non dice se poi {name} parteciperà; un «no» non viene segnalato a nessuno.</p>
+        {answer && <div className="sim-choices" style={{ marginTop: 10 }}><button onClick={() => setAnswer(null)}>Ricomincia l'esempio</button></div>}
+      </div>}
+    </Dialog>
+  </div>;
 }
