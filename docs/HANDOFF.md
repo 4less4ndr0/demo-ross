@@ -250,6 +250,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Famiglia: il + al centro della tab bar
+- **Richiesta:** spostare il **+** dalla barra in alto al centro della barra in basso.
+- **Modifiche:** la tab bar ha ora due schede, il **+** (cerchio scuro da 52pt, leggermente rialzato) e altre due schede: Oggi · Ricordi · **+** · Momenti · Da te. La barra in alto tiene solo il logo, o "‹ Indietro", e il titolo. La visita guidata (passo "Da te, per Elena") lo indica al centro della barra in basso.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/styles.css`, `src/components/GuidedTour.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Visita guidata: tutte le schede dell'app di Anna
 - **Richiesta:** la visita si fermava a Oggi e non mostrava le altre schermate dell'app di Anna.
 - **Modifiche:**

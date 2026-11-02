@@ -126,11 +126,16 @@ function FamilyShell({ title, back, onContribute, children }) {
         <header className={`fam-navbar${scrolled ? " is-scrolled" : ""}`}>
           <div className="fam-navbar-side">{back ? <button type="button" className="fam-nav-back" onClick={() => navigate(back.to)}><ChevronLeft size={26} strokeWidth={2.2} />{back.label}</button> : <NavLink className="fam-brand" to="/famiglia" aria-label="ROSS per la famiglia: Oggi"><span>R</span><small>ROSS</small></NavLink>}</div>
           <strong className="fam-navbar-title" aria-hidden={!scrolled}>{title}</strong>
-          <div className="fam-navbar-side fam-navbar-end"><button type="button" className="fam-add" onClick={onContribute} aria-label="Condividi con ROSS"><Plus size={22} strokeWidth={2.2} /></button></div>
+          <div className="fam-navbar-side fam-navbar-end" />
         </header>
         <main className="fam-main screen-enter">{children}</main>
       </div>
-      <nav className="fam-tabbar" aria-label="Navigazione famiglia" inert={locked || undefined}>{familyTabs.map(({ to, label, icon: Icon, match }) => { const active = match(pathname); return <NavLink key={to} to={to} end={to === "/famiglia"} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={24} strokeWidth={active ? 2.3 : 1.8} /><span>{label}</span></NavLink>; })}</nav>
+      {/* Tab bar: due schede, il + al centro (l'azione principale: portare qualcosa a ROSS), due schede */}
+      <nav className="fam-tabbar" aria-label="Navigazione famiglia" inert={locked || undefined}>{[...familyTabs.slice(0, 2), null, ...familyTabs.slice(2)].map((tab) => {
+        if (!tab) return <button key="add" type="button" className="fam-add" onClick={onContribute} aria-label="Condividi con ROSS"><Plus size={26} strokeWidth={2.2} /></button>;
+        const { to, label, icon: Icon, match } = tab; const active = match(pathname);
+        return <NavLink key={to} to={to} end={to === "/famiglia"} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={24} strokeWidth={active ? 2.3 : 1.8} /><span>{label}</span></NavLink>;
+      })}</nav>
       {locked && phone && <LockScreen lines={todayLines(state)} onOpen={unlock} />}
       <span className="fam-home-indicator" aria-hidden="true" />
     </PhoneScreen.Provider></div></div>

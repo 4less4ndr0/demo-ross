@@ -38,7 +38,7 @@ const chapters = [
       { route: "/famiglia", target: ".fam-resource", title: "Come puoi esserle vicina", lens: "Reciprocità", body: "Anche Anna è una risorsa, e lo è anche Elena per lei: tre spunti concreti, dal ricordo che la accende al consiglio da chiederle." },
       { route: "/famiglia/attivita", target: ".fam-timeline", title: "Momenti, non misurazioni", lens: "Decide la persona", body: "Cosa ha fatto Elena con ROSS, oggi, in settimana e nel mese, nelle sue parole. Se un racconto l'ha tenuto per sé, Anna vede solo com'è andata. Anche le uscite arrivano qui, ma solo se è Elena a raccontarle." },
       { route: "/famiglia/storia", target: ".fam-memory", title: "I ricordi di Elena", lens: "Comprensibile", body: "La sua storia, con la provenienza sempre visibile: raccontato da Elena o portato dalla famiglia. Un ricordo arriva qui solo se Elena ha scelto di condividerlo." },
-      { route: "/famiglia/condivisi", target: ".fam-shared-row", title: "Da te, per Elena", lens: "Reciprocità", body: "Foto, ricordi e canzoni che Anna porta a ROSS con il + in alto. Restano «Disponibile a ROSS» finché non arriva il momento giusto, poi «Ripreso con Elena». La struttura non sta in mezzo." },
+      { route: "/famiglia/condivisi", target: ".fam-shared-row", title: "Da te, per Elena", lens: "Reciprocità", body: "Foto, ricordi e canzoni che Anna porta a ROSS con il + al centro della barra in basso. Restano «Disponibile a ROSS» finché non arriva il momento giusto, poi «Ripreso con Elena». La struttura non sta in mezzo." },
     ],
   },
   {
