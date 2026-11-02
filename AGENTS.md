@@ -2,7 +2,7 @@
 
 **Passaggio di consegne e changelog:** `docs/HANDOFF.md`. Leggilo prima di lavorare e aggiornalo (nuova voce in cima al changelog) a ogni modifica.
 
-**Contesto di prodotto da Notion (Product & R&D):** `docs/contesto-notion.md`. Leggilo prima di qualsiasi modifica di prodotto: strategia attuale (Parte A software per le strutture / Parte B compagno vocale), vincoli non negoziabili, cosa è reale oggi, come presentare alle strutture.
+**Contesto di prodotto da Notion (tutto il workspace):** `docs/contesto-notion.md`. Leggilo prima di qualsiasi modifica di prodotto: il perché e i 6 non negoziabili, cosa ROSS non fa e non mostra, il bivio companion / staff / integrato, cosa è reale oggi, gli incontri imminenti e le tensioni tra la demo e le decisioni recenti. Dove contraddice le decisioni qui sotto, vale quel file finché il team non decide diversamente.
 
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
 
