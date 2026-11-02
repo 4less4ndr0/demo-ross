@@ -35,7 +35,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
   - schede in alto a pillole senza cornice;
   - più respiro.
   - I colori restano i token della Struttura. Le regole sono in fondo a `src/styles.css` ("Struttura con l'estetica di Famiglia e ROSS").
-- **Selettore "Vista demo"** (Struttura / Famiglia / ROSS / Mappa): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3/4, l'interruttore "Famiglia su iPhone" (tasto I), "Notifica sulla schermata di blocco", "Cosa è reale e cosa è simulato" e "Visita guidata". Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
+- **Selettore "Vista demo"** (Struttura / Famiglia / ROSS / Mappa): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3/4, l'interruttore "Famiglia su iPhone" (tasto I), "Notifica sulla schermata di blocco", "Cosa è reale e cosa è simulato", "Visita guidata" e **"Ripristina la demo"** (cancella tutto ciò che la demo ha salvato nel browser, chiavi `ross-*`, e ricarica la pagina: prove, messaggi, impostazioni e avvisi del primo avvio tornano come all'inizio). Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
 - **Vista "Mappa"** (`/mappa`, `src/pages/DemoMap.jsx`): la mappatura della demo generata con Floorplan (`public/mappa-ross.html`), a tutto schermo. È per chi presenta e per il team, non fa parte del prodotto. Dopo modifiche al codice va rigenerata: istruzioni in `docs/floorplan/README.md`.
 
 ## La demo come strumento di ricerca (da ottobre 2026)

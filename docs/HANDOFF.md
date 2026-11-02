@@ -250,6 +250,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · "Ripristina la demo" nella pillola Vista demo
+- **Richiesta:** un tasto nella vista demo che riporti tutto com'era, dopo aver fatto delle prove (per esempio messaggi di prova mandati da Anna).
+- **Modifiche:** nella pillola "Vista demo" c'è **"Ripristina la demo"**. Cancella tutto ciò che la demo ha salvato in questo browser (le chiavi `ross-*`: dati, messaggi di prova, spunti salvati, cornice iPhone, guide aperte o chiuse) e ricarica la pagina sulla stessa vista. Tornano anche la schermata di blocco e l'avviso "Anna ti ha mandato qualcosa" del primo avvio. Dopo il ricaricamento compare "Demo ripristinata: tutto è tornato com'era". Resta anche "Ripristina dati demo" nella card in basso a sinistra della Struttura.
+- **File:** `src/components/PerspectiveSwitcher.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Visita guidata: la notifica sul tablet di Elena
 - **Richiesta:** aggiungere alla visita guidata il tablet di Elena con la notifica delle novità da Anna.
 - **Modifiche:**
