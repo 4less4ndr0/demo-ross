@@ -83,6 +83,11 @@ function defaultState() {
     // Spunti per le chiamate che Anna salva da Oggi: restano suoi (scheda Insieme), non vanno a ROSS.
     // Promemoria di Anna: "done" (va bene), "later" (ricordamelo domattina), "stopped" (non ricordarmelo più). Niente conferme registrate.
     reminders: {},
+    // Promemoria che Elena ha chiesto lei a ROSS ("ricordami che…"): nella demo sono d'esempio, mai farmaci.
+    ownReminders: [
+      { key: "own-pranzo", text: "Domenica pranzo con Anna e Sofia", when: "per domenica" },
+      { key: "own-libro", text: "Restituire il libro di ricette a Lucia", when: "" },
+    ],
     savedPrompts: [{ id: "prompt-festa", text: "Chiedile della festa dei compleanni: com'era la torta di mele?", savedAt: "mercoledì 9 settembre" }],
     residents: initialResidents,
     memories: initialMemories,

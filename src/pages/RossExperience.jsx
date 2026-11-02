@@ -42,6 +42,9 @@ const familyPrompt = {
 // Quando arriva qualcosa di nuovo, ROSS lo annuncia e lo racconta a voce, una cosa alla volta e in ordine.
 const newsKicker = { reminder: "Un promemoria di Anna", photo: "Una foto di Anna", message: "Un pensiero di Anna", topic: "Una domanda di Anna", memory: "Un ricordo di Anna", music: "Musica da Anna" };
 const alreadyShared = (item) => item.status === "Ripreso con Elena" || item.status === "Confermato";
+// Quando arriva un promemoria, per metterli in fila: oggi è lunedì 21 settembre.
+const daysAhead = (when = "") => ({ "per stasera": 0, "per domani": 1, "per martedì": 1, "per mercoledì": 2, "per giovedì": 3, "per venerdì": 4, "per sabato": 5, "per domenica": 6, "": 9 })[when] ?? 8;
+const whoOf = (item) => (item.mine ? "Me l'hai chiesto tu" : "Da Anna");
 const count = (n) => (n === 1 ? "una cosa" : n === 2 ? "due cose" : n === 3 ? "tre cose" : `${n} cose`);
 
 // Giochi per stare insieme: niente punteggi, niente valutazioni, nessuna risposta "sbagliata" (intrattenimento, non test).
@@ -87,7 +90,7 @@ function RossStage({ flow, onClose, onAnswer }) {
           chips: [chip(item.kind === "photo" ? "Che bella" : "Va bene", next), ...(["topic", "memory", "photo"].includes(item.kind) ? [chip("Rispondile", () => { finish(); onAnswer(); })] : []), chip("Basta così", finish)] };
   } else if (flow.kind === "reminder") {
     const { item } = flow;
-    view = { icon: AlarmClock, tag: `Un promemoria di Anna${item.when ? ` · ${item.when}` : ""}`, line: `Elena, ${item.rossLine}`, foot: "ROSS te lo ricorda con le parole di Anna. Non controlla se l'hai fatto e non lo dice a nessuno.",
+    view = { icon: AlarmClock, tag: `${item.mine ? "Un promemoria che mi avevi chiesto" : "Un promemoria di Anna"}${item.when ? ` · ${item.when}` : ""}`, line: `Elena, ${item.rossLine}`, foot: item.mine ? "Te lo ricordo come me l'hai chiesto. Non controllo se l'hai fatto." : "ROSS te lo ricorda con le parole di Anna. Non controlla se l'hai fatto e non lo dice a nessuno.",
       chips: [chip("Va bene", () => { actions.setReminder(item.key, "done"); onClose(); }), chip("Ricordamelo domattina", () => { actions.setReminder(item.key, "later"); notify("Va bene: te lo ricordo domattina"); onClose(); }), chip("Non ricordarmelo più", () => { actions.setReminder(item.key, "stopped"); notify("Va bene, non te lo ricordo più"); onClose(); })] };
   } else if (flow.kind === "game") {
     const game = games[flow.id];
@@ -148,7 +151,10 @@ export function RossHome() {
   const partsOf = (item) => (item.parts?.length ? item.parts : [{ kind: item.kind, text: item.detail, rossLine: `Anna ti ha mandato: «${item.title}».` }]).map((part, index) => ({ ...part, key: `${item.id}-${index}`, contributionId: item.id, image: item.image, createdAt: item.createdAt }));
   // I promemoria non si raccontano subito con le novità: ROSS li dice la sera, all'ora giusta.
   const newsItems = useMemo(() => state.familyContributions.filter((item) => item.unheard).flatMap(partsOf).filter((part) => part.kind !== "reminder").sort(byPriority), [state.familyContributions]); // eslint-disable-line react-hooks/exhaustive-deps
-  const reminders = state.familyContributions.flatMap(partsOf).filter((part) => part.kind === "reminder" && !["done", "stopped"].includes((state.reminders || {})[part.key]));
+  const ownReminders = (state.ownReminders || []).map((item) => ({ ...item, kind: "reminder", mine: true, rossLine: `mi avevi chiesto di ricordarti: «${item.text}».` }));
+  // Tutti i promemoria in fila nel tempo: il primo è il prossimo, gli altri vanno nella card accanto.
+  const reminders = [...state.familyContributions.flatMap(partsOf).filter((part) => part.kind === "reminder"), ...ownReminders].filter((item) => !["done", "stopped"].includes((state.reminders || {})[item.key])).sort((a, b) => daysAhead(a.when) - daysAhead(b.when));
+  const [nextReminder, ...laterReminders] = reminders;
   const [stage, setStage] = useState(null);
   const [newsLater, setNewsLater] = useState(false);
   // La visita guidata chiede di mostrare l'avviso: torna visibile, e se Elena aveva già ascoltato tutto il messaggio di oggi torna "da ascoltare".
@@ -219,11 +225,17 @@ export function RossHome() {
 
         {reminders.length > 0 && <section className="ross-section ross-reminders" aria-label="Promemoria">
           <h2 className="ross-section-title">Promemoria</h2>
-          <p className="ross-section-note">Te li ricordo stasera alle 21, con le parole di chi li ha lasciati. Non controllo se li hai fatti.</p>
-          <div className="ross-prompt-grid">{reminders.map((item) => <article key={item.key} className="ross-prompt-card ross-reminder-card">
-            <header><span className="ross-prompt-icon"><AlarmClock /></span><div><small>Da Anna{item.when ? ` · ${item.when}` : ""}{(state.reminders || {})[item.key] === "later" ? " · domattina" : ""}</small><h3>«{item.text.replace(/[.!…]+$/, "")}»</h3></div></header>
-            <div className="ross-invite-actions"><button type="button" onClick={() => setStage({ kind: "reminder", item })}>Ascoltalo ora</button><button type="button" className="ross-invite-later" onClick={() => { actions.setReminder(item.key, "stopped"); notify("Va bene, non te lo ricordo più"); }}>Non ricordarmelo più</button></div>
-          </article>)}</div>
+          <p className="ross-section-note">Il prossimo te lo ricordo stasera alle 21, con le parole di chi l'ha lasciato. Non controllo se li hai fatti.</p>
+          <div className="ross-prompt-grid">
+            <article className="ross-prompt-card ross-reminder-card">
+              <header><span className="ross-prompt-icon"><AlarmClock /></span><div><small>Il prossimo · {whoOf(nextReminder)}{nextReminder.when ? ` · ${nextReminder.when}` : ""}{(state.reminders || {})[nextReminder.key] === "later" ? " · domattina" : ""}</small><h3>«{nextReminder.text.replace(/[.!…]+$/, "")}»</h3></div></header>
+              <div className="ross-invite-actions"><button type="button" onClick={() => setStage({ kind: "reminder", item: nextReminder })}>Ascoltalo ora</button><button type="button" className="ross-invite-later" onClick={() => { actions.setReminder(nextReminder.key, "stopped"); notify("Va bene, non te lo ricordo più"); }}>Non ricordarmelo più</button></div>
+            </article>
+            <article className="ross-prompt-card ross-reminder-list">
+              <header><div><small>Poi</small><h3>Le altre cose da ricordare</h3></div></header>
+              {laterReminders.length ? <ul>{laterReminders.map((item) => <li key={item.key}><button type="button" onClick={() => setStage({ kind: "reminder", item })}><span className="ross-reminder-dot"><AlarmClock /></span><span><strong>{item.text.replace(/[.!…]+$/, "")}</strong><small>{whoOf(item)}{item.when ? ` · ${item.when}` : ""}</small></span><ArrowRight /></button></li>)}</ul> : <p>Nient'altro, per ora. Se vuoi, dimmi «ricordami che…».</p>}
+            </article>
+          </div>
         </section>}
 
         <section className="ross-section ross-spunti" aria-label="Spunti per oggi">

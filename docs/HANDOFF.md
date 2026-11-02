@@ -250,6 +250,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Tablet: il prossimo promemoria e "le altre cose da ricordare"
+- **Richiesta:** accanto alla card del promemoria, una seconda card con più promemoria: quello in arrivo e poi gli altri.
+- **Modifiche:**
+  - la sezione Promemoria del tablet ha due card: **il prossimo** (con "Ascoltalo ora" e "Non ricordarmelo più") e **"Le altre cose da ricordare"**, un elenco in fila nel tempo. Toccando una riga si apre la sua scheda;
+  - oltre ai promemoria di Anna ci sono quelli che **Elena ha chiesto lei** a ROSS ("Me l'hai chiesto tu"): il pranzo della domenica e il libro di ricette da restituire (`state.ownReminders`, mai farmaci; niente videochiamate per ora);
+  - nella scheda, un promemoria di Elena si legge "mi avevi chiesto di ricordarti: «…»".
+- **Nota:** chi ha già usato la demo vede ancora i vecchi esempi (le gocce per gli occhi): basta "Ripristina la demo".
+- **File:** `src/pages/RossExperience.jsx`, `src/state/DemoContext.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Tablet di Elena: schede "una cosa alla volta", promemoria semplici, giochi e "cosa ricordo di te"
 - **Richiesta:** migliorare la vista ROSS partendo da Notion, a cominciare dai promemoria, con schede dedicate anche a promemoria e attività (giochi). **La home del tablet resta com'è**: solo migliorie.
 - **Da Notion:**
