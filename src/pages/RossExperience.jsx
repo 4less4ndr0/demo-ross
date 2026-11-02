@@ -41,8 +41,6 @@ const familyPrompt = {
 };
 // Quando arriva qualcosa di nuovo, ROSS lo annuncia e lo racconta a voce, una cosa alla volta e in ordine.
 const newsKicker = { reminder: "Un promemoria di Anna", photo: "Una foto di Anna", message: "Un pensiero di Anna", topic: "Una domanda di Anna", memory: "Un ricordo di Anna", music: "Musica da Anna" };
-const say = (line) => { try { window.speechSynthesis.cancel(); const voice = new SpeechSynthesisUtterance(line); voice.lang = "it-IT"; voice.rate = 0.92; window.speechSynthesis.speak(voice); } catch { /* sintesi vocale non disponibile */ } };
-const hush = () => { try { window.speechSynthesis.cancel(); } catch { /* niente da fermare */ } };
 const alreadyShared = (item) => item.status === "Ripreso con Elena" || item.status === "Confermato";
 
 export function RossHome() {
@@ -73,9 +71,10 @@ export function RossHome() {
   const [queue, setQueue] = useState([]);
   const [newsIndex, setNewsIndex] = useState(null);
   const newsItem = newsIndex === null ? null : queue[newsIndex];
-  const openNews = () => { setQueue(newsItems); setNewsIndex(0); if (elena.mode !== "Silenziosa") say(newsItems[0].rossLine); };
-  const closeNews = (upTo = newsIndex) => { hush(); if (upTo !== null) actions.markFamilyHeard([...new Set(queue.slice(0, upTo + 1).map((item) => item.contributionId))]); setNewsIndex(null); };
-  const nextNews = () => { if (newsIndex + 1 < queue.length) { setNewsIndex(newsIndex + 1); say(queue[newsIndex + 1].rossLine); } else { closeNews(); notify("Se vuoi rispondere ad Anna, dimmelo pure: glielo racconto io"); } };
+  // Nella demo ROSS non parla ad alta voce: il racconto è a schermo, una cosa alla volta.
+  const openNews = (items = newsItems) => { setQueue(items); setNewsIndex(0); };
+  const closeNews = (upTo = newsIndex) => { if (upTo !== null) actions.markFamilyHeard([...new Set(queue.slice(0, upTo + 1).map((item) => item.contributionId))]); setNewsIndex(null); };
+  const nextNews = () => { if (newsIndex + 1 < queue.length) { setNewsIndex(newsIndex + 1); } else { closeNews(); notify("Se vuoi rispondere ad Anna, dimmelo pure: glielo racconto io"); } };
 
   useEffect(() => {
     const timer = window.setTimeout(() => setRossState("response"), 900);
@@ -87,7 +86,7 @@ export function RossHome() {
     setRossState(mode === "Silenziosa" ? "rest" : "response");
   };
   const play = (track) => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); };
-  const usePrompt = (item) => (item.kind === "music" ? play(item.title) : item.parts?.length ? say(item.parts.map((part) => part.rossLine).join(" ")) : navigate("/ross/conversazione"));
+  const usePrompt = (item) => (item.kind === "music" ? play(item.title) : item.parts?.length ? openNews(item.parts.map((part, index) => ({ ...part, key: `${item.id}-${index}`, contributionId: item.id, image: item.image }))) : navigate("/ross/conversazione"));
 
   return (
     <div className="ross-app screen-enter" data-ross-state={rossState}>
@@ -110,7 +109,7 @@ export function RossHome() {
         {newsItems.length > 0 && !newsLater && outing?.status !== "out" && <section className="ross-news" aria-live="polite">
           <span className="ross-news-icon"><Heart /></span>
           <div><small>Da Anna, adesso</small><h2>{newsItems.length === 1 ? "Anna ti ha mandato una cosa." : `Anna ti ha mandato ${newsItems.length === 2 ? "due" : newsItems.length} cose.`} Vuoi che te le racconti?</h2><p>Puoi anche dirmelo a voce: «Sì, raccontamele».</p></div>
-          <div className="ross-invite-actions"><button type="button" onClick={openNews}><Volume2 /> Sì, raccontamele</button><button type="button" className="ross-invite-later" onClick={() => setNewsLater(true)}>Più tardi</button></div>
+          <div className="ross-invite-actions"><button type="button" onClick={() => openNews()}>Sì, raccontamele</button><button type="button" className="ross-invite-later" onClick={() => setNewsLater(true)}>Più tardi</button></div>
         </section>}
 
         {outing?.status === "out" ? <section className="ross-away" aria-live="polite">
@@ -164,7 +163,6 @@ export function RossHome() {
           {newsItem.image && newsItem.kind === "photo" ? <img src={newsItem.image} alt="La foto che Anna ti ha mandato" /> : <span className="ross-news-badge">{newsItem.kind === "reminder" ? <AlarmClock /> : newsItem.kind === "music" ? <Music2 /> : <Heart />}</span>}
           <p className="ross-news-line">{newsItem.rossLine}</p>
           <div className="ross-news-controls">
-            <button type="button" className="ghost-button" onClick={() => say(newsItem.rossLine)}><Volume2 /> Ripeti</button>
             {newsItem.kind === "music" && <button type="button" className="ghost-button" onClick={() => play(newsItem.text)}><Music2 /> Ascoltiamola</button>}
             {(newsItem.kind === "topic" || newsItem.kind === "memory" || newsItem.kind === "photo") && <button type="button" className="ghost-button" onClick={() => { closeNews(queue.length - 1); navigate("/ross/conversazione"); }}><Mic /> Rispondile</button>}
             <button type="button" className="primary-button" onClick={nextNews}>{newsIndex + 1 < queue.length ? "Avanti" : "Ho finito"} <ArrowRight /></button>
