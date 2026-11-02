@@ -1052,6 +1052,7 @@
 .fam-day{display:flex;gap:10px;align-items:flex-start;padding:4px 4px 4px}
 .fam-day>svg{flex:none;color:var(--fam-coral-text);margin-top:2px}
 .fam-day h2{font:500 22px/1.2 var(--serif);margin:4px 0 0}
+.fam-group-text{margin:0 4px 4px;font:400 15px/1.5 var(--serif);color:var(--family-muted)}
 .fam-timeline{padding:2px 16px}
 .fam-timeline-row{grid-template-columns:56px minmax(0,1fr) auto;align-items:start;padding:16px 0}
 .fam-timeline-row time{display:grid;gap:2px}

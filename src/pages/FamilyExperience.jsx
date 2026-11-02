@@ -200,45 +200,91 @@ export function FamilyMemoryDetail() {
   </FamilyShell>;
 }
 
+// Momenti inventati per la demo: oggi, la settimana (15–21 settembre) e il mese di settembre.
+// Regole: il racconto arriva solo se Elena l'ha condiviso; se l'ha tenuto per sé il titolo resta generico
+// ("Conversazione libera") e si dice solo com'è andata. Le uscite (outside) le sa ROSS perché è Elena a raccontarle.
 const activityDetails = {
-  song: { title: "Indovina la canzone", time: "Oggi · 11:40", duration: "12 minuti", why: "La musica italiana è un interesse stabile di Elena e spesso apre conversazioni spontanee.", episode: "Dopo poche note Elena ha riconosciuto Mina e ha ricordato i pomeriggi in cucina.", links: ["Le canzoni di Mina", "Pomeriggi in cucina"], shared: true },
-  photos: { title: "Fotografie di viaggio", time: "Oggi · 15:58", duration: "14 minuti", why: "Fotografia e Sicilia collegano Sofia, Paolo e il viaggio del 1998.", episode: "Elena ha scelto da sola la cartolina di Cefalù e si è soffermata sulla luce della sera.", links: ["Viaggio a Palermo", "La spiaggia di Cefalù"], shared: true },
-  "free-talk": { title: "Conversazione libera", time: "Oggi · 17:18", duration: "14 minuti", why: "Dopo un’attività guidata, ROSS lascia spazio a un racconto senza una consegna.", episode: "Il discorso è tornato alle passeggiate con Paolo e a una macchina fotografica rossa.", links: ["Paolo", "Cefalù e fotografie"], sharedAfterConversation: true, privateSummary: "14 minuti, partecipazione alta: una bella chiacchierata." },
+  song: { title: "Indovina la canzone", day: "Oggi", short: "Oggi", at: "11:40", duration: "12 minuti", why: "La musica italiana è un interesse stabile di Elena e spesso apre conversazioni spontanee.", episode: "Dopo poche note Elena ha riconosciuto Mina e ha ricordato i pomeriggi in cucina.", links: ["Le canzoni di Mina", "Pomeriggi in cucina"], shared: true },
+  photos: { title: "Fotografie di viaggio", day: "Oggi", short: "Oggi", at: "15:58", duration: "14 minuti", why: "Fotografia e Sicilia collegano Sofia, Paolo e il viaggio del 1998.", episode: "Elena ha scelto da sola la cartolina di Cefalù e si è soffermata sulla luce della sera.", links: ["Viaggio a Palermo", "La spiaggia di Cefalù"], shared: true },
+  "free-talk": { title: "Conversazione libera", day: "Oggi", short: "Oggi", at: "17:18", duration: "14 minuti", why: "Dopo un’attività guidata, ROSS lascia spazio a un racconto senza una consegna.", episode: "Il discorso è tornato alle passeggiate con Paolo e a una macchina fotografica rossa.", links: ["Paolo", "Cefalù e fotografie"], sharedAfterConversation: true, privateSummary: "Una bella chiacchierata." },
+  canto: { title: "Al canto in salone", day: "Oggi", short: "Oggi", at: "17:30", duration: "Raccontato al ritorno", outside: true, why: "ROSS gliel'ha proposto leggendo il calendario della residenza: ad andarci ha deciso lei.", episode: "È andata al canto in salone e al ritorno l'ha raccontato a ROSS: c'era anche Mina in scaletta.", links: ["Le canzoni di Mina", "Vita in residenza"], sharedIfOuting: true },
+  cartolina: { title: "La cartolina di Anna", day: "Domenica 20 settembre", short: "Dom 20", at: "16:10", duration: "11 minuti", why: "L'hai condivisa tu: ROSS l'ha proposta quando Elena aveva voglia di guardare fotografie.", episode: "Ha riconosciuto subito la cartolina di Cefalù e ha detto che quel giorno il mare era più verde che blu.", links: ["Da te: Cartolina di Cefalù", "La spiaggia di Cefalù"], shared: true },
+  palermo: { title: "Indovina il luogo", day: "Sabato 19 settembre", short: "Sab 19", at: "10:40", duration: "15 minuti", why: "Un gioco leggero sui luoghi: ROSS parte dalle città che Elena conosce e lascia che sia lei a raccontare.", episode: "Dal mercato ha riconosciuto Palermo, e ne ha approfittato per raccontare delle arance comprate con Paolo.", links: ["Viaggio a Palermo", "Paolo"], shared: true },
+  "evening-talk": { title: "Conversazione libera", day: "Sabato 19 settembre", short: "Sab 19", at: "18:30", duration: "9 minuti", why: "Prima di cena ROSS lascia spazio a due parole, senza una proposta.", privateSummary: "Una chiacchierata tranquilla prima di cena." },
+  "garden-walk": { title: "In giardino con un'amica", day: "Venerdì 18 settembre", short: "Ven 18", at: "15:30", duration: "Raccontato al ritorno", outside: true, why: "C'era il sole e ROSS le ha ricordato la passeggiata del pomeriggio: ad andarci ha deciso lei.", episode: "È uscita in giardino con un'amica della residenza e al ritorno ha raccontato a ROSS che i gerani di là sono più piccoli dei suoi.", links: ["Gerani sul balcone", "Vita in residenza"], shared: true },
+  garden: { title: "Cura dei gerani", day: "Giovedì 17 settembre", short: "Gio 17", at: "10:20", duration: "18 minuti", why: "Il giardinaggio fa parte della routine biografica di Elena.", episode: "Ha raccontato come sceglieva i vasi per il balcone.", links: ["Gerani sul balcone"], shared: true },
+  modugno: { title: "Musica degli anni Cinquanta", day: "Mercoledì 16 settembre", short: "Mer 16", at: "11:15", duration: "16 minuti", why: "Dopo Mina, ROSS ha provato con un'altra voce della sua giovinezza.", episode: "Con “Nel blu dipinto di blu” ha raccontato che era la canzone con cui ballava con Paolo alle feste di paese.", links: ["Paolo", "Musica italiana"], shared: true },
+  "quiet-talk": { title: "Conversazione libera", day: "Martedì 15 settembre", short: "Mar 15", at: "16:45", duration: "20 minuti", why: "Una conversazione aperta, partita da Elena.", privateSummary: "L'ha cercata lei." },
+  radio: { title: "La radio del mattino", day: "Venerdì 11 settembre", short: "Ven 11", at: "09:50", duration: "13 minuti", why: "La musica la accompagna fin dal mattino: ROSS propone, Elena sceglie.", episode: "Ha chiesto lei a ROSS di mettere Modugno, “quella del mare”, e l'ha cantata a mezza voce.", links: ["Musica italiana"], shared: true },
+  festa: { title: "La festa dei compleanni", day: "Mercoledì 9 settembre", short: "Mer 9", at: "16:00", duration: "Raccontato al ritorno", outside: true, why: "ROSS l'ha letta nel calendario della residenza e gliel'ha ricordata: ad andarci ha deciso lei.", episode: "Alla festa dei compleanni di settembre ha mangiato la torta di mele e ha raccontato a ROSS che quella di sua madre era più alta.", links: ["Vita in residenza", "Ricette di famiglia"], shared: true },
+  caponata: { title: "Ricette di famiglia", day: "Giovedì 3 settembre", short: "Gio 3", at: "11:30", duration: "17 minuti", why: "La cucina è un modo semplice per tornare alla Sicilia e alle persone care.", episode: "Ha spiegato a ROSS la caponata “come la faceva la zia”: con il cioccolato, ma poco.", links: ["Ricette di famiglia", "Sicilia"], shared: true },
+  "september-talk": { title: "Conversazione libera", day: "Martedì 1 settembre", short: "Mar 1", at: "17:05", duration: "18 minuti", why: "Il primo giorno del mese ROSS ha lasciato a Elena la scelta dell'argomento.", privateSummary: "Una conversazione lunga, serena." },
 };
-const gardenActivity = { title: "Cura dei gerani", time: "Giovedì · 10:20", duration: "18 minuti", why: "Il giardinaggio fa parte della routine biografica di Elena.", episode: "Ha raccontato come sceglieva i vasi per il balcone.", links: ["Gerani sul balcone"], shared: true };
 
-const isShared = (item, conversationDone) => item.shared || (item.sharedAfterConversation && conversationDone);
+const isShared = (item, conversationDone, outingShared) => item.shared || (item.sharedAfterConversation && conversationDone) || (item.sharedIfOuting && outingShared);
 const privateLine = "Elena ha tenuto questo racconto per sé.";
 
+function TimelineRow({ id, item, conversationDone, outingShared }) {
+  const navigate = useNavigate();
+  return <button type="button" className="fam-timeline-row" onClick={() => navigate(`/famiglia/attivita/${id}`)}><time><strong>{item.at}</strong><small>{item.short}</small></time><div><h3>{item.title}</h3>{isShared(item, conversationDone, outingShared) ? <><p>{item.episode}</p><SharedBadge /></> : <p className="fam-private">{privateLine} {item.privateSummary}</p>}<small>{item.outside ? `Fuori da ROSS · ${item.duration.toLowerCase()}` : item.duration}</small></div><ChevronRight className="fam-chevron" size={18} /></button>;
+}
+
+function MomentGroup({ kicker, title, text, ids, ...rowProps }) {
+  return <section className="fam-section">
+    <header className="fam-day"><CalendarDays size={20} /><div><span className="fam-kicker">{kicker}</span><h2>{title}</h2></div></header>
+    {text && <p className="fam-group-text">{text}</p>}
+    <div className="fam-list fam-card fam-timeline">{ids.map((id) => <TimelineRow key={id} id={id} item={activityDetails[id]} {...rowProps} />)}</div>
+  </section>;
+}
+
 export function FamilyActivities() {
-  const { state } = useDemo(); const navigate = useNavigate(); const contribution = useContributionSheet(); const [period, setPeriod] = useState("Oggi"); const conversationDone = Boolean(state.rossJourney.completedAt);
-  const rows = Object.entries(activityDetails);
-  const days = { Oggi: ["Lunedì 21 settembre", "Una giornata con musica e fotografie"], Settimana: ["15–21 settembre", "Sette giorni, cinque momenti da ricordare"], Mese: ["Settembre 2026", "Un mese raccontato attraverso interessi e persone"] };
+  const { state } = useDemo(); const contribution = useContributionSheet(); const [period, setPeriod] = useState("Oggi");
+  const conversationDone = Boolean(state.rossJourney.completedAt);
+  const outingShared = state.outing?.status === "back" && state.outing.shared;
+  const rowProps = { conversationDone, outingShared };
+  const today = ["song", "photos", "free-talk", ...(outingShared ? ["canto"] : [])];
+  const week = [
+    { kicker: "Lunedì 21 settembre · oggi", title: "Musica e fotografie", ids: today },
+    { kicker: "Domenica 20 settembre", title: "La cartolina che le hai mandato", ids: ["cartolina"] },
+    { kicker: "Sabato 19 settembre", title: "Palermo, e una chiacchierata sua", ids: ["palermo", "evening-talk"] },
+    { kicker: "Venerdì 18 settembre", title: "Fuori, in giardino", ids: ["garden-walk"] },
+    { kicker: "Giovedì 17 settembre", title: "I gerani sul balcone", ids: ["garden"] },
+    { kicker: "Mercoledì 16 settembre", title: "Un ballo con Paolo, in musica", ids: ["modugno"] },
+    { kicker: "Martedì 15 settembre", title: "Un momento suo", ids: ["quiet-talk"] },
+  ];
+  const month = [
+    { kicker: "15–21 settembre", title: "La settimana della Sicilia", text: "La tua cartolina ha riaperto Cefalù, Palermo è tornata con un gioco, ed è uscita in giardino.", ids: ["cartolina", "palermo", "garden-walk"] },
+    { kicker: "8–14 settembre", title: "Torna la musica", text: "Ha scelto lei le canzoni quasi ogni mattina, e alla festa dei compleanni c'era anche lei.", ids: ["radio", "festa"] },
+    { kicker: "1–7 settembre", title: "Si riprende il filo dopo l'estate", text: "Ricette di famiglia e lunghe chiacchierate: una l'ha tenuta per sé.", ids: ["caponata", "september-talk"] },
+  ];
+  const threads = ["La musica di Mina e Modugno", "La Sicilia e Cefalù", "Paolo", "I gerani sul balcone", "Le ricette di famiglia", "Le uscite in residenza"];
   return <FamilyShell title="Momenti" onContribute={() => contribution.openContribution("topic")}>
     <LargeTitle kicker="Racconti, non misurazioni" title="I momenti di Elena">Con ROSS, giorno per giorno: solo i racconti che ha voluto condividere con te.</LargeTitle>
-    <Tabs value={period} onValueChange={setPeriod}><TabsList className="fam-segmented" aria-label="Periodo">{Object.keys(days).map((item) => <TabsTrigger key={item} value={item} active={period === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
-    <section className="fam-section">
-      <header className="fam-day"><CalendarDays size={20} /><div><span className="fam-kicker">{days[period][0]}</span><h2>{days[period][1]}</h2></div></header>
-      <div className="fam-list fam-card fam-timeline">{(period === "Oggi" ? rows : [...rows, ["garden", gardenActivity]]).map(([activityId, item]) => <button type="button" className="fam-timeline-row" key={activityId} onClick={() => navigate(`/famiglia/attivita/${activityId}`)}><time><strong>{item.time.split(" · ")[1]}</strong><small>{item.time.split(" · ")[0]}</small></time><div><h3>{item.title}</h3>{isShared(item, conversationDone) ? <><p>{item.episode}</p><SharedBadge /></> : <p className="fam-private">{privateLine} {item.privateSummary}</p>}<small>{item.duration}</small></div><ChevronRight className="fam-chevron" size={18} /></button>)}</div>
-    </section>
+    <Tabs value={period} onValueChange={setPeriod}><TabsList className="fam-segmented" aria-label="Periodo">{["Oggi", "Settimana", "Mese"].map((item) => <TabsTrigger key={item} value={item} active={period === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
+    {period === "Oggi" && <MomentGroup kicker="Lunedì 21 settembre" title="Una giornata con musica e fotografie" ids={today} {...rowProps} />}
+    {period === "Settimana" && week.map((group) => <MomentGroup key={group.kicker} {...group} {...rowProps} />)}
+    {period === "Mese" && <>
+      <section className="fam-card"><span className="fam-kicker">Settembre 2026 · i fili del mese</span><h2>Cosa è tornato più spesso</h2><p>Gli interessi che hanno acceso di più le sue conversazioni con ROSS, tra quelle che ha scelto di condividere con te.</p><div className="fam-tags">{threads.map((thread) => <span key={thread}>{thread}</span>)}</div></section>
+      {month.map((group) => <MomentGroup key={group.kicker} {...group} {...rowProps} />)}
+    </>}
     {contribution.sheet}
   </FamilyShell>;
 }
 
 export function FamilyActivityDetail() {
   const { id } = useParams(); const contribution = useContributionSheet(); const { state } = useDemo();
-  const item = activityDetails[id] || gardenActivity;
-  const shared = isShared(item, Boolean(state.rossJourney.completedAt));
+  const item = activityDetails[id] || activityDetails.garden;
+  const shared = isShared(item, Boolean(state.rossJourney.completedAt), state.outing?.status === "back" && state.outing.shared);
   return <FamilyShell title={item.title} back={{ to: "/famiglia/attivita", label: "Momenti" }} onContribute={() => contribution.openContribution("topic")}>
     <article className="fam-detail">
-      <header className="fam-activity-hero"><Sparkles size={30} /><span className="fam-kicker">Attività con ROSS</span><h1>{item.title}</h1><p>{item.time} · {item.duration}</p></header>
+      <header className="fam-activity-hero"><Sparkles size={30} /><span className="fam-kicker">{item.outside ? "Fuori da ROSS, raccontato da Elena" : "Attività con ROSS"}</span><h1>{item.title}</h1><p>{item.day} · {item.at} · {item.duration}</p></header>
       {shared ? <>
         <section className="fam-card"><span className="fam-kicker">Un piccolo episodio</span><h2>{item.episode}</h2><SharedBadge /></section>
-        <section className="fam-card"><span className="fam-kicker">Perché ROSS l’ha proposta</span><p>{item.why}</p></section>
+        <section className="fam-card"><span className="fam-kicker">{item.outside ? "Come c’è arrivata" : "Perché ROSS l’ha proposta"}</span><p>{item.why}</p></section>
         <section className="fam-card"><span className="fam-kicker">Collegamenti</span><div className="fam-tags">{item.links.map((link) => <span key={link}>{link}</span>)}</div></section>
       </> : <>
         <section className="fam-card"><span className="fam-kicker">Un momento suo</span><h2>{privateLine}</h2><p>{item.privateSummary} ROSS racconta alla famiglia solo ciò che Elena sceglie di condividere.</p></section>
-        <section className="fam-card"><span className="fam-kicker">Perché ROSS l’ha proposta</span><p>{item.why}</p></section>
+        <section className="fam-card"><span className="fam-kicker">{item.outside ? "Come c’è arrivata" : "Perché ROSS l’ha proposta"}</span><p>{item.why}</p></section>
       </>}
       <button type="button" className="fam-button" onClick={() => contribution.openContribution("topic")}><Lightbulb size={18} /> Suggerisci un’attività simile</button>
     </article>

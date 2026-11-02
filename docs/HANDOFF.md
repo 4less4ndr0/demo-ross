@@ -250,6 +250,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Famiglia: Momenti ha una settimana e un mese da mostrare
+- **Richiesta:** in Momenti, Settimana e Mese ripetevano i momenti di oggi; inventare contenuti per entrambe.
+- **Modifiche:**
+  - **Settimana (15–21 settembre):** un gruppo per giorno, con un titolo umano ("La cartolina che le hai mandato", "Fuori, in giardino", "Un momento suo"…). Dentro ci sono momenti con ROSS, un'uscita raccontata da Elena ("In giardino con un'amica") e due conversazioni tenute per sé;
+  - **Mese (settembre):** in cima la card "I fili del mese" (gli interessi tornati più spesso, tra i racconti condivisi), poi tre settimane, ognuna con un titolo e una frase di sintesi ("La settimana della Sicilia", "Torna la musica", "Si riprende il filo dopo l'estate") e i suoi momenti principali;
+  - regole rispettate: il racconto compare solo se Elena l'ha condiviso, altrimenti il titolo resta generico ("Conversazione libera") con il solo "com'è andata"; le uscite (festa dei compleanni, giardino, canto in salone) compaiono come "Fuori da ROSS · raccontato al ritorno", perché è Elena a raccontarle; nessun punteggio;
+  - "La cartolina di Anna" collega Momenti a Da te: il contributo di Anna "Ripreso con Elena";
+  - il canto in salone di oggi compare in Momenti solo se Elena ha scelto di raccontarlo ad Anna;
+  - nel dettaglio di un'uscita: "Fuori da ROSS, raccontato da Elena" e "Come c'è arrivata" (ROSS ha proposto, ha deciso lei).
+- **File:** `src/pages/FamilyExperience.jsx` (`activityDetails` con i campi `day`, `short`, `at`, `outside`), `src/styles.css`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Note dei segnali con la maiuscola quando stanno da sole
 - **Richiesta:** in "Come sta questa settimana" la nota di "Partecipazione" iniziava con la minuscola ("ha raccontato 4 attività…").
 - **Modifiche:** sistemato alla fonte. `signalDetail` (`src/data/careInsights.js`) mette la maiuscola alla nota quando la mostra da sola, e lo stesso fa il grafico del report (`OperationalPages.jsx`). Il dato resta minuscolo perché serve anche dentro le frasi della chat ("Elena: partecipazione, ha raccontato…"). Corretto in Famiglia, nel ritratto e nel report di Elena.
