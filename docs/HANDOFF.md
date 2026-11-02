@@ -250,6 +250,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Famiglia: nomi e contenuti presi dal vecchio mockup
+- **Richiesta:** valutare cosa prendere dal vecchio mockup ("La giornata di Maria", Benessere, Avvisi, Mente e ricordi) **senza cambiare l'estetica attuale**.
+- **Modifiche:**
+  - schede in basso rinominate: **Oggi · Ricordi · Giornata · Da te** (prima Storia, Attività, Condivisi); gli indirizzi non cambiano;
+  - titoli con sottotitolo umano: "I ricordi di Elena", "La giornata di Elena" (etichetta "Momenti, non misurazioni"), "Cosa hai portato a ROSS" (etichetta "Da te, per Elena");
+  - in cima a Oggi una riga rassicurante, adattata dal "Tutto tranquillo" e dal "Momento felice" del mockup: "Con ROSS è stata una bella giornata. Il sorriso di oggi: …", con un solo momento tra quelli condivisi da Elena; parla di ROSS e non della salute;
+  - lasciati fuori: battito, passi, sonno, temperatura, idratazione, farmaci, punteggi dei giochi, intensità delle conversazioni (dati sanitari, monitoraggio o punteggi).
+- **File:** `src/pages/FamilyExperience.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Toggle "Famiglia su iPhone" nella pillola Vista demo
 - **Richiesta:** poter forzare la visualizzazione da telefono dell'app di Anna anche quando si presenta.
 - **Modifiche:**

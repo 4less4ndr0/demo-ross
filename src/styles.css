@@ -1050,6 +1050,7 @@
 .fam-source{display:flex;gap:10px;padding:14px 16px;border-radius:16px;background:var(--family-mint-soft)}
 .fam-source svg{flex:none;color:var(--fam-mint-text);margin-top:2px}
 .fam-source p{margin:0;font-size:15px;line-height:1.45}
+.fam-today p strong{font-weight:600;color:var(--family-ink)}
 
 /* Attività */
 .fam-day{display:flex;gap:10px;align-items:flex-start;padding:4px 4px 4px}
