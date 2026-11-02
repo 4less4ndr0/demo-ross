@@ -250,6 +250,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Vista Mappa aggiornata con le ultime modifiche
+- **Richiesta:** aggiornare la vista Mappa (`/mappa`) con le novità delle ultime PR.
+- **Modifiche:**
+  - i dati della mappa (`window.FLOORPLAN` in `public/mappa-ross.html`) sono stati ricalcolati dal codice attuale: 37 file (nuovi `src/data/familyMessages.js`, `src/data/activities.js`, `src/state/lockScreen.js`, `src/state/familyNews.js`), righe, simboli e collegamenti di import di ogni file; le 16 schermate dalle rotte di `App.jsx` (Da lei, Da te e Insieme al posto di Storia, Attività e Condivisi);
+  - descrizioni aggiornate: Famiglia come app per iPhone, tablet con le novità da Anna, pillola "Vista demo" (cornice iPhone, schermata di blocco, ripristino), Ospiti in ordine alfabetico, attività suggerite;
+  - percorsi guidati: "Elena racconta, Anna legge" passa dalla notifica sull'iPhone; nuovo percorso **"Anna manda, ROSS riordina, Elena ascolta"**; il giro "Start here" ha una tappa su come ROSS riordina i messaggi;
+  - "Recent work" racconta le ultime cinque novità (Famiglia su iPhone, schede Da lei / Da te / Insieme, il + come messaggio libero, visita guidata e ripristino, Ospiti in ordine alfabetico);
+  - sorgenti in `docs/floorplan/` (architettura, descrizioni, lavori recenti) allineate alla mappa.
+- **Limite:** il plugin Floorplan non è disponibile in questo ambiente, quindi l'aggiornamento è stato fatto con uno script sui dati incorporati. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile (istruzioni in `docs/floorplan/README.md`).
+- **File:** `public/mappa-ross.html`, `docs/floorplan/`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · Ospiti in ordine alfabetico e attività nel ritratto
 - **Richiesta:** togliere l'ordine per attenzione dalla lista Ospiti e mostrare, in "Come avvicinarsi", attività del calendario collegate agli interessi condivisi (anteprima approvata, senza riquadri sulle schede).
 - **Modifiche:**

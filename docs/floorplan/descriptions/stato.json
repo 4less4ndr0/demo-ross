@@ -2,7 +2,15 @@
   "files": {
     "src/state/DemoContext.jsx": {
       "name": "Memoria condivisa della demo",
-      "description": "Tiene ruolo, tema, conversazioni, allegati e consensi, li salva nel browser e mostra gli avvisi con \"Annulla\"."
+      "description": "Tiene ruolo, tema, conversazioni, allegati, consensi, messaggi di Anna e spunti salvati, li salva nel browser e mostra gli avvisi con \"Annulla\"."
+    },
+    "src/state/familyNews.js": {
+      "name": "Novità da Anna",
+      "description": "Permette alla visita guidata di far ricomparire sul tablet l'avviso \"Anna ti ha mandato qualcosa\"."
+    },
+    "src/state/lockScreen.js": {
+      "name": "Schermata di blocco",
+      "description": "Decide quando l'iPhone di Anna si apre sulla notifica di ROSS: al primo avvio, dalla pillola o nella visita guidata."
     }
   }
 }

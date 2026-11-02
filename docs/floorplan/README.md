@@ -9,9 +9,9 @@ Si apre **dentro la demo**: pillola "Vista demo" in basso a destra → **Mappa**
 Dentro trovi:
 - **la panoramica**: Guscio dell'app, Vista Struttura (con Chiedi a ROSS, Ospiti e ritratto, Report e Panoramica, Cornice), Vista Famiglia, Tablet di ROSS, Pezzi comuni, Memoria della demo, Contenuti della demo, Pubblicazione, Controlli;
 - **Start here**: un giro di un minuto per chi arriva ora;
-- **Flows**: tre percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge");
+- **Flows**: quattro percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge", "Anna manda, ROSS riordina, Elena ascolta");
 - **Screens**: le 16 schermate dell'app e cosa c'è dietro a ciascuna;
-- **Recent work**: le ultime modifiche (metodo salutogenico, visita guidata, vista Mappa).
+- **Recent work**: le ultime modifiche (Famiglia su iPhone, schede Da lei / Da te / Insieme, il + come messaggio libero con il riordino di ROSS, visita guidata e "Ripristina la demo", Ospiti in ordine alfabetico).
 
 Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codice, niente server esposti.
 
@@ -25,6 +25,9 @@ Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codi
 | `recent-work.json` | Le modifiche evidenziate in "Recent work" |
 
 ## Aggiornarla
+
+**Ultimo aggiornamento: 2 novembre 2026, senza plugin.** I dati incorporati nella mappa (`window.FLOORPLAN` dentro `public/mappa-ross.html`) sono stati aggiornati da uno script che rilegge il codice: righe, simboli e collegamenti di import di ogni file, schermate dalle rotte di `App.jsx`, più le descrizioni, i percorsi, il giro e i lavori recenti scritti a mano. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
+
 
 Floorplan è un plugin di Claude Code (e Codex). Per rigenerare la mappa dopo nuove modifiche:
 

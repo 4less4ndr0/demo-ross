@@ -1,69 +1,118 @@
 {
-  "updatedAt": "2026-11-01T21:30:00Z",
+  "updatedAt": "2026-11-02T15:31:13.000Z",
   "tasks": [
     {
-      "title": "Metodo salutogenico",
-      "request": "Portare la salutogenesi nella demo",
-      "summary": "Il metodo è entrato come cornice di progetto: card \"Le risorse di …\" nel ritratto, voce \"Il metodo\" negli specchietti, \"Come puoi esserle vicina\" nella Famiglia e un capitolo nella visita guidata.",
+      "title": "Famiglia su iPhone",
+      "request": "Adattare la vista Famiglia al telefono, secondo le linee guida Apple",
+      "summary": "La Famiglia è un'app per iPhone (margini, tocchi da 44pt, tab bar, sheet dal basso) dentro una cornice che si accende dalla pillola \"Vista demo\", con la schermata di blocco come primo contatto.",
       "items": [
-        {
-          "ref": "src/data/salutogenesis.js",
-          "change": "new",
-          "note": "Nuovo: i testi del metodo e i suggerimenti per la famiglia, in un solo posto."
-        },
-        {
-          "ref": "src/pages/ResidentProfile.jsx",
-          "change": "changed",
-          "note": "Il ritratto mostra prima le risorse che aiutano l'ospite a stare bene."
-        },
-        {
-          "ref": "src/components/PageGuide.jsx",
-          "change": "changed",
-          "note": "Gli specchietti \"Cosa ti dice ROSS\" hanno la voce \"Il metodo\"."
-        },
         {
           "ref": "src/pages/FamilyExperience.jsx",
           "change": "changed",
-          "note": "Anna trova \"Come puoi esserle vicina\", la famiglia come risorsa reciproca."
-        }
-      ]
-    },
-    {
-      "title": "Visita guidata più chiara",
-      "request": "Rendere la visita guidata più stabile e aggiungere un modo per tornare all'indice",
-      "summary": "La visita è organizzata per capitoli con l'etichetta \"lente\" su ogni passo; il bottone \"Indice\" (tasto Home) riporta al benvenuto con l'agenda.",
-      "items": [
+          "note": "Barra in alto, tab bar con il + al centro, sheet dal basso, cornice iPhone e schermata di blocco."
+        },
         {
-          "ref": "src/components/GuidedTour.jsx",
+          "ref": "src/state/lockScreen.js",
+          "change": "new",
+          "note": "Nuovo: quando mostrare la notifica sulla schermata di blocco."
+        },
+        {
+          "ref": "src/components/ui.jsx",
           "change": "changed",
-          "note": "Passi più stabili, capitolo \"Il metodo\" e bottone \"Indice\" per tornare all'agenda."
+          "note": "Le finestre si possono aprire dentro lo schermo dell'iPhone; nuovo interruttore nei menu."
         },
         {
           "ref": "src/styles.css",
           "change": "changed",
-          "note": "Stile della scheda della visita e del nuovo bottone \"Indice\"."
+          "note": "La sezione \"Vista Famiglia come app per iPhone\"."
+        },
+        {
+          "ref": "index.html",
+          "change": "changed",
+          "note": "Pronta per le aree sicure dell'iPhone."
         }
       ]
     },
     {
-      "title": "Vista Mappa nella demo",
-      "request": "Una nuova visualizzazione con la mappatura della demo",
-      "summary": "La pillola \"Vista demo\" ha una quarta voce, Mappa (tasto 4), che apre questa mappa a tutto schermo dentro la demo.",
+      "title": "Le schede seguono la direzione delle cose",
+      "request": "Separare ciò che arriva da Elena da ciò che manda la famiglia",
+      "summary": "Oggi · Da lei · + · Da te · Insieme: Da lei unisce racconti e ricordi di Elena, Da te ciò che Anna ha mandato e com'è andata, Insieme la relazione e il metodo.",
       "items": [
         {
-          "ref": "src/pages/DemoMap.jsx",
-          "change": "new",
-          "note": "Nuova: la schermata che mostra la mappa a tutto schermo."
-        },
-        {
-          "ref": "src/components/PerspectiveSwitcher.jsx",
+          "ref": "src/pages/FamilyExperience.jsx",
           "change": "changed",
-          "note": "Aggiunta la voce \"Mappa · come è fatta la demo\" con il tasto 4."
+          "note": "Nuove schermate Da lei, Da te e Insieme; settimana e mese nei racconti."
         },
         {
           "ref": "src/App.jsx",
           "change": "changed",
-          "note": "Il nuovo indirizzo /mappa apre la vista Mappa."
+          "note": "Nuovi indirizzi; i vecchi rimandano a quelli nuovi."
+        },
+        {
+          "ref": "src/state/DemoContext.jsx",
+          "change": "changed",
+          "note": "Gli spunti per le chiamate salvati da Anna."
+        }
+      ]
+    },
+    {
+      "title": "Il + diventa un messaggio libero",
+      "request": "Niente modulo: scrivere o parlare liberamente, e ROSS riordina per Elena",
+      "summary": "Anna scrive o detta con il microfono e allega con la graffetta; ROSS capisce cosa c'è, separa i promemoria e sul tablet lo racconta a Elena una cosa alla volta.",
+      "items": [
+        {
+          "ref": "src/data/familyMessages.js",
+          "change": "new",
+          "note": "Nuovo: le regole con cui ROSS riordina i messaggi della famiglia."
+        },
+        {
+          "ref": "src/pages/RossExperience.jsx",
+          "change": "changed",
+          "note": "L'avviso \"Anna ti ha mandato qualcosa\" e il racconto a schermo, una cosa alla volta."
+        },
+        {
+          "ref": "src/state/familyNews.js",
+          "change": "new",
+          "note": "Nuovo: la visita guidata fa ricomparire l'avviso sul tablet."
+        }
+      ]
+    },
+    {
+      "title": "Presentare meglio la demo",
+      "request": "Visita guidata completa e un modo per ricominciare da capo",
+      "summary": "La visita mostra tutte le schede di Anna, la schermata di blocco e le novità sul tablet; \"Ripristina la demo\" riporta tutto com'era.",
+      "items": [
+        {
+          "ref": "src/components/GuidedTour.jsx",
+          "change": "changed",
+          "note": "Nuovi passi per l'app di Anna, la notifica e le novità sul tablet."
+        },
+        {
+          "ref": "src/components/PerspectiveSwitcher.jsx",
+          "change": "changed",
+          "note": "Cornice iPhone, schermata di blocco e \"Ripristina la demo\" nella pillola."
+        }
+      ]
+    },
+    {
+      "title": "Ospiti in ordine alfabetico",
+      "request": "Semplificare la lista e proporre attività nel ritratto",
+      "summary": "La lista Ospiti è in ordine alfabetico, senza avvisi sulle schede; nel ritratto compaiono le attività che potrebbero interessare.",
+      "items": [
+        {
+          "ref": "src/pages/Residents.jsx",
+          "change": "changed",
+          "note": "Ordine alfabetico."
+        },
+        {
+          "ref": "src/pages/ResidentProfile.jsx",
+          "change": "changed",
+          "note": "\"Attività che potrebbero interessarle\" in Come avvicinarsi."
+        },
+        {
+          "ref": "src/data/activities.js",
+          "change": "new",
+          "note": "Nuovo: calendario d'esempio e attività suggerite."
         }
       ]
     }

@@ -2,11 +2,11 @@
   "files": {
     "index.html": {
       "name": "Pagina di partenza",
-      "description": "Carica l'app nel browser: è la pagina vuota in cui la demo si disegna."
+      "description": "Carica l'app nel browser: è la pagina vuota in cui la demo si disegna, pronta anche per le aree sicure dell'iPhone."
     },
     "src/App.jsx": {
       "name": "Mappa delle schermate",
-      "description": "Decide quale schermata mostrare per ogni indirizzo delle tre viste e rimanda i vecchi indirizzi a quelli nuovi."
+      "description": "Decide quale schermata mostrare per ogni indirizzo delle tre viste e rimanda i vecchi indirizzi a quelli nuovi (per esempio /famiglia/storia a Da lei)."
     },
     "src/asset.js": {
       "name": "Percorsi di immagini e file",
@@ -18,7 +18,7 @@
     },
     "src/styles.css": {
       "name": "Aspetto di tutte le viste",
-      "description": "Colori, caratteri e spaziature di Struttura, Famiglia e tablet, inclusi tema chiaro/scuro e stampa dei report."
+      "description": "Colori, caratteri e spaziature di Struttura, Famiglia (app per iPhone) e tablet, inclusi tema chiaro/scuro e stampa dei report."
     }
   }
 }
