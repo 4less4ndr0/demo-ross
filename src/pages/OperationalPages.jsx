@@ -205,7 +205,7 @@ function ResidentReport({ resident, report, period }) {
     <section className="infographic-grid report-infographics">
       <ChartCard title="Questa settimana rispetto al solito" question={`Segnali espressi negli ultimi 7 giorni: in quante conversazioni, rispetto alla media di ${name}.`}>
         {report.signals.length ? <>
-          <Dumbbell ariaLabel={`Segnali espressi da ${name} rispetto al solito`} rows={[...positive, ...watch].map((sig) => ({ ...sig, label: capitalize(sig.signal), note: sig.note, tip: sig.usual == null ? `${capitalize(sig.signal)}: ${sig.count} conversazioni su ${sig.of}, ROSS la sta ancora conoscendo` : `${capitalize(sig.signal)}: ${sig.count} conversazioni su ${sig.of} questa settimana, di solito ${sig.usual}` }))} />
+          <Dumbbell ariaLabel={`Segnali espressi da ${name} rispetto al solito`} rows={[...positive, ...watch].map((sig) => ({ ...sig, label: capitalize(sig.signal), note: sig.note && capitalize(sig.note), tip: sig.usual == null ? `${capitalize(sig.signal)}: ${sig.count} conversazioni su ${sig.of}, ROSS la sta ancora conoscendo` : `${capitalize(sig.signal)}: ${sig.count} conversazioni su ${sig.of} questa settimana, di solito ${sig.usual}` }))} />
           <ChartLegend items={[...(positive.length ? [{ tone: "pos", label: "Va bene" }] : []), ...(watch.length ? [{ tone: "neg", label: "Da osservare" }] : []), ...(report.building ? [] : [{ tone: "mid", shape: "ring", label: "Di solito" }])]} />
         </> : <p className="chart-empty">{report.building ? "ROSS la sta ancora conoscendo" : "Nessun segnale particolare rispetto alla sua media"}</p>}
       </ChartCard>

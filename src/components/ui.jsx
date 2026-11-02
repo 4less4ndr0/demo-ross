@@ -28,6 +28,10 @@ export function DropdownMenuItem({ className, icon: Icon, shortcut, children, de
 export function DropdownMenuRadioItem({ children, ...props }) {
   return <DropdownPrimitive.RadioItem className="ui-menu-item ui-menu-radio" {...props}><span className="ui-menu-indicator"><DropdownPrimitive.ItemIndicator><Check size={14} /></DropdownPrimitive.ItemIndicator></span><span>{children}</span></DropdownPrimitive.RadioItem>;
 }
+// Interruttore dentro un menu (Radix CheckboxItem): resta aperto, così si vede l'effetto.
+export function DropdownMenuSwitchItem({ icon: Icon, shortcut, checked, onCheckedChange, children, className }) {
+  return <DropdownPrimitive.CheckboxItem checked={checked} onCheckedChange={onCheckedChange} onSelect={(event) => event.preventDefault()} className={cx("ui-menu-item ui-menu-switch", className)}>{Icon && <Icon size={15} />}<span>{children}</span><i className="ui-switch" data-on={checked ? "" : undefined} aria-hidden="true" />{shortcut && <kbd>{shortcut}</kbd>}</DropdownPrimitive.CheckboxItem>;
+}
 export function DropdownMenuLabel({ children }) {
   return <DropdownPrimitive.Label className="ui-menu-label">{children}</DropdownPrimitive.Label>;
 }
