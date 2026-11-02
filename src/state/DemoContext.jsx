@@ -294,6 +294,12 @@ export function DemoProvider({ children }) {
     },
     // Elena ha ascoltato sul tablet ciò che Anna le ha mandato: l'avviso "Anna ti ha mandato qualcosa" si spegne.
     markFamilyHeard: (ids) => setState((prev) => ({ ...prev, familyContributions: prev.familyContributions.map((item) => ids.includes(item.id) ? { ...item, unheard: false } : item) })),
+    // Per la visita guidata: rimette "da ascoltare" il messaggio di oggi di Anna (o l'ultimo che ROSS ha rielaborato).
+    replayFamilyNews: () => setState((prev) => {
+      if (prev.familyContributions.some((item) => item.unheard)) return prev;
+      const target = prev.familyContributions.find((item) => item.id === "family-today-message") || prev.familyContributions.find((item) => item.parts?.length);
+      return target ? { ...prev, familyContributions: prev.familyContributions.map((item) => item.id === target.id ? { ...item, unheard: true } : item) } : prev;
+    }),
     scheduleActivity: (activity) => {
       setState((prev) => ({ ...prev, scheduledActivities: [{ id: `scheduled-${Date.now()}`, status: "Programmata", owner: "Giulia Serra", ...activity }, ...prev.scheduledActivities] }));
       notify("Attività programmata e collegata alla giornata");
