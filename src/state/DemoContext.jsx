@@ -18,7 +18,7 @@ const initialRossJourney = {
 };
 
 // Messaggio libero di Anna arrivato oggi (dettato a voce): ROSS l'ha già rielaborato in due cose da dire a Elena.
-const annaToday = "Ciao mamma, stasera ti chiamo dopo cena e ti racconto di Sofia. Ricordati le gocce per gli occhi prima di dormire!";
+const annaToday = "Ciao mamma, stasera ti chiamo dopo cena e ti racconto di Sofia. Ricordati che domani alle 11 viene il parrucchiere!";
 
 const initialFamilyContributions = [
   {
@@ -81,6 +81,8 @@ function defaultState() {
     theme: "ross",
     familyPhone: true, // vista Famiglia dentro la cornice iPhone (toggle nella pillola "Vista demo")
     // Spunti per le chiamate che Anna salva da Oggi: restano suoi (scheda Insieme), non vanno a ROSS.
+    // Promemoria di Anna: "done" (va bene), "later" (ricordamelo domattina), "stopped" (non ricordarmelo più). Niente conferme registrate.
+    reminders: {},
     savedPrompts: [{ id: "prompt-festa", text: "Chiedile della festa dei compleanni: com'era la torta di mele?", savedAt: "mercoledì 9 settembre" }],
     residents: initialResidents,
     memories: initialMemories,
@@ -293,6 +295,8 @@ export function DemoProvider({ children }) {
       notify("Mandato a ROSS: lo racconterà a Elena nel momento giusto");
     },
     // Elena ha ascoltato sul tablet ciò che Anna le ha mandato: l'avviso "Anna ti ha mandato qualcosa" si spegne.
+    replayReminders: () => setState((prev) => ({ ...prev, reminders: {} })),
+    setReminder: (key, status) => setState((prev) => ({ ...prev, reminders: { ...(prev.reminders || {}), [key]: status } })),
     markFamilyHeard: (ids) => setState((prev) => ({ ...prev, familyContributions: prev.familyContributions.map((item) => ids.includes(item.id) ? { ...item, unheard: false } : item) })),
     // Per la visita guidata: rimette "da ascoltare" il messaggio di oggi di Anna (o l'ultimo che ROSS ha rielaborato).
     replayFamilyNews: () => setState((prev) => {

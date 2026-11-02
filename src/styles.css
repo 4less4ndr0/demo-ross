@@ -1256,3 +1256,28 @@
 .sim-note{font-size:12px;color:var(--muted);margin:12px 0 0}
 @media(max-width:650px){.activity-detail dl{grid-template-columns:1fr;gap:2px}.activity-detail dd{margin-bottom:8px}}
 .activity-list{list-style:none;padding:0 4px 0 0;margin:14px 0 0;display:grid;gap:10px;max-height:min(52vh,460px);overflow-y:auto}.activity-list li{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}.activity-list strong{font-size:14px}.activity-list span{font-size:13px;color:var(--muted)}
+
+/* Tablet di Elena · scheda "una cosa alla volta" (si apre dalla home: novità da Anna, promemoria, giochi, ricordi) */
+.ross-stage-overlay{position:fixed;inset:0;z-index:110;display:flex;flex-direction:column;background:radial-gradient(circle at 50% 30%,rgba(255,122,45,.12),transparent 55%),var(--ross-bg);color:var(--ross-text);animation:rossStageIn .3s ease-out}
+.ross-stage-bar{display:flex;align-items:center;justify-content:space-between;padding:18px clamp(18px,4vw,52px);border-bottom:1px solid rgb(var(--ross-ink) / .08)}
+.ross-stage-bar>button{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border:1px solid rgb(var(--ross-ink) / .18);border-radius:999px;background:var(--ross-panel);color:var(--ross-text);font-size:16px;font-weight:600}
+.ross-stage-bar>button svg{width:18px;height:18px}
+.ross-listening{display:inline-flex;align-items:center;gap:10px;font-size:15px;color:var(--ross-muted)}
+.ross-listening i{width:12px;height:12px;border-radius:50%;background:#3b9a7c;box-shadow:0 0 0 6px rgba(59,154,124,.18)}
+.ross-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:24px clamp(20px,8vw,120px) 96px;overflow:auto;animation:rossStageIn .35s ease-out}
+@keyframes rossStageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ross-orb{width:120px;height:120px;flex:none;border-radius:50%;margin-bottom:10px;background:radial-gradient(circle at 40% 35%,#ffd2b0,#ff8a43 55%,#e2581e);box-shadow:0 0 0 16px rgba(255,122,45,.12),0 0 70px rgba(255,122,45,.42);animation:rossOrb 3.6s ease-in-out infinite}
+@keyframes rossOrb{0%,100%{box-shadow:0 0 0 14px rgba(255,122,45,.12),0 0 60px rgba(255,122,45,.38)}50%{box-shadow:0 0 0 22px rgba(255,122,45,.08),0 0 90px rgba(255,122,45,.5)}}
+.ross-stage-photo{width:min(560px,100%);max-height:320px;object-fit:cover;border-radius:24px;box-shadow:0 20px 50px rgba(0,0,0,.14);margin-bottom:6px}
+.ross-stage-tag{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;background:#fde7d6;color:#b5481f;font-size:15px;font-weight:700}
+.ross-stage-tag svg{width:17px;height:17px}
+.ross-stage-line{margin:4px 0 0;max-width:920px;font:500 clamp(28px,3.6vw,44px)/1.22 var(--serif);color:var(--ross-text)}
+.ross-stage-hint{margin:14px 0 0;font-size:16px;color:var(--ross-muted)}
+.ross-say{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:980px}
+.ross-say button{display:inline-flex;align-items:center;gap:8px;min-height:56px;padding:0 24px;border:1.5px solid rgb(var(--ross-ink) / .18);border-radius:999px;background:var(--ross-panel);color:var(--ross-text);font:500 21px var(--serif);cursor:pointer}
+.ross-say button:hover{border-color:var(--ross-glow)}
+.ross-say button svg{width:16px;height:16px;color:#d8664c;flex:none}
+.ross-stage-foot{margin-top:8px;max-width:620px;font-size:14px;color:var(--ross-muted)}
+.ross-reminder-card h3{font-size:21px;line-height:1.3}
+.ross-reminder-card .ross-prompt-icon{background:#fde7d6;color:#b5481f}
+@media(prefers-reduced-motion:reduce){.ross-stage-overlay,.ross-stage,.ross-orb{animation:none}}

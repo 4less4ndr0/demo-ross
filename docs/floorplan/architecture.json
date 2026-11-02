@@ -3,7 +3,7 @@
   "audience": "everyone",
   "project": {
     "name": "ROSS · demo RSA",
-    "summary": "Demo cliccabile di ROSS, il compagno di conversazione su tablet per gli ospiti delle RSA, vista da tre prospettive: la Struttura (staff, educatrice, psicologa, direzione), la Famiglia e il tablet dell'ospite. Non c'è un server né un modello AI: dati e risposte della chat sono preparati e vivono tutti nel browser.",
+    "summary": "Demo cliccabile di ROSS, il compagno di conversazione su tablet per gli ospiti delle RSA, vista da tre prospettive: la Struttura (staff, educatrice, psicologa, direzione), la Famiglia (un'app per iPhone) e il tablet dell'ospite. Non c'è un server né un modello AI: dati, risposte della chat e riordino dei messaggi sono preparati e vivono tutti nel browser.",
     "entrypoints": [
       "src/main.jsx",
       "src/App.jsx"
@@ -45,7 +45,7 @@
       "parent": "struttura",
       "label": "Ospiti e ritratto",
       "kind": "feature",
-      "summary": "La lista degli ospiti in ordine di attenzione e il ritratto di ciascuno con i suoi quattro tab.",
+      "summary": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno con i suoi quattro tab, comprese le attività che potrebbero interessare.",
       "paths": [
         "src/pages/Residents.jsx",
         "src/pages/ResidentProfile.jsx",
@@ -80,7 +80,7 @@
       "id": "famiglia",
       "label": "Vista Famiglia",
       "kind": "ui",
-      "summary": "Cosa vede Anna, la figlia di Elena: solo i racconti che Elena ha scelto di condividere, come sta questa settimana, e i contributi da mandare direttamente a ROSS.",
+      "summary": "L'app per iPhone di Anna, la figlia di Elena: Oggi · Da lei · + · Da te · Insieme. Vede solo ciò che Elena sceglie di raccontarle; con il + le manda qualcosa a voce o per iscritto, e ROSS lo riordina per Elena.",
       "paths": [
         "src/pages/FamilyExperience.jsx"
       ]
@@ -89,7 +89,7 @@
       "id": "tablet",
       "label": "Tablet di ROSS",
       "kind": "ui",
-      "summary": "Lo schermo che usa l'ospite: spunti per oggi, inviti fuori dalla stanza e la conversazione con ROSS.",
+      "summary": "Lo schermo che usa l'ospite: le novità da Anna raccontate una alla volta, spunti per oggi, inviti fuori dalla stanza e la conversazione con ROSS.",
       "paths": [
         "src/pages/RossExperience.jsx"
       ]
@@ -98,7 +98,7 @@
       "id": "condivisi",
       "label": "Pezzi comuni",
       "kind": "library",
-      "summary": "Bottoni, menu, finestre e avvisi in stile shadcn usati da tutte le viste, più il selettore \"Vista demo\", la visita guidata e la vista Mappa.",
+      "summary": "Bottoni, menu, finestre e avvisi in stile shadcn usati da tutte le viste, più la pillola \"Vista demo\" (cornice iPhone, schermata di blocco, ripristino), la visita guidata e la vista Mappa.",
       "paths": [
         "src/components/ui.jsx",
         "src/components/Common.jsx",
@@ -111,7 +111,7 @@
       "id": "stato",
       "label": "Memoria della demo",
       "kind": "data",
-      "summary": "Tiene in un unico posto tutto ciò che cambia mentre si usa la demo (ruolo, tema, conversazioni, allegati, ricordi condivisi) e lo salva nel browser.",
+      "summary": "Tiene in un unico posto tutto ciò che cambia mentre si usa la demo (ruolo, tema, conversazioni, allegati, ricordi condivisi, messaggi di Anna, spunti salvati) e lo salva nel browser.",
       "paths": [
         "src/state"
       ]
@@ -120,7 +120,7 @@
       "id": "dati",
       "label": "Contenuti della demo",
       "kind": "data",
-      "summary": "La Residenza Aurora inventata: ospiti, segnali positivi e da osservare, risposte preparate della chat, testi dei report e il metodo salutogenico.",
+      "summary": "La Residenza Aurora inventata: ospiti, segnali positivi e da osservare, risposte preparate della chat, testi dei report, attività suggerite, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia.",
       "paths": [
         "src/data"
       ]
@@ -197,23 +197,23 @@
       "description": "Un operatore fa una domanda nella chat della Struttura e riceve una risposta con la fonte.",
       "steps": [
         {
-          "node": "guscio",
+          "ref": "n:guscio",
           "note": "L'indirizzo \"/\" apre la home della Struttura."
         },
         {
-          "node": "struttura.chat",
+          "ref": "n:struttura.chat",
           "note": "L'operatore sceglie una domanda consigliata o ne scrive una."
         },
         {
-          "node": "dati",
+          "ref": "n:dati",
           "note": "Il copione riconosce l'ospite e il tema e compone la risposta, citando sempre la fonte."
         },
         {
-          "node": "stato",
+          "ref": "n:stato",
           "note": "La conversazione viene aggiunta alla memoria della demo."
         },
         {
-          "node": "browser",
+          "ref": "n:browser",
           "note": "E resta salvata nel browser per il prossimo ricaricamento."
         }
       ]
@@ -224,15 +224,15 @@
       "description": "Dalla lista degli ospiti al ritratto di uno di loro, fino al report stampabile \"Come sta\".",
       "steps": [
         {
-          "node": "struttura.ospiti",
+          "ref": "n:struttura.ospiti",
           "note": "La lista mette prima chi ha bisogno di più attenzione; si apre il ritratto."
         },
         {
-          "node": "dati",
+          "ref": "n:dati",
           "note": "Il ritratto legge i segnali dell'ospite rispetto alla sua media e la guida \"Come avvicinarsi\"."
         },
         {
-          "node": "struttura.report",
+          "ref": "n:struttura.report",
           "note": "\"Stampa report\" apre il racconto narrativo per l'équipe, con le infografiche."
         }
       ]
@@ -243,50 +243,82 @@
       "description": "Un racconto nato sul tablet arriva alla famiglia solo se Elena sceglie di condividerlo.",
       "steps": [
         {
-          "node": "tablet",
+          "ref": "n:tablet",
           "note": "Elena parla con ROSS; alla fine ROSS chiede \"Lo racconto ad Anna?\"."
         },
         {
-          "node": "stato",
+          "ref": "n:stato",
           "note": "Il consenso viene registrato insieme al ricordo."
         },
         {
-          "node": "famiglia",
-          "note": "Anna vede il racconto con il badge \"Elena ha voluto raccontartelo\"; senza consenso solo com'è andata."
+          "ref": "f:src/state/lockScreen.js",
+          "note": "Sull'iPhone di Anna arriva una notifica: \"Elena ha voluto raccontarti una cosa\"."
+        },
+        {
+          "ref": "n:famiglia",
+          "note": "In Oggi e in Da lei Anna vede il racconto con il badge \"Elena ha voluto raccontartelo\"; senza consenso solo com'è andata."
+        }
+      ]
+    },
+    {
+      "id": "messaggio",
+      "title": "Anna manda, ROSS riordina, Elena ascolta",
+      "description": "Quello che la famiglia manda, anche tutto insieme, arriva a Elena ordinato e semplice.",
+      "steps": [
+        {
+          "ref": "n:famiglia",
+          "note": "Anna tocca il + e scrive o detta liberamente, con una foto se vuole: niente modulo."
+        },
+        {
+          "ref": "f:src/data/familyMessages.js",
+          "note": "ROSS capisce cosa c'è (foto, pensiero, domanda, promemoria…), separa i promemoria e prepara le frasi; Anna vede subito come lo racconterà."
+        },
+        {
+          "ref": "n:stato",
+          "note": "Il messaggio resta \"da ascoltare\" finché Elena non lo sente."
+        },
+        {
+          "ref": "n:tablet",
+          "note": "Sul tablet: \"Anna ti ha mandato due cose. Vuoi che te le racconti?\". ROSS le mostra una alla volta, i promemoria per ultimi."
         }
       ]
     }
   ],
   "tour": [
     {
-      "node": "guscio",
+      "ref": "n:guscio",
       "title": "Cos'è questa demo",
       "note": "Una sola app web con tre viste (Struttura, Famiglia e il tablet dell'ospite) più questa Mappa per chi presenta. Non c'è un server né un'intelligenza artificiale: dati e risposte sono preparati."
     },
     {
-      "node": "struttura",
+      "ref": "n:struttura",
       "title": "La vista Struttura",
       "note": "Lo strumento per l'équipe: chiedere a ROSS, leggere il ritratto di ogni ospite, report e panoramica. La regola d'oro: come sta, mai di cosa ha parlato."
     },
     {
-      "node": "tablet",
+      "ref": "n:tablet",
       "title": "Il tablet di ROSS",
-      "note": "Quello che vede l'ospite: spunti per oggi, inviti fuori dalla stanza e la conversazione."
+      "note": "Quello che vede l'ospite: le novità da Anna raccontate una alla volta, spunti per oggi, inviti fuori dalla stanza e la conversazione."
     },
     {
-      "node": "famiglia",
+      "ref": "n:famiglia",
       "title": "La vista Famiglia",
-      "note": "Anna vede solo ciò che Elena ha scelto di raccontarle e può mandare ricordi e musica direttamente a ROSS."
+      "note": "Un'app per iPhone: Anna vede solo ciò che Elena ha scelto di raccontarle e, con il + al centro, le manda qualcosa a voce o per iscritto. ROSS lo riordina per Elena."
     },
     {
-      "node": "dati",
+      "ref": "n:dati",
       "title": "I contenuti",
       "note": "La Residenza Aurora inventata e il copione della chat: per cambiare cosa dice la demo si parte da qui."
     },
     {
-      "node": "src/data/chatScript.js",
+      "ref": "f:src/data/chatScript.js",
       "title": "Il copione della chat",
       "note": "Ogni risposta di \"Chiedi a ROSS\" nasce in questo file."
+    },
+    {
+      "ref": "f:src/data/familyMessages.js",
+      "title": "Come ROSS riordina",
+      "note": "Le regole con cui ROSS trasforma ciò che manda la famiglia in frasi semplici per Elena: per cambiarle si parte da qui."
     }
   ],
   "ignore": [

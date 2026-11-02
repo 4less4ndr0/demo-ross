@@ -6,11 +6,22 @@
 const clean = (text = "") => text.replace(/\s+/g, " ").trim();
 const quote = (text) => `«${clean(text).replace(/[.!…]+$/, "")}»`;
 
-const isMedicine = (text) => /medicin|pastigli|pillol|gocce|compress|farmac/i.test(text);
+// Promemoria "semplici" (pagina Notion "Dati sanitari: promemoria…", 2/11/2026): ROSS ripete le parole di chi
+// li ha scritti, all'ora giusta, senza riconoscere medicine né registrare se sono stati fatti.
+const reminderCue = /\bricord(a|ati|arti)\b|non dimenticar|promemoria/;
+// Quando dirlo: nella demo tutti i promemoria arrivano la sera (o la mattina dopo, se Elena dice "ricordamelo domattina").
+export function whenOf(text = "") {
+  const t = clean(text).toLowerCase();
+  const day = t.match(/\b(lunedì|martedì|mercoledì|giovedì|venerdì|sabato|domenica)\b/);
+  if (/\bdomani|domattina\b/.test(t)) return "per domani";
+  if (day) return `per ${day[1]}`;
+  if (/stasera|stanotte|prima di dormire|dopo cena/.test(t)) return "per stasera";
+  return "";
+}
 
 export function kindOf({ text = "", image, attachmentName }) {
   const t = clean(text).toLowerCase();
-  if (/ricord(a|ati|arti|ati di)\b.*\b(prendere|chiam|telefon|appuntament|domani|stasera|alle|medicin|pastigli|pillol|gocce)|non dimenticar|promemoria/.test(t) || isMedicine(t)) return "reminder";
+  if (reminderCue.test(t)) return "reminder";
   if (image) return "photo";
   if (/canzon|ascolt|musica|cantante|disco|radio/.test(t)) return "music";
   if (t.endsWith("?")) return "topic";
@@ -24,7 +35,7 @@ export function rossLineFor({ kind, text = "", image, attachmentName }, author =
   const words = clean(text);
   switch (kind) {
     case "reminder":
-      return `${author} ti ha lasciato un promemoria: ${quote(words)}.${isMedicine(words) ? " Se hai bisogno, chiedi pure al personale." : ""}`;
+      return `${author} ti ha lasciato un promemoria${whenOf(words) ? ` ${whenOf(words)}` : ""}: ${quote(words)}.`;
     case "photo":
       return `${author} ti ha mandato una foto.${words ? ` Ti scrive: ${quote(words)}.` : ""} La guardiamo insieme?`;
     case "music":
@@ -67,14 +78,14 @@ export function elaborate({ text = "", image, attachmentName }, author = "Anna")
     const main = kind === "reminder" ? "message" : kind;
     parts.push({ kind: main, text: rest, rossLine: rossLineFor({ kind: main, text: rest, image, attachmentName }, author) });
   }
-  reminders.forEach((sentence) => parts.push({ kind: "reminder", text: sentence, rossLine: rossLineFor({ kind: "reminder", text: sentence }, author) }));
+  reminders.forEach((sentence) => parts.push({ kind: "reminder", text: sentence, when: whenOf(sentence), rossLine: rossLineFor({ kind: "reminder", text: sentence }, author) }));
   return parts;
 }
 
 // Ordine in cui ROSS racconta a Elena ciò che è arrivato: prima ciò che si guarda (le foto) e le parole di Anna,
-// poi domande, ricordi e musica; i promemoria per ultimi, così sono l'ultima cosa che resta in mente.
+// poi domande, ricordi e musica. I promemoria non si raccontano subito: arrivano la sera, all'ora giusta.
 const priority = ["photo", "message", "topic", "memory", "music", "reminder"];
 export const byPriority = (a, b) => (priority.indexOf(a.kind) - priority.indexOf(b.kind)) || String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
 
 // Frase d'esempio per la dettatura quando il browser non sa trascrivere la voce.
-export const sampleDictation = "Mamma, domenica vengo a trovarti con Sofia e ti porto le foto del mare. Ricordati la pastiglia della sera!";
+export const sampleDictation = "Mamma, domenica vengo a trovarti con Sofia e ti porto le foto del mare. Ricordati che sabato è il compleanno di Sofia!";

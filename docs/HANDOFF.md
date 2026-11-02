@@ -250,6 +250,34 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Tablet di Elena: schede "una cosa alla volta", promemoria semplici, giochi e "cosa ricordo di te"
+- **Richiesta:** migliorare la vista ROSS partendo da Notion, a cominciare dai promemoria, con schede dedicate anche a promemoria e attività (giochi). **La home del tablet resta com'è**: solo migliorie.
+- **Da Notion:**
+  - un promemoria come «alle 14 la pastiglia» è un dato sanitario, e ROSS regge come "app di promemoria" solo se il promemoria è semplice ([Dati sanitari: promemoria…, 2/11](https://app.notion.com/p/40c91e1a386a810aa624dad9a570ad81));
+  - la terapia resta fuori da ROSS (scheda Namastè);
+  - i promemoria contestuali sono tra i momenti d'uso più promettenti, ma possono essere letti come segno di incapacità ([Ricerca AI - Anziani](https://app.notion.com/p/3fd91e1a386a806c991ee3a0eb2e4622));
+  - "solo la voce" e "ROSS chiede prima di usare lo schermo" (non negoziabili; stress test sulla TV).
+- **Modifiche:**
+  - **schede "una cosa alla volta"** (`RossStage`): si aprono a tutto schermo dalla home. ROSS e la sua frase al centro, sotto "Puoi dirmi:" con le frasi da dire a voce, "Torna a ROSS" in alto. Le novità da Anna passano da qui (al posto del vecchio dialog): se c'è una foto ROSS chiede prima «Te la faccio vedere?»;
+  - **promemoria semplici**: nuova sezione **Promemoria** in home ("Te li ricordo stasera alle 21, con le parole di chi li ha lasciati. Non controllo se li hai fatti"), con "Ascoltalo ora" e "Non ricordarmelo più"; nella scheda «Va bene», «Ricordamelo domattina», «Non ricordarmelo più» (`state.reminders`). I promemoria non stanno più tra le novità (l'avviso dice "C'è anche un promemoria: te lo dico stasera"). In `familyMessages.js` tolto il riconoscimento delle medicine e la frase "chiedi pure al personale"; ogni promemoria ha il suo "quando" (per stasera, per domani, per sabato);
+  - **esempi senza farmaci**: il messaggio di Anna di oggi ricorda il parrucchiere di domani; la frase d'esempio della dettatura il compleanno di Sofia. Nella Famiglia, la nota del + diventa "I promemoria ROSS glieli ripete la sera, con le tue parole. Non controlla se li ha fatti e non te lo riferisce";
+  - **giochi** dal pannello Attività: «Indovina la canzone» (Mina, Modugno, Celentano) e «Il gioco delle parole», senza punteggi né risposte sbagliate;
+  - **"Cosa ricordo di te"** dal pannello Ricordi e foto: conferma, correggi («Era blu, non rossa») o dimentica (con conferma);
+  - **trasparenza AI**: "Sono ROSS, un compagno digitale basato sull'intelligenza artificiale";
+  - **visita guidata**: nuovo passo "Il promemoria, all'ora giusta" (`reminders: true` rimette i promemoria da ricordare); il passo "Spunti per oggi" punta a `.ross-spunti`.
+- **File:** `src/pages/RossExperience.jsx`, `src/data/familyMessages.js`, `src/state/DemoContext.jsx`, `src/state/familyNews.js`, `src/pages/FamilyExperience.jsx`, `src/components/GuidedTour.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Novembre 2026 · 02/11/2026 · Vista Mappa aggiornata con le ultime modifiche
+- **Richiesta:** aggiornare la vista Mappa (`/mappa`) con le novità delle ultime PR.
+- **Modifiche:**
+  - i dati della mappa (`window.FLOORPLAN` in `public/mappa-ross.html`) sono stati ricalcolati dal codice attuale: 37 file (nuovi `src/data/familyMessages.js`, `src/data/activities.js`, `src/state/lockScreen.js`, `src/state/familyNews.js`), righe, simboli e collegamenti di import di ogni file; le 16 schermate dalle rotte di `App.jsx` (Da lei, Da te e Insieme al posto di Storia, Attività e Condivisi);
+  - descrizioni aggiornate: Famiglia come app per iPhone, tablet con le novità da Anna, pillola "Vista demo" (cornice iPhone, schermata di blocco, ripristino), Ospiti in ordine alfabetico, attività suggerite;
+  - percorsi guidati: "Elena racconta, Anna legge" passa dalla notifica sull'iPhone; nuovo percorso **"Anna manda, ROSS riordina, Elena ascolta"**; il giro "Start here" ha una tappa su come ROSS riordina i messaggi;
+  - "Recent work" racconta le ultime cinque novità (Famiglia su iPhone, schede Da lei / Da te / Insieme, il + come messaggio libero, visita guidata e ripristino, Ospiti in ordine alfabetico);
+  - sorgenti in `docs/floorplan/` (architettura, descrizioni, lavori recenti) allineate alla mappa.
+- **Limite:** il plugin Floorplan non è disponibile in questo ambiente, quindi l'aggiornamento è stato fatto con uno script sui dati incorporati. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile (istruzioni in `docs/floorplan/README.md`).
+- **File:** `public/mappa-ross.html`, `docs/floorplan/`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · Ospiti in ordine alfabetico e attività nel ritratto
 - **Richiesta:** togliere l'ordine per attenzione dalla lista Ospiti e mostrare, in "Come avvicinarsi", attività del calendario collegate agli interessi condivisi (anteprima approvata, senza riquadri sulle schede).
 - **Modifiche:**
