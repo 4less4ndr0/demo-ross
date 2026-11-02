@@ -250,6 +250,14 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Visita guidata: tutte le schede dell'app di Anna
+- **Richiesta:** la visita si fermava a Oggi e non mostrava le altre schermate dell'app di Anna.
+- **Modifiche:**
+  - il capitolo Famiglia passa a 7 passi: la notifica, poi Oggi (racconto, settimana, come esserle vicina), poi **Momenti** ("Momenti, non misurazioni"), **Ricordi** ("I ricordi di Elena") e **Da te** ("Da te, per Elena"), che spiega anche il **+** e prende il posto del vecchio passo "Condividi con ROSS";
+  - la scheda d'apertura del capitolo elenca le quattro schede;
+  - dentro l'iPhone l'elemento evidenziato si ferma sotto la barra di navigazione (prima finiva sotto la barra) e lo scorrimento è istantaneo, così l'evidenziazione non insegue la pagina.
+- **File:** `src/components/GuidedTour.jsx`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Visita guidata: la notifica è il primo passo della Famiglia
 - **Richiesta:** aggiungere la schermata di blocco come primo passo della visita guidata.
 - **Modifiche:**
