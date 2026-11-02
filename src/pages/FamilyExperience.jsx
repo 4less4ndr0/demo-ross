@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
-import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Heart, Home, Images, Flashlight, Lightbulb, Lock, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi } from "lucide-react";
+import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Eye, EyeOff, Flashlight, Gift, HandHeart, Heart, Home, Lightbulb, Lock, MessageCircleHeart, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi, X } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
 import { Dialog, Input, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
 import { asset } from "../asset.js";
@@ -18,11 +18,13 @@ const contributionTypes = {
   music: { title: "Suggerisci una canzone", short: "Canzone", icon: Music2, label: "Titolo e artista", placeholder: "Il cielo in una stanza · Gino Paoli", help: "La canzone entrerà tra gli spunti disponibili a ROSS." },
 };
 
+// Le schede seguono la direzione delle cose: ciò che arriva da Elena (Da lei), ciò che parte da Anna (Da te),
+// e in mezzo il + che porta qualcosa a ROSS. Oggi è il punto d'ingresso, Insieme è la relazione (il metodo).
 const familyTabs = [
-  { to: "/famiglia", label: "Oggi", icon: Home, match: (path) => path === "/famiglia" },
-  { to: "/famiglia/storia", label: "Ricordi", icon: Images, match: (path) => path.startsWith("/famiglia/storia") || path.startsWith("/famiglia/ricordi") },
-  { to: "/famiglia/attivita", label: "Momenti", icon: Sparkles, match: (path) => path.startsWith("/famiglia/attivita") },
-  { to: "/famiglia/condivisi", label: "Da te", icon: Heart, match: (path) => path.startsWith("/famiglia/condivisi") },
+  { id: "oggi", to: "/famiglia", label: "Oggi", icon: Home },
+  { id: "da-lei", to: "/famiglia/da-lei", label: "Da lei", icon: MessageCircleHeart },
+  { id: "da-te", to: "/famiglia/da-te", label: "Da te", icon: Gift },
+  { id: "insieme", to: "/famiglia/insieme", label: "Insieme", icon: HandHeart },
 ];
 
 // Consenso: la famiglia vede un racconto di Elena solo se Elena ha scelto di condividerlo.
@@ -92,7 +94,7 @@ function LockScreen({ lines, onOpen }) {
   </div>;
 }
 
-function FamilyShell({ title, back, onContribute, children }) {
+function FamilyShell({ title, tab, back, onContribute, children }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [screen, setScreen] = useState(null);
@@ -108,11 +110,11 @@ function FamilyShell({ title, back, onContribute, children }) {
     return () => window.removeEventListener("resize", fit);
   }, [phone]);
   const { actions } = useDemo();
-  const [locked, setLocked] = useState(() => pathname === "/famiglia" && consumeLockScreen(tourActive()));
+  const [locked, setLocked] = useState(() => pathname === "/famiglia" && consumeLockScreen(tourActive(), phone));
   // La schermata di blocco esiste solo dentro la cornice iPhone: se è richiesta, la cornice si accende.
-  useEffect(() => { if (locked && !phone) actions.setFamilyPhone(true); }, [locked, phone, actions]);
+  useEffect(() => { if (locked && !phone) actions.setFamilyPhone(true); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    const show = () => { if (consumeLockScreen()) setLocked(true); };
+    const show = () => { if (consumeLockScreen()) { setLocked(true); actions.setFamilyPhone(true); } };
     const hide = () => setLocked(false);
     window.addEventListener("ross:lockscreen", show); window.addEventListener("ross:unlock", hide); window.addEventListener("ross:tour", hide);
     return () => { window.removeEventListener("ross:lockscreen", show); window.removeEventListener("ross:unlock", hide); window.removeEventListener("ross:tour", hide); };
@@ -131,10 +133,10 @@ function FamilyShell({ title, back, onContribute, children }) {
         <main className="fam-main screen-enter">{children}</main>
       </div>
       {/* Tab bar: due schede, il + al centro (l'azione principale: portare qualcosa a ROSS), due schede */}
-      <nav className="fam-tabbar" aria-label="Navigazione famiglia" inert={locked || undefined}>{[...familyTabs.slice(0, 2), null, ...familyTabs.slice(2)].map((tab) => {
-        if (!tab) return <button key="add" type="button" className="fam-add" onClick={onContribute} aria-label="Condividi con ROSS"><Plus size={26} strokeWidth={2.2} /></button>;
-        const { to, label, icon: Icon, match } = tab; const active = match(pathname);
-        return <NavLink key={to} to={to} end={to === "/famiglia"} className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={24} strokeWidth={active ? 2.3 : 1.8} /><span>{label}</span></NavLink>;
+      <nav className="fam-tabbar" aria-label="Navigazione famiglia" inert={locked || undefined}>{[...familyTabs.slice(0, 2), null, ...familyTabs.slice(2)].map((item) => {
+        if (!item) return <button key="add" type="button" className="fam-add" onClick={onContribute} aria-label="Condividi con ROSS"><Plus size={26} strokeWidth={2.2} /></button>;
+        const { id, to, label, icon: Icon } = item; const active = id === tab;
+        return <NavLink key={to} to={to} end className={active ? "active" : ""} aria-current={active ? "page" : undefined}><Icon size={24} strokeWidth={active ? 2.3 : 1.8} /><span>{label}</span></NavLink>;
       })}</nav>
       {locked && phone && <LockScreen lines={todayLines(state)} onOpen={unlock} />}
       <span className="fam-home-indicator" aria-hidden="true" />
@@ -185,9 +187,10 @@ export function FamilyExperience() {
   const weekSignals = signalsFor("elena").filter((item) => item.positive);
   const activityCount = useMemo(() => Math.max(3, state.interactions.filter((item) => item.residentId === "elena" && item.date === "2026-09-21").length), [state.interactions]);
   const listIt = (items) => items.length > 1 ? `${items.slice(0, -1).join(", ")} e ${items[items.length - 1]}` : items[0];
-  // Oggi rimanda a Momenti invece di ripeterne l'elenco.
+  // Oggi rimanda ai racconti in Da lei invece di ripeterne l'elenco.
   const momentsLine = ["Mina", "fotografie di viaggio", conversationDone ? "la macchina fotografica rossa" : "Cefalù", ...(outingShared ? ["il canto in salone"] : [])];
-  return <FamilyShell title="Oggi" onContribute={() => contribution.openContribution("memory")}>
+  const promptSaved = (state.savedPrompts || []).some((item) => item.text === prompt);
+  return <FamilyShell title="Oggi" tab="oggi" onContribute={() => contribution.openContribution("memory")}>
     <LargeTitle kicker="Lunedì 21 settembre" title="Oggi con Elena">Ciao Anna: ecco ciò che può aiutarti a sentirla più vicina, senza trasformare la sua giornata in dati da controllare.</LargeTitle>
 
     <div className="fam-source fam-today"><Heart size={18} /><p><strong>Con ROSS è stata una bella giornata.</strong> Il sorriso di oggi: {smile}</p></div>
@@ -197,7 +200,7 @@ export function FamilyExperience() {
       <h2>{headline}</h2>
       <p>{story}</p>
       <SharedBadge />
-      <div className="fam-list fam-inset"><Row icon={<Sparkles size={20} />} title="Rivedi i momenti di oggi" subtitle={listIt(momentsLine)} onClick={() => navigate("/famiglia/attivita")} /></div>
+      <div className="fam-list fam-inset"><Row icon={<MessageCircleHeart size={20} />} title="I suoi racconti di oggi" subtitle={listIt(momentsLine)} onClick={() => navigate("/famiglia/da-lei")} /></div>
       <dl className="fam-stats"><div><dt>momenti condivisi</dt><dd>{activityCount}</dd></div><div><dt>con ROSS</dt><dd>40 min</dd></div><div><dt>ricordi ripresi</dt><dd>2</dd></div></dl>
     </section>
 
@@ -205,7 +208,9 @@ export function FamilyExperience() {
       <div className="fam-card-head"><span className="fam-call-icon"><Phone size={18} /></span><span className="fam-kicker">Un filo per la prossima chiamata</span></div>
       <h2>{prompt}</h2>
       <p>Uno spunto, non una scaletta: sarà Elena a decidere dove portare il racconto.</p>
-      <button type="button" className="fam-button light" onClick={() => actions.addFamilyContribution({ kind: "topic", title: "Spunto per la prossima chiamata", detail: prompt, author: "Anna" })}><Check size={18} /> Salva lo spunto</button>
+      {promptSaved
+        ? <button type="button" className="fam-button light" onClick={() => navigate("/famiglia/insieme")}><Check size={18} /> Salvato: lo trovi in Insieme</button>
+        : <button type="button" className="fam-button light" onClick={() => actions.saveCallPrompt(prompt)}><Phone size={18} /> Salva lo spunto</button>}
     </section>
 
     <section className="fam-card fam-week">
@@ -215,25 +220,7 @@ export function FamilyExperience() {
       <p>ROSS ti racconta come sta, senza trasformare la sua settimana in dati da controllare. Partiamo da ciò che va bene: è il metodo di ROSS.</p>
     </section>
 
-    <section className="fam-card fam-resource">
-      <span className="fam-kicker">Anche tu sei una risorsa</span>
-      <h2>Come puoi esserle vicina</h2>
-      <p>Tre spunti a partire da ciò che fa stare bene Elena. ROSS è pensato con la lente della salutogenesi: non solo cosa manca, ma cosa aiuta a stare bene, anche nella relazione tra voi due.</p>
-      <ul>{familyResourceTips.map((tip) => <li key={tip.title}><em>{tip.lens}</em><strong>{tip.title}</strong><span>{tip.text}</span></li>)}</ul>
-    </section>
 
-    {contribution.sheet}
-  </FamilyShell>;
-}
-
-export function FamilyStory() {
-  const { state } = useDemo(); const navigate = useNavigate(); const contribution = useContributionSheet(); const [filter, setFilter] = useState("Tutti");
-  const memories = state.memories.filter((item) => item.residentId === "elena" && visibleToFamily(item) && (filter === "Tutti" || item.category === filter));
-  return <FamilyShell title="Ricordi" onContribute={() => contribution.openContribution("photo")}>
-    <LargeTitle kicker="Storia e fotografie" title="I ricordi di Elena">Quelli che ha scelto di raccontarti e quelli che hai portato tu: persone, luoghi e piccoli dettagli, ognuno con la sua provenienza.</LargeTitle>
-    <Tabs value={filter} onValueChange={setFilter}><TabsList className="fam-chips" aria-label="Filtra i ricordi">{["Tutti", "Luoghi", "Persone", "Musica", "Routine", "Fotografie", "Ricordi"].map((item) => <TabsTrigger key={item} value={item} active={filter === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
-    <section className="fam-gallery">{memories.length ? memories.map((item) => <button type="button" key={item.id} className="fam-card fam-memory" onClick={() => navigate(`/famiglia/ricordi/${item.id}`)}>{(item.image || item.id === "mem-palermo" || item.id === "mem-cefalu") && <img src={item.image || asset("cefalu-postcard.svg")} alt={item.image ? `Immagine collegata a ${item.title}` : "Cartolina illustrata del lungomare di Cefalù"} />}<div><span className="fam-kicker">{item.category} · {originLabel(item)}</span><h2>{item.title}</h2><p>{item.description}</p><small>{item.people?.join(" · ") || "Dalla storia di Elena"}</small></div></button>) : <p className="fam-empty">Nessun ricordo in questa categoria, per ora.</p>}</section>
-    <button type="button" className="fam-button" onClick={() => contribution.openContribution("photo")}><Camera size={18} /> Aggiungi una foto</button>
     {contribution.sheet}
   </FamilyShell>;
 }
@@ -244,7 +231,8 @@ export function FamilyMemoryDetail() {
   const memory = found && visibleToFamily(found) ? found : state.memories.find((item) => item.id === "mem-cefalu");
   const related = state.memories.filter((item) => item.residentId === "elena" && visibleToFamily(item) && item.id !== memory.id && (item.tags || []).some((tag) => (memory.tags || []).includes(tag))).slice(0, 3);
   const facts = [["Periodo", memory.period || memory.tags?.find((tag) => /\d{4}/.test(tag)) || "Da precisare"], ["Luogo", memory.place || (memory.tags?.includes("Sicilia") ? "Sicilia" : "Treviso")], ["Persone", memory.people?.join(", ") || "—"], ["Da dove arriva", originLabel(memory)]];
-  return <FamilyShell title={memory.title} back={{ to: "/famiglia/storia", label: "Ricordi" }} onContribute={() => contribution.openContribution("memory")}>
+  const mine = fromFamily(memory);
+  return <FamilyShell title={memory.title} tab={mine ? "da-te" : "da-lei"} back={mine ? { to: "/famiglia/da-te", label: "Da te" } : { to: "/famiglia/da-lei#ricordi", label: "Da lei" }} onContribute={() => contribution.openContribution("memory")}>
     <article className="fam-detail">
       {(memory.image || memory.tags?.includes("Sicilia")) && <img className="fam-hero-img" src={memory.image || asset("cefalu-postcard.svg")} alt={`Immagine illustrata collegata al ricordo ${memory.title}`} />}
       <LargeTitle kicker={`${memory.category} · ${originLabel(memory)}`} title={memory.title} />
@@ -298,8 +286,12 @@ function MomentGroup({ kicker, title, text, ids, ...rowProps }) {
   </section>;
 }
 
-export function FamilyActivities() {
-  const { state } = useDemo(); const contribution = useContributionSheet(); const [period, setPeriod] = useState("Oggi");
+// Da lei: tutto ciò che arriva da Elena, solo se ha scelto di condividerlo.
+// Racconti (cosa ha fatto e raccontato con ROSS: giorno, settimana, mese) e Ricordi (la sua storia).
+export function FamilyFromHer() {
+  const { state } = useDemo(); const navigate = useNavigate(); const { hash } = useLocation(); const contribution = useContributionSheet();
+  const view = hash === "#ricordi" ? "ricordi" : "racconti";
+  const [period, setPeriod] = useState("Oggi"); const [filter, setFilter] = useState("Tutti");
   const conversationDone = Boolean(state.rossJourney.completedAt);
   const outingShared = state.outing?.status === "back" && state.outing.shared;
   const rowProps = { conversationDone, outingShared };
@@ -319,14 +311,24 @@ export function FamilyActivities() {
     { kicker: "1–7 settembre", title: "Si riprende il filo dopo l'estate", text: "Ricette di famiglia e lunghe chiacchierate: una l'ha tenuta per sé.", ids: ["caponata", "september-talk"] },
   ];
   const threads = ["La musica di Mina e Modugno", "La Sicilia e Cefalù", "Paolo", "I gerani sul balcone", "Le ricette di famiglia", "Le uscite in residenza"];
-  return <FamilyShell title="Momenti" onContribute={() => contribution.openContribution("topic")}>
-    <LargeTitle kicker="Racconti, non misurazioni" title="I momenti di Elena">Con ROSS, giorno per giorno: solo i racconti che ha voluto condividere con te.</LargeTitle>
-    <Tabs value={period} onValueChange={setPeriod}><TabsList className="fam-segmented" aria-label="Periodo">{["Oggi", "Settimana", "Mese"].map((item) => <TabsTrigger key={item} value={item} active={period === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
-    {period === "Oggi" && <MomentGroup kicker="Lunedì 21 settembre" title="Una giornata con musica e fotografie" ids={today} {...rowProps} />}
-    {period === "Settimana" && week.map((group) => <MomentGroup key={group.kicker} {...group} {...rowProps} />)}
-    {period === "Mese" && <>
-      <section className="fam-card"><span className="fam-kicker">Settembre 2026 · i fili del mese</span><h2>Cosa è tornato più spesso</h2><p>Gli interessi che hanno acceso di più le sue conversazioni con ROSS, tra quelle che ha scelto di condividere con te.</p><div className="fam-tags">{threads.map((thread) => <span key={thread}>{thread}</span>)}</div></section>
-      {month.map((group) => <MomentGroup key={group.kicker} {...group} {...rowProps} />)}
+  const herMemories = state.memories.filter((item) => item.residentId === "elena" && visibleToFamily(item) && !fromFamily(item));
+  const categories = ["Tutti", ...new Set(herMemories.map((item) => item.category))];
+  const memories = herMemories.filter((item) => filter === "Tutti" || item.category === filter);
+  return <FamilyShell title="Da lei" tab="da-lei" onContribute={() => contribution.openContribution("memory")}>
+    <LargeTitle kicker="Da Elena, per te" title="Cosa ha scelto di raccontarti">I suoi racconti con ROSS e i suoi ricordi. Arrivano qui solo se è lei a volerlo.</LargeTitle>
+    <Tabs value={view} onValueChange={(next) => navigate({ hash: next === "ricordi" ? "#ricordi" : "#racconti" }, { replace: true })}><TabsList className="fam-segmented is-two" aria-label="Cosa vuoi vedere">{[["racconti", "Racconti"], ["ricordi", "Ricordi"]].map(([value, label]) => <TabsTrigger key={value} value={value} active={view === value}>{label}</TabsTrigger>)}</TabsList></Tabs>
+    {view === "racconti" ? <>
+      <Tabs value={period} onValueChange={setPeriod}><TabsList className="fam-chips" aria-label="Periodo">{["Oggi", "Settimana", "Mese"].map((item) => <TabsTrigger key={item} value={item} active={period === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
+      {period === "Oggi" && <MomentGroup kicker="Lunedì 21 settembre" title="Una giornata con musica e fotografie" ids={today} {...rowProps} />}
+      {period === "Settimana" && week.map((group) => <MomentGroup key={group.kicker} {...group} {...rowProps} />)}
+      {period === "Mese" && <>
+        <section className="fam-card"><span className="fam-kicker">Settembre 2026 · i fili del mese</span><h2>Cosa è tornato più spesso</h2><p>Gli interessi che hanno acceso di più le sue conversazioni con ROSS, tra quelle che ha scelto di condividere con te.</p><div className="fam-tags">{threads.map((thread) => <span key={thread}>{thread}</span>)}</div></section>
+        {month.map((group) => <MomentGroup key={group.kicker} {...group} {...rowProps} />)}
+      </>}
+    </> : <>
+      <Tabs value={filter} onValueChange={setFilter}><TabsList className="fam-chips" aria-label="Filtra i ricordi">{categories.map((item) => <TabsTrigger key={item} value={item} active={filter === item}>{item}</TabsTrigger>)}</TabsList></Tabs>
+      <section className="fam-gallery">{memories.map((item) => <button type="button" key={item.id} className="fam-card fam-memory" onClick={() => navigate(`/famiglia/ricordi/${item.id}`)}>{(item.image || item.id === "mem-palermo" || item.id === "mem-cefalu") && <img src={item.image || asset("cefalu-postcard.svg")} alt={item.image ? `Immagine collegata a ${item.title}` : "Cartolina illustrata del lungomare di Cefalù"} />}<div><span className="fam-kicker">{item.category} · Raccontato da Elena</span><h2>{item.title}</h2><p>{item.description}</p><small>{item.people?.join(" · ") || "Dalla storia di Elena"}</small></div></button>)}</section>
+      <p className="fam-empty fam-private">Altri ricordi Elena li ha tenuti per sé: restano tra lei e ROSS.</p>
     </>}
     {contribution.sheet}
   </FamilyShell>;
@@ -336,7 +338,7 @@ export function FamilyActivityDetail() {
   const { id } = useParams(); const contribution = useContributionSheet(); const { state } = useDemo();
   const item = activityDetails[id] || activityDetails.garden;
   const shared = isShared(item, Boolean(state.rossJourney.completedAt), state.outing?.status === "back" && state.outing.shared);
-  return <FamilyShell title={item.title} back={{ to: "/famiglia/attivita", label: "Momenti" }} onContribute={() => contribution.openContribution("topic")}>
+  return <FamilyShell title={item.title} tab="da-lei" back={{ to: "/famiglia/da-lei", label: "Da lei" }} onContribute={() => contribution.openContribution("topic")}>
     <article className="fam-detail">
       <header className="fam-activity-hero"><Sparkles size={30} /><span className="fam-kicker">{item.outside ? "Fuori da ROSS, raccontato da Elena" : "Attività con ROSS"}</span><h1>{item.title}</h1><p>{item.day} · {item.at} · {item.duration}</p></header>
       {shared ? <>
@@ -353,17 +355,24 @@ export function FamilyActivityDetail() {
   </FamilyShell>;
 }
 
-export function FamilyShared() {
-  const { state } = useDemo(); const contribution = useContributionSheet(); const [selected, setSelected] = useState(null);
-  const counts = [[state.familyContributions.length, "contributi salvati"], [state.familyContributions.filter((item) => contributionStatus(item.status) === "Ripreso con Elena").length, "già ripresi con Elena"], [state.familyContributions.filter((item) => contributionStatus(item.status) === "Disponibile a ROSS").length, "in attesa del momento giusto"]];
-  return <FamilyShell title="Da te" onContribute={() => contribution.openContribution("memory")}>
-    <LargeTitle kicker="Da te, per Elena" title="Cosa hai portato a ROSS">Foto, ricordi, temi e musica arrivano subito a ROSS, che li proporrà a Elena nel momento giusto.</LargeTitle>
+// Da te: tutto ciò che è partito da Anna (con il + al centro) e che fine ha fatto.
+export function FamilyFromYou() {
+  const { state } = useDemo(); const navigate = useNavigate(); const contribution = useContributionSheet(); const [selected, setSelected] = useState(null);
+  const counts = [[state.familyContributions.length, "cose portate a ROSS"], [state.familyContributions.filter((item) => contributionStatus(item.status) === "Ripreso con Elena").length, "già riprese con Elena"], [state.familyContributions.filter((item) => contributionStatus(item.status) === "Disponibile a ROSS").length, "in attesa del momento giusto"]];
+  // Ricordi della famiglia arrivati prima dell'app (biografia d'ingresso): quelli nati da un contributo sono già nell'elenco sopra.
+  const familyMemories = state.memories.filter((item) => item.residentId === "elena" && fromFamily(item) && !item.familyContributionId);
+  return <FamilyShell title="Da te" tab="da-te" onContribute={() => contribution.openContribution("memory")}>
+    <LargeTitle kicker="Da te, per Elena" title="Cosa le hai portato">Foto, ricordi, argomenti e canzoni arrivano subito a ROSS, che li proporrà a Elena nel momento giusto. Qui vedi com'è andata.</LargeTitle>
     <dl className="fam-card fam-stats fam-stats-card">{counts.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     <section className="fam-section">
       <div className="fam-list fam-card">{state.familyContributions.map((item) => { const Icon = contributionTypes[item.kind]?.icon || Heart; const status = contributionStatus(item.status); return <button type="button" key={item.id} className="fam-shared-row" onClick={() => setSelected(item)}>{item.image ? <img src={item.image} alt="" /> : <span className="fam-icon coral"><Icon size={20} /></span>}<span className="fam-row-text"><small className="fam-kicker">{contributionTypes[item.kind]?.short || "Contributo"}</small><strong>{item.title}</strong><small>{item.detail}</small><em className={status === "Ripreso con Elena" ? "done" : ""}>{status}</em></span><ChevronRight className="fam-chevron" size={18} /></button>; })}</div>
     </section>
+    {familyMemories.length > 0 && <section className="fam-section">
+      <header className="fam-section-head"><h2>I ricordi che hai raccontato</h2></header>
+      <div className="fam-list fam-card">{familyMemories.map((item) => <Row key={item.id} icon={item.category[0]} tone="coral" title={item.title} subtitle={`${item.category} · dalla biografia d'ingresso`} onClick={() => navigate(`/famiglia/ricordi/${item.id}`)} />)}</div>
+    </section>}
     <section className="fam-section fam-contribute">
-      <header className="fam-section-head"><h2>Cosa vuoi condividere?</h2></header>
+      <header className="fam-section-head"><h2>Cosa vuoi portarle?</h2></header>
       <ContributeTiles onPick={contribution.openContribution} />
     </section>
     {contribution.sheet}
@@ -371,7 +380,43 @@ export function FamilyShared() {
   </FamilyShell>;
 }
 
+// Insieme: la relazione tra Anna ed Elena. Gli spunti per le chiamate, il metodo (salutogenesi) e la trasparenza sul consenso.
+export function FamilyTogether() {
+  const { state, actions } = useDemo(); const contribution = useContributionSheet();
+  const prompts = state.savedPrompts || [];
+  const sees = ["I racconti che Elena sceglie di condividere con te", "Com'è andata, quando un racconto lo tiene per sé", "Come sta questa settimana: ciò che va bene, rispetto al suo solito", "Le uscite, quando è lei a raccontarle"];
+  const notSees = ["Le conversazioni con ROSS, parola per parola", "Ciò che Elena tiene per sé", "Valutazioni sulla salute: non sono il compito di ROSS"];
+  return <FamilyShell title="Insieme" tab="insieme" onContribute={() => contribution.openContribution("topic")}>
+    <LargeTitle kicker="Anche tu sei una risorsa" title="Come esserle vicina">Non solo cosa manca, ma cosa aiuta Elena a stare bene, anche nella relazione tra voi due. E lei lo è per te.</LargeTitle>
+    <section className="fam-section">
+      <header className="fam-section-head"><h2>Spunti per le prossime chiamate</h2></header>
+      {prompts.length ? <ul className="fam-list fam-card fam-prompts">{prompts.map((item) => <li key={item.id}><span className="fam-icon"><Phone size={18} /></span><span className="fam-row-text"><strong>{item.text}</strong><small>Salvato {item.savedAt}</small></span><button type="button" className="fam-prompt-remove" onClick={() => actions.removeCallPrompt(item.id)} aria-label={`Togli lo spunto: ${item.text}`}><X size={18} /></button></li>)}</ul>
+        : <p className="fam-empty">Salva uno spunto da Oggi: lo ritrovi qui prima di chiamarla.</p>}
+    </section>
+    <section className="fam-card fam-resource">
+      <span className="fam-kicker">Il metodo di ROSS</span>
+      <h2>Tre spunti da ciò che la fa stare bene</h2>
+      <p>ROSS è pensato con la lente della salutogenesi: partire dalle risorse di Elena, e la famiglia è una di queste, in tutte e due le direzioni.</p>
+      <ul>{familyResourceTips.map((tip) => <li key={tip.title}><em>{tip.lens}</em><strong>{tip.title}</strong><span>{tip.text}</span></li>)}</ul>
+    </section>
+    <section className="fam-card fam-consent">
+      <span className="fam-kicker">Cosa vedi e cosa no</span>
+      <h2>Decide Elena</h2>
+      <h3><Eye size={18} /> Vedi</h3>
+      <ul>{sees.map((item) => <li key={item}>{item}</li>)}</ul>
+      <h3><EyeOff size={18} /> Non vedi</h3>
+      <ul>{notSees.map((item) => <li key={item}>{item}</li>)}</ul>
+      <p>Elena può cambiare idea quando vuole: può chiedere a ROSS di non raccontarti più qualcosa, o di dimenticarlo.</p>
+    </section>
+    {contribution.sheet}
+  </FamilyShell>;
+}
+
+// Un contributo ripreso con Elena porta al racconto di com'è andata (in Da lei).
+const contributionRacconto = { "family-cefalu-postcard": "cartolina" };
+
 function SharedDetail({ item, onClose }) {
-  const container = useContext(PhoneScreen);
-  return <Dialog open={Boolean(item)} title={item?.title || "Contributo"} onClose={onClose} container={container} className="family-dialog fam-sheet">{item && <div className="fam-shared-detail">{item.image && <img src={item.image} alt={`Immagine collegata a ${item.title}`} />}<span className="fam-badge">{contributionStatus(item.status)}</span><p>{item.detail}</p><dl className="fam-card fam-facts">{[["Persone", item.people?.join(", ") || "—"], ["Luogo", item.place || "—"], ["Periodo", item.period || "—"]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div>}</Dialog>;
+  const container = useContext(PhoneScreen); const navigate = useNavigate();
+  const racconto = item && contributionStatus(item.status) === "Ripreso con Elena" && contributionRacconto[item.id];
+  return <Dialog open={Boolean(item)} title={item?.title || "Contributo"} onClose={onClose} container={container} className="family-dialog fam-sheet">{item && <div className="fam-shared-detail">{item.image && <img src={item.image} alt={`Immagine collegata a ${item.title}`} />}<span className="fam-badge">{contributionStatus(item.status)}</span><p>{item.detail}</p><dl className="fam-card fam-facts">{[["Persone", item.people?.join(", ") || "—"], ["Luogo", item.place || "—"], ["Periodo", item.period || "—"]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>{racconto && <button type="button" className="fam-button" onClick={() => { onClose(); navigate(`/famiglia/attivita/${racconto}`); }}><MessageCircleHeart size={18} /> Guarda com'è andata</button>}</div>}</Dialog>;
 }

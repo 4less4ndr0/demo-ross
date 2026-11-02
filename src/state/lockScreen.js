@@ -4,5 +4,6 @@
 let pending = "first";
 
 export const requestLockScreen = () => { pending = "asked"; window.dispatchEvent(new CustomEvent("ross:lockscreen")); };
-export const consumeLockScreen = (duringTour = false) => { const show = pending === "asked" || (pending === "first" && !duringTour); pending = null; return show; };
+// La prima volta si vede solo con la cornice iPhone accesa; una richiesta esplicita vale sempre (e la cornice si accende).
+export const consumeLockScreen = (duringTour = false, phoneOn = true) => { const show = pending === "asked" || (pending === "first" && !duringTour && phoneOn); pending = null; return show; };
 export const releaseLockScreen = () => window.dispatchEvent(new CustomEvent("ross:unlock"));
