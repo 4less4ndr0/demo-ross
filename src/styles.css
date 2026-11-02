@@ -763,7 +763,7 @@
 @media(max-width:650px){.overview-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-kpis strong{font-size:22px}.overview-summary p{font-size:16px}}
 @media print{.report-screen>.print-offscreen{display:block!important;position:static;width:auto;visibility:visible}}
 
-/* Ospiti: foto al posto delle iniziali; scheda essenziale con foto grande, chi è, ultima conversazione e al massimo un avviso */
+/* Ospiti: foto al posto delle iniziali; scheda essenziale con foto grande, chi è, ultima conversazione, nessun avviso */
 .avatar-photo{overflow:hidden;padding:0;background:var(--surface-2)}
 .avatar-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block}
 .resident-card{padding:0;overflow:hidden;display:flex;flex-direction:column}
@@ -779,8 +779,6 @@
 .resident-card h3{font-size:21px}
 .resident-card p{font-size:13px}
 .resident-card .resident-presence{margin:0;padding:12px 0 0;font-size:13px}
-.resident-notice{display:flex;align-items:flex-start;gap:8px;margin:auto 0 0!important;padding:9px 12px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-size:13px!important;font-weight:600;line-height:1.35}
-.resident-notice svg{flex:none;margin-top:1px}
 .resident-photo{flex:none}
 .resident-card .resident-presence strong{white-space:nowrap}
 @media(max-width:650px){.resident-photo{aspect-ratio:3/2}}
