@@ -26,7 +26,7 @@ Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codi
 
 ## Aggiornarla
 
-**Ultimo aggiornamento: 2 novembre 2026, senza plugin.** I dati incorporati nella mappa (`window.FLOORPLAN` dentro `public/mappa-ross.html`) sono stati aggiornati da uno script che rilegge il codice: righe, simboli e collegamenti di import di ogni file, schermate dalle rotte di `App.jsx`, più le descrizioni, i percorsi, il giro e i lavori recenti scritti a mano. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
+**Ultimo aggiornamento: 2 novembre 2026 (dopo "Parla con ROSS"), senza plugin.** I dati incorporati nella mappa (`window.FLOORPLAN` dentro `public/mappa-ross.html`) sono stati aggiornati da uno script che rilegge il codice: righe, simboli e collegamenti di import di ogni file, schermate dalle rotte di `App.jsx`, più le descrizioni, i percorsi (ora anche "Un promemoria, all'ora giusta"), il giro e i lavori recenti scritti a mano. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
 
 
 Floorplan è un plugin di Claude Code (e Codex). Per rigenerare la mappa dopo nuove modifiche:

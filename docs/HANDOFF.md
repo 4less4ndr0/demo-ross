@@ -250,6 +250,10 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Mappa aggiornata con le ultime modifiche
+- **Richiesta:** aggiornare la vista Mappa con le modifiche al tablet e alla conversazione.
+- **Fatto (senza plugin Floorplan, con lo stesso script dell'aggiornamento precedente):** ricalcolati righe, simboli, collegamenti e schermate; nuove descrizioni per tablet, stato e dati (schede "una cosa alla volta", promemoria semplici, giochi, "Cosa ricordo di te", "Parla con ROSS" con sottotitoli e scelte, due attività per ospite); percorso "Elena racconta, Anna legge" con il ricordo in bozza e il no che non manda nulla ad Anna; nuovo percorso "Un promemoria, all'ora giusta"; quattro nuove voci in "Recent work". Sorgenti allineati in `docs/floorplan/`. Health non rifatto.
+
 ### Novembre 2026 · 02/11/2026 · "Parla con ROSS": una conversazione a voce, con i sottotitoli e scelte vere
 - **Richiesta:** rifare la demo della conversazione con ROSS, che resta simulata (si avanza con il mouse o le frecce), emulando il più possibile una conversazione vera.
 - **Da Notion:**
