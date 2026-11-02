@@ -250,6 +250,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Note dei segnali con la maiuscola quando stanno da sole
+- **Richiesta:** in "Come sta questa settimana" la nota di "Partecipazione" iniziava con la minuscola ("ha raccontato 4 attività…").
+- **Modifiche:** sistemato alla fonte. `signalDetail` (`src/data/careInsights.js`) mette la maiuscola alla nota quando la mostra da sola, e lo stesso fa il grafico del report (`OperationalPages.jsx`). Il dato resta minuscolo perché serve anche dentro le frasi della chat ("Elena: partecipazione, ha raccontato…"). Corretto in Famiglia, nel ritratto e nel report di Elena.
+- **File:** `src/data/careInsights.js`, `src/pages/OperationalPages.jsx`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Famiglia: ogni scheda ha un contenuto suo
 - **Richiesta:** Oggi ripeteva pezzi delle altre schede; pulirla.
 - **Modifiche:**

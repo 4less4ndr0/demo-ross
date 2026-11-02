@@ -196,7 +196,8 @@ export function trendOf(resident) {
 export const journeyInterest = { residentId: "elena", label: "Fotografia", how: "Funziona come avvio di conversazione: proporle di guardare insieme delle fotografie." };
 
 // Testo breve del confronto con la media: "3 su 6 · di solito 1", la nota, oppure "prime settimane".
-export const signalDetail = (s) => s.note || (s.usual == null ? `In ${s.count} conversazioni su ${s.of} · prime settimane con ROSS` : `In ${s.count} conversazioni su ${s.of} · di solito ${s.usual}`);
+// La nota nasce per stare dentro una frase ("Elena: partecipazione, ha raccontato…"); da sola va con la maiuscola.
+export const signalDetail = (s) => (s.note && s.note.charAt(0).toUpperCase() + s.note.slice(1)) || (s.usual == null ? `In ${s.count} conversazioni su ${s.of} · prime settimane con ROSS` : `In ${s.count} conversazioni su ${s.of} · di solito ${s.usual}`);
 
 export const describeSignal = (s, name) => s.positive
   ? s.note ? `${name}: ${s.signal}, ${s.note}.` : s.usual == null ? `${name} ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} (prime settimane con ROSS).` : `${name} ha espresso ${s.signal} in ${s.count} conversazioni su ${s.of} questa settimana (di solito ${s.usual}).`
