@@ -76,6 +76,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 
 ## Vista Famiglia
 
+- **È un'app per iPhone** (Apple Human Interface Guidelines), non una pagina desktop: margini 16pt, tocchi ≥ 44pt, testo di base 17pt e mai sotto 11pt, barra di navigazione in alto con il **+** "Condividi con ROSS", **tab bar in basso** (Oggi · Storia · Attività · Condivisi), dialog come **sheet dal basso** dentro lo schermo. Su desktop si mostra in una **cornice iPhone** (393 × 852pt) al centro; su telefono a tutto schermo con le aree sicure. Stili nella sezione "Vista Famiglia come app per iPhone" in fondo a `src/styles.css` (classi `fam-*`).
 - Il rapporto è **famiglia ↔ ospite ↔ ROSS**: la struttura non sta in mezzo. I contributi della famiglia (ricordi, foto, temi, musica) vanno **direttamente a ROSS** ("Disponibile a ROSS" → "Ripreso con Elena"); niente verifiche della struttura, niente "Scrivi alla struttura", niente programma delle attività della residenza.
 - La famiglia vede racconti e ricordi **solo se l'ospite ha scelto di condividerli** (campo `sharedWithFamily` sui ricordi, `shared` sui momenti), con il badge "Elena ha voluto raccontartelo". Senza consenso: "Elena ha tenuto questo racconto per sé" e solo com'è andata. Il consenso nasce nella conversazione con ROSS ("Ti va se lo racconto anche ad Anna?").
 - "Come sta questa settimana": i segnali positivi dell'ospite (da `careInsights.js`), senza dati da controllare.

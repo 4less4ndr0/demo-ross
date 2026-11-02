@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
+> Ultimo aggiornamento: 2 novembre 2026 · vista Famiglia come app per iPhone. Precedente: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -37,7 +37,7 @@ Il metodo con cui è pensata è la **salutogenesi** ([`salutogenesi.md`](salutog
 | Vista | Chi la usa | Cosa vede | Cosa non vede | Stato |
 |---|---|---|---|---|
 | **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#27) |
-| **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21) |
+| **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21); **app per iPhone** (novembre) |
 | **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Riallineata** (ottobre): trasparenza sull'IA, aiuto non di emergenza, "dimentica", chiusura verso le persone vere |
 
 Nella Struttura ci sono **quattro stakeholder**, e il target principale non è ancora scelto: per questo esiste il selettore di ruolo.
@@ -249,6 +249,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 02/11/2026 · Vista Famiglia come app per iPhone
+- **Richiesta:** la vista Famiglia era pensata per desktop; adattarla a mobile seguendo le linee guida Apple per le app iPhone (margini, dimensioni, fruizione da telefono).
+- **Modifiche:**
+  - **riferimenti HIG applicati:** margini laterali 16pt (20pt dai 430pt in su), aree di tocco ≥ 44pt, testo di base 17pt e mai sotto 11pt (prima c'erano testi da 8–10px), barra di navigazione 44pt + area sicura, tab bar 49pt + indicatore Home, campi da 17px (niente zoom automatico su iOS), `viewport-fit=cover` con `env(safe-area-inset-*)`;
+  - **struttura da app:** barra di navigazione in alto (logo o "‹ Indietro", titolo in linea che compare scorrendo, bottone **+** "Condividi con ROSS"), titolo grande serif nel contenuto, **tab bar in basso** con quattro schede (Oggi · Storia · Attività · Condivisi), liste in stile iOS con chevron, controllo segmentato Oggi/Settimana/Mese, filtri a pillole che scorrono in orizzontale;
+  - **dialog → sheet dal basso** con maniglia, dentro lo schermo del telefono (`Dialog` in `ui.jsx` accetta ora `container`);
+  - **su desktop l'app sta in una cornice iPhone** (393 × 852pt, barra di stato e Dynamic Island simulate) con la didascalia "L'app di Anna, sul suo iPhone"; su telefono è a tutto schermo e la pillola "Vista demo" sale sopra la tab bar;
+  - contenuti, consenso e testi invariati; corallo e menta più scuri solo per il testo piccolo (contrasto AA);
+  - visita guidata: bersagli aggiornati (`.fam-story`, `.fam-week`, `.fam-resource`, `.fam-add`) e scorrimento dentro lo schermo del telefono;
+  - rimosse dal CSS le vecchie regole desktop della Famiglia, ora inutilizzate.
+- **Da fare:** rigenerare la mappa Floorplan (`docs/floorplan/README.md`), serve il plugin.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/components/ui.jsx`, `src/components/GuidedTour.jsx`, `src/styles.css` (sezione "Vista Famiglia come app per iPhone"), `index.html`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Novembre 2026 · 01/11/2026 · Vista "Mappa": la mappatura della demo
 - **Richiesta:** usare [Floorplan](https://github.com/haydenschmitty/floorplan) per una nuova visualizzazione della demo con la sua mappatura.

@@ -49,9 +49,10 @@ export function Sheet({ open, onOpenChange, side = "left", title, description, c
   </DialogPrimitive.Root>;
 }
 
-export function Dialog({ open, onClose, title, size = "md", className, children }) {
+// `container`: dove montare il dialog (la vista Famiglia lo apre dentro lo schermo dell'iPhone).
+export function Dialog({ open, onClose, title, size = "md", className, container, children }) {
   return <DialogPrimitive.Root open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
-    <DialogPrimitive.Portal>
+    <DialogPrimitive.Portal container={container || undefined}>
       <DialogPrimitive.Overlay className="ui-sheet-overlay ui-dialog-overlay" />
       <DialogPrimitive.Content className={cx("modal", `modal-${size}`, "ui-dialog", className)} aria-describedby={undefined}>
         <header><DialogPrimitive.Title asChild><h2>{title}</h2></DialogPrimitive.Title><DialogPrimitive.Close className="ui-button ui-button-ghost ui-button-icon" aria-label="Chiudi"><X size={17} /></DialogPrimitive.Close></header>
