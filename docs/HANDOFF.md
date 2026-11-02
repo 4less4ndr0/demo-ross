@@ -66,7 +66,7 @@ Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai su
 
 1. **Chiedi a ROSS** (home). Clicca "Chi ha bisogno di più attenzione oggi?". La risposta cita sempre la fonte. Dalla card in basso a sinistra cambia ruolo ("Sto chiedendo come") e guarda come cambiano le domande consigliate: la Direzione, per esempio, chiede "Cosa dicono gli ospiti della vita in struttura?".
 2. **Il polso di ROSS**, la sidebar della chat. Apri "Cosa va bene" e "Da osservare": ogni voce fa una domanda alla chat. "Cosa ti dice ROSS" è la guida alla lettura.
-3. **Ospiti** (`/ospiti`). In cima c'è Antonio, perché oggi non ha ancora parlato con ROSS. Ogni scheda mostra la foto, chi è, l'ultima conversazione, senza avvisi; il resto è nel ritratto.
+3. **Ospiti** (`/ospiti`). In cima c'è Antonio, perché oggi non ha ancora parlato con ROSS. Ogni scheda mostra la foto, chi è, l'ultima conversazione e al massimo un avviso; il resto è nel ritratto.
 4. **Ritratto di Antonio** (`/ospiti/antonio`). Tab *Come sta* (benessere rispetto alla sua media, bisogni, presenza) e *Come avvicinarsi* (primo approccio in 3 passi e spunti per interesse; i dettagli concreti arrivano solo dalla biografia d'ingresso).
 5. **Panoramica** (`/panoramica`). La struttura in una schermata: sintesi, numeri chiave e grafici (ognuno rispetto alla propria media, segnali della settimana, voce della struttura con la soglia di anonimato, bisogni, presenza), ciascuno con "Cosa mostra" e "Come leggerlo". Clicca una barra per aprire il report di quell'ospite. "Stampa" o "Scarica riepilogo" generano il Riepilogo d'équipe per la riunione.
 6. **Report** (`/report`). Il "Come sta" di un ospite alla volta, da stampare.
@@ -139,7 +139,7 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 | Barra superiore | Solo quattro schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report · Panoramica**. Restano ferme quando la sidebar cambia larghezza. Su mobile stanno sulla stessa riga dell'hamburger. |
 | Sidebar sinistra | Logo, "Residenza Aurora" e data. **Chat:** accordion con Da osservare, **Cosa va bene**, Bisogni espressi, Voce della struttura, Presenza con ROSS e **Cosa ti dice ROSS** (guida alla lettura). **Ospiti (lista), Report e Panoramica:** sidebar larga con lo specchietto verde "Cosa ti dice ROSS" della pagina, aperto di default. **Ritratto e Impostazioni:** colonna di icone. In fondo: Impostazioni e card con l'account del ruolo (menu "Sto chiedendo come", impostazioni, presentazione, ripristino dati). |
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti; 4 domande consigliate per ciascuno dei quattro stakeholder (Staff, Educatrice, Psicologa, Direzione); graffetta per allegare una foto o un file; microfono simulato; menu "…". |
-| Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: foto grande, nome, età, stanza, modalità di ROSS, ultima conversazione con ROSS, senza avvisi (tolti il 2/11: niente alert sulla persona). Cosa va bene, partecipazione e interessi stanno nel ritratto. Le foto (`public/ospiti/`) compaiono anche negli avatar di ritratto, chat e report. |
+| Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: foto grande, nome, età, stanza, modalità di ROSS, ultima conversazione e al massimo un avviso da osservare. Cosa va bene, partecipazione e interessi stanno nel ritratto. Le foto (`public/ospiti/`) compaiono anche negli avatar di ritratto, chat e report. |
 | Ritratto (`/ospiti/:id`) | Quattro tab: **Come sta** (narrativa, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, stile di ROSS, momenti della giornata) · **Conversazioni ROSS** (per settimana, mai di cosa) · **Allegati** (facoltativi: foto anche dal telefono o file, da qui o dalla chat). Niente biografia, grafo delle relazioni o contributi della famiglia. |
 | Report (`/report`) | Solo il **Come sta** del singolo ospite (`?ospite=ID`, `&stampa=1`), scelto da un menu in ordine di attenzione: infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
 | Panoramica (`/panoramica`) | Le analytics della struttura come schermata dell'app: sintesi, 6 numeri chiave, grafici in tre gruppi (Benessere nel tempo · Voce degli ospiti e bisogni · Presenza con ROSS), ognuno con "Cosa mostra" e "Come leggerlo", e i punti da discutere. "Stampa" / "Scarica riepilogo" stampano il **Riepilogo d'équipe** (documento completo con situazione per ospite), tenuto pronto fuori schermo. Le vecchie URL `/analytics` e `/report?ambito=struttura` portano qui. |
@@ -194,7 +194,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
 | `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
-| `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione; scheda con foto, chi è e ultima conversazione, senza avvisi. |
+| `src/pages/Residents.jsx` | Lista ospiti ordinata per attenzione; scheda con foto, chi è, ultima conversazione e un solo avviso. |
 | `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con i quattro tab. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
 | `src/pages/OperationalPages.jsx` | `ReportsPage` (solo singolo ospite, `ResidentReport`) e `OverviewPage` (Panoramica: `Overview` a schermo, `TeamReport` fuori schermo per la stampa, classe `.print-offscreen`). |
 | `src/pages/LiveInteraction.jsx` | Sessione live: interessi dell'ospite in uso, esito con nuovo interesse per categoria (`journeyInterest` per Elena). |
@@ -249,11 +249,6 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
-
-### Novembre 2026 · 02/11/2026 · Niente avvisi sulle schede degli ospiti
-- **Richiesta:** eliminare gli avvisi sulle schede della lista Ospiti ("Oggi non ha ancora parlato con ROSS", "Momenti di difficoltà", "Fastidio fisico riferito · nuovo").
-- **Perché:** coerenza con la direzione su Notion (non negoziabili del 23/10, protocollo di discovery v0.2, scheda Namastè del 6/11): niente alert né dashboard di controllo sulla persona.
-- **Modifiche:** `Residents.jsx` non mostra più l'avviso (tolti `resident-notice` e il suo CSS); la scheda resta foto, nome, età, stanza, modalità e ultima conversazione. Aggiornati lo specchietto "Cosa ti dice ROSS" della lista, `AGENTS.md` e questo documento. Restano da rivedere, in un passo separato, l'ordinamento per attenzione e i segnali nel ritratto.
 
 ### Novembre 2026 · 02/11/2026 · Vista Famiglia come app per iPhone
 - **Richiesta:** la vista Famiglia era pensata per desktop; adattarla a mobile seguendo le linee guida Apple per le app iPhone (margini, dimensioni, fruizione da telefono).
