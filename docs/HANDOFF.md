@@ -250,6 +250,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Il + diventa un messaggio libero; ROSS riordina e racconta a Elena
+- **Richiesta:** il + non deve sembrare un modulo: un campo libero ("raccontale qualcosa, mandale qualcosa"), un microfono per parlare liberamente (trascrizione) e una graffetta per allegare. Sul tablet di Elena un avviso quando arriva qualcosa di nuovo; ROSS rielabora "il marasma" di ciò che manda la famiglia e lo rende fruibile a voce (la foto si vede; "tua figlia ti ha ricordato la medicina").
+- **Modifiche:**
+  - **Famiglia, il +** (`ComposerSheet`): campo libero, microfono (dettatura del browser in italiano; se il microfono non parte entro 2 secondi, una frase d'esempio scritta come se la si dicesse), graffetta (due immagini della demo o "Dal telefono…", con le foto rimpicciolite a 640px), "Manda". Sotto, in tempo reale, **"Come lo racconterà ROSS a Elena"**. Per i promemoria sulle medicine: "ROSS glielo dirà con le tue parole, ma non controlla se l'ha presa: per le medicine c'è il personale". In Da te, al posto dei quattro riquadri, un campo finto che apre il +; l'elenco mostra il tipo capito da ROSS e "detto a voce"; il dettaglio mostra come lo racconta ROSS;
+  - **ROSS rielabora** (`src/data/familyMessages.js`): `elaborate()` divide il messaggio in frasi, separa i promemoria, riconosce foto, domanda, ricordo, musica o pensiero e prepara la frase da dire, con le parole di Anna tra virgolette. Esempio: "Ciao mamma, stasera ti chiamo… Ricordati le gocce per gli occhi" diventa un pensiero e un promemoria;
+  - **Tablet di Elena**: avviso "Da Anna, adesso · Anna ti ha mandato N cose. Vuoi che te le racconti?" ("Sì, raccontamele" / "Più tardi"); il racconto è una scheda grande, una cosa alla volta, nell'ordine foto e parole, poi domande, ricordi, musica e infine i promemoria, letta con la voce del browser (Ripeti, Rispondile, Avanti / Ho finito). Le schede "Da Anna, per te" mostrano la frase di ROSS. Nuovo messaggio d'esempio di oggi (dettato a voce) già in attesa sul tablet;
+  - stato: `unheard` sui contributi nuovi, `parts` (la rielaborazione), `via` (voce o testo), azione `markFamilyHeard`; nuovi tipi `reminder` e `message`;
+  - "Cosa è reale e cosa è simulato": nuova voce "Voce e messaggi".
+- **Da discutere con il team:** i promemoria sulle medicine toccano il caso di Namastè (promemoria con avviso all'operatore, §0.7). Oggi ROSS li ripete con le parole di Anna e rimanda al personale, senza controllare né avvisare nessuno.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/pages/RossExperience.jsx`, `src/data/familyMessages.js` (nuovo), `src/state/DemoContext.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Famiglia: le schede seguono la direzione delle cose
 - **Richiesta:** ripensare le sezioni: ciò che la famiglia manda con il + in "Da te", ciò che viene da Elena in "Da lei"; decidere dove va Momenti e a cosa serve.
 - **Modifiche:**

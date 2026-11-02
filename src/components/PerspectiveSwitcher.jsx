@@ -19,6 +19,7 @@ const simulated = [
   ["Risposte preparate", "La chat della struttura risponde con testi scritti in anticipo: non c'è un modello AI collegato."],
   ["Conversazione con copione", "Il dialogo tra ROSS ed Elena è scritto e avanza a tocchi: nessun riconoscimento vocale."],
   ["Meteo, ora, ricorrenze e attività", "Gli spunti e gli inviti del tablet di Elena (meteo, ricorrenze, calendario della residenza) sono scritti per la demo, non letti da un servizio esterno."],
+  ["Voce e messaggi", "La dettatura di Anna usa quella del browser quando c'è, altrimenti scrive una frase d'esempio. ROSS «riordina» i messaggi con regole semplici sul testo e li legge con la voce del browser."],
   ["Nessun dispositivo collegato", "Niente tablet o companion reale, nessuna chiamata, nessun avviso inviato a qualcuno."],
 ];
 const principles = [

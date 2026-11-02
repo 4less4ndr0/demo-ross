@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, Mic, Music2, Pause, Play, RotateCcw, Sparkles, Volume2, X } from "lucide-react";
+import { AlarmClock, ArrowLeft, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, Volume2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "../components/ui";
 import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { outsideInvites } from "../data/demoData";
+import { byPriority } from "../data/familyMessages";
 
 const conversation = [
   { speaker: "ross", state: "response", line: "Ciao Elena. Ti va di stare un po’ insieme?", support: "ROSS inizia senza imporre un argomento." },
@@ -34,7 +35,13 @@ const familyPrompt = {
   memory: { icon: Heart, lead: "Anna ti ha raccontato un ricordo", ask: "Me lo racconti anche tu?", cta: "Raccontami" },
   topic: { icon: Lightbulb, lead: "Anna ti propone un argomento", ask: "Ti va di parlarne?", cta: "Parliamone" },
   music: { icon: Music2, lead: "Anna ti ha suggerito una canzone", ask: "La ascoltiamo insieme?", cta: "Ascoltiamola" },
+  reminder: { icon: AlarmClock, lead: "Un promemoria di Anna", ask: "Te lo ricordo io al momento giusto.", cta: "Ascolta" },
+  message: { icon: MessageCircle, lead: "Un pensiero di Anna", ask: "Vuoi sentirlo?", cta: "Ascolta" },
 };
+// Quando arriva qualcosa di nuovo, ROSS lo annuncia e lo racconta a voce, una cosa alla volta e in ordine.
+const newsKicker = { reminder: "Un promemoria di Anna", photo: "Una foto di Anna", message: "Un pensiero di Anna", topic: "Una domanda di Anna", memory: "Un ricordo di Anna", music: "Musica da Anna" };
+const say = (line) => { try { window.speechSynthesis.cancel(); const voice = new SpeechSynthesisUtterance(line); voice.lang = "it-IT"; voice.rate = 0.92; window.speechSynthesis.speak(voice); } catch { /* sintesi vocale non disponibile */ } };
+const hush = () => { try { window.speechSynthesis.cancel(); } catch { /* niente da fermare */ } };
 const alreadyShared = (item) => item.status === "Ripreso con Elena" || item.status === "Confermato";
 
 export function RossHome() {
@@ -51,7 +58,16 @@ export function RossHome() {
   const sharedPhoto = state.familyContributions.find((item) => item.kind === "photo" && item.image);
   const sharedMusic = state.familyContributions.find((item) => item.kind === "music");
   const scheduled = state.scheduledActivities.find((item) => item.residentId === "elena");
-  const fromAnna = [...state.familyContributions].sort((a, b) => Number(alreadyShared(a)) - Number(alreadyShared(b))).slice(0, 3);
+  const fromAnna = [...state.familyContributions].sort((a, b) => (Number(alreadyShared(a)) - Number(alreadyShared(b))) || byPriority(a, b)).slice(0, 3);
+  // Le novità da Anna, già rielaborate da ROSS: un messaggio può diventare più cose, raccontate in ordine (prima i promemoria).
+  const newsItems = useMemo(() => state.familyContributions.filter((item) => item.unheard).flatMap((item) => (item.parts?.length ? item.parts : [{ kind: item.kind, text: item.detail, rossLine: `Anna ti ha mandato: «${item.title}».` }]).map((part, index) => ({ ...part, key: `${item.id}-${index}`, contributionId: item.id, image: item.image, createdAt: item.createdAt }))).sort(byPriority), [state.familyContributions]);
+  const [newsLater, setNewsLater] = useState(false);
+  const [queue, setQueue] = useState([]);
+  const [newsIndex, setNewsIndex] = useState(null);
+  const newsItem = newsIndex === null ? null : queue[newsIndex];
+  const openNews = () => { setQueue(newsItems); setNewsIndex(0); if (elena.mode !== "Silenziosa") say(newsItems[0].rossLine); };
+  const closeNews = (upTo = newsIndex) => { hush(); if (upTo !== null) actions.markFamilyHeard([...new Set(queue.slice(0, upTo + 1).map((item) => item.contributionId))]); setNewsIndex(null); };
+  const nextNews = () => { if (newsIndex + 1 < queue.length) { setNewsIndex(newsIndex + 1); say(queue[newsIndex + 1].rossLine); } else { closeNews(); notify("Se vuoi rispondere ad Anna, dimmelo pure: glielo racconto io"); } };
 
   useEffect(() => {
     const timer = window.setTimeout(() => setRossState("response"), 900);
@@ -63,7 +79,7 @@ export function RossHome() {
     setRossState(mode === "Silenziosa" ? "rest" : "response");
   };
   const play = (track) => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); };
-  const usePrompt = (item) => (item.kind === "music" ? play(item.title) : navigate("/ross/conversazione"));
+  const usePrompt = (item) => (item.kind === "music" ? play(item.title) : item.parts?.length ? say(item.parts.map((part) => part.rossLine).join(" ")) : navigate("/ross/conversazione"));
 
   return (
     <div className="ross-app screen-enter" data-ross-state={rossState}>
@@ -82,6 +98,12 @@ export function RossHome() {
             <small className="ross-ai-note">Sono ROSS, un programma che ti fa compagnia: non sono una persona. Quello che ci diciamo resta qui.</small>
           </div>
         </section>
+
+        {newsItems.length > 0 && !newsLater && outing?.status !== "out" && <section className="ross-news" aria-live="polite">
+          <span className="ross-news-icon"><Heart /></span>
+          <div><small>Da Anna, adesso</small><h2>{newsItems.length === 1 ? "Anna ti ha mandato una cosa." : `Anna ti ha mandato ${newsItems.length === 2 ? "due" : newsItems.length} cose.`} Vuoi che te le racconti?</h2><p>Puoi anche dirmelo a voce: «Sì, raccontamele».</p></div>
+          <div className="ross-invite-actions"><button type="button" onClick={openNews}><Volume2 /> Sì, raccontamele</button><button type="button" className="ross-invite-later" onClick={() => setNewsLater(true)}>Più tardi</button></div>
+        </section>}
 
         {outing?.status === "out" ? <section className="ross-away" aria-live="polite">
           <span className="ross-away-icon"><DoorOpen /></span>
@@ -110,7 +132,7 @@ export function RossHome() {
           <h2 className="ross-section-title">Da Anna, per te</h2>
           <div className="ross-family-grid">{fromAnna.map((item) => { const kind = familyPrompt[item.kind] || familyPrompt.memory; const Icon = kind.icon; return <article key={item.id} className="ross-family-card">
             {item.image ? <img src={item.image} alt={item.title} /> : <span className="ross-family-icon"><Icon /></span>}
-            <div><small>{kind.lead}</small><h3>{item.title}</h3><p>{alreadyShared(item) ? "Ne abbiamo già parlato: possiamo riprenderlo quando vuoi." : kind.ask}</p></div>
+            <div><small>{kind.lead}</small><h3>{item.title}</h3><p>{alreadyShared(item) ? "Ne abbiamo già parlato: possiamo riprenderlo quando vuoi." : item.parts?.length ? item.parts.map((part) => part.rossLine).join(" ") : kind.ask}</p></div>
             <button type="button" onClick={() => usePrompt(item)}>{kind.cta} <ArrowRight /></button>
           </article>; })}</div>
         </section>}
@@ -127,6 +149,20 @@ export function RossHome() {
           <div>{modes.map(([mode, label]) => <button key={mode} className={elena.mode === mode ? "active" : ""} onClick={() => chooseMode(mode)} title={`Modalità ${mode.toLowerCase()}`}><i />{label}</button>)}</div>
         </section>
       </main>
+
+      <Dialog open={newsIndex !== null} title="Da Anna" onClose={() => closeNews()} size="lg" className="ross-news-dialog">
+        {newsItem && <div className="ross-news-item">
+          <small>{newsKicker[newsItem.kind] || "Da Anna"} · {newsIndex + 1} di {queue.length}</small>
+          {newsItem.image && newsItem.kind === "photo" ? <img src={newsItem.image} alt="La foto che Anna ti ha mandato" /> : <span className="ross-news-badge">{newsItem.kind === "reminder" ? <AlarmClock /> : newsItem.kind === "music" ? <Music2 /> : <Heart />}</span>}
+          <p className="ross-news-line">{newsItem.rossLine}</p>
+          <div className="ross-news-controls">
+            <button type="button" className="ghost-button" onClick={() => say(newsItem.rossLine)}><Volume2 /> Ripeti</button>
+            {newsItem.kind === "music" && <button type="button" className="ghost-button" onClick={() => play(newsItem.text)}><Music2 /> Ascoltiamola</button>}
+            {(newsItem.kind === "topic" || newsItem.kind === "memory" || newsItem.kind === "photo") && <button type="button" className="ghost-button" onClick={() => { closeNews(queue.length - 1); navigate("/ross/conversazione"); }}><Mic /> Rispondile</button>}
+            <button type="button" className="primary-button" onClick={nextNews}>{newsIndex + 1 < queue.length ? "Avanti" : "Ho finito"} <ArrowRight /></button>
+          </div>
+        </div>}
+      </Dialog>
 
       <Dialog open={Boolean(returning)} title={returning === "share" ? "Lo racconto ad Anna?" : `Com'è andata?`} onClose={() => setReturning(null)}>
         {returning === "feeling" ? <div className="ross-return">

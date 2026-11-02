@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import { toast as sonner } from "sonner";
 import { biography as initialBiography, documents as initialDocuments, interactions as initialInteractions, memories as initialMemories, modeSchedule as initialSchedule, residents as initialResidents } from "../data/demoData";
 import { asset } from "../asset.js";
+import { elaborate } from "../data/familyMessages";
 
 const DemoContext = createContext(null);
 const STORAGE_KEY = "ross-rsa-demo-v2";
@@ -16,7 +17,22 @@ const initialRossJourney = {
   confirmedAt: null,
 };
 
+// Messaggio libero di Anna arrivato oggi (dettato a voce): ROSS l'ha già rielaborato in due cose da dire a Elena.
+const annaToday = "Ciao mamma, stasera ti chiamo dopo cena e ti racconto di Sofia. Ricordati le gocce per gli occhi prima di dormire!";
+
 const initialFamilyContributions = [
+  {
+    id: "family-today-message",
+    createdAt: "2026-09-21T12:40:00.000Z",
+    kind: "message",
+    title: "Ciao mamma, stasera ti chiamo dopo cena…",
+    detail: annaToday,
+    parts: elaborate({ text: annaToday }),
+    via: "voce",
+    author: "Anna",
+    status: "Disponibile a ROSS",
+    unheard: true,
+  },
   {
     id: "family-cefalu-postcard",
     createdAt: "2026-09-14T18:30:00.000Z",
@@ -247,7 +263,7 @@ export function DemoProvider({ children }) {
     addFamilyContribution: (contribution) => {
       const id = `family-${Date.now()}`;
       // I contributi della famiglia vanno direttamente a ROSS: nessuna verifica della struttura.
-      const contributionRecord = { id, createdAt: new Date().toISOString(), status: "Disponibile a ROSS", ...contribution };
+      const contributionRecord = { id, createdAt: new Date().toISOString(), status: "Disponibile a ROSS", unheard: true, ...contribution };
       setState((prev) => {
         const createsMemory = contribution.kind === "memory" || contribution.kind === "photo";
         const memory = createsMemory ? {
@@ -274,8 +290,10 @@ export function DemoProvider({ children }) {
           memories: memory ? [memory, ...prev.memories] : prev.memories,
         };
       });
-      notify("Contributo disponibile a ROSS: lo proporrà a Elena nel momento giusto");
+      notify("Mandato a ROSS: lo racconterà a Elena nel momento giusto");
     },
+    // Elena ha ascoltato sul tablet ciò che Anna le ha mandato: l'avviso "Anna ti ha mandato qualcosa" si spegne.
+    markFamilyHeard: (ids) => setState((prev) => ({ ...prev, familyContributions: prev.familyContributions.map((item) => ids.includes(item.id) ? { ...item, unheard: false } : item) })),
     scheduleActivity: (activity) => {
       setState((prev) => ({ ...prev, scheduledActivities: [{ id: `scheduled-${Date.now()}`, status: "Programmata", owner: "Giulia Serra", ...activity }, ...prev.scheduledActivities] }));
       notify("Attività programmata e collegata alla giornata");
