@@ -1,22 +1,20 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
-import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Eye, EyeOff, Flashlight, Gift, HandHeart, Heart, Home, Lightbulb, Lock, MessageCircleHeart, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi, X } from "lucide-react";
+import { AlarmClock, BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Eye, EyeOff, Flashlight, Gift, HandHeart, Heart, Home, Lock, MessageCircle, MessageCircleHeart, MessageCircleQuestion, Mic, Music2, Paperclip, Phone, Plus, Send, Signal, Sparkles, Wifi, X } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
-import { Dialog, Input, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
+import { Dialog, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
 import { asset } from "../asset.js";
 import { signalDetail, signalsFor } from "../data/careInsights";
 import { familyResourceTips } from "../data/salutogenesis";
 import { consumeLockScreen } from "../state/lockScreen";
+import { elaborate, kindLabels, sampleDictation, titleFor } from "../data/familyMessages";
 
 // Vista Famiglia come app per iPhone (Apple HIG): margini 16pt, tocchi ≥ 44pt, testo di base 17pt,
 // barra di navigazione in alto, tab bar in basso, sheet dal basso. Su schermi larghi l'app sta in una cornice iPhone.
 
-const contributionTypes = {
-  photo: { title: "Aggiungi una foto", short: "Foto", icon: Camera, label: "Titolo della foto", placeholder: "Elena e Paolo a Cefalù", help: "Scegli una delle immagini demo e aggiungi il contesto che la rende significativa." },
-  memory: { title: "Racconta un ricordo", short: "Ricordo", icon: Heart, label: "Titolo del ricordo", placeholder: "Le domeniche in giardino", help: "ROSS lo userà con delicatezza, nel momento giusto: se Elena lo riconosce, entra nella sua storia." },
-  topic: { title: "Suggerisci un argomento", short: "Argomento", icon: Lightbulb, label: "Argomento", placeholder: "La festa di pensionamento", help: "ROSS potrà proporlo con delicatezza, nel momento adatto." },
-  music: { title: "Suggerisci una canzone", short: "Canzone", icon: Music2, label: "Titolo e artista", placeholder: "Il cielo in una stanza · Gino Paoli", help: "La canzone entrerà tra gli spunti disponibili a ROSS." },
-};
+// Ciò che Anna manda è libero: ROSS ne capisce il tipo (vedi src/data/familyMessages.js). Qui solo icone ed etichette.
+const kindIcons = { photo: Camera, memory: Heart, topic: MessageCircleQuestion, music: Music2, reminder: AlarmClock, message: MessageCircle };
+const kindShort = (kind) => kindLabels[kind] || (kind === "photo" ? "Foto" : "Pensiero");
 
 // Le schede seguono la direzione delle cose: ciò che arriva da Elena (Da lei), ciò che parte da Anna (Da te),
 // e in mezzo il + che porta qualcosa a ROSS. Oggi è il punto d'ingresso, Insieme è la relazione (il metodo).
@@ -152,31 +150,94 @@ function Row({ icon, tone = "mint", title, subtitle, onClick, trailing }) {
   return <button type="button" className="fam-row" onClick={onClick}>{icon && <span className={`fam-icon ${tone}`}>{icon}</span>}<span className="fam-row-text"><strong>{title}</strong>{subtitle && <small>{subtitle}</small>}</span>{trailing}<ChevronRight className="fam-chevron" size={18} /></button>;
 }
 
-function ContributionSheet({ kind, onClose }) {
+const demoImages = [[asset("cefalu-postcard.svg"), "Cartolina di Cefalù"], [asset("garden-photo.svg"), "Gerani sul balcone"]];
+
+// Il + : niente modulo. Un campo libero ("raccontale qualcosa, o mandale qualcosa"), il microfono per dettare
+// e la graffetta per allegare. ROSS lo rielabora e mostra subito come lo racconterà a Elena.
+function ComposerSheet({ open, onClose }) {
   const { actions } = useDemo();
   const container = useContext(PhoneScreen);
-  const [form, setForm] = useState({ title: "", detail: "", people: "", place: "", period: "", image: asset("cefalu-postcard.svg") });
-  if (!kind) return null;
-  const config = contributionTypes[kind];
-  const Icon = config.icon;
-  const field = (key) => ({ value: form[key], onChange: (event) => setForm({ ...form, [key]: event.target.value }) });
-  const save = (event) => { event.preventDefault(); actions.addFamilyContribution({ kind, title: form.title, detail: form.detail, people: form.people.split(",").map((item) => item.trim()).filter(Boolean), place: form.place, period: form.period, image: kind === "photo" ? form.image : null, author: "Anna" }); onClose(); };
-  return <Dialog open title={config.title} onClose={onClose} container={container} className="family-dialog fam-sheet"><form className="fam-form" onSubmit={save}>
-    <div className="fam-form-lead"><span className="fam-icon coral"><Icon size={20} /></span><p>{config.help}</p></div>
-    {kind === "photo" && <fieldset className="fam-photo-picker"><legend>Immagine demo</legend>{[[asset("cefalu-postcard.svg"), "Cartolina di Cefalù"], [asset("garden-photo.svg"), "Gerani sul balcone"]].map(([src, alt]) => <label key={src} className={form.image === src ? "selected" : ""}><input type="radio" name="image" value={src} checked={form.image === src} onChange={(event) => setForm({ ...form, image: event.target.value })} /><img src={src} alt={alt} /><span>{alt}</span></label>)}</fieldset>}
-    <label>{config.label}<Input required {...field("title")} placeholder={config.placeholder} /></label>
-    <label>La storia<Textarea required {...field("detail")} placeholder="Racconta in poche righe perché è importante…" /></label>
-    <label>Persone collegate<Input {...field("people")} placeholder="Paolo, Sofia" /></label>
-    <div className="fam-form-pair"><label>Luogo<Input {...field("place")} placeholder="Cefalù" /></label><label>Periodo o anno<Input {...field("period")} placeholder="Estate 1998" /></label></div>
-    <p className="fam-note">Resta sul dispositivo in questa demo. ROSS lo proporrà a Elena solo se ne ha voglia, e la fonte resta sempre visibile.</p>
-    <div className="fam-sheet-actions"><button type="button" className="fam-button secondary" onClick={onClose}>Annulla</button><button className="fam-button"><Send size={18} /> Salva e condividi</button></div>
-  </form></Dialog>;
+  const [text, setText] = useState("");
+  const [attachment, setAttachment] = useState(null);
+  const [listening, setListening] = useState(false);
+  const [dictated, setDictated] = useState(false);
+  const [picker, setPicker] = useState(false);
+  const recRef = useRef(null); const timerRef = useRef(null); const fileRef = useRef(null); const textRef = useRef(text);
+  textRef.current = text;
+  const stopListening = () => { try { recRef.current?.abort(); } catch { /* già fermo */ } recRef.current = null; window.clearInterval(timerRef.current); setListening(false); };
+  useEffect(() => () => stopListening(), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const parts = elaborate({ text, image: attachment?.image, attachmentName: attachment && !attachment.image ? attachment.name : undefined });
+  const medicine = parts.some((part) => part.kind === "reminder" && /medicin|pastigli|pillol|gocce|compress|farmac/i.test(part.text));
+
+  // Dettatura: quella del browser se c'è (it-IT), altrimenti una frase d'esempio scritta come se la stessi dicendo.
+  const simulate = (base) => {
+    let i = 0;
+    timerRef.current = window.setInterval(() => { i += 2; setText(base + sampleDictation.slice(0, i)); if (i >= sampleDictation.length) { window.clearInterval(timerRef.current); setListening(false); } }, 30);
+  };
+  const toggleMic = () => {
+    if (listening) { stopListening(); return; }
+    const base = textRef.current ? `${textRef.current.trimEnd()} ` : "";
+    setListening(true); setDictated(true); setPicker(false);
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) { simulate(base); return; }
+    let heard = false; let fallback = false; let audio = false;
+    const useSample = () => { if (fallback || heard) return; fallback = true; try { recRef.current?.abort(); } catch { /* già fermo */ } recRef.current = null; simulate(base); };
+    try {
+      const rec = new Recognition();
+      rec.lang = "it-IT"; rec.interimResults = true; rec.continuous = true;
+      rec.onaudiostart = () => { audio = true; };
+      rec.onresult = (event) => { heard = true; setText(base + Array.from(event.results).map((result) => result[0].transcript).join(" ")); };
+      rec.onerror = useSample;
+      rec.onend = () => { if (!fallback) setListening(false); };
+      recRef.current = rec; rec.start();
+      // Se il microfono non parte (permesso negato, nessun microfono), si usa la frase d'esempio.
+      window.setTimeout(() => { if (!audio) useSample(); }, 2000);
+    } catch { useSample(); }
+  };
+  const pickFile = (event) => {
+    const file = event.target.files?.[0]; event.target.value = "";
+    if (!file) return;
+    setPicker(false);
+    if (!file.type.startsWith("image/")) { setAttachment({ name: file.name }); return; }
+    // Le foto si rimpiccioliscono (640px) prima di salvarle nella demo.
+    const url = URL.createObjectURL(file); const img = new Image();
+    img.onload = () => { const scale = Math.min(1, 640 / Math.max(img.width, img.height)); const canvas = document.createElement("canvas"); canvas.width = Math.round(img.width * scale); canvas.height = Math.round(img.height * scale); canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height); setAttachment({ image: canvas.toDataURL("image/jpeg", 0.8), name: file.name }); URL.revokeObjectURL(url); };
+    img.src = url;
+  };
+  const reset = () => { stopListening(); setText(""); setAttachment(null); setDictated(false); setPicker(false); };
+  const close = () => { reset(); onClose(); };
+  const send = () => {
+    if (!parts.length) return;
+    const main = parts[0];
+    actions.addFamilyContribution({ kind: main.kind, title: titleFor({ text, attachmentName: attachment?.name, kind: main.kind }), detail: text.trim() || attachment?.name || "", image: attachment?.image || null, attachmentName: attachment && !attachment.image ? attachment.name : null, parts, via: dictated ? "voce" : "testo", author: "Anna" });
+    close();
+  };
+  return <Dialog open={open} title="Per Elena" onClose={close} container={container} className="family-dialog fam-sheet fam-composer">
+    <div className={`fam-composer-box${listening ? " is-listening" : ""}`}>
+      <Textarea autoFocus value={text} onChange={(event) => setText(event.target.value)} placeholder="Raccontale qualcosa, o mandale qualcosa…" aria-label="Il tuo messaggio per Elena" />
+      {attachment && <div className="fam-attachment">{attachment.image ? <img src={attachment.image} alt="" /> : <span className="fam-icon coral"><Paperclip size={18} /></span>}<span>{attachment.name}</span><button type="button" onClick={() => setAttachment(null)} aria-label="Togli l'allegato"><X size={18} /></button></div>}
+      <div className="fam-composer-tools">
+        <button type="button" className="fam-tool" onClick={() => setPicker(!picker)} aria-expanded={picker} aria-label="Allega una foto o un file"><Paperclip size={22} /></button>
+        <button type="button" className={`fam-tool fam-mic${listening ? " is-on" : ""}`} onClick={toggleMic} aria-pressed={listening} aria-label={listening ? "Smetti di dettare" : "Parla: ROSS trascrive quello che dici"}><Mic size={22} /></button>
+        <span className="fam-listening" aria-live="polite">{listening ? "Ti ascolto… parla pure" : ""}</span>
+        <button type="button" className="fam-send" onClick={send} disabled={!parts.length}><Send size={18} /> Manda</button>
+      </div>
+      {picker && <div className="fam-attach-picker">{demoImages.map(([src, alt]) => <button type="button" key={src} onClick={() => { setAttachment({ image: src, name: alt }); setPicker(false); }}><img src={src} alt="" /><span>{alt}</span></button>)}<button type="button" className="fam-attach-device" onClick={() => fileRef.current?.click()}><Paperclip size={20} /><span>Dal telefono…</span></button></div>}
+      <input ref={fileRef} type="file" accept="image/*,application/pdf" hidden onChange={pickFile} />
+    </div>
+    {parts.length > 0 ? <section className="fam-preview" aria-live="polite">
+      <span className="fam-kicker">Come lo racconterà ROSS a Elena</span>
+      <ol>{parts.map((part, index) => <li key={index}><em>{kindShort(part.kind)}</em><p>{part.rossLine}</p></li>)}</ol>
+      {medicine && <p className="fam-note">ROSS glielo dirà con le tue parole, ma non controlla se l'ha presa: per le medicine c'è il personale della residenza.</p>}
+    </section> : <p className="fam-note">Scrivi o parla come ti viene, anche tutto insieme: ROSS lo riordina e lo racconta a Elena con parole semplici, nel momento giusto. In questa demo resta sul dispositivo.</p>}
+  </Dialog>;
 }
 
-function useContributionSheet() { const [kind, setKind] = useState(null); return { openContribution: (next = "memory") => setKind(next), sheet: <ContributionSheet key={kind || "closed"} kind={kind} onClose={() => setKind(null)} /> }; }
+function useContributionSheet() { const [open, setOpen] = useState(false); return { openContribution: () => setOpen(true), sheet: <ComposerSheet open={open} onClose={() => setOpen(false)} /> }; }
 
-function ContributeTiles({ onPick }) {
-  return <div className="fam-tiles">{Object.entries(contributionTypes).map(([kind, item]) => { const Icon = item.icon; return <button type="button" key={kind} onClick={() => onPick(kind)}><Icon size={22} /><span>{item.title}</span></button>; })}</div>;
+// Un finto campo di scrittura che apre il + (in Da te): stesso gesto, nessun modulo.
+function ComposeBar({ onOpen }) {
+  return <button type="button" className="fam-compose-bar" onClick={onOpen}><span>Raccontale qualcosa, o mandale qualcosa…</span><Mic size={20} /><Paperclip size={20} /></button>;
 }
 
 export function FamilyExperience() {
@@ -239,7 +300,7 @@ export function FamilyMemoryDetail() {
       <p className="fam-lead">{memory.description}</p>
       <dl className="fam-card fam-facts">{facts.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
       <div className="fam-source"><Check size={18} /><p>{fromFamily(memory) ? "L'hai condiviso tu: ROSS lo proporrà con delicatezza, e se Elena lo riconosce entra nella sua storia." : "Elena l'ha raccontato a ROSS e ha scelto di condividerlo con te. ROSS lo usa per dare continuità alle vostre conversazioni."}</p></div>
-      <button type="button" className="fam-button" onClick={() => contribution.openContribution("photo")}><Plus size={18} /> Aggiungi un dettaglio o una foto</button>
+      <button type="button" className="fam-button" onClick={() => contribution.openContribution("photo")}><Plus size={18} /> Aggiungi un dettaglio</button>
     </article>
     <section className="fam-section">
       <header className="fam-section-head"><h2>Altri fili della storia</h2></header>
@@ -349,7 +410,7 @@ export function FamilyActivityDetail() {
         <section className="fam-card"><span className="fam-kicker">Un momento suo</span><h2>{privateLine}</h2><p>{item.privateSummary} ROSS racconta alla famiglia solo ciò che Elena sceglie di condividere.</p></section>
         <section className="fam-card"><span className="fam-kicker">{item.outside ? "Come c’è arrivata" : "Perché ROSS l’ha proposta"}</span><p>{item.why}</p></section>
       </>}
-      <button type="button" className="fam-button" onClick={() => contribution.openContribution("topic")}><Lightbulb size={18} /> Suggerisci un’attività simile</button>
+      <button type="button" className="fam-button" onClick={() => contribution.openContribution("topic")}><MessageCircle size={18} /> Raccontale qualcosa</button>
     </article>
     {contribution.sheet}
   </FamilyShell>;
@@ -365,7 +426,7 @@ export function FamilyFromYou() {
     <LargeTitle kicker="Da te, per Elena" title="Cosa le hai portato">Foto, ricordi, argomenti e canzoni arrivano subito a ROSS, che li proporrà a Elena nel momento giusto. Qui vedi com'è andata.</LargeTitle>
     <dl className="fam-card fam-stats fam-stats-card">{counts.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     <section className="fam-section">
-      <div className="fam-list fam-card">{state.familyContributions.map((item) => { const Icon = contributionTypes[item.kind]?.icon || Heart; const status = contributionStatus(item.status); return <button type="button" key={item.id} className="fam-shared-row" onClick={() => setSelected(item)}>{item.image ? <img src={item.image} alt="" /> : <span className="fam-icon coral"><Icon size={20} /></span>}<span className="fam-row-text"><small className="fam-kicker">{contributionTypes[item.kind]?.short || "Contributo"}</small><strong>{item.title}</strong><small>{item.detail}</small><em className={status === "Ripreso con Elena" ? "done" : ""}>{status}</em></span><ChevronRight className="fam-chevron" size={18} /></button>; })}</div>
+      <div className="fam-list fam-card">{state.familyContributions.map((item) => { const Icon = kindIcons[item.kind] || Heart; const status = contributionStatus(item.status); return <button type="button" key={item.id} className="fam-shared-row" onClick={() => setSelected(item)}>{item.image ? <img src={item.image} alt="" /> : <span className="fam-icon coral"><Icon size={20} /></span>}<span className="fam-row-text"><small className="fam-kicker">{kindShort(item.kind)}{item.via === "voce" ? " · detto a voce" : ""}</small><strong>{item.title}</strong><small>{item.detail}</small><em className={status === "Ripreso con Elena" ? "done" : ""}>{status}</em></span><ChevronRight className="fam-chevron" size={18} /></button>; })}</div>
     </section>
     {familyMemories.length > 0 && <section className="fam-section">
       <header className="fam-section-head"><h2>I ricordi che hai raccontato</h2></header>
@@ -373,7 +434,7 @@ export function FamilyFromYou() {
     </section>}
     <section className="fam-section fam-contribute">
       <header className="fam-section-head"><h2>Cosa vuoi portarle?</h2></header>
-      <ContributeTiles onPick={contribution.openContribution} />
+      <ComposeBar onOpen={contribution.openContribution} />
     </section>
     {contribution.sheet}
     <SharedDetail item={selected} onClose={() => setSelected(null)} />
@@ -418,5 +479,5 @@ const contributionRacconto = { "family-cefalu-postcard": "cartolina" };
 function SharedDetail({ item, onClose }) {
   const container = useContext(PhoneScreen); const navigate = useNavigate();
   const racconto = item && contributionStatus(item.status) === "Ripreso con Elena" && contributionRacconto[item.id];
-  return <Dialog open={Boolean(item)} title={item?.title || "Contributo"} onClose={onClose} container={container} className="family-dialog fam-sheet">{item && <div className="fam-shared-detail">{item.image && <img src={item.image} alt={`Immagine collegata a ${item.title}`} />}<span className="fam-badge">{contributionStatus(item.status)}</span><p>{item.detail}</p><dl className="fam-card fam-facts">{[["Persone", item.people?.join(", ") || "—"], ["Luogo", item.place || "—"], ["Periodo", item.period || "—"]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>{racconto && <button type="button" className="fam-button" onClick={() => { onClose(); navigate(`/famiglia/attivita/${racconto}`); }}><MessageCircleHeart size={18} /> Guarda com'è andata</button>}</div>}</Dialog>;
+  return <Dialog open={Boolean(item)} title={item?.title || "Contributo"} onClose={onClose} container={container} className="family-dialog fam-sheet">{item && <div className="fam-shared-detail">{item.image && <img src={item.image} alt={`Immagine collegata a ${item.title}`} />}<span className="fam-badge">{contributionStatus(item.status)}</span><p>{item.detail}</p>{item.parts?.length > 0 && <section className="fam-preview"><span className="fam-kicker">Come lo racconta ROSS a Elena</span><ol>{item.parts.map((part, index) => <li key={index}><em>{kindShort(part.kind)}</em><p>{part.rossLine}</p></li>)}</ol></section>}<dl className="fam-card fam-facts">{[["Persone", item.people?.join(", ") || "—"], ["Luogo", item.place || "—"], ["Periodo", item.period || "—"]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>{racconto && <button type="button" className="fam-button" onClick={() => { onClose(); navigate(`/famiglia/attivita/${racconto}`); }}><MessageCircleHeart size={18} /> Guarda com'è andata</button>}</div>}</Dialog>;
 }

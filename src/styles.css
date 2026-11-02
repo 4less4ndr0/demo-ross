@@ -1011,9 +1011,6 @@
 .fam-resource em{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--fam-mint-text)}
 .fam-resource li strong{font:600 19px/1.25 var(--serif)}
 .fam-resource li span{font-size:15px;line-height:1.45;color:var(--family-muted)}
-.fam-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fam-tiles button{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:100px;padding:16px;border:1px solid var(--fam-line);border-radius:20px;background:var(--fam-card);color:var(--family-ink);text-align:left;font-size:15px;font-weight:600;line-height:1.25}
-.fam-tiles svg{color:var(--fam-coral-text)}
 
 /* Filtri a pillole (scorrono in orizzontale) e controllo segmentato */
 .fam-chips{display:flex;gap:8px;overflow-x:auto;margin:0 calc(-1 * var(--fam-margin));padding:4px var(--fam-margin);scrollbar-width:none;border:0;background:none}
@@ -1098,22 +1095,7 @@
 .fam-sheet>header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
 .fam-sheet>header h2{font:500 22px/1.2 var(--serif);margin:0}
 .fam-sheet>header .ui-button{flex:none;width:44px;height:44px;border-radius:50%;background:rgba(118,118,128,.12);color:var(--family-muted);border:0}
-.fam-form{display:grid;gap:14px}
-.fam-form label{display:grid;gap:6px;font-size:15px;font-weight:600;color:var(--family-ink)}
-.fam-form .ui-input{width:100%;min-height:44px;padding:10px 14px;border:1px solid var(--fam-line);border-radius:12px;background:var(--fam-card);color:var(--family-ink);font:400 17px var(--fam-font)}
-.fam-form textarea.ui-input{min-height:110px;resize:vertical;line-height:1.4}
-.fam-form-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fam-form-lead{display:flex;align-items:flex-start;gap:12px}
-.fam-form-lead p{margin:0;font-size:15px;line-height:1.45;color:var(--family-muted)}
-.fam-photo-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0;padding:0;border:0}
-.fam-photo-picker legend{margin-bottom:6px;font-size:15px;font-weight:600}
-.fam-photo-picker label{position:relative;display:block;overflow:hidden;border:2px solid transparent;border-radius:14px;background:var(--fam-fill);font-weight:600}
-.fam-photo-picker label.selected{border-color:var(--family-coral)}
-.fam-photo-picker input{position:absolute;left:8px;top:8px;width:20px;height:20px;accent-color:var(--family-coral)}
-.fam-photo-picker img{display:block;width:100%;height:96px;object-fit:cover}
-.fam-photo-picker span{display:block;padding:8px 10px;font-size:13px}
 .fam-note{margin:0;padding:10px 12px;border-radius:12px;background:var(--fam-fill);font-size:13px;line-height:1.45;color:var(--family-muted)}
-.fam-sheet-actions{position:sticky;bottom:calc(-1 * (var(--safe-bottom) + 16px));display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin:0 calc(-1 * var(--fam-margin));padding:10px var(--fam-margin) calc(var(--safe-bottom) + 16px);background:var(--fam-bg)}
 .fam-shared-detail{display:grid;gap:12px}
 .fam-shared-detail>img{width:100%;max-height:240px;object-fit:cover;border-radius:16px}
 .fam-shared-detail>.fam-badge{justify-self:start;margin:0}
@@ -1187,3 +1169,59 @@
 .fam-consent ul{margin:0 0 4px;padding-left:22px;display:grid;gap:4px;font-size:15px;line-height:1.45;color:var(--family-muted)}
 .fam-consent>p{margin-top:14px}
 .fam-private.fam-empty{font-style:italic}
+
+/* Famiglia · il + senza modulo: campo libero, microfono, graffetta, anteprima di come lo racconterà ROSS */
+.fam-composer-box{display:grid;gap:10px;padding:12px;border:1px solid var(--fam-line);border-radius:20px;background:var(--fam-card);transition:border-color .2s,box-shadow .2s}
+.fam-composer-box:focus-within{border-color:var(--fam-mint-text);box-shadow:0 0 0 3px rgba(59,122,107,.15)}
+.fam-composer-box.is-listening{border-color:var(--family-coral);box-shadow:0 0 0 3px rgba(216,102,76,.18)}
+.fam-composer-box .ui-input{width:100%;min-height:150px;padding:4px 2px;border:0;background:none;box-shadow:none;resize:none;color:var(--family-ink);font:400 19px/1.45 var(--serif)}
+.fam-composer-box .ui-input:focus-visible{box-shadow:none}
+.fam-composer-box .ui-input::placeholder{color:#a3968c}
+.fam-attachment{display:grid;grid-template-columns:48px minmax(0,1fr) 44px;align-items:center;gap:10px;padding:6px;border-radius:14px;background:var(--fam-fill);font-size:15px}
+.fam-attachment img{width:48px;height:48px;border-radius:10px;object-fit:cover}
+.fam-attachment>span:nth-child(2){overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.fam-attachment button{width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:50%;background:none;color:var(--family-muted)}
+.fam-composer-tools{display:flex;align-items:center;gap:6px}
+.fam-tool{width:44px;height:44px;display:grid;place-items:center;flex:none;border:0;border-radius:50%;background:var(--fam-fill);color:var(--family-ink)}
+.fam-mic.is-on{background:var(--family-coral);color:#fff;animation:famMicPulse 1.2s ease-in-out infinite}
+@keyframes famMicPulse{0%,100%{box-shadow:0 0 0 0 rgba(216,102,76,.45)}50%{box-shadow:0 0 0 8px rgba(216,102,76,0)}}
+.fam-listening{flex:1;min-width:0;font-size:13px;color:var(--fam-coral-text)}
+.fam-send{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-left:auto;padding:0 18px;border:0;border-radius:999px;background:var(--family-ink);color:#fff;font-size:17px;font-weight:600}
+.fam-send:disabled{opacity:.35}
+.fam-attach-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fam-attach-picker button{display:grid;gap:6px;justify-items:center;min-height:44px;padding:6px;border:1px solid var(--fam-line);border-radius:14px;background:var(--fam-bg);color:var(--family-ink);font-size:12px;text-align:center}
+.fam-attach-picker img{width:100%;height:56px;border-radius:9px;object-fit:cover}
+.fam-attach-device{align-content:center}
+.fam-attach-device svg{color:var(--fam-coral-text)}
+.fam-composer .fam-note,.fam-composer .fam-preview{margin-top:12px}
+.fam-preview{padding:14px 16px;border-radius:16px;background:var(--family-mint-soft)}
+.fam-preview ol{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:10px}
+.fam-preview li{display:grid;gap:2px}
+.fam-preview em{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fam-mint-text)}
+.fam-preview li p{margin:0;font:400 16px/1.45 var(--serif);color:var(--family-ink)}
+.fam-preview .fam-note{margin:10px 0 0;background:rgba(255,255,255,.6)}
+.fam-shared-detail .fam-preview{margin:0}
+.fam-compose-bar{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:0 18px;border:1px solid var(--fam-line);border-radius:999px;background:var(--fam-card);color:var(--family-muted);text-align:left;font:400 17px var(--serif)}
+.fam-compose-bar span{flex:1}
+.fam-compose-bar svg{color:var(--fam-coral-text)}
+@media(prefers-reduced-motion:reduce){.fam-mic.is-on{animation:none}}
+
+/* Tablet di Elena: "Anna ti ha mandato qualcosa" e il racconto a voce, una cosa alla volta */
+.ross-news{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;margin-top:22px;padding:22px 24px;border-radius:24px;background:#fde7d6;border:1px solid rgba(216,102,76,.25)}
+.ross-news-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#d8664c}
+.ross-news-icon svg{width:26px;height:26px}
+.ross-news small{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#b5481f}
+.ross-news h2{font:500 26px/1.2 var(--serif);margin:4px 0}
+.ross-news p{margin:0;font-size:15px;color:var(--ross-muted)}
+.ross-news .ross-invite-actions>button svg{width:18px;height:18px;vertical-align:-3px;margin-right:6px}
+.ross-news-dialog{--text:#17342f;--muted:#68746f;--surface:#fffdf8;--line:rgba(23,52,47,.12);color:#17342f}
+.ross-news-item{display:grid;justify-items:center;gap:16px;text-align:center}
+.ross-news-item>small{font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#b5481f}
+.ross-news-item>img{width:100%;max-height:340px;object-fit:cover;border-radius:20px}
+.ross-news-badge{width:96px;height:96px;display:grid;place-items:center;border-radius:50%;background:#fde7d6;color:#d8664c}
+.ross-news-badge svg{width:44px;height:44px}
+.ross-news-line{margin:0;font:500 clamp(24px,3vw,32px)/1.3 var(--serif);max-width:640px;color:#17342f}
+.ross-news-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.ross-news-dialog .ross-news-controls :is(.primary-button,.ghost-button){height:52px;min-height:52px;padding:0 22px;border-radius:999px;font-size:17px}
+.ross-news-dialog .ross-news-controls svg{width:20px;height:20px}
+@media(max-width:700px){.ross-news{grid-template-columns:auto 1fr}.ross-news .ross-invite-actions{grid-column:1/-1}}
