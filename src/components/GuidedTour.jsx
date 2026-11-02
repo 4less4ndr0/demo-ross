@@ -30,13 +30,15 @@ const chapters = [
     id: "famiglia", label: "Famiglia", who: "Anna, la figlia di Elena", icon: HeartHandshake, route: "/famiglia",
     title: "Ora vediamo la famiglia",
     body: "Quello che vede Anna: un racconto, non dei dati. Solo ciò che Elena sceglie di condividere, e la struttura non sta in mezzo.",
-    features: ["Una notifica sul telefono di Anna, solo quando Elena sceglie di raccontare", "Il racconto di oggi, anche di ciò che Elena ha fatto fuori da ROSS", "Come sta questa settimana: solo ciò che va bene, partecipazione compresa", "Come puoi esserle vicina: la famiglia come risorsa, in tutte e due le direzioni", "Condividi: foto, ricordi e canzoni che arrivano a ROSS"],
+    features: ["Una notifica sul telefono di Anna, solo quando Elena sceglie di raccontare", "Oggi: il racconto del giorno, come sta questa settimana e come esserle vicina", "Momenti: giorno, settimana e mese, nelle parole di Elena", "Ricordi: la sua storia, con la provenienza sempre visibile", "Da te: ciò che Anna porta a ROSS e che fine ha fatto"],
     steps: [
       { route: "/famiglia", target: ".fam-lock-stack", lock: true, title: "Il primo contatto: una notifica", lens: "Decide la persona", body: "Anna non apre un'app per controllare: è ROSS a farsi vivo sul suo iPhone, e solo perché Elena ha scelto di raccontare. Un racconto, mai un allarme." },
       { route: "/famiglia", target: ".fam-story", title: "Il racconto di oggi", lens: "Significativo", body: "Anna non riceve dati né trascrizioni: un breve racconto, solo di ciò che Elena ha scelto di condividere. Se Elena va al canto e decide di dirlo, compare anche qui." },
       { route: "/famiglia", target: ".fam-week", title: "Come sta questa settimana", lens: "Prima le risorse", body: "Solo ciò che va bene, rispetto al solito di Elena: questa settimana anche più partecipazione alla vita della residenza. Niente dati da controllare." },
       { route: "/famiglia", target: ".fam-resource", title: "Come puoi esserle vicina", lens: "Reciprocità", body: "Anche Anna è una risorsa, e lo è anche Elena per lei: tre spunti concreti, dal ricordo che la accende al consiglio da chiederle." },
-      { route: "/famiglia", target: ".fam-add", title: "Condividi con ROSS", lens: "Risorse", body: "Anna può mandare una foto, un ricordo, un argomento o una canzone: ROSS li proporrà a Elena nel momento giusto." },
+      { route: "/famiglia/attivita", target: ".fam-timeline", title: "Momenti, non misurazioni", lens: "Decide la persona", body: "Cosa ha fatto Elena con ROSS, oggi, in settimana e nel mese, nelle sue parole. Se un racconto l'ha tenuto per sé, Anna vede solo com'è andata. Anche le uscite arrivano qui, ma solo se è Elena a raccontarle." },
+      { route: "/famiglia/storia", target: ".fam-memory", title: "I ricordi di Elena", lens: "Comprensibile", body: "La sua storia, con la provenienza sempre visibile: raccontato da Elena o portato dalla famiglia. Un ricordo arriva qui solo se Elena ha scelto di condividerlo." },
+      { route: "/famiglia/condivisi", target: ".fam-shared-row", title: "Da te, per Elena", lens: "Reciprocità", body: "Foto, ricordi e canzoni che Anna porta a ROSS con il + in alto. Restano «Disponibile a ROSS» finché non arriva il momento giusto, poi «Ripreso con Elena». La struttura non sta in mezzo." },
     ],
   },
   {
@@ -97,7 +99,12 @@ function bringIntoView(el, cardHeight) {
   const rect = el.getBoundingClientRect();
   // Vista Famiglia: si scorre lo schermo dell'iPhone, non la finestra.
   const scroller = el.closest(".fam-scroll");
-  if (scroller) { scroller.scrollTo({ top: scroller.scrollTop + rect.top - scroller.getBoundingClientRect().top - 64, behavior: reducedMotion() ? "auto" : "smooth" }); return; }
+  if (scroller) {
+    // L'elemento si ferma sotto la barra di navigazione dell'iPhone (barra di stato compresa).
+    const navbar = scroller.querySelector(".fam-navbar")?.getBoundingClientRect().height || 64;
+    scroller.scrollTo({ top: scroller.scrollTop + rect.top - scroller.getBoundingClientRect().top - navbar - 12 }); // istantaneo: l'evidenziazione non insegue lo scorrimento
+    return;
+  }
   const areaTop = HEADER;
   const areaHeight = window.innerHeight - cardHeight - 48 - areaTop;
   const desiredTop = rect.height <= areaHeight ? areaTop + (areaHeight - rect.height) / 2 : areaTop;
