@@ -8,17 +8,35 @@ import { outsideInvites } from "../data/demoData";
 import { byPriority } from "../data/familyMessages";
 import { consumeFamilyNews, consumeReminders } from "../state/familyNews";
 
-const conversation = [
-  { speaker: "ross", state: "response", line: "Ciao Elena. Ti va di stare un po’ insieme?", support: "ROSS inizia senza imporre un argomento." },
-  { speaker: "elena", state: "listening", line: "Sì, volentieri. Oggi ho ascoltato Mina.", support: "Elena sceglie il punto di partenza." },
-  { speaker: "ross", state: "processing", line: "Mi hai raccontato che Mina ti ricorda i pomeriggi in cucina. Vuoi restare sulla musica o guardiamo una fotografia?", support: "Usa solo una memoria già confermata e offre una scelta." },
-  { speaker: "elena", state: "listening", line: "Guardiamo quella del mare. Era in Sicilia, con Paolo.", support: "Il racconto porta spontaneamente a un ricordo personale." },
-  { speaker: "ross", state: "response", line: "Ricordo il viaggio del 1998: Palermo e Cefalù. Cosa ti piaceva di quelle passeggiate?", support: "Recupera luogo, anno e persona dalla storia confermata." },
-  { speaker: "elena", state: "listening", line: "La luce della sera. Paolo portava sempre una piccola macchina fotografica rossa.", support: "Emerge un dettaglio nuovo." },
-  { speaker: "ross", state: "processing", line: "Questa della macchina fotografica rossa è una cosa nuova per me. Ti va se lo racconto anche ad Anna? Credo le farebbe piacere.", support: "ROSS distingue il nuovo dettaglio da ciò che sa già e chiede a Elena se condividerlo." },
-  { speaker: "elena", state: "listening", line: "Sì, raccontaglielo. Mi fotografava sul lungomare e poi rideva perché chiudevo gli occhi.", support: "Elena sceglie di condividere il ricordo con la figlia." },
-  { speaker: "ross", state: "activity", line: "Le altre fotografie di Cefalù le guardiamo un'altra volta. Alle 17:30 in salone si canta, c'è anche Mina: ci vai? Poi mi racconti com'è andata.", support: "Chiude con un invito fuori da qui: ROSS è un ponte verso la vita della residenza, non la meta." },
+// "Parla con ROSS": la conversazione simulata. Chi presenta va avanti con un clic o con le frecce;
+// ROSS parla con i sottotitoli che compaiono parola per parola, Elena "parla" e la sua voce diventa testo.
+// Nei momenti in cui decide Elena compaiono le frasi che può dire ("Puoi dirmi"): le scelte cambiano davvero il seguito.
+// note: spiegazioni per chi guarda la demo, mostrate solo con "Note per chi presenta".
+const script = [
+  { id: "apertura", speaker: "ross", line: "Ciao Elena, sono ROSS. Ti va di stare un po' insieme?", note: "ROSS si presenta e chiede, senza imporre un argomento. Elena può dire di no.",
+    choices: [{ label: "Sì, volentieri", next: "si" }, { label: "Non adesso", next: "non-adesso" }] },
+  { id: "si", speaker: "elena", line: "Sì, volentieri. Oggi ho ascoltato Mina.", note: "È Elena a scegliere da dove partire." },
+  { id: "scelta", speaker: "ross", line: "Mi avevi raccontato che Mina ti ricorda i pomeriggi in cucina. Restiamo sulla musica, o guardiamo una fotografia?", note: "ROSS usa solo un ricordo che Elena ha già confermato, e le lascia la scelta.",
+    choices: [{ label: "Guardiamo una fotografia", next: "foto-elena" }, { label: "Restiamo sulla musica", next: "musica" }] },
+  { id: "musica", speaker: "ross", line: "Allora mettiamo «Se telefonando». Quando finisce, ti va di guardare una foto del mare?", note: "Se Elena sceglie la musica, ROSS la segue e propone la foto dopo.",
+    choices: [{ label: "Sì, guardiamola", next: "foto-elena" }, { label: "Basta così per oggi", next: "saluto" }] },
+  { id: "foto-elena", speaker: "elena", line: "Guardiamo quella del mare. Era in Sicilia, con Paolo." },
+  { id: "foto", speaker: "ross", line: "Te la faccio vedere: è la cartolina di Cefalù che ti ha mandato Anna. Era il viaggio del 1998. Cosa ti piaceva di quelle passeggiate?", image: "cefalu-postcard.svg", note: "Prima di usare lo schermo lo dice. Ritrova luogo, anno e persona dalla sua storia e chiede, non racconta al posto suo." },
+  { id: "dettaglio", speaker: "elena", line: "La luce della sera. Paolo portava sempre una piccola macchina fotografica rossa." },
+  { id: "bozza", speaker: "ross", line: "Questa della macchina fotografica rossa non la sapevo. Se per te va bene, me la segno.", draft: "La macchina fotografica rossa di Paolo", note: "Il dettaglio nuovo resta in bozza: ROSS lo tiene solo se Elena è d'accordo.",
+    choices: [{ label: "Sì, segnatela", next: "ricordo" }, { label: "No, lasciamo stare", next: "non-segnare" }] },
+  { id: "non-segnare", speaker: "ross", line: "Va bene, non me la segno. Mi è piaciuto ascoltarti.", forget: true, next: "saluto" },
+  { id: "ricordo", speaker: "elena", line: "Sì. Mi fotografava sul lungomare e poi rideva perché chiudevo gli occhi.", draft: "La macchina fotografica rossa di Paolo", saved: true },
+  { id: "consenso", speaker: "ross", line: "Che bel ricordo. Ti va se lo racconto anche ad Anna? Credo le farebbe piacere.", draft: "La macchina fotografica rossa di Paolo", saved: true, note: "Il consenso nasce qui, un racconto alla volta. Anna non riceve la conversazione, solo questo ricordo, e solo se Elena dice sì.",
+    choices: [{ label: "Sì, raccontaglielo", next: "condiviso", share: true }, { label: "No, tienilo per te", next: "per-te", share: false }] },
+  { id: "condiviso", speaker: "ross", line: "Va bene: le racconto solo questo ricordo, non il resto della nostra chiacchierata.", next: "saluto" },
+  { id: "per-te", speaker: "ross", line: "Va bene, resta tra noi due.", next: "saluto" },
+  { id: "saluto", speaker: "ross", line: "Le altre fotografie le guardiamo un'altra volta. Alle 17:30 in salone si canta, e c'è anche Mina: ci vai? Poi mi racconti com'è andata.", note: "ROSS chiude verso fuori: è un ponte verso le persone vere, non la meta.",
+    choices: [{ label: "Sì, ci vado", end: "out" }, { label: "Magari un'altra volta", end: "home" }] },
+  { id: "non-adesso", speaker: "ross", line: "Va bene, possiamo farlo un'altra volta. Quando ti va, chiamami tu.", note: "Il no si accetta così, senza insistere.", choices: [{ label: "Grazie, ROSS", end: "later" }] },
 ];
+const scriptIndex = Object.fromEntries(script.map((turn, index) => [turn.id, index]));
+const nextOf = (turn) => turn.next || script[scriptIndex[turn.id] + 1]?.id;
 
 // Modalità: le stesse della struttura, dette con le parole di Elena.
 const modes = [["Attiva", "Proponimi tu"], ["Reattiva", "Quando ti chiamo"], ["Silenziosa", "Stai in silenzio"]];
@@ -296,66 +314,121 @@ export function RossHome() {
 }
 
 export function RossConversation() {
-  const { state, actions } = useDemo();
+  const { state, actions, notify } = useDemo();
   const navigate = useNavigate();
-  const [step, setStep] = useState(state.rossJourney.stage === "complete" ? conversation.length : 0);
-  const [paused, setPaused] = useState(false);
-  const complete = step >= conversation.length;
-  const current = conversation[Math.min(step, conversation.length - 1)];
-  const visible = useMemo(() => conversation.slice(0, Math.min(step + 1, conversation.length)), [step]);
+  const [history, setHistory] = useState(["apertura"]);
+  const [shown, setShown] = useState(0); // parole già comparse nella frase in corso
+  const [auto, setAuto] = useState(false);
+  const [notes, setNotes] = useState(false);
+  const [shared, setShared] = useState(true);
+  const [ended, setEnded] = useState(state.rossJourney.stage === "complete" ? "done" : null);
+  const turn = script[scriptIndex[history[history.length - 1]]];
+  const words = turn.line.split(" ");
+  const revealed = shown >= words.length;
+  const previous = history.slice(-3, -1).map((id) => script[scriptIndex[id]]);
+  const mood = turn.speaker === "elena" ? (revealed ? "processing" : "listening") : "response";
 
+  // Le parole compaiono come sottotitoli mentre ROSS (o Elena) parla.
+  useEffect(() => { setShown(0); }, [turn.id]);
   useEffect(() => {
-    if (!complete) actions.setRossStage(`step-${step + 1}`);
-  }, [step]);
+    if (revealed) return undefined;
+    const timer = window.setTimeout(() => setShown((value) => value + 1), turn.speaker === "ross" ? 110 : 150);
+    return () => window.clearTimeout(timer);
+  }, [shown, revealed, turn.speaker]);
+  useEffect(() => { if (!ended) actions.setRossStage(`step-${turn.id}`); }, [turn.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const next = () => {
-    if (step === conversation.length - 1) {
-      actions.completeRossConversation();
-      setStep(conversation.length);
-      return;
-    }
-    setStep((value) => value + 1);
+  const finish = (end, isShared = shared) => {
+    if (end === "later") { notify("Va bene: ROSS resta qui, quando vuoi"); navigate("/ross"); return; }
+    // Il ricordo nuovo esiste solo se Elena ha detto «Sì, segnatela»; arriva ad Anna solo se ha detto sì anche al racconto.
+    if (history.includes("ricordo")) actions.completeRossConversation(isShared);
+    if (end === "out") actions.goOut("canto");
+    setEnded(end);
   };
-
-  const restart = () => {
-    actions.restartRossJourney();
-    setStep(0);
+  const go = (id) => setHistory((list) => [...list, id]);
+  const choose = (choice) => {
+    if (choice.share !== undefined) setShared(choice.share);
+    if (choice.end) return finish(choice.end, choice.share ?? shared);
+    go(choice.next);
   };
+  const forward = () => {
+    if (!revealed) { setShown(words.length); return; }
+    if (turn.choices) return; // qui decide Elena
+    const next = nextOf(turn); if (next) go(next);
+  };
+  const back = () => { if (history.length > 1) setHistory((list) => list.slice(0, -1)); };
+  const restart = () => { actions.restartRossJourney(); setHistory(["apertura"]); setShared(true); setEnded(null); };
 
-  if (complete) {
-    return <div className="ross-app ross-conversation-complete screen-enter" data-ross-state="rest">
-      <header className="ross-header"><button onClick={() => navigate("/ross")}><ArrowLeft /> Home</button><div className="ross-wordmark"><span>R</span><strong>ROSS</strong></div><span /></header>
+  // Riproduzione automatica: avanza da sola e si ferma quando tocca a Elena scegliere.
+  useEffect(() => {
+    if (!auto || !revealed || turn.choices || ended) return undefined;
+    const timer = window.setTimeout(forward, turn.speaker === "ross" ? 1700 : 1200);
+    return () => window.clearTimeout(timer);
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const onKey = (event) => {
+      if (event.target instanceof HTMLElement && ["INPUT", "TEXTAREA"].includes(event.target.tagName)) return;
+      if (event.key === "ArrowRight") { event.preventDefault(); forward(); }
+      else if (event.key === "ArrowLeft") { event.preventDefault(); back(); }
+      else if (event.key === " ") { event.preventDefault(); setAuto((value) => !value); }
+      else if (event.key === "n" || event.key === "N") setNotes((value) => !value);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  if (ended) {
+    const kept = ended === "done" ? Boolean(state.rossJourney.completedAt) : history.includes("ricordo");
+    const sharedNow = ended === "done" ? state.rossJourney.shared !== false : shared;
+    return <div className="ross-app ross-chat-end screen-enter" data-ross-state="rest">
+      <header className="ross-header"><button onClick={() => navigate("/ross")}><ArrowLeft /> Torna a ROSS</button><div className="ross-wordmark"><span>R</span><strong>ROSS</strong></div><span /></header>
       <main>
         <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes complete" />
-        <span className="completion-check"><Check /></span>
-        <h1>Grazie, Elena.</h1>
-        <p>Mi ricorderò di quello che mi hai raccontato, e resta qui tra noi. Ad Anna racconterò solo il nuovo ricordo, come mi hai chiesto.</p>
-        <article><span>NUOVO RICORDO · CONDIVISO CON ANNA</span><h2>La macchina fotografica rossa di Paolo</h2><p>Collegata a Cefalù, al viaggio del 1998 e alle fotografie.</p><div><span>La conversazione resta qui</span><ArrowRight /><span>Elena sceglie cosa condividere</span><ArrowRight /><span>Arriva ad Anna solo il ricordo</span></div></article>
-        <div className="ross-complete-actions"><button className="ross-primary-action" onClick={() => { actions.goOut("canto"); navigate("/ross"); }}><DoorOpen /> Ci vado, al canto</button><button className="ross-secondary-action" onClick={() => navigate("/ross")}><ArrowLeft /> Torna alla home</button><button onClick={restart}><RotateCcw /> Ripeti la demo</button></div>
+        <h1>{ended === "out" ? "Buon canto, Elena." : "Grazie, Elena."}</h1>
+        <p>{ended === "out" ? "Resto in silenzio finché non torni. Poi mi racconti com'è andata." : "Quello che ci siamo detti resta qui. Quando vuoi, ci sono."}</p>
+        <section className="ross-chat-summary" aria-label="Cosa resta di questa conversazione">
+          <span>Cosa resta di questa conversazione</span>
+          <ol>
+            <li><strong>La conversazione</strong> resta su questo dispositivo. Non la riceve nessuno.</li>
+            <li><strong>Il ricordo nuovo</strong>{kept ? " (la macchina fotografica rossa di Paolo) ROSS lo tiene, perché Elena ha detto sì. Lo può correggere o fargli dimenticare quando vuole." : ": Elena ha preferito non segnarlo, e ROSS non lo tiene."}</li>
+            <li><strong>Anna</strong> {kept && sharedNow ? "riceve solo questo ricordo, come racconto, perché Elena ha scelto di condividerlo." : "non riceve nulla: Elena l'ha tenuto per sé."}</li>
+          </ol>
+        </section>
+        <div className="ross-complete-actions"><button className="ross-primary-action" onClick={() => navigate("/ross")}><ArrowLeft /> Torna a ROSS</button><button onClick={restart}><RotateCcw /> Ripeti la conversazione</button></div>
       </main>
     </div>;
   }
 
+  const status = turn.speaker === "elena" ? (revealed ? "Ho capito" : "Ti ascolto…") : revealed ? (turn.choices ? "Aspetto la tua risposta" : "ROSS ha parlato") : "ROSS parla";
   return (
-    <div className="ross-app ross-conversation screen-enter" data-ross-state={current.state}>
-      <header className="ross-header"><button onClick={() => navigate("/ross")}><X /> Esci</button><div><span className="conversation-progress"><i style={{ width: `${((step + 1) / conversation.length) * 100}%` }} /></span><small>Conversazione · {step + 1} di {conversation.length}</small></div><button onClick={() => setPaused((value) => !value)}>{paused ? <Play /> : <Pause />} {paused ? "Riprendi" : "Pausa"}</button></header>
-      <main>
-        <section className="ross-conversation-face">
-          <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes" />
-          <span><i />{current.state === "listening" ? "Ti ascolto" : current.state === "processing" ? "Sto collegando il ricordo" : current.state === "activity" ? "Una proposta per dopo" : "ROSS parla"}</span>
+    <div className="ross-app ross-chat screen-enter" data-ross-state={mood}>
+      <header className="ross-header ross-chat-header">
+        <button type="button" onClick={() => navigate("/ross")}><X /> Esci</button>
+        <span className={`ross-chat-status is-${turn.speaker}${revealed ? "" : " is-live"}`}><i />{status}</span>
+        <span className="ross-chat-private">Sono ROSS, un compagno digitale basato sull'intelligenza artificiale. Quello che ci diciamo resta qui.</span>
+      </header>
+
+      <main className="ross-chat-main">
+        <img src={asset("ross-eyes.png")} alt="Gli occhi di ROSS" className={`ross-eyes ross-chat-eyes is-${mood}`} />
+        {!(turn.image && revealed) && <div className="ross-chat-history" aria-hidden="true">{previous.map((item) => <p key={item.id} className={`is-${item.speaker}`}><strong>{item.speaker === "ross" ? "ROSS" : "Elena"}</strong>{item.line}</p>)}</div>}
+        <section className={`ross-chat-now is-${turn.speaker}`} aria-live="polite">
+          <span className="ross-chat-who">{turn.speaker === "ross" ? "ROSS" : "Elena"}</span>
+          {turn.speaker === "elena" && !revealed && <span className="ross-chat-wave" aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <i key={index} style={{ animationDelay: `${index * 0.08}s` }} />)}</span>}
+          <p className="ross-chat-line">{words.map((word, index) => <span key={index} className={index < shown ? "on" : ""}>{word} </span>)}</p>
         </section>
-        <section className="ross-dialogue" aria-live="polite">
-          <span className={`speaker speaker-${current.speaker}`}>{current.speaker === "ross" ? "ROSS" : "ELENA"}</span>
-          <h1>“{current.line}”</h1>
-          <p>{current.support}</p>
-          <button type="button" className="ross-primary-action" onClick={next} disabled={paused}>{step === conversation.length - 1 ? "Concludi con calma" : current.speaker === "ross" ? "Elena risponde" : "ROSS continua"}<ArrowRight /></button>
-        </section>
-        <aside className="ross-conversation-context">
-          <span>CONTESTO DELLA CONVERSAZIONE</span>
-          <div className="context-pills"><span>Viaggio 1998</span><span>Paolo</span><span>Cefalù</span>{step >= 5 && <span className="new">+ nuovo dettaglio</span>}</div>
-          <div className="mini-transcript">{visible.slice(-3).map((item, index) => <p key={`${item.line}-${index}`}><strong>{item.speaker === "ross" ? "ROSS" : "Elena"}</strong>{item.line}</p>)}</div>
-        </aside>
+        {turn.image && revealed && <img className="ross-chat-photo" src={asset(turn.image)} alt="La cartolina di Cefalù che Anna ha mandato a Elena" />}
+        {turn.draft && revealed && <span className={`ross-chat-draft${turn.saved ? " is-saved" : ""}`}><Heart /> {turn.saved ? "Segnato tra i tuoi ricordi" : "Nuovo per me · in attesa del tuo sì"}: {turn.draft}</span>}
+        {turn.choices && revealed && <div className="ross-chat-choices"><p>Puoi dirmi:</p><div className="ross-say">{turn.choices.map((choice) => <button key={choice.label} type="button" onClick={() => choose(choice)}><Mic aria-hidden="true" />«{choice.label}»</button>)}</div></div>}
       </main>
+
+      <footer className="ross-chat-presenter" aria-label="Comandi per chi presenta">
+        <span className="ross-chat-label">Per chi presenta</span>
+        <button type="button" onClick={back} disabled={history.length < 2} aria-label="Indietro"><ArrowLeft /></button>
+        <button type="button" onClick={() => setAuto((value) => !value)} aria-pressed={auto}>{auto ? <Pause /> : <Play />} {auto ? "Pausa" : "Riproduci"}</button>
+        <button type="button" onClick={forward} disabled={revealed && Boolean(turn.choices)}>{turn.speaker === "ross" && revealed && !turn.choices ? "Elena risponde" : revealed ? "Avanti" : "Salta la frase"} <ArrowRight /></button>
+        <button type="button" className={notes ? "is-on" : ""} onClick={() => setNotes((value) => !value)} aria-pressed={notes}>Note</button>
+        <small>← → per andare · spazio per riprodurre · N per le note</small>
+        {notes && <p className="ross-chat-note">{turn.note || (turn.speaker === "elena" ? "Elena parla con parole sue: ROSS ascolta e la sua voce diventa testo." : "")}</p>}
+      </footer>
     </div>
   );
 }

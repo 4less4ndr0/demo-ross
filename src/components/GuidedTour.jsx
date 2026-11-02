@@ -56,7 +56,7 @@ const chapters = [
       { route: "/ross", target: ".ross-family-grid", title: "Da Anna, per te", lens: "Risorse", body: "Quello che la famiglia ha condiviso arriva qui come spunto. ROSS lo propone nel momento giusto; Elena decide se parlarne." },
       { route: "/ross", target: ".ross-touch-grid > button:last-child", title: "Aiuto, con parole proprie", lens: "Gestibile", body: "Non servono frasi fisse. ROSS non è un sistema di emergenza e lo dice: per un aiuto urgente ci sono il campanello e il personale." },
       { route: "/ross", target: ".ross-modes", title: "Decide Elena", lens: "Decide la persona", body: "È lei a scegliere quanto ROSS si fa sentire: propone, aspetta di essere chiamato o resta in silenzio." },
-      { route: "/ross/conversazione", target: ".ross-dialogue, .ross-conversation-complete article", title: "Una conversazione", lens: "Significativo", body: "ROSS riprende ciò che conosce e lascia scegliere. Quando emerge un ricordo nuovo chiede a Elena se può raccontarlo ad Anna, e chiude con un invito: alle 17:30 in salone si canta." },
+      { route: "/ross/conversazione", target: ".ross-chat-now, .ross-chat-summary", title: "Una conversazione", lens: "Significativo", body: "Una conversazione a voce, con i sottotitoli. ROSS riprende ciò che conosce e lascia scegliere: Elena può dire di no. Un ricordo nuovo resta in bozza finché lei non dice «sì, segnatela»; poi ROSS chiede se raccontarlo ad Anna e chiude con un invito: alle 17:30 in salone si canta." },
     ],
   },
 ];
