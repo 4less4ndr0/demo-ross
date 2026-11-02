@@ -31,10 +31,10 @@ const chapters = [
     body: "Quello che vede Anna: un racconto, non dei dati. Solo ciò che Elena sceglie di condividere, e la struttura non sta in mezzo.",
     features: ["Il racconto di oggi, anche di ciò che Elena ha fatto fuori da ROSS", "Come sta questa settimana: solo ciò che va bene, partecipazione compresa", "Come puoi esserle vicina: la famiglia come risorsa, in tutte e due le direzioni", "Condividi: foto, ricordi e canzoni che arrivano a ROSS"],
     steps: [
-      { route: "/famiglia", target: ".family-story", title: "Il racconto di oggi", lens: "Significativo", body: "Anna non riceve dati né trascrizioni: un breve racconto, solo di ciò che Elena ha scelto di condividere. Se Elena va al canto e decide di dirlo, compare anche qui." },
-      { route: "/famiglia", target: ".family-residence-note", title: "Come sta questa settimana", lens: "Prima le risorse", body: "Solo ciò che va bene, rispetto al solito di Elena: questa settimana anche più partecipazione alla vita della residenza. Niente dati da controllare." },
-      { route: "/famiglia", target: ".family-resource-card", title: "Come puoi esserle vicina", lens: "Reciprocità", body: "Anche Anna è una risorsa, e lo è anche Elena per lei: tre spunti concreti, dal ricordo che la accende al consiglio da chiederle." },
-      { route: "/famiglia", target: ".family-add-button", title: "Condividi con ROSS", lens: "Risorse", body: "Anna può mandare una foto, un ricordo, un argomento o una canzone: ROSS li proporrà a Elena nel momento giusto." },
+      { route: "/famiglia", target: ".fam-story", title: "Il racconto di oggi", lens: "Significativo", body: "Anna non riceve dati né trascrizioni: un breve racconto, solo di ciò che Elena ha scelto di condividere. Se Elena va al canto e decide di dirlo, compare anche qui." },
+      { route: "/famiglia", target: ".fam-week", title: "Come sta questa settimana", lens: "Prima le risorse", body: "Solo ciò che va bene, rispetto al solito di Elena: questa settimana anche più partecipazione alla vita della residenza. Niente dati da controllare." },
+      { route: "/famiglia", target: ".fam-resource", title: "Come puoi esserle vicina", lens: "Reciprocità", body: "Anche Anna è una risorsa, e lo è anche Elena per lei: tre spunti concreti, dal ricordo che la accende al consiglio da chiederle." },
+      { route: "/famiglia", target: ".fam-add", title: "Condividi con ROSS", lens: "Risorse", body: "Anna può mandare una foto, un ricordo, un argomento o una canzone: ROSS li proporrà a Elena nel momento giusto." },
     ],
   },
   {
@@ -93,6 +93,9 @@ const inFixedLayer = (el) => { for (let node = el; node && node !== document.bod
 function bringIntoView(el, cardHeight) {
   if (inFixedLayer(el)) return;
   const rect = el.getBoundingClientRect();
+  // Vista Famiglia: si scorre lo schermo dell'iPhone, non la finestra.
+  const scroller = el.closest(".fam-scroll");
+  if (scroller) { scroller.scrollTo({ top: scroller.scrollTop + rect.top - scroller.getBoundingClientRect().top - 64, behavior: reducedMotion() ? "auto" : "smooth" }); return; }
   const areaTop = HEADER;
   const areaHeight = window.innerHeight - cardHeight - 48 - areaTop;
   const desiredTop = rect.height <= areaHeight ? areaTop + (areaHeight - rect.height) / 2 : areaTop;
