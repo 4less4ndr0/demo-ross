@@ -19,6 +19,14 @@
     "src/data/salutogenesis.js": {
       "name": "Il metodo salutogenico",
       "description": "Spiega in breve il metodo negli specchietti e suggerisce alla famiglia come essere vicina all'ospite."
+    },
+    "src/data/activities.js": {
+      "name": "Attività suggerite",
+      "description": "Calendario d'esempio della residenza e le attività da proporre a un ospite, collegate solo agli interessi che ha condiviso."
+    },
+    "src/data/familyMessages.js": {
+      "name": "ROSS riordina i messaggi di Anna",
+      "description": "Capisce cosa manda la famiglia (foto, pensiero, domanda, ricordo, musica, promemoria), separa i promemoria e prepara le frasi da dire a Elena, nell'ordine giusto."
     }
   }
 }
