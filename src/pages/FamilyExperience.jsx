@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
-import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Heart, Home, Images, Lightbulb, MessageCircle, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi } from "lucide-react";
+import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Heart, Home, Images, Lightbulb, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
 import { Dialog, Input, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
 import { asset } from "../asset.js";
@@ -113,7 +113,6 @@ export function FamilyExperience() {
   const navigate = useNavigate();
   const contribution = useContributionSheet();
   const conversationDone = Boolean(state.rossJourney.completedAt);
-  const memory = (conversationDone && state.memories.find((item) => item.id === "ross-cefalu-camera")) || state.memories.find((item) => item.id === "mem-cefalu");
   const weekSignals = signalsFor("elena").filter((item) => item.positive);
   const activityCount = useMemo(() => Math.max(3, state.interactions.filter((item) => item.residentId === "elena" && item.date === "2026-09-21").length), [state.interactions]);
   // Un'uscita raccontata a ROSS arriva ad Anna solo se Elena ha scelto di condividerla.
@@ -125,13 +124,8 @@ export function FamilyExperience() {
   const headline = outingShared ? (conversationDone ? "Un ricordo ritrovato, poi tutti a cantare." : "Musica, fotografie e poi tutti a cantare.") : conversationDone ? "Una macchina fotografica rossa riapre un ricordo." : "Musica, fotografie e una passeggiata sul mare.";
   // Il sorriso di oggi: un solo momento, e solo tra quelli che Elena ha scelto di condividere.
   const smile = outingShared ? "al canto in salone, e al ritorno ha voluto raccontarlo." : conversationDone ? "la macchina fotografica rossa di Paolo, ritrovata in un ricordo." : "Mina, riconosciuta dopo poche note.";
-  const moments = [
-    { icon: <Music2 size={20} />, tone: "mint", title: "Mina in salotto", subtitle: "11:40 · 12 minuti", to: "/famiglia/attivita/song" },
-    { icon: <Images size={20} />, tone: "coral", title: "Fotografie di viaggio", subtitle: "15:58 · 14 minuti", to: "/famiglia/attivita/photos" },
-    { icon: <MessageCircle size={20} />, tone: "lilac", title: conversationDone ? "Cefalù e fotografie" : "Passeggiate a Cefalù", subtitle: conversationDone ? "17:18 · 14 minuti" : "16:20 · 16 minuti", to: `/famiglia/ricordi/${memory?.id || "mem-cefalu"}` },
-    ...(outingShared ? [{ icon: <Sparkles size={20} />, tone: "mint", title: "Al canto in salone", subtitle: "17:30 · fuori da ROSS", to: "/famiglia/attivita" }] : []),
-  ];
-  const memories = state.memories.filter((item) => item.residentId === "elena" && visibleToFamily(item)).slice(0, 3);
+  // Oggi rimanda a Momenti invece di ripeterne l'elenco.
+  const momentsLine = ["Mina", "fotografie di viaggio", conversationDone ? "la macchina fotografica rossa" : "Cefalù", ...(outingShared ? ["il canto in salone"] : [])];
   return <FamilyShell title="Oggi" onContribute={() => contribution.openContribution("memory")}>
     <LargeTitle kicker="Lunedì 21 settembre" title="Oggi con Elena">Ciao Anna: ecco ciò che può aiutarti a sentirla più vicina, senza trasformare la sua giornata in dati da controllare.</LargeTitle>
 
@@ -142,7 +136,7 @@ export function FamilyExperience() {
       <h2>{headline}</h2>
       <p>{baseStory}{outingShared ? " Poi è andata al canto in salone, come le aveva proposto ROSS, e al ritorno gliel'ha raccontato." : ""}</p>
       <SharedBadge />
-      <div className="fam-list fam-inset">{moments.map((item) => <Row key={item.title} {...item} onClick={() => navigate(item.to)} />)}</div>
+      <div className="fam-list fam-inset"><Row icon={<Sparkles size={20} />} title="Rivedi i momenti di oggi" subtitle={listIt(momentsLine)} onClick={() => navigate("/famiglia/attivita")} /></div>
       <dl className="fam-stats"><div><dt>momenti condivisi</dt><dd>{activityCount}</dd></div><div><dt>con ROSS</dt><dd>40 min</dd></div><div><dt>ricordi ripresi</dt><dd>2</dd></div></dl>
     </section>
 
@@ -153,17 +147,11 @@ export function FamilyExperience() {
       <button type="button" className="fam-button light" onClick={() => actions.addFamilyContribution({ kind: "topic", title: "Spunto per la prossima chiamata", detail: prompt, author: "Anna" })}><Check size={18} /> Salva lo spunto</button>
     </section>
 
-    <section className="fam-section">
-      <header className="fam-section-head"><h2>Ricordi da riaprire insieme</h2><button type="button" className="fam-link" onClick={() => navigate("/famiglia/storia")}>Vedi tutti</button></header>
-      <div className="fam-list fam-card">{memories.map((item) => <Row key={item.id} icon={item.category[0]} title={item.title} subtitle={originLabel(item)} onClick={() => navigate(`/famiglia/ricordi/${item.id}`)} />)}</div>
-    </section>
-
     <section className="fam-card fam-week">
       <span className="fam-kicker">Come sta questa settimana</span>
       <h2>{weekSignals.length ? `Più ${listIt(weekSignals.map((item) => item.signal))} del solito` : "Una settimana tranquilla"}</h2>
       <ul>{weekSignals.map((item) => <li key={item.signal}><strong>{item.signal.charAt(0).toUpperCase() + item.signal.slice(1)}</strong><small>{signalDetail(item)}</small></li>)}</ul>
       <p>ROSS ti racconta come sta, senza trasformare la sua settimana in dati da controllare. Partiamo da ciò che va bene: è il metodo di ROSS.</p>
-      <button type="button" className="fam-link" onClick={() => navigate("/famiglia/attivita")}>Rivedi i momenti <ChevronRight size={17} /></button>
     </section>
 
     <section className="fam-card fam-resource">
@@ -173,10 +161,6 @@ export function FamilyExperience() {
       <ul>{familyResourceTips.map((tip) => <li key={tip.title}><em>{tip.lens}</em><strong>{tip.title}</strong><span>{tip.text}</span></li>)}</ul>
     </section>
 
-    <section className="fam-section fam-contribute">
-      <header className="fam-section-intro"><span className="fam-kicker">Anche tu fai parte della storia</span><h2>Porta a ROSS qualcosa di vostro</h2><p>Una foto, un ricordo o una canzone diventano spunti con fonte chiara.</p></header>
-      <ContributeTiles onPick={contribution.openContribution} />
-    </section>
     {contribution.sheet}
   </FamilyShell>;
 }

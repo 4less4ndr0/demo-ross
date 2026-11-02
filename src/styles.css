@@ -996,9 +996,6 @@
 .fam-section{display:grid;gap:8px}
 .fam-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 4px}
 .fam-section-head h2{font:500 22px/1.2 var(--serif);margin:0}
-.fam-section-intro{padding:0 4px 6px}
-.fam-section-intro h2{font:500 26px/1.15 var(--serif);margin:6px 0}
-.fam-section-intro p{font-size:15px;color:var(--family-muted);margin:0}
 .fam-call{background:var(--family-ink);border-color:var(--family-ink);color:#fff}
 .fam-call .fam-card-head{justify-content:flex-start}
 .fam-call .fam-kicker{color:#f0b9aa}
@@ -1011,7 +1008,6 @@
 .fam-week li strong{font-size:17px;font-weight:600}
 .fam-week li small{font-size:15px;color:var(--family-muted)}
 .fam-week>p{font-family:var(--serif)}
-.fam-week .fam-link{margin-top:4px}
 .fam-resource{background:#eef6f2;border-color:#d5e8df}
 .fam-resource li{display:grid;gap:4px;padding:14px 16px;border-radius:14px;background:var(--fam-card);border:1px solid #d5e8df}
 .fam-resource em{font-style:normal;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--fam-mint-text)}

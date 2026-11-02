@@ -146,7 +146,7 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | Impostazioni (`/impostazioni`) | Tema, visita guidata, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3, "Cosa è reale e cosa è simulato", "Visita guidata". |
-| Vista Famiglia (`/famiglia`) | Oggi con Elena (racconto del giorno con il consenso visibile, spunto per la prossima chiamata, ricordi da riaprire, "Come sta questa settimana"), Storia e foto (solo ricordi condivisi da Elena o dalla famiglia), Attività (momenti condivisi o "tenuti per sé"), Condivisi da me (contributi diretti a ROSS). |
+| Vista Famiglia (`/famiglia`) | App per iPhone con quattro schede, ognuna con una domanda sua. **Oggi** ("come sta oggi, cosa le dico?"): il sorriso di oggi, il racconto del giorno con il consenso visibile e il link ai momenti, lo spunto per la telefonata, "Come sta questa settimana", "Come puoi esserle vicina". **Ricordi** (`/famiglia/storia`, "chi è?"): solo ricordi condivisi da Elena o dalla famiglia. **Momenti** (`/famiglia/attivita`, "cosa ha fatto con ROSS?"): giorno, settimana, mese; condivisi o "tenuti per sé". **Da te** (`/famiglia/condivisi`, "cosa ho portato io?"): contributi diretti a ROSS. Per contribuire c'è il **+** in alto. |
 
 ---
 
@@ -249,6 +249,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 02/11/2026 · Famiglia: ogni scheda ha un contenuto suo
+- **Richiesta:** Oggi ripeteva pezzi delle altre schede; pulirla.
+- **Modifiche:**
+  - **Oggi** tiene solo ciò che è di oggi o serve ad agire adesso: il sorriso di oggi, il racconto del giorno, lo spunto per la telefonata, "Come sta questa settimana", "Come puoi esserle vicina";
+  - l'elenco dei momenti nel racconto diventa un solo rimando, "Rivedi i momenti di oggi" (Mina, fotografie di viaggio, Cefalù…), che apre Momenti;
+  - tolti da Oggi "Ricordi da riaprire insieme" (c'è la scheda Ricordi e lo spunto per la telefonata) e "Porta a ROSS qualcosa di vostro" (basta il **+** in alto, l'azione principale in stile iOS); tolto anche il secondo link "Rivedi i momenti" sotto la settimana;
+  - le domande di ogni scheda: Oggi "come sta oggi, cosa le dico?", Momenti "cosa ha fatto con ROSS?", Ricordi "chi è?", Da te "cosa ho portato io?".
+- **File:** `src/pages/FamilyExperience.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Novembre 2026 · 02/11/2026 · Famiglia: "Giornata" diventa "Momenti"
 - **Richiesta:** "Oggi" e "Giornata" si sovrapponevano come nomi.
