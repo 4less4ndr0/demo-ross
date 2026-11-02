@@ -146,7 +146,7 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
 | Impostazioni (`/impostazioni`) | Tema, visita guidata, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
 | Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3, "Cosa è reale e cosa è simulato", "Visita guidata". |
-| Vista Famiglia (`/famiglia`) | App per iPhone con quattro schede, ognuna con una domanda sua. **Oggi** ("come sta oggi, cosa le dico?"): il sorriso di oggi, il racconto del giorno con il consenso visibile e il link ai momenti, lo spunto per la telefonata, "Come sta questa settimana", "Come puoi esserle vicina". **Ricordi** (`/famiglia/storia`, "chi è?"): solo ricordi condivisi da Elena o dalla famiglia. **Momenti** (`/famiglia/attivita`, "cosa ha fatto con ROSS?"): giorno, settimana, mese; condivisi o "tenuti per sé". **Da te** (`/famiglia/condivisi`, "cosa ho portato io?"): contributi diretti a ROSS. Per contribuire c'è il **+** in alto. |
+| Vista Famiglia (`/famiglia`) | App per iPhone: **Oggi · Da lei · + · Da te · Insieme**. **Oggi**: sorriso di oggi, racconto del giorno, spunto per la telefonata, come sta questa settimana. **Da lei** (`/famiglia/da-lei`, `#racconti` / `#ricordi`): ciò che Elena sceglie di condividere, cioè i racconti (giorno, settimana, mese) e i suoi ricordi. **+**: contributo a ROSS. **Da te** (`/famiglia/da-te`): contributi di Anna con lo stato e il link a com'è andata, ricordi della famiglia. **Insieme** (`/famiglia/insieme`): spunti salvati per le chiamate, metodo, cosa vedi e cosa no. Dettagli: `/famiglia/attivita/:id`, `/famiglia/ricordi/:id`. |
 
 ---
 
@@ -249,6 +249,25 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 02/11/2026 · Famiglia: le schede seguono la direzione delle cose
+- **Richiesta:** ripensare le sezioni: ciò che la famiglia manda con il + in "Da te", ciò che viene da Elena in "Da lei"; decidere dove va Momenti e a cosa serve.
+- **Modifiche:**
+  - tab bar **Oggi · Da lei · + · Da te · Insieme**: a sinistra del + ciò che arriva da Elena, a destra ciò che parte da Anna e la relazione;
+  - **Da lei** (`/famiglia/da-lei`) unisce Momenti e Ricordi: vista **Racconti** (l'ex Momenti, con i filtri Oggi/Settimana/Mese) e vista **Ricordi** (solo quelli raccontati da Elena, con la riga "Altri ricordi Elena li ha tenuti per sé"). Momenti serve a mostrare cosa ha fatto Elena nel tempo, nelle sue parole, e che ROSS è un ponte verso la vita fuori;
+  - **Da te** (`/famiglia/da-te`): i contributi di Anna; un contributo "Ripreso con Elena" ha il bottone "Guarda com'è andata", che apre il racconto (la cartolina); in fondo "I ricordi che hai raccontato" (Sofia, la scuola: dalla biografia d'ingresso), che prima stavano tra i ricordi di Elena;
+  - **Insieme** (`/famiglia/insieme`, nuova): gli spunti per le prossime chiamate salvati da Oggi (nuovo stato `savedPrompts`, con toast e "Annulla"; uno di esempio), "Tre spunti da ciò che la fa stare bene" (il metodo, prima su Oggi) e "Cosa vedi e cosa no · Decide Elena";
+  - **Oggi**: "Salva lo spunto" non crea più un contributo per ROSS ma lo salva in Insieme; senza "Come puoi esserle vicina";
+  - i vecchi indirizzi `/famiglia/storia`, `/famiglia/attivita`, `/famiglia/condivisi` reindirizzano; i dettagli tengono la scheda giusta (un ricordo della famiglia torna a Da te, uno di Elena a Da lei);
+  - visita guidata: Da lei (racconti), Da lei (ricordi), Da te, Insieme al posto di Momenti, Ricordi, Da te e "Come puoi esserle vicina";
+  - la schermata di blocco automatica non accende più la cornice iPhone se è spenta (lo fanno solo la pillola e la visita guidata);
+  - rimossi dal repository gli screenshot di prova (`shots/`) finiti per errore in due commit precedenti, e `shots/` è ora in `.gitignore`.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/App.jsx`, `src/state/DemoContext.jsx`, `src/state/lockScreen.js`, `src/components/GuidedTour.jsx`, `src/styles.css`, `.gitignore`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Novembre 2026 · 02/11/2026 · Famiglia: il + al centro della tab bar
+- **Richiesta:** spostare il **+** dalla barra in alto al centro della barra in basso.
+- **Modifiche:** la tab bar ha ora due schede, il **+** (cerchio scuro da 52pt, leggermente rialzato) e altre due schede: Oggi · Ricordi · **+** · Momenti · Da te. La barra in alto tiene solo il logo, o "‹ Indietro", e il titolo. La visita guidata (passo "Da te, per Elena") lo indica al centro della barra in basso.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/styles.css`, `src/components/GuidedTour.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
 
 ### Novembre 2026 · 02/11/2026 · Visita guidata: tutte le schede dell'app di Anna
 - **Richiesta:** la visita si fermava a Oggi e non mostrava le altre schermate dell'app di Anna.

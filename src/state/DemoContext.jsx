@@ -64,6 +64,8 @@ function defaultState() {
   return {
     theme: "ross",
     familyPhone: true, // vista Famiglia dentro la cornice iPhone (toggle nella pillola "Vista demo")
+    // Spunti per le chiamate che Anna salva da Oggi: restano suoi (scheda Insieme), non vanno a ROSS.
+    savedPrompts: [{ id: "prompt-festa", text: "Chiedile della festa dei compleanni: com'era la torta di mele?", savedAt: "mercoledì 9 settembre" }],
     residents: initialResidents,
     memories: initialMemories,
     interactions: initialInteractions,
@@ -125,6 +127,15 @@ export function DemoProvider({ children }) {
   const actions = useMemo(() => ({
     setTheme: (theme) => setState((prev) => ({ ...prev, theme })),
     setFamilyPhone: (familyPhone) => setState((prev) => ({ ...prev, familyPhone })),
+    saveCallPrompt: (text) => {
+      if ((stateRef.current.savedPrompts || []).some((item) => item.text === text)) return;
+      setState((prev) => ({ ...prev, savedPrompts: [{ id: `prompt-${Date.now()}`, text, savedAt: "oggi" }, ...(prev.savedPrompts || [])] }));
+      notify("Spunto salvato in Insieme", "success", { undo: true });
+    },
+    removeCallPrompt: (id) => {
+      setState((prev) => ({ ...prev, savedPrompts: (prev.savedPrompts || []).filter((item) => item.id !== id) }));
+      notify("Spunto tolto", "neutral", { undo: true });
+    },
     setResidentMode: (residentId, mode) => {
       setState((prev) => ({ ...prev, residents: prev.residents.map((r) => r.id === residentId ? { ...r, mode, status: mode === "Silenziosa" || mode === "Riposo" ? "Riposo" : "Disponibile" } : r) }));
       notify(`Modalità ${mode.toLowerCase()} attivata`, "success", { undo: true });
