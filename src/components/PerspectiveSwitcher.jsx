@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BellRing, Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, Smartphone, Sparkles } from "lucide-react";
+import { BellRing, Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, RotateCcw, Smartphone, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
 import { startTour } from "./GuidedTour";
@@ -31,13 +31,33 @@ const principles = [
   ["Elaborazione sul dispositivo", "È la direzione tecnica del progetto, non una capacità già verificata."],
 ];
 
+// Ripristina la demo: cancella tutto ciò che la demo ha salvato in questo browser (dati, prove, preferenze)
+// e ricarica la pagina, così tornano anche la schermata di blocco e gli avvisi del primo avvio.
+const RESET_FLAG = "ross-demo-reset";
+const resetDemo = () => {
+  try {
+    Object.keys(localStorage).filter((key) => key.startsWith("ross-")).forEach((key) => localStorage.removeItem(key));
+    sessionStorage.setItem(RESET_FLAG, "1");
+  } catch { /* storage non disponibile: la pagina si ricarica comunque */ }
+  window.location.replace(window.location.pathname);
+};
+
+// Letto una sola volta al caricamento della pagina: la demo è appena stata ripristinata?
+const justReset = (() => { try { const value = sessionStorage.getItem(RESET_FLAG) === "1"; sessionStorage.removeItem(RESET_FLAG); return value; } catch { return false; } })();
+let resetAnnounced = false;
+
 const isTyping = (target) => target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
 
 // Selettore della vista demo: pillola discreta in basso a destra, uguale in tutte le viste.
 export function PerspectiveSwitcher() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { state, actions } = useDemo();
+  const { state, actions, notify } = useDemo();
+  useEffect(() => {
+    if (!justReset || resetAnnounced) return;
+    resetAnnounced = true;
+    window.setTimeout(() => notify("Demo ripristinata: tutto è tornato com'era"), 400);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : location.pathname.startsWith("/mappa") ? "map" : "structure";
   const current = perspectives.find((p) => p.id === active);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -82,6 +102,8 @@ export function PerspectiveSwitcher() {
           <DropdownMenuSeparator />
           <DropdownMenuItem icon={FlaskConical} onSelect={() => setAboutOpen(true)}>Cosa è reale e cosa è simulato</DropdownMenuItem>
           <DropdownMenuItem icon={Compass} onSelect={startTour}>Visita guidata</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem icon={RotateCcw} destructive onSelect={resetDemo}>Ripristina la demo</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <Dialog open={aboutOpen} onClose={() => setAboutOpen(false)} title="Cosa è reale e cosa è simulato" size="lg">

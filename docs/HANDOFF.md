@@ -250,6 +250,18 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · "Ripristina la demo" nella pillola Vista demo
+- **Richiesta:** un tasto nella vista demo che riporti tutto com'era, dopo aver fatto delle prove (per esempio messaggi di prova mandati da Anna).
+- **Modifiche:** nella pillola "Vista demo" c'è **"Ripristina la demo"**. Cancella tutto ciò che la demo ha salvato in questo browser (le chiavi `ross-*`: dati, messaggi di prova, spunti salvati, cornice iPhone, guide aperte o chiuse) e ricarica la pagina sulla stessa vista. Tornano anche la schermata di blocco e l'avviso "Anna ti ha mandato qualcosa" del primo avvio. Dopo il ricaricamento compare "Demo ripristinata: tutto è tornato com'era". Resta anche "Ripristina dati demo" nella card in basso a sinistra della Struttura.
+- **File:** `src/components/PerspectiveSwitcher.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Novembre 2026 · 02/11/2026 · Visita guidata: la notifica sul tablet di Elena
+- **Richiesta:** aggiungere alla visita guidata il tablet di Elena con la notifica delle novità da Anna.
+- **Modifiche:**
+  - il capitolo Elena ha un nuovo secondo passo, **"Anna ti ha mandato qualcosa"** (lente "Comprensibile"): evidenzia l'avviso e spiega che ROSS ha riordinato ciò che Anna ha mandato e lo racconta a voce, una cosa alla volta, con i promemoria per ultimi; la scheda d'apertura del capitolo lo elenca per primo; il capitolo passa a 8 passi;
+  - i passi possono chiedere l'avviso con `news: true`: torna visibile anche dopo "Più tardi" e, se Elena aveva già ascoltato tutto, il messaggio di oggi di Anna torna "da ascoltare" (`replayFamilyNews`), così la visita funziona anche a demo già usata.
+- **File:** `src/components/GuidedTour.jsx`, `src/pages/RossExperience.jsx`, `src/state/familyNews.js` (nuovo), `src/state/DemoContext.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Il + diventa un messaggio libero; ROSS riordina e racconta a Elena
 - **Richiesta:** il + non deve sembrare un modulo: un campo libero ("raccontale qualcosa, mandale qualcosa"), un microfono per parlare liberamente (trascrizione) e una graffetta per allegare. Sul tablet di Elena un avviso quando arriva qualcosa di nuovo; ROSS rielabora "il marasma" di ciò che manda la famiglia e lo rende fruibile a voce (la foto si vede; "tua figlia ti ha ricordato la medicina").
 - **Modifiche:**

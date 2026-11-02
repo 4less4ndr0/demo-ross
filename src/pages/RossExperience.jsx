@@ -6,6 +6,7 @@ import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { outsideInvites } from "../data/demoData";
 import { byPriority } from "../data/familyMessages";
+import { consumeFamilyNews } from "../state/familyNews";
 
 const conversation = [
   { speaker: "ross", state: "response", line: "Ciao Elena. Ti va di stare un po’ insieme?", support: "ROSS inizia senza imporre un argomento." },
@@ -62,6 +63,13 @@ export function RossHome() {
   // Le novità da Anna, già rielaborate da ROSS: un messaggio può diventare più cose, raccontate in ordine (prima i promemoria).
   const newsItems = useMemo(() => state.familyContributions.filter((item) => item.unheard).flatMap((item) => (item.parts?.length ? item.parts : [{ kind: item.kind, text: item.detail, rossLine: `Anna ti ha mandato: «${item.title}».` }]).map((part, index) => ({ ...part, key: `${item.id}-${index}`, contributionId: item.id, image: item.image, createdAt: item.createdAt }))).sort(byPriority), [state.familyContributions]);
   const [newsLater, setNewsLater] = useState(false);
+  // La visita guidata chiede di mostrare l'avviso: torna visibile, e se Elena aveva già ascoltato tutto il messaggio di oggi torna "da ascoltare".
+  useEffect(() => {
+    const show = () => { if (consumeFamilyNews()) { setNewsLater(false); actions.replayFamilyNews(); } };
+    show();
+    window.addEventListener("ross:news", show);
+    return () => window.removeEventListener("ross:news", show);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [queue, setQueue] = useState([]);
   const [newsIndex, setNewsIndex] = useState(null);
   const newsItem = newsIndex === null ? null : queue[newsIndex];
