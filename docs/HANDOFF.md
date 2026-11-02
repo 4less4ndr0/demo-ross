@@ -250,6 +250,36 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Visita guidata: la notifica è il primo passo della Famiglia
+- **Richiesta:** aggiungere la schermata di blocco come primo passo della visita guidata.
+- **Modifiche:**
+  - il capitolo Famiglia si apre con **"Il primo contatto: una notifica"** (lente "Decide la persona"): l'iPhone di Anna è bloccato e sono evidenziate le notifiche di ROSS. "Anna non apre un'app per controllare: è ROSS a farsi vivo, e solo perché Elena ha scelto di raccontare";
+  - il capitolo passa da 4 a 5 passi e la sua scheda d'apertura lo elenca tra le cose da guardare;
+  - i passi possono chiedere la schermata di blocco con `lock: true`: la visita la richiede in quel passo e la toglie negli altri (anche tornando indietro); se la cornice iPhone è spenta, si accende;
+  - fuori da quel passo, durante la visita la schermata di blocco non compare da sola.
+- **File:** `src/components/GuidedTour.jsx`, `src/state/lockScreen.js`, `src/pages/FamilyExperience.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Novembre 2026 · 02/11/2026 · Famiglia: notifica sulla schermata di blocco
+- **Richiesta:** mostrare come arriva ad Anna un racconto di Elena, con una notifica sulla schermata di blocco dell'iPhone.
+- **Modifiche:**
+  - la prima volta che si apre Oggi (con la cornice iPhone accesa) compare la schermata di blocco: data, ora e due notifiche di ROSS, cioè "Elena ha voluto raccontarti una cosa · Il sorriso di oggi: …" (ora) e "La tua cartolina è arrivata a Elena" (ieri);
+  - toccando la prima si apre Oggi, toccando la seconda si apre il momento "La cartolina di Anna"; si sblocca anche scorrendo verso l'alto, con la rotella o con Esc;
+  - il testo segue lo stato della demo (conversazione con ROSS, uscita condivisa), come il "sorriso di oggi" della pagina; la logica del racconto di oggi è in `todayLines`;
+  - si richiama da "Vista demo" → **"Notifica sulla schermata di blocco"**, che accende anche la cornice iPhone; non compare durante la visita guidata e si chiude se la visita parte;
+  - stile: sfondo caldo con i colori della Famiglia, notifiche in vetro in stile iOS, torcia e fotocamera decorative; senza animazioni con "riduci movimento"; il resto dell'app è `inert` finché il telefono è bloccato.
+- **File:** `src/pages/FamilyExperience.jsx`, `src/state/lockScreen.js`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
+### Novembre 2026 · 02/11/2026 · Famiglia: Momenti ha una settimana e un mese da mostrare
+- **Richiesta:** in Momenti, Settimana e Mese ripetevano i momenti di oggi; inventare contenuti per entrambe.
+- **Modifiche:**
+  - **Settimana (15–21 settembre):** un gruppo per giorno, con un titolo umano ("La cartolina che le hai mandato", "Fuori, in giardino", "Un momento suo"…). Dentro ci sono momenti con ROSS, un'uscita raccontata da Elena ("In giardino con un'amica") e due conversazioni tenute per sé;
+  - **Mese (settembre):** in cima la card "I fili del mese" (gli interessi tornati più spesso, tra i racconti condivisi), poi tre settimane, ognuna con un titolo e una frase di sintesi ("La settimana della Sicilia", "Torna la musica", "Si riprende il filo dopo l'estate") e i suoi momenti principali;
+  - regole rispettate: il racconto compare solo se Elena l'ha condiviso, altrimenti il titolo resta generico ("Conversazione libera") con il solo "com'è andata"; le uscite (festa dei compleanni, giardino, canto in salone) compaiono come "Fuori da ROSS · raccontato al ritorno", perché è Elena a raccontarle; nessun punteggio;
+  - "La cartolina di Anna" collega Momenti a Da te: il contributo di Anna "Ripreso con Elena";
+  - il canto in salone di oggi compare in Momenti solo se Elena ha scelto di raccontarlo ad Anna;
+  - nel dettaglio di un'uscita: "Fuori da ROSS, raccontato da Elena" e "Come c'è arrivata" (ROSS ha proposto, ha deciso lei).
+- **File:** `src/pages/FamilyExperience.jsx` (`activityDetails` con i campi `day`, `short`, `at`, `outside`), `src/styles.css`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Note dei segnali con la maiuscola quando stanno da sole
 - **Richiesta:** in "Come sta questa settimana" la nota di "Partecipazione" iniziava con la minuscola ("ha raccontato 4 attività…").
 - **Modifiche:** sistemato alla fonte. `signalDetail` (`src/data/careInsights.js`) mette la maiuscola alla nota quando la mostra da sola, e lo stesso fa il grafico del report (`OperationalPages.jsx`). Il dato resta minuscolo perché serve anche dentro le frasi della chat ("Elena: partecipazione, ha raccontato…"). Corretto in Famiglia, nel ritratto e nel report di Elena.

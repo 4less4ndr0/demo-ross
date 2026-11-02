@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Building2, Check, DoorOpen, HeartHandshake, House, Sparkles, Sprout, X } from "lucide-react";
+import { releaseLockScreen, requestLockScreen } from "../state/lockScreen";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
 // Si apre da "Vista demo", dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
@@ -29,8 +30,9 @@ const chapters = [
     id: "famiglia", label: "Famiglia", who: "Anna, la figlia di Elena", icon: HeartHandshake, route: "/famiglia",
     title: "Ora vediamo la famiglia",
     body: "Quello che vede Anna: un racconto, non dei dati. Solo ciò che Elena sceglie di condividere, e la struttura non sta in mezzo.",
-    features: ["Il racconto di oggi, anche di ciò che Elena ha fatto fuori da ROSS", "Come sta questa settimana: solo ciò che va bene, partecipazione compresa", "Come puoi esserle vicina: la famiglia come risorsa, in tutte e due le direzioni", "Condividi: foto, ricordi e canzoni che arrivano a ROSS"],
+    features: ["Una notifica sul telefono di Anna, solo quando Elena sceglie di raccontare", "Il racconto di oggi, anche di ciò che Elena ha fatto fuori da ROSS", "Come sta questa settimana: solo ciò che va bene, partecipazione compresa", "Come puoi esserle vicina: la famiglia come risorsa, in tutte e due le direzioni", "Condividi: foto, ricordi e canzoni che arrivano a ROSS"],
     steps: [
+      { route: "/famiglia", target: ".fam-lock-stack", lock: true, title: "Il primo contatto: una notifica", lens: "Decide la persona", body: "Anna non apre un'app per controllare: è ROSS a farsi vivo sul suo iPhone, e solo perché Elena ha scelto di raccontare. Un racconto, mai un allarme." },
       { route: "/famiglia", target: ".fam-story", title: "Il racconto di oggi", lens: "Significativo", body: "Anna non riceve dati né trascrizioni: un breve racconto, solo di ciò che Elena ha scelto di condividere. Se Elena va al canto e decide di dirlo, compare anche qui." },
       { route: "/famiglia", target: ".fam-week", title: "Come sta questa settimana", lens: "Prima le risorse", body: "Solo ciò che va bene, rispetto al solito di Elena: questa settimana anche più partecipazione alla vita della residenza. Niente dati da controllare." },
       { route: "/famiglia", target: ".fam-resource", title: "Come puoi esserle vicina", lens: "Reciprocità", body: "Anche Anna è una risorsa, e lo è anche Elena per lei: tre spunti concreti, dal ricordo che la accende al consiglio da chiederle." },
@@ -132,6 +134,12 @@ export function GuidedTour() {
     root.inert = active;
     return () => { root.inert = false; };
   }, [active]);
+
+  // Schermata di blocco dell'iPhone di Anna: si mostra solo nel passo che la chiede, e si toglie negli altri.
+  useEffect(() => {
+    if (!step) return;
+    if (step.lock) requestLockScreen(); else releaseLockScreen();
+  }, [step]);
 
   // Cambio passo: porta alla pagina giusta, aspetta l'elemento, lo porta in vista e solo allora
   // mostra scheda ed evidenziazione (niente schede sulla pagina sbagliata, niente salti).
