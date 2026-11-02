@@ -63,6 +63,7 @@ const initialScheduledActivities = [
 function defaultState() {
   return {
     theme: "ross",
+    familyPhone: true, // vista Famiglia dentro la cornice iPhone (toggle nella pillola "Vista demo")
     residents: initialResidents,
     memories: initialMemories,
     interactions: initialInteractions,
@@ -123,6 +124,7 @@ export function DemoProvider({ children }) {
 
   const actions = useMemo(() => ({
     setTheme: (theme) => setState((prev) => ({ ...prev, theme })),
+    setFamilyPhone: (familyPhone) => setState((prev) => ({ ...prev, familyPhone })),
     setResidentMode: (residentId, mode) => {
       setState((prev) => ({ ...prev, residents: prev.residents.map((r) => r.id === residentId ? { ...r, mode, status: mode === "Silenziosa" || mode === "Riposo" ? "Riposo" : "Disponibile" } : r) }));
       notify(`Modalità ${mode.toLowerCase()} attivata`, "success", { undo: true });

@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import { BatteryFull, CalendarDays, Camera, Check, ChevronLeft, ChevronRight, Heart, Home, Images, Lightbulb, MessageCircle, Music2, Phone, Plus, Send, Signal, Sparkles, Wifi } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
@@ -45,7 +45,17 @@ function FamilyShell({ title, back, onContribute, children }) {
   const { pathname } = useLocation();
   const [screen, setScreen] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  return <div className="family-app"><div className="fam-stage">
+  const { state } = useDemo();
+  const phone = state.familyPhone !== false;
+  // Cornice iPhone forzata anche nelle finestre strette: il telefono si rimpicciolisce per starci.
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    if (!phone) return undefined;
+    const fit = () => setScale(Math.min(1, (window.innerWidth - 24) / 417));
+    fit(); window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [phone]);
+  return <div className={`family-app ${phone ? "is-phone" : "is-full"}`} style={phone ? { "--fam-scale": scale } : undefined}><div className="fam-stage">
     <p className="fam-stage-caption" aria-hidden="true"><strong>Vista Famiglia</strong>L'app di Anna, sul suo iPhone</p>
     <div className="fam-device"><div className="fam-screen" ref={setScreen}><PhoneScreen.Provider value={screen}>
       <StatusBar />

@@ -250,6 +250,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Toggle "Famiglia su iPhone" nella pillola Vista demo
+- **Richiesta:** poter forzare la visualizzazione da telefono dell'app di Anna anche quando si presenta.
+- **Modifiche:**
+  - nella pillola **"Vista demo"** c'è l'interruttore **"Famiglia su iPhone"** (scorciatoia `I`), attivo di default e salvato con i dati della demo;
+  - **acceso:** l'app di Anna sta sempre nella cornice iPhone, a qualsiasi larghezza di finestra (proiettore, laptop, telefono): se lo spazio non basta, il telefono si rimpicciolisce;
+  - **spento:** l'app riempie la finestra, come aprendo il link da telefono; sugli schermi larghi resta una colonna da telefono al centro;
+  - nuova primitiva `DropdownMenuSwitchItem` in `ui.jsx` (interruttore dentro un menu, che resta aperto).
+- **File:** `src/components/PerspectiveSwitcher.jsx`, `src/components/ui.jsx`, `src/state/DemoContext.jsx`, `src/pages/FamilyExperience.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Vista Famiglia come app per iPhone
 - **Richiesta:** la vista Famiglia era pensata per desktop; adattarla a mobile seguendo le linee guida Apple per le app iPhone (margini, dimensioni, fruizione da telefono).
 - **Modifiche:**

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, Sparkles } from "lucide-react";
+import { Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, Smartphone, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
 import { startTour } from "./GuidedTour";
-import { Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui";
+import { Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSwitchItem, DropdownMenuTrigger } from "./ui";
 
 const perspectives = [
   { id: "structure", label: "Struttura", description: "Operatori", icon: Building2, path: "/", key: "1" },
@@ -35,7 +35,7 @@ const isTyping = (target) => target instanceof HTMLElement && (target.isContentE
 export function PerspectiveSwitcher() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { state } = useDemo();
+  const { state, actions } = useDemo();
   const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : location.pathname.startsWith("/mappa") ? "map" : "structure";
   const current = perspectives.find((p) => p.id === active);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -52,6 +52,7 @@ export function PerspectiveSwitcher() {
   useEffect(() => {
     const handler = (event) => {
       if (event.metaKey || event.ctrlKey || event.altKey || isTyping(event.target) || document.querySelector("[role=dialog],[role=menu],[role=listbox]")) return;
+      if (event.key === "i" || event.key === "I") { event.preventDefault(); actions.setFamilyPhone(!state.familyPhone); return; }
       const target = perspectives.find((p) => p.key === event.key);
       if (target) { event.preventDefault(); goTo(target); }
     };
@@ -73,6 +74,8 @@ export function PerspectiveSwitcher() {
         <DropdownMenuContent side="top" align="end" className="ui-menu-wide demo-view-menu">
           <DropdownMenuLabel>Vista demo</DropdownMenuLabel>
           {perspectives.map((p) => <DropdownMenuItem key={p.id} icon={p.icon} shortcut={p.key} className={p.id === active ? "demo-view-current" : ""} onSelect={() => goTo(p)}>{p.label} <small>· {p.description}</small></DropdownMenuItem>)}
+          <DropdownMenuSeparator />
+          <DropdownMenuSwitchItem icon={Smartphone} shortcut="I" checked={state.familyPhone} onCheckedChange={actions.setFamilyPhone}>Famiglia su iPhone</DropdownMenuSwitchItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem icon={FlaskConical} onSelect={() => setAboutOpen(true)}>Cosa è reale e cosa è simulato</DropdownMenuItem>
           <DropdownMenuItem icon={Compass} onSelect={startTour}>Visita guidata</DropdownMenuItem>
