@@ -195,7 +195,7 @@ function ActivitySuggestions({ resident, name }) {
         <div className="sim-chat">
           <p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.invite}»</p>
           {!answer && <div className="sim-choices"><button onClick={() => setAnswer("si")}>Sì, dimmi di più</button><button onClick={() => setAnswer("no")}>No grazie, oggi preferisco stare qui</button></div>}
-          {answer === "si" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«Sì, dimmi di più.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.description} Se ti va, puoi andarci; puoi anche decidere più tardi.»</p></>}
+          {answer === "si" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«Sì, dimmi di più.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.more}»</p></>}
           {answer === "no" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«No grazie, oggi preferisco stare qui.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«Va bene, nessun problema.»</p></>}
         </div>
         <p className="sim-note">Due risposte possibili, entrambe valide. Un «sì» non è una prenotazione e non dice se poi {name} parteciperà; un «no» non viene segnalato a nessuno.</p>
