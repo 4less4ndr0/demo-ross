@@ -226,7 +226,8 @@ export function DemoProvider({ children }) {
       notify(shared ? "Elena ha raccontato com'è andata e ha scelto di dirlo ad Anna" : "Elena ha raccontato com'è andata e l'ha tenuto per sé");
     },
     restartRossJourney: () => setState((prev) => ({ ...prev, rossJourney: { ...prev.rossJourney, stage: "ready" } })),
-    completeRossConversation: () => {
+    // shared: Elena ha detto sì a «Ti va se lo racconto anche ad Anna?». Se dice no, il ricordo resta suo.
+    completeRossConversation: (shared = true) => {
       const memory = {
         id: "ross-cefalu-camera",
         residentId: "elena",
@@ -235,7 +236,7 @@ export function DemoProvider({ children }) {
         description: "Durante il viaggio del 1998 Paolo portava una piccola macchina fotografica rossa e fotografava Elena sul lungomare di Cefalù.",
         source: "Raccontato da Elena · oggi",
         status: "Suggerita",
-        sharedWithFamily: true,
+        sharedWithFamily: shared,
         confidence: 78,
         lastUsed: "Oggi, 17:18",
         tags: ["Cefalù", "Paolo", "fotografia", "1998"],
@@ -262,10 +263,10 @@ export function DemoProvider({ children }) {
           ...prev,
           memories,
           interactions,
-          rossJourney: { stage: "complete", completedAt: new Date().toISOString(), candidateId: memory.id, confirmedAt: prev.rossJourney.confirmedAt },
+          rossJourney: { stage: "complete", completedAt: new Date().toISOString(), candidateId: memory.id, confirmedAt: prev.rossJourney.confirmedAt, shared },
         };
       });
-      notify("Elena ha scelto di condividere un nuovo ricordo con Anna; il resto della conversazione resta sul dispositivo");
+      notify(shared ? "Elena ha scelto di condividere un nuovo ricordo con Anna; il resto della conversazione resta sul dispositivo" : "Elena ha tenuto il ricordo per sé: ad Anna non arriva nulla");
     },
     addFamilyContribution: (contribution) => {
       const id = `family-${Date.now()}`;

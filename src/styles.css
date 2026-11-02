@@ -1291,3 +1291,54 @@
 .ross-reminder-dot{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:#fde7d6;color:#b5481f}
 .ross-reminder-dot svg{width:18px;height:18px}
 .ross-reminder-list>p{margin:0;font-size:16px;color:var(--ross-muted)}
+
+/* "Parla con ROSS": la conversazione simulata, come sottotitoli di una conversazione a voce */
+.ross-chat{display:flex;flex-direction:column;min-height:100vh;padding-bottom:0}
+.ross-chat-header{display:grid;grid-template-columns:auto 1fr auto;gap:16px}
+.ross-chat-header>button{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid rgb(var(--ross-ink) / .16);border-radius:999px;background:var(--ross-panel);color:var(--ross-text);font-size:15px;font-weight:600}
+.ross-chat-header>button svg{width:18px;height:18px}
+.ross-chat-status{justify-self:center;display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:rgb(var(--ross-ink) / .06);font-size:15px;font-weight:600;color:var(--ross-text)}
+.ross-chat-status i{width:10px;height:10px;border-radius:50%;background:var(--ross-glow)}
+.ross-chat-status.is-elena i{background:#3b9a7c}
+.ross-chat-status.is-live i{animation:rossLive 1s ease-in-out infinite}
+@keyframes rossLive{50%{transform:scale(1.6);opacity:.5}}
+.ross-chat-private{max-width:330px;font-size:12px;line-height:1.35;color:var(--ross-muted);text-align:right}
+.ross-chat-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px clamp(20px,8vw,120px) 150px;text-align:center}
+.ross-eyes.ross-chat-eyes{width:200px;margin:0 0 4px;transition:transform .4s,filter .4s}
+.ross-chat-eyes.is-listening{transform:scale(.9);filter:saturate(.75)}
+.ross-chat-eyes.is-processing{transform:scale(.95);filter:saturate(.9)}
+.ross-chat-history{display:grid;gap:6px;max-width:860px}
+.ross-chat-history p{margin:0;font:400 17px/1.4 var(--serif);color:var(--ross-muted);opacity:.65}
+.ross-chat-history p strong{font:700 11px var(--sans,inherit);letter-spacing:.12em;text-transform:uppercase;margin-right:8px;color:var(--ross-muted)}
+.ross-chat-now{display:grid;justify-items:center;gap:10px;max-width:940px}
+.ross-chat-who{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#d8664c}
+.ross-chat-now.is-elena .ross-chat-who{color:#2f7f6a}
+.ross-chat-line{margin:0;font:500 clamp(28px,3.4vw,44px)/1.25 var(--serif);color:var(--ross-text)}
+.ross-chat-now.is-elena .ross-chat-line{font-style:italic}
+.ross-chat-line span{opacity:.12;transition:opacity .25s}
+.ross-chat-line span.on{opacity:1}
+.ross-chat-wave{display:flex;align-items:center;gap:5px;height:34px}
+.ross-chat-wave i{width:6px;height:10px;border-radius:3px;background:#3b9a7c;animation:rossWave .9s ease-in-out infinite}
+@keyframes rossWave{50%{height:32px}}
+.ross-chat-photo{width:min(420px,90%);max-height:min(230px,30vh);object-fit:cover;border-radius:22px;box-shadow:0 18px 44px rgba(0,0,0,.14);animation:rossStageIn .4s ease-out}
+.ross-chat-draft{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1.5px dashed #d8664c;background:#fff8f2;color:#b5481f;font-size:15px;font-weight:600}
+.ross-chat-draft svg{width:16px;height:16px}
+.ross-chat-draft.is-saved{border-style:solid;background:#e9f4ef;border-color:#3b9a7c;color:#2f6f5f}
+.ross-chat-choices{display:grid;justify-items:center;gap:8px;margin-top:6px}
+.ross-chat-choices>p{margin:0;font-size:16px;color:var(--ross-muted)}
+.ross-chat-presenter{position:fixed;left:16px;bottom:16px;right:260px;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 12px;border:1px solid rgb(var(--ross-ink) / .12);border-radius:18px;background:rgba(255,253,248,.92);backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(23,52,47,.1)}
+.ross-chat-presenter button{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid rgb(var(--ross-ink) / .16);border-radius:999px;background:var(--ross-panel);color:var(--ross-text);font-size:14px;font-weight:600}
+.ross-chat-presenter button:last-of-type.is-on{background:var(--ross-text);color:var(--ross-bg)}
+.ross-chat-presenter button:disabled{opacity:.4}
+.ross-chat-presenter button svg{width:16px;height:16px}
+.ross-chat-label{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ross-muted);margin-right:4px}
+.ross-chat-presenter small{font-size:12px;color:var(--ross-muted);margin-left:auto}
+.ross-chat-note{flex-basis:100%;margin:4px 2px 0;padding:10px 12px;border-radius:12px;background:#fff8e6;border:1px solid #f0dca8;font-size:14px;line-height:1.45;color:#5a4a2e}
+.ross-chat-end main{display:grid;justify-items:center;gap:14px;padding:40px clamp(20px,8vw,120px) 130px;text-align:center}
+.ross-chat-end h1{margin:0;font:500 clamp(36px,4vw,52px)/1.1 var(--serif)}
+.ross-chat-end main>p{margin:0;max-width:620px;font-size:18px;color:var(--ross-muted)}
+.ross-chat-summary{width:min(720px,100%);padding:22px 24px;border-radius:24px;background:var(--ross-panel);border:1px solid rgb(var(--ross-ink) / .1);text-align:left}
+.ross-chat-summary>span{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b5481f}
+.ross-chat-summary ol{margin:12px 0 0;padding-left:20px;display:grid;gap:10px;font-size:16px;line-height:1.5}
+@media(max-width:800px){.ross-chat-private{display:none}.ross-chat-presenter{right:16px;bottom:72px}.ross-chat-presenter small{display:none}}
+@media(prefers-reduced-motion:reduce){.ross-chat-wave i,.ross-chat-status.is-live i{animation:none}.ross-chat-line span{transition:none}}

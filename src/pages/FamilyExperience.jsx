@@ -43,7 +43,7 @@ function StatusBar() {
 
 // Il racconto di oggi cambia con ciò che Elena ha scelto di condividere (conversazione con ROSS, uscita).
 function todayLines(state) {
-  const conversationDone = Boolean(state.rossJourney.completedAt);
+  const conversationDone = Boolean(state.rossJourney.completedAt && state.rossJourney.shared !== false);
   // Un'uscita raccontata a ROSS arriva ad Anna solo se Elena ha scelto di condividerla.
   const outingShared = state.outing?.status === "back" && state.outing.shared;
   const basePrompt = conversationDone ? "Chiedile della piccola macchina fotografica rossa che Paolo portava sul lungomare." : "Chiedile delle passeggiate sul lungomare di Cefalù e delle fotografie del 1998.";
@@ -353,7 +353,7 @@ export function FamilyFromHer() {
   const { state } = useDemo(); const navigate = useNavigate(); const { hash } = useLocation(); const contribution = useContributionSheet();
   const view = hash === "#ricordi" ? "ricordi" : "racconti";
   const [period, setPeriod] = useState("Oggi"); const [filter, setFilter] = useState("Tutti");
-  const conversationDone = Boolean(state.rossJourney.completedAt);
+  const conversationDone = Boolean(state.rossJourney.completedAt && state.rossJourney.shared !== false);
   const outingShared = state.outing?.status === "back" && state.outing.shared;
   const rowProps = { conversationDone, outingShared };
   const today = ["song", "photos", "free-talk", ...(outingShared ? ["canto"] : [])];
@@ -398,7 +398,7 @@ export function FamilyFromHer() {
 export function FamilyActivityDetail() {
   const { id } = useParams(); const contribution = useContributionSheet(); const { state } = useDemo();
   const item = activityDetails[id] || activityDetails.garden;
-  const shared = isShared(item, Boolean(state.rossJourney.completedAt), state.outing?.status === "back" && state.outing.shared);
+  const shared = isShared(item, Boolean(state.rossJourney.completedAt && state.rossJourney.shared !== false), state.outing?.status === "back" && state.outing.shared);
   return <FamilyShell title={item.title} tab="da-lei" back={{ to: "/famiglia/da-lei", label: "Da lei" }} onContribute={() => contribution.openContribution("topic")}>
     <article className="fam-detail">
       <header className="fam-activity-hero"><Sparkles size={30} /><span className="fam-kicker">{item.outside ? "Fuori da ROSS, raccontato da Elena" : "Attività con ROSS"}</span><h1>{item.title}</h1><p>{item.day} · {item.at} · {item.duration}</p></header>

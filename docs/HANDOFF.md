@@ -250,6 +250,25 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · "Parla con ROSS": una conversazione a voce, con i sottotitoli e scelte vere
+- **Richiesta:** rifare la demo della conversazione con ROSS, che resta simulata (si avanza con il mouse o le frecce), emulando il più possibile una conversazione vera.
+- **Da Notion:**
+  - flusso minimo: ricordo → conversazione → memoria in bozza → racconto autorizzato ([Scheda tecnica](https://app.notion.com/p/40591e1a386a8125bdc1cd5ffd0b7301), [B2C panoramica](https://app.notion.com/p/12af89fa759d468ab4b44ffcffe81355));
+  - la persona può accettare, rimandare, interrompere, correggere o rifiutare: «Va bene, possiamo farlo un'altra volta»;
+  - solo la voce, con lo schermo come supporto;
+  - chiusura verso le persone vere;
+  - trasparenza sull'intelligenza artificiale;
+  - tono "presenza senza intrusione" ([Tone of Voice](https://app.notion.com/p/363a3a0f4ca145b3812809678bf41dd5)).
+- **Prima:** una citazione grande con sotto le note per il pubblico ("ROSS inizia senza imporre un argomento") come se le leggesse Elena, un pannello laterale con etichette e mini-trascrizione da gestionale, e un unico bottone "Elena risponde".
+- **Modifiche:**
+  - **sottotitoli**: le parole di ROSS compaiono mentre parla; quando parla Elena c'è l'onda della voce e la sua voce diventa testo (in corsivo); sopra, sbiadite, le due battute precedenti; in alto lo stato ("ROSS parla", "Ti ascolto…", "Aspetto la tua risposta") e la frase di trasparenza sull'IA;
+  - **scelte vere** nei momenti in cui decide Elena: «Non adesso» all'inizio, musica o fotografia, «Sì, segnatela» / «No, lasciamo stare» per il ricordo nuovo (che resta **in bozza** finché lei non dice sì), «Ti va se lo racconto anche ad Anna?», e l'invito al canto. Con il no, Anna non vede nulla (`completeRossConversation(shared)`, `rossJourney.shared`; la Famiglia ne tiene conto);
+  - la cartolina compare solo quando ROSS dice «Te la faccio vedere»;
+  - **comandi per chi presenta** in una barra a parte: Indietro, Riproduci/Pausa (avanza da sola e si ferma alle scelte), Avanti, Note; tasti ← →, spazio, N. Le spiegazioni per il pubblico stanno solo nelle Note;
+  - **fine**: "Cosa resta di questa conversazione" (resta sul dispositivo, il ricordo, cosa riceve Anna), con "Torna a ROSS" e "Ripeti la conversazione";
+  - visita guidata e "Cosa è reale e cosa è simulato" aggiornate.
+- **File:** `src/pages/RossExperience.jsx`, `src/state/DemoContext.jsx`, `src/pages/FamilyExperience.jsx`, `src/components/GuidedTour.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Tablet: il prossimo promemoria e "le altre cose da ricordare"
 - **Richiesta:** accanto alla card del promemoria, una seconda card con più promemoria: quello in arrivo e poi gli altri.
 - **Modifiche:**
