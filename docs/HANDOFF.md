@@ -250,6 +250,11 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Tablet: niente voce automatica
+- **Richiesta:** togliere la voce che parte da sola quando ROSS racconta le novità da Anna.
+- **Modifiche:** tolta la sintesi vocale del browser dal tablet di Elena. Il racconto delle novità resta a schermo, una cosa alla volta (foto grande, frase grande, "Rispondile", "Avanti"); tolto "Ripeti". "Ascolta" sulle schede "Da Anna, per te" apre lo stesso racconto. Aggiornati "Cosa è reale e cosa è simulato" e il passo della visita guidata.
+- **File:** `src/pages/RossExperience.jsx`, `src/components/PerspectiveSwitcher.jsx`, `src/components/GuidedTour.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · "Ripristina la demo" nella pillola Vista demo
 - **Richiesta:** un tasto nella vista demo che riporti tutto com'era, dopo aver fatto delle prove (per esempio messaggi di prova mandati da Anna).
 - **Modifiche:** nella pillola "Vista demo" c'è **"Ripristina la demo"**. Cancella tutto ciò che la demo ha salvato in questo browser (le chiavi `ross-*`: dati, messaggi di prova, spunti salvati, cornice iPhone, guide aperte o chiuse) e ricarica la pagina sulla stessa vista. Tornano anche la schermata di blocco e l'avviso "Anna ti ha mandato qualcosa" del primo avvio. Dopo il ricaricamento compare "Demo ripristinata: tutto è tornato com'era". Resta anche "Ripristina dati demo" nella card in basso a sinistra della Struttura.
