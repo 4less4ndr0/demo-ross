@@ -2,6 +2,8 @@
 
 **Passaggio di consegne e changelog:** `docs/HANDOFF.md`. Leggilo prima di lavorare e aggiornalo (nuova voce in cima al changelog) a ogni modifica.
 
+**Contesto di prodotto da Notion (Product & R&D):** `docs/contesto-notion.md`. Leggilo prima di qualsiasi modifica di prodotto: strategia attuale (Parte A software per le strutture / Parte B compagno vocale), vincoli non negoziabili, cosa è reale oggi, come presentare alle strutture.
+
 Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
 
 Before making substantial visual changes, use the Product Design plugin's `get-context` skill when the visual source is unclear or no longer matches the current goal. When the user gives durable prototype-specific design feedback, preferences, or decisions, record them in `AGENTS.md`.
