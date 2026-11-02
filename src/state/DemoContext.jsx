@@ -85,7 +85,6 @@ function defaultState() {
     reminders: {},
     // Promemoria che Elena ha chiesto lei a ROSS ("ricordami che…"): nella demo sono d'esempio, mai farmaci.
     ownReminders: [
-      { key: "own-sofia", text: "Giovedì alle 16 videochiamata con Sofia", when: "per giovedì" },
       { key: "own-pranzo", text: "Domenica pranzo con Anna e Sofia", when: "per domenica" },
       { key: "own-libro", text: "Restituire il libro di ricette a Lucia", when: "" },
     ],

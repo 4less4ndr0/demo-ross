@@ -254,7 +254,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 - **Richiesta:** accanto alla card del promemoria, una seconda card con più promemoria: quello in arrivo e poi gli altri.
 - **Modifiche:**
   - la sezione Promemoria del tablet ha due card: **il prossimo** (con "Ascoltalo ora" e "Non ricordarmelo più") e **"Le altre cose da ricordare"**, un elenco in fila nel tempo. Toccando una riga si apre la sua scheda;
-  - oltre ai promemoria di Anna ci sono quelli che **Elena ha chiesto lei** a ROSS ("Me l'hai chiesto tu"): videochiamata con Sofia giovedì alle 16, pranzo della domenica, il libro di ricette da restituire (`state.ownReminders`, mai farmaci);
+  - oltre ai promemoria di Anna ci sono quelli che **Elena ha chiesto lei** a ROSS ("Me l'hai chiesto tu"): il pranzo della domenica e il libro di ricette da restituire (`state.ownReminders`, mai farmaci; niente videochiamate per ora);
   - nella scheda, un promemoria di Elena si legge "mi avevi chiesto di ricordarti: «…»".
 - **Nota:** chi ha già usato la demo vede ancora i vecchi esempi (le gocce per gli occhi): basta "Ripristina la demo".
 - **File:** `src/pages/RossExperience.jsx`, `src/state/DemoContext.jsx`, `src/styles.css`, `AGENTS.md`, `docs/HANDOFF.md`.
