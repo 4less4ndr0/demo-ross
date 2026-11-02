@@ -250,6 +250,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 02/11/2026 · Visita guidata: la notifica è il primo passo della Famiglia
+- **Richiesta:** aggiungere la schermata di blocco come primo passo della visita guidata.
+- **Modifiche:**
+  - il capitolo Famiglia si apre con **"Il primo contatto: una notifica"** (lente "Decide la persona"): l'iPhone di Anna è bloccato e sono evidenziate le notifiche di ROSS. "Anna non apre un'app per controllare: è ROSS a farsi vivo, e solo perché Elena ha scelto di raccontare";
+  - il capitolo passa da 4 a 5 passi e la sua scheda d'apertura lo elenca tra le cose da guardare;
+  - i passi possono chiedere la schermata di blocco con `lock: true`: la visita la richiede in quel passo e la toglie negli altri (anche tornando indietro); se la cornice iPhone è spenta, si accende;
+  - fuori da quel passo, durante la visita la schermata di blocco non compare da sola.
+- **File:** `src/components/GuidedTour.jsx`, `src/state/lockScreen.js`, `src/pages/FamilyExperience.jsx`, `AGENTS.md`, `docs/HANDOFF.md`.
+
 ### Novembre 2026 · 02/11/2026 · Famiglia: notifica sulla schermata di blocco
 - **Richiesta:** mostrare come arriva ad Anna un racconto di Elena, con una notifica sulla schermata di blocco dell'iPhone.
 - **Modifiche:**

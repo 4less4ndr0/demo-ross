@@ -107,12 +107,15 @@ function FamilyShell({ title, back, onContribute, children }) {
     fit(); window.addEventListener("resize", fit);
     return () => window.removeEventListener("resize", fit);
   }, [phone]);
-  const [locked, setLocked] = useState(() => phone && pathname === "/famiglia" && !tourActive() && consumeLockScreen());
+  const { actions } = useDemo();
+  const [locked, setLocked] = useState(() => pathname === "/famiglia" && consumeLockScreen(tourActive()));
+  // La schermata di blocco esiste solo dentro la cornice iPhone: se è richiesta, la cornice si accende.
+  useEffect(() => { if (locked && !phone) actions.setFamilyPhone(true); }, [locked, phone, actions]);
   useEffect(() => {
     const show = () => { if (consumeLockScreen()) setLocked(true); };
     const hide = () => setLocked(false);
-    window.addEventListener("ross:lockscreen", show); window.addEventListener("ross:tour", hide);
-    return () => { window.removeEventListener("ross:lockscreen", show); window.removeEventListener("ross:tour", hide); };
+    window.addEventListener("ross:lockscreen", show); window.addEventListener("ross:unlock", hide); window.addEventListener("ross:tour", hide);
+    return () => { window.removeEventListener("ross:lockscreen", show); window.removeEventListener("ross:unlock", hide); window.removeEventListener("ross:tour", hide); };
   }, []);
   const unlock = (to) => { setLocked(false); if (to && to !== pathname) navigate(to); };
   return <div className={`family-app ${phone ? "is-phone" : "is-full"}`} style={phone ? { "--fam-scale": scale } : undefined}><div className="fam-stage">
