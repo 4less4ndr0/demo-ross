@@ -37,7 +37,6 @@ export const residentsGuide = {
   intro: "Qui trovi ogni ospite come ha scelto di farsi conoscere: chi è e come avvicinarlo. Non è l'anagrafica, che resta nel gestionale: è ciò che serve per stare accanto alla persona nel modo giusto.",
   entries: [
     methodGuideEntry,
-    { title: "Perché in ordine alfabetico", text: "Nessuna classifica: nessuno sta in cima perché «ha bisogno di più attenzione». Le persone sono in ordine di nome, così ognuno si trova subito con la ricerca o scorrendo.", question: "Come posso coinvolgere Elena?" },
     { title: "Una scheda essenziale", text: "In copertina solo chi è: foto, nome, età, stanza, modalità di ROSS e ultima conversazione. Niente avvisi sulla persona: ROSS non fa da sistema di allerta. Cosa va bene, bisogni e interessi sono nel ritratto: ogni persona ha entrambe le cose, e lì si vedono insieme." },
     { title: "Ognuno confrontato con sé stesso", text: "Nel ritratto la partecipazione è sempre rispetto alla media della persona negli ultimi 14 giorni. Niente punteggi né classifiche: una persona riservata non è «peggio» di una socievole." },
     { title: "Il ritratto", text: "Quattro schede: Come sta (benessere, bisogni, presenza), Come avvicinarsi (primo approccio, spunti per ogni interesse e attività che potrebbero interessare), Conversazioni ROSS (quando e quanto, mai di cosa), Allegati (una foto o un file, se vi è utile; facoltativi)." },
