@@ -4,3 +4,8 @@ let pending = false;
 
 export const requestFamilyNews = () => { pending = true; window.dispatchEvent(new CustomEvent("ross:news")); };
 export const consumeFamilyNews = () => { const show = pending; pending = false; return show; };
+
+// Promemoria di Anna: la visita guidata li rimette "da ricordare" se Elena li aveva già chiusi.
+let remindersPending = false;
+export const requestReminders = () => { remindersPending = true; window.dispatchEvent(new CustomEvent("ross:reminders")); };
+export const consumeReminders = () => { const show = remindersPending; remindersPending = false; return show; };

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Building2, Check, DoorOpen, HeartHandshake, House, Sparkles, Sprout, X } from "lucide-react";
 import { releaseLockScreen, requestLockScreen } from "../state/lockScreen";
-import { requestFamilyNews } from "../state/familyNews";
+import { requestFamilyNews, requestReminders } from "../state/familyNews";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
 // Si apre da "Vista demo", dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
@@ -46,12 +46,13 @@ const chapters = [
     id: "ross", label: "Elena", who: "Il tablet di Elena", icon: Sparkles, route: "/ross",
     title: "Ora vediamo il tablet di Elena",
     body: "Il cuore di ROSS: un compagno di conversazione che non vuole tenere Elena davanti allo schermo. Porta spunti, ascolta e la invita a uscire e partecipare. Qui decide lei.",
-    features: ["Anna ti ha mandato qualcosa: ROSS lo riordina e lo racconta a voce", "Oggi, fuori da qui: gli inviti a uscire e partecipare", "Spunti per oggi, dal meteo e dalle ricorrenze", "Da Anna, per te: ciò che la famiglia ha condiviso", "Aiuto con parole proprie, e quanto ROSS si fa sentire", "Una conversazione, e il consenso a condividere"],
+    features: ["Anna ti ha mandato qualcosa: ROSS lo riordina e lo racconta, una cosa alla volta", "Promemoria all'ora giusta, con le parole di Anna", "Oggi, fuori da qui: gli inviti a uscire e partecipare", "Spunti per oggi, dal meteo e dalle ricorrenze", "Da Anna, per te: ciò che la famiglia ha condiviso", "Aiuto con parole proprie, e quanto ROSS si fa sentire", "Una conversazione, e il consenso a condividere"],
     steps: [
       { route: "/ross", target: ".ross-hero", title: "Un compagno di conversazione", lens: "Comprensibile", body: "Elena tocca «Parla con ROSS» e parla con la sua voce. ROSS dice sempre di essere un programma, e che quello che si dicono resta lì." },
-      { route: "/ross", target: ".ross-news", news: true, title: "Anna ti ha mandato qualcosa", lens: "Comprensibile", body: "Anna ha scritto o detto quello che voleva, tutto insieme. ROSS l'ha riordinato: chiede a Elena se vuole sentirlo e poi glielo racconta, una cosa alla volta. Se c'è una foto si vede; i promemoria arrivano per ultimi, sempre con le parole di Anna. Elena può dire «più tardi»." },
+      { route: "/ross", target: ".ross-news", news: true, title: "Anna ti ha mandato qualcosa", lens: "Comprensibile", body: "Anna ha scritto o detto quello che voleva, tutto insieme. ROSS l'ha riordinato: chiede a Elena se vuole sentirlo e poi glielo racconta su una scheda grande, una cosa alla volta. Se c'è una foto, prima chiede se mostrarla. Elena può dire «più tardi»." },
+      { route: "/ross", target: ".ross-reminders", reminders: true, title: "Il promemoria, all'ora giusta", lens: "Decide la persona", body: "I promemoria di Anna non arrivano insieme alle novità: ROSS li dice la sera, con le sue parole. Elena risponde «va bene», «ricordamelo domattina» o «non ricordarmelo più». ROSS non controlla se l'ha fatto e non lo riferisce a nessuno." },
       { route: "/ross", target: ".ross-outside, .ross-away", title: "Oggi, fuori da qui", lens: "Gestibile", body: "ROSS è un ponte, non la meta: legge il calendario della residenza e invita Elena a ciò che le piace. Lei va, ROSS resta in silenzio, e al ritorno le chiede com'è andata. Elena decide se dirlo ad Anna." },
-      { route: "/ross", target: ".ross-outside ~ .ross-section .ross-prompt-grid, .ross-away ~ .ross-section .ross-prompt-grid", title: "Spunti per oggi", lens: "Significativo", body: "Il meteo e le ricorrenze diventano occasioni per chiacchierare: la pioggia porta alle fotografie, il compleanno di un cantante a una sua canzone." },
+      { route: "/ross", target: ".ross-spunti .ross-prompt-grid", title: "Spunti per oggi", lens: "Significativo", body: "Il meteo e le ricorrenze diventano occasioni per chiacchierare: la pioggia porta alle fotografie, il compleanno di un cantante a una sua canzone." },
       { route: "/ross", target: ".ross-family-grid", title: "Da Anna, per te", lens: "Risorse", body: "Quello che la famiglia ha condiviso arriva qui come spunto. ROSS lo propone nel momento giusto; Elena decide se parlarne." },
       { route: "/ross", target: ".ross-touch-grid > button:last-child", title: "Aiuto, con parole proprie", lens: "Gestibile", body: "Non servono frasi fisse. ROSS non è un sistema di emergenza e lo dice: per un aiuto urgente ci sono il campanello e il personale." },
       { route: "/ross", target: ".ross-modes", title: "Decide Elena", lens: "Decide la persona", body: "È lei a scegliere quanto ROSS si fa sentire: propone, aspetta di essere chiamato o resta in silenzio." },
@@ -149,6 +150,7 @@ export function GuidedTour() {
     if (!step) return;
     if (step.lock) requestLockScreen(); else releaseLockScreen();
     if (step.news) requestFamilyNews();
+    if (step.reminders) requestReminders();
   }, [step]);
 
   // Cambio passo: porta alla pagina giusta, aspetta l'elemento, lo porta in vista e solo allora

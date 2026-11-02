@@ -167,7 +167,7 @@ function ComposerSheet({ open, onClose }) {
   const stopListening = () => { try { recRef.current?.abort(); } catch { /* già fermo */ } recRef.current = null; window.clearInterval(timerRef.current); setListening(false); };
   useEffect(() => () => stopListening(), []); // eslint-disable-line react-hooks/exhaustive-deps
   const parts = elaborate({ text, image: attachment?.image, attachmentName: attachment && !attachment.image ? attachment.name : undefined });
-  const medicine = parts.some((part) => part.kind === "reminder" && /medicin|pastigli|pillol|gocce|compress|farmac/i.test(part.text));
+  const reminder = parts.find((part) => part.kind === "reminder");
 
   // Dettatura: quella del browser se c'è (it-IT), altrimenti una frase d'esempio scritta come se la stessi dicendo.
   const simulate = (base) => {
@@ -228,7 +228,7 @@ function ComposerSheet({ open, onClose }) {
     {parts.length > 0 ? <section className="fam-preview" aria-live="polite">
       <span className="fam-kicker">Come lo racconterà ROSS a Elena</span>
       <ol>{parts.map((part, index) => <li key={index}><em>{kindShort(part.kind)}</em><p>{part.rossLine}</p></li>)}</ol>
-      {medicine && <p className="fam-note">ROSS glielo dirà con le tue parole, ma non controlla se l'ha presa: per le medicine c'è il personale della residenza.</p>}
+      {reminder && <p className="fam-note">I promemoria ROSS glieli ripete la sera, con le tue parole. Non controlla se li ha fatti e non te lo riferisce: decide Elena.</p>}
     </section> : <p className="fam-note">Scrivi o parla come ti viene, anche tutto insieme: ROSS lo riordina e lo racconta a Elena con parole semplici, nel momento giusto. In questa demo resta sul dispositivo.</p>}
   </Dialog>;
 }
