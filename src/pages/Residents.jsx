@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Filter, MessageCircle, Search, Sparkles } from "lucide-react";
 import { useDemo } from "../state/DemoContext";
-import { attentionScore, presenceFor } from "../data/careInsights";
+import { presenceFor } from "../data/careInsights";
 import { Button, Select } from "../components/ui";
 import { EmptyState, ModeBadge, residentPhoto, SectionTitle } from "../components/Common";
 
@@ -14,9 +14,9 @@ export function Residents() {
   const filtered = useMemo(() => state.residents
     .filter((r) => (mode === "Tutte" || r.mode === mode) && `${r.name} ${r.room} ${r.interests.join(" ")}`.toLowerCase().includes(query.toLowerCase()))
     .map((r) => ({ resident: r }))
-    .sort((a, b) => attentionScore(b.resident.id) - attentionScore(a.resident.id)), [state.residents, query, mode]);
+    .sort((a, b) => a.resident.name.localeCompare(b.resident.name, "it")), [state.residents, query, mode]);
   return <div className="screen-enter">
-    <SectionTitle eyebrow="Persone" title="Ospiti" description="Come sta ogni persona e come avvicinarla. Prima chi ha bisogno di più attenzione. L'anagrafica resta nel gestionale della struttura." action={<Button variant="outline" onClick={() => navigate("/")}><Sparkles size={16} /> Chiedi a ROSS</Button>} />
+    <SectionTitle eyebrow="Persone" title="Ospiti" description="Chi sono le persone e come avvicinarle, in ordine alfabetico. L'anagrafica resta nel gestionale della struttura." action={<Button variant="outline" onClick={() => navigate("/")}><Sparkles size={16} /> Chiedi a ROSS</Button>} />
     <div className="filter-bar"><label><Search size={17} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cerca nome, stanza o interesse" /></label><div><Filter size={16} /><Select value={mode} onValueChange={setMode} label="Modalità" options={["Tutte", "Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: v === "Tutte" ? "Tutte le modalità" : v }))} /></div></div>
     {!filtered.length ? <EmptyState /> : <div className="residents-grid">{filtered.map(({ resident }) => {
       // In copertina solo chi è e quando ha parlato con ROSS: nessun avviso (niente alert sulla persona).

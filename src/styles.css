@@ -1225,3 +1225,34 @@
 .ross-news-dialog .ross-news-controls :is(.primary-button,.ghost-button){height:52px;min-height:52px;padding:0 22px;border-radius:999px;font-size:17px}
 .ross-news-dialog .ross-news-controls svg{width:20px;height:20px}
 @media(max-width:700px){.ross-news{grid-template-columns:auto 1fr}.ross-news .ross-invite-actions{grid-column:1/-1}}
+/* Come avvicinarsi: attività che potrebbero interessare (calendario demo, nessun collegamento reale) */
+.activity-section{display:grid;gap:14px}
+.activity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:14px}
+.activity-card{padding:20px;display:grid;gap:12px;align-content:start}
+.activity-card h4{font:600 22px var(--serif);margin:0}
+.activity-meta{display:flex;flex-wrap:wrap;gap:6px}
+.activity-meta span{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--text)}
+.activity-card p{margin:0;font-size:14px;line-height:1.45}
+.activity-reason{padding:10px 12px;border-radius:12px;background:var(--green-soft);font-size:13px!important}
+.activity-reason>span{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--green);margin-bottom:2px}
+.activity-actions{display:flex;flex-wrap:wrap;gap:8px}
+.activity-footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.activity-footer small{font-size:13px;color:var(--muted)}
+.activity-empty{padding:20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.activity-empty p{margin:0;font-size:14px;color:var(--muted)}
+.preview-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 8px;border-radius:999px;background:var(--sand-soft);color:#7a5a17}
+.activity-detail dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 18px;margin:14px 0}
+.activity-detail dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.activity-detail dd{margin:0;font-size:14px}
+.sim-banner{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px dashed #b8902f;background:var(--sand-soft);color:#5e4510;font-size:13px;font-weight:600;margin-bottom:14px}
+.sim-chat{display:grid;gap:10px}
+.sim-bubble{max-width:88%;padding:12px 14px;border-radius:16px;font-size:15px;line-height:1.45}
+.sim-bubble small{display:block;font-size:10px;font-weight:700;letter-spacing:.12em;margin-bottom:3px}
+.sim-ross{background:var(--surface-2)}.sim-ross small{color:var(--accent)}
+.sim-elena{justify-self:end;background:var(--green-soft)}.sim-elena small{color:var(--green)}
+.sim-choices{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.sim-choices button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-size:14px;color:var(--text)}
+.sim-choices button.picked{background:var(--text);color:var(--surface);border-color:var(--text)}
+.sim-note{font-size:12px;color:var(--muted);margin:12px 0 0}
+@media(max-width:650px){.activity-detail dl{grid-template-columns:1fr;gap:2px}.activity-detail dd{margin-bottom:8px}}
+.activity-list{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}.activity-list li{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}.activity-list strong{font-size:14px}.activity-list span{font-size:13px;color:var(--muted)}

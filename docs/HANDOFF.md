@@ -250,6 +250,13 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · Ospiti in ordine alfabetico e attività nel ritratto
+- **Richiesta:** togliere l'ordine per attenzione dalla lista Ospiti e mostrare, in "Come avvicinarsi", attività del calendario collegate agli interessi condivisi (anteprima approvata, senza riquadri sulle schede).
+- **Modifiche:**
+  - lista Ospiti in ordine alfabetico; sottotitolo aggiornato; tolta dallo specchietto la voce "Perché questo ordine";
+  - ritratto → Come avvicinarsi: nuova sezione **"Attività che potrebbero interessarle"** sotto "Interessi e spunti" (dati in `src/data/activities.js`, per ora solo Elena; per gli altri uno stato vuoto). Finestre **Dettagli attività** (prenotazione, accompagnamento, referente) e **Come ROSS potrebbe proporla** (esempio simulato con "sì" e "no", banda "nessun invito è stato inviato"); "Vedi tutte le attività" apre il calendario di esempio;
+  - tutti i dati sono dimostrativi: nessun collegamento a un calendario reale, nessun invito inviato, un "sì" non è una prenotazione.
+
 ### Novembre 2026 · 02/11/2026 · Tablet: niente voce automatica
 - **Richiesta:** togliere la voce che parte da sola quando ROSS racconta le novità da Anna.
 - **Modifiche:** tolta la sintesi vocale del browser dal tablet di Elena. Il racconto delle novità resta a schermo, una cosa alla volta (foto grande, frase grande, "Rispondile", "Avanti"); tolto "Ripeti". "Ascolta" sulle schede "Da Anna, per te" apre lo stesso racconto. Aggiornati "Cosa è reale e cosa è simulato" e il passo della visita guidata.
