@@ -22,11 +22,11 @@
     },
     "src/data/activities.js": {
       "name": "Attività suggerite",
-      "description": "Calendario d'esempio della residenza e le attività da proporre a un ospite, collegate solo agli interessi che ha condiviso."
+      "description": "Calendario d'esempio della residenza e due attività per ogni ospite, legate agli interessi della biografia d'ingresso, nei suoi momenti migliori e con il tu o il Lei che preferisce."
     },
     "src/data/familyMessages.js": {
       "name": "ROSS riordina i messaggi di Anna",
-      "description": "Capisce cosa manda la famiglia (foto, pensiero, domanda, ricordo, musica, promemoria), separa i promemoria e prepara le frasi da dire a Elena, nell'ordine giusto."
+      "description": "Capisce cosa manda la famiglia (foto, pensiero, domanda, ricordo, musica, promemoria), separa i promemoria e prepara le frasi da dire a Elena con le parole di Anna. I promemoria sono semplici: niente medicine, nessun controllo se sono stati fatti."
     }
   }
 }

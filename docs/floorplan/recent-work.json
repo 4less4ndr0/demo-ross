@@ -1,118 +1,101 @@
 {
-  "updatedAt": "2026-11-02T15:31:13.000Z",
+  "updatedAt": "2026-11-02T18:39:31.000Z",
   "tasks": [
     {
-      "title": "Famiglia su iPhone",
-      "request": "Adattare la vista Famiglia al telefono, secondo le linee guida Apple",
-      "summary": "La Famiglia è un'app per iPhone (margini, tocchi da 44pt, tab bar, sheet dal basso) dentro una cornice che si accende dalla pillola \"Vista demo\", con la schermata di blocco come primo contatto.",
+      "title": "\"Parla con ROSS\" come una conversazione vera",
+      "request": "Rendere la demo della conversazione il più vicina possibile a come sarebbe davvero",
+      "summary": "Una conversazione a voce mostrata come sottotitoli: le parole di ROSS compaiono mentre parla, quelle di Elena dopo l'onda della voce. Le scelte cambiano il seguito («Non adesso», musica o foto, ricordo in bozza, «Lo racconto ad Anna?»); le spiegazioni per il pubblico stanno solo nelle Note.",
       "items": [
         {
-          "ref": "src/pages/FamilyExperience.jsx",
+          "ref": "f:src/pages/RossExperience.jsx",
           "change": "changed",
-          "note": "Barra in alto, tab bar con il + al centro, sheet dal basso, cornice iPhone e schermata di blocco."
+          "note": "Nuova conversazione con copione, sottotitoli, frasi \"Puoi dirmi\" e barra per chi presenta."
         },
         {
-          "ref": "src/state/lockScreen.js",
-          "change": "new",
-          "note": "Nuovo: quando mostrare la notifica sulla schermata di blocco."
+          "ref": "f:src/state/DemoContext.jsx",
+          "change": "changed",
+          "note": "Si ricorda se Elena ha scelto di raccontare ad Anna: con il no la Famiglia non vede nulla."
         },
         {
-          "ref": "src/components/ui.jsx",
+          "ref": "f:src/pages/FamilyExperience.jsx",
           "change": "changed",
-          "note": "Le finestre si possono aprire dentro lo schermo dell'iPhone; nuovo interruttore nei menu."
+          "note": "Mostra il racconto solo se Elena l'ha condiviso."
         },
         {
-          "ref": "src/styles.css",
+          "ref": "f:src/components/GuidedTour.jsx",
           "change": "changed",
-          "note": "La sezione \"Vista Famiglia come app per iPhone\"."
+          "note": "Il passo sulla conversazione punta ai sottotitoli."
         },
         {
-          "ref": "index.html",
+          "ref": "f:src/components/PerspectiveSwitcher.jsx",
           "change": "changed",
-          "note": "Pronta per le aree sicure dell'iPhone."
+          "note": "\"Cosa è reale\": la conversazione è un copione."
         }
       ]
     },
     {
-      "title": "Le schede seguono la direzione delle cose",
-      "request": "Separare ciò che arriva da Elena da ciò che manda la famiglia",
-      "summary": "Oggi · Da lei · + · Da te · Insieme: Da lei unisce racconti e ricordi di Elena, Da te ciò che Anna ha mandato e com'è andata, Insieme la relazione e il metodo.",
+      "title": "Promemoria: il prossimo e le altre cose da ricordare",
+      "request": "Vedere più promemoria insieme, senza videochiamate negli esempi",
+      "summary": "In home la sezione Promemoria ha due card: il prossimo e, accanto, le altre cose da ricordare in fila nel tempo, comprese quelle che Elena ha chiesto lei a ROSS.",
       "items": [
         {
-          "ref": "src/pages/FamilyExperience.jsx",
+          "ref": "f:src/pages/RossExperience.jsx",
           "change": "changed",
-          "note": "Nuove schermate Da lei, Da te e Insieme; settimana e mese nei racconti."
+          "note": "Due card affiancate e l'ordine nel tempo (stasera, domani, giorni, senza data)."
         },
         {
-          "ref": "src/App.jsx",
+          "ref": "f:src/state/DemoContext.jsx",
           "change": "changed",
-          "note": "Nuovi indirizzi; i vecchi rimandano a quelli nuovi."
+          "note": "I promemoria chiesti da Elena (\"Me l'hai chiesto tu\")."
         },
         {
-          "ref": "src/state/DemoContext.jsx",
+          "ref": "f:src/styles.css",
           "change": "changed",
-          "note": "Gli spunti per le chiamate salvati da Anna."
+          "note": "Stile dell'elenco dei promemoria."
         }
       ]
     },
     {
-      "title": "Il + diventa un messaggio libero",
-      "request": "Niente modulo: scrivere o parlare liberamente, e ROSS riordina per Elena",
-      "summary": "Anna scrive o detta con il microfono e allega con la graffetta; ROSS capisce cosa c'è, separa i promemoria e sul tablet lo racconta a Elena una cosa alla volta.",
+      "title": "Tablet di Elena: una cosa alla volta",
+      "request": "Migliorare il tablet senza cambiare la home: promemoria, giochi e memoria controllabile",
+      "summary": "Sopra la home si aprono a tutto schermo le schede \"una cosa alla volta\": novità da Anna, promemoria semplici la sera, giochi senza punteggi e \"Cosa ricordo di te\", in cui Elena conferma, corregge o fa dimenticare.",
       "items": [
         {
-          "ref": "src/data/familyMessages.js",
-          "change": "new",
-          "note": "Nuovo: le regole con cui ROSS riordina i messaggi della famiglia."
-        },
-        {
-          "ref": "src/pages/RossExperience.jsx",
+          "ref": "f:src/pages/RossExperience.jsx",
           "change": "changed",
-          "note": "L'avviso \"Anna ti ha mandato qualcosa\" e il racconto a schermo, una cosa alla volta."
+          "note": "La scheda RossStage, i giochi e \"Cosa ricordo di te\"."
         },
         {
-          "ref": "src/state/familyNews.js",
-          "change": "new",
-          "note": "Nuovo: la visita guidata fa ricomparire l'avviso sul tablet."
+          "ref": "f:src/data/familyMessages.js",
+          "change": "changed",
+          "note": "Promemoria semplici: ROSS non riconosce le medicine."
+        },
+        {
+          "ref": "f:src/state/familyNews.js",
+          "change": "changed",
+          "note": "La visita guidata apre il promemoria della sera."
+        },
+        {
+          "ref": "f:src/components/GuidedTour.jsx",
+          "change": "changed",
+          "note": "Nuovo passo \"Il promemoria, all'ora giusta\"."
         }
       ]
     },
     {
-      "title": "Presentare meglio la demo",
-      "request": "Visita guidata completa e un modo per ricominciare da capo",
-      "summary": "La visita mostra tutte le schede di Anna, la schermata di blocco e le novità sul tablet; \"Ripristina la demo\" riporta tutto com'era.",
+      "title": "Due attività suggerite per ogni ospite",
+      "request": "Proporre attività concrete nel ritratto",
+      "summary": "Ogni ospite ha due attività del calendario d'esempio, legate agli interessi della biografia d'ingresso, nei suoi momenti migliori e con il tu o il Lei che preferisce.",
       "items": [
         {
-          "ref": "src/components/GuidedTour.jsx",
+          "ref": "f:src/data/activities.js",
           "change": "changed",
-          "note": "Nuovi passi per l'app di Anna, la notifica e le novità sul tablet."
+          "note": "Due attività per ospite."
         },
         {
-          "ref": "src/components/PerspectiveSwitcher.jsx",
+          "ref": "f:src/pages/ResidentProfile.jsx",
           "change": "changed",
-          "note": "Cornice iPhone, schermata di blocco e \"Ripristina la demo\" nella pillola."
-        }
-      ]
-    },
-    {
-      "title": "Ospiti in ordine alfabetico",
-      "request": "Semplificare la lista e proporre attività nel ritratto",
-      "summary": "La lista Ospiti è in ordine alfabetico, senza avvisi sulle schede; nel ritratto compaiono le attività che potrebbero interessare.",
-      "items": [
-        {
-          "ref": "src/pages/Residents.jsx",
-          "change": "changed",
-          "note": "Ordine alfabetico."
-        },
-        {
-          "ref": "src/pages/ResidentProfile.jsx",
-          "change": "changed",
-          "note": "\"Attività che potrebbero interessarle\" in Come avvicinarsi."
-        },
-        {
-          "ref": "src/data/activities.js",
-          "change": "new",
-          "note": "Nuovo: calendario d'esempio e attività suggerite."
+          "note": "La lista \"Tutte le attività\" scorre dentro la finestra."
         }
       ]
     }

@@ -6,11 +6,11 @@
     },
     "src/components/GuidedTour.jsx": {
       "name": "Visita guidata",
-      "description": "Accompagna chi guarda la demo capitolo per capitolo, evidenziando un elemento alla volta: anche dentro l'iPhone di Anna, la schermata di blocco e le novità sul tablet."
+      "description": "Accompagna chi guarda la demo capitolo per capitolo, un elemento alla volta: l'iPhone di Anna con la schermata di blocco, e sul tablet le novità, il promemoria all'ora giusta e la conversazione con ROSS."
     },
     "src/components/PerspectiveSwitcher.jsx": {
       "name": "Pillola \"Vista demo\"",
-      "description": "Passa tra le viste, accende la cornice iPhone, richiama la schermata di blocco, spiega cosa è reale e cosa è simulato, avvia la visita guidata e ripristina la demo."
+      "description": "Passa tra le viste, accende la cornice iPhone, richiama la schermata di blocco, spiega cosa è reale e cosa è simulato (anche la conversazione con copione), avvia la visita guidata e ripristina la demo."
     },
     "src/components/ui.jsx": {
       "name": "Kit dell'interfaccia",

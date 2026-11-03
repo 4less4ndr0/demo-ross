@@ -89,7 +89,7 @@
       "id": "tablet",
       "label": "Tablet di ROSS",
       "kind": "ui",
-      "summary": "Lo schermo che usa l'ospite: le novità da Anna raccontate una alla volta, spunti per oggi, inviti fuori dalla stanza e la conversazione con ROSS.",
+      "summary": "Lo schermo che usa Elena. La home resta com'è; sopra si aprono le schede \"una cosa alla volta\" (novità da Anna, promemoria la sera, giochi senza punteggi, \"Cosa ricordo di te\") e \"Parla con ROSS\", una conversazione a voce mostrata come sottotitoli in cui le scelte di Elena cambiano il seguito.",
       "paths": [
         "src/pages/RossExperience.jsx"
       ]
@@ -98,7 +98,7 @@
       "id": "condivisi",
       "label": "Pezzi comuni",
       "kind": "library",
-      "summary": "Bottoni, menu, finestre e avvisi in stile shadcn usati da tutte le viste, più la pillola \"Vista demo\" (cornice iPhone, schermata di blocco, ripristino), la visita guidata e la vista Mappa.",
+      "summary": "Bottoni, menu, finestre e avvisi in stile shadcn usati da tutte le viste, più la pillola \"Vista demo\" (cornice iPhone, schermata di blocco, cosa è reale e cosa è simulato, ripristino), la visita guidata e la vista Mappa.",
       "paths": [
         "src/components/ui.jsx",
         "src/components/Common.jsx",
@@ -111,7 +111,7 @@
       "id": "stato",
       "label": "Memoria della demo",
       "kind": "data",
-      "summary": "Tiene in un unico posto tutto ciò che cambia mentre si usa la demo (ruolo, tema, conversazioni, allegati, ricordi condivisi, messaggi di Anna, spunti salvati) e lo salva nel browser.",
+      "summary": "Tiene in un unico posto tutto ciò che cambia mentre si usa la demo (ruolo, tema, conversazioni, allegati, ricordi condivisi, messaggi di Anna, promemoria e le risposte di Elena, spunti salvati) e lo salva nel browser.",
       "paths": [
         "src/state"
       ]
@@ -120,7 +120,7 @@
       "id": "dati",
       "label": "Contenuti della demo",
       "kind": "data",
-      "summary": "La Residenza Aurora inventata: ospiti, segnali positivi e da osservare, risposte preparate della chat, testi dei report, attività suggerite, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia.",
+      "summary": "La Residenza Aurora inventata: ospiti, segnali positivi e da osservare, risposte preparate della chat, testi dei report, due attività suggerite per ospite, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia (promemoria semplici, senza medicine).",
       "paths": [
         "src/data"
       ]
@@ -240,11 +240,15 @@
     {
       "id": "condivisione",
       "title": "Elena racconta, Anna legge",
-      "description": "Un racconto nato sul tablet arriva alla famiglia solo se Elena sceglie di condividerlo.",
+      "description": "Un ricordo nato parlando con ROSS arriva alla famiglia solo se Elena sceglie di condividerlo.",
       "steps": [
         {
+          "ref": "f:src/pages/RossExperience.jsx",
+          "note": "In \"Parla con ROSS\" Elena racconta; il ricordo nuovo resta in bozza finché non dice «Sì, segnatela»."
+        },
+        {
           "ref": "n:tablet",
-          "note": "Elena parla con ROSS; alla fine ROSS chiede \"Lo racconto ad Anna?\"."
+          "note": "ROSS chiede «Ti va se lo racconto anche ad Anna?». Con il no, Anna non vede nulla."
         },
         {
           "ref": "n:stato",
@@ -252,7 +256,7 @@
         },
         {
           "ref": "f:src/state/lockScreen.js",
-          "note": "Sull'iPhone di Anna arriva una notifica: \"Elena ha voluto raccontarti una cosa\"."
+          "note": "Con il sì, sull'iPhone di Anna arriva una notifica: \"Elena ha voluto raccontarti una cosa\"."
         },
         {
           "ref": "n:famiglia",
@@ -279,7 +283,30 @@
         },
         {
           "ref": "n:tablet",
-          "note": "Sul tablet: \"Anna ti ha mandato due cose. Vuoi che te le racconti?\". ROSS le mostra una alla volta, i promemoria per ultimi."
+          "note": "Sul tablet: \"Anna ti ha mandato due cose. Vuoi che te le racconti?\". ROSS le racconta una alla volta sulla scheda \"una cosa alla volta\"; i promemoria arrivano la sera."
+        }
+      ]
+    },
+    {
+      "id": "promemoria",
+      "title": "Un promemoria, all'ora giusta",
+      "description": "Quello che Anna chiede di ricordare arriva a Elena la sera, con le parole di Anna, e decide lei.",
+      "steps": [
+        {
+          "ref": "n:famiglia",
+          "note": "Anna scrive \"Ricordati che domani alle 11 viene il parrucchiere!\" insieme al resto del messaggio."
+        },
+        {
+          "ref": "f:src/data/familyMessages.js",
+          "note": "ROSS separa il promemoria dal resto: niente medicine, solo le parole di Anna."
+        },
+        {
+          "ref": "n:tablet",
+          "note": "In home la sezione Promemoria mostra il prossimo e le altre cose da ricordare, anche quelle che Elena ha chiesto lei."
+        },
+        {
+          "ref": "f:src/pages/RossExperience.jsx",
+          "note": "La sera ROSS lo ripete; Elena risponde «Va bene», «Ricordamelo domattina» o «Non ricordarmelo più». ROSS non controlla se è stato fatto."
         }
       ]
     }
@@ -298,7 +325,7 @@
     {
       "ref": "n:tablet",
       "title": "Il tablet di ROSS",
-      "note": "Quello che vede l'ospite: le novità da Anna raccontate una alla volta, spunti per oggi, inviti fuori dalla stanza e la conversazione."
+      "note": "Quello che vede Elena: la home, le schede \"una cosa alla volta\" (novità, promemoria, giochi, cosa ricordo di te) e \"Parla con ROSS\" con i sottotitoli."
     },
     {
       "ref": "n:famiglia",

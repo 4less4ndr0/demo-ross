@@ -55,7 +55,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
   - **Passi:** un elemento evidenziato alla volta, con lo sfondo scurito; scheda breve con lo stepper dei capitoli (cliccabile, ✓ per quelli visti), avanzamento nel capitolo ("2 di 4 · Struttura"), Indietro/Avanti, Salta, "Indice" (torna al benvenuto con l'agenda; tasto Home) e ×.
   - **Chiusura:** sulla pillola "Vista demo".
   - **Fuori dal giro:** Report, Panoramica e Allegati.
-  - **Dove si apre:** dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`.
+  - **Dove si apre:** **da sola ogni volta che si apre (o si ricarica) la demo** (decisione del 03/11/2026), tranne nella Mappa e con `?visita=0`; se si salta dal benvenuto si torna alla pagina da cui si era partiti. Poi dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`.
   - **Accessibilità:** il resto della pagina è `inert`, il focus entra nella scheda, Esc chiude, le frecce scorrono i passi; su telefono la scheda è in basso; niente animazioni con "riduci movimento".
   - **Per aggiungere un passo:** un oggetto in `chapters[].steps` (`route`, `target`, `title`, `body`); per un capitolo, una voce in `chapters` con `title`, `body` e `features`.
 
