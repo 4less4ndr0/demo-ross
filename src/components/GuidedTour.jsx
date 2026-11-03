@@ -6,7 +6,8 @@ import { releaseLockScreen, requestLockScreen } from "../state/lockScreen";
 import { requestFamilyNews, requestReminders } from "../state/familyNews";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
-// Si apre da "Vista demo", dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
+// Si apre da sola a ogni apertura della demo (non nella Mappa, non con ?visita=0); poi da "Vista demo",
+// dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
 // Accessibilità: il resto della pagina diventa inert, il focus entra nella scheda del passo,
 // Esc chiude, le frecce scorrono i passi; il passo si può sempre saltare.
 export const startTour = () => window.dispatchEvent(new CustomEvent("ross:tour"));
@@ -125,17 +126,28 @@ export function GuidedTour() {
   const active = index !== null;
   const step = active ? sequence[index] : null;
 
-  const close = useCallback(() => { setIndex(null); setRect(null); setReady(false); }, []);
+  // Pagina da cui è partita la visita automatica: se la si chiude subito, dal benvenuto, si torna lì.
+  const origin = useRef(null);
+  const close = useCallback(() => {
+    if (index === 0 && origin.current && origin.current !== "/") navigate(origin.current);
+    origin.current = null;
+    setIndex(null); setRect(null); setReady(false);
+  }, [index, navigate]);
   const go = useCallback((next) => setIndex(next < 0 ? 0 : next >= sequence.length ? null : next), []);
 
-  // Avvio: evento dai menu o ?visita=1 (anche il vecchio ?presentation=true).
+  // Avvio: si apre da sola ogni volta che si apre (o si ricarica) la demo, tranne nella Mappa e con ?visita=0;
+  // poi dai menu con l'evento "ross:tour" (anche ?visita=1 e il vecchio ?presentation=true).
   useEffect(() => {
-    const start = () => setIndex(0);
+    const start = () => { origin.current = null; setIndex(0); };
     window.addEventListener("ross:tour", start);
     const params = new URLSearchParams(window.location.search);
-    if (params.get("visita") === "1" || params.get("presentation") === "true") start();
+    const skip = params.get("visita") === "0" || window.location.pathname.startsWith("/mappa");
+    if (!skip) { origin.current = `${window.location.pathname}${window.location.hash}`; setIndex(0); }
     return () => window.removeEventListener("ross:tour", start);
   }, []);
+
+  // Una volta iniziata davvero, la visita non riporta più alla pagina di partenza.
+  useEffect(() => { if (index > 0) origin.current = null; }, [index]);
 
   // Il resto della pagina è inerte durante la visita: niente tab né clic sullo sfondo.
   useEffect(() => {

@@ -75,7 +75,7 @@ Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai su
 
 **Per chi presenta:**
 - la pillola "Vista demo" (tasti `1` Struttura, `2` Famiglia, `3` ROSS);
-- la **visita guidata**, dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`: evidenzia un elemento alla volta e lo spiega in poche righe;
+- la **visita guidata**, che si apre da sola a ogni apertura della demo (non nella Mappa, non con `?visita=0`) e poi dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`: evidenzia un elemento alla volta e lo spiega in poche righe;
 - il ripristino dei dati dalla card in basso a sinistra.
 
 **Giro breve per un incontro di ricerca (3 minuti, si mostra solo alla fine, dopo aver ascoltato):** la visita guidata segue questo ordine.
@@ -190,7 +190,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
-| `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
+| `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
 | `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
@@ -249,6 +249,10 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 03/11/2026 · La visita guidata parte a ogni apertura
+- **Richiesta:** far partire l'onboarding ogni volta che si apre la demo.
+- **Fatto:** `GuidedTour.jsx` apre il benvenuto a ogni caricamento della pagina (anche dopo "Ripristina la demo"), tranne in `/mappa` e con `?visita=0`. Se si sceglie "Salta" (o ×, Esc) dal benvenuto, si torna alla pagina da cui si era partiti (per esempio `/ross` o `/famiglia`); dopo "Iniziamo" la visita si comporta come prima. Impostazioni spiega `?visita=0`.
 
 ### Novembre 2026 · 02/11/2026 · Mappa aggiornata con le ultime modifiche
 - **Richiesta:** aggiornare la vista Mappa con le modifiche al tablet e alla conversazione.
