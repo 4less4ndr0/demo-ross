@@ -253,6 +253,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 04/11/2026 · Mappa rigenerata dopo gli archetipi
+- **Richiesta:** rigenerare la Mappa (poi unito `main` con «Cosa sa ROSS», PR #48, e mappa rigenerata di nuovo).
+- **Fatto (senza plugin Floorplan):** nuovo script `docs/floorplan/aggiorna-mappa.py`, che rilegge il codice e aggiorna i dati della mappa e i sorgenti in `docs/floorplan/`.
+  - **Ricalcolati:** righe, simboli, hash e collegamenti di 37 file. In tutto 88 collegamenti, compreso il nuovo copione della chat → attività.
+  - **Descrizioni nuove:** ritratto, segnali, copione, dati, chat, Famiglia, memoria della demo e stili.
+  - **Percorsi:** "Dal ritratto al report" aggiornato con gli archetipi; due nuovi, "La struttura chiede a ROSS di proporre un'attività" e "Anna condivide anche con la struttura".
+  - **Giro "Start here":** nuova tappa "Otto ospiti, otto archetipi".
+  - **Recent work:** in cima "Ospiti come archetipi e ritratto rivisto"; restano le ultime quattro attività.
+  - **Dopo il merge di `main`:** descrizioni e percorsi parlano di «Cosa sa ROSS» (ex Allegati); la copia di Anna per la struttura finisce in «Per conoscerla».
+  - **Non rifatto:** il controllo Health.
+
 ### Novembre 2026 · 04/11/2026 · «Cosa sa ROSS» e promemoria per le medicine
 - **Richiesta:** inserire in ogni profilo un documento della struttura con le medicine da ricordare, e organizzare i documenti utili a ROSS senza disperderli (anteprima approvata, senza le schede conversazionali del tablet).
 - **Modifiche:**
@@ -290,7 +301,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
   - Acceso, una copia va negli Allegati di Elena ("Dalla famiglia", `shareWithFacility`) e arricchisce la sua biografia.
   - A ROSS il contributo arriva comunque direttamente: la struttura lo riceve e basta, non lo verifica.
   - In "Da te" il contributo mostra "anche alla struttura".
-- **Da fare:** rigenerare la Mappa (`docs/floorplan/README.md`); valutare se la copia alla struttura richieda anche il consenso di Elena (§5).
+- **Da fare:** valutare se la copia alla struttura richieda anche il consenso di Elena (§5).
 
 ### Novembre 2026 · 03/11/2026 · La visita guidata parte a ogni apertura
 - **Richiesta:** far partire l'onboarding ogni volta che si apre la demo.

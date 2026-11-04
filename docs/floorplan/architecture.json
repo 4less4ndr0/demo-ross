@@ -45,7 +45,7 @@
       "parent": "struttura",
       "label": "Ospiti e ritratto",
       "kind": "feature",
-      "summary": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno con i suoi quattro tab, comprese le attività che potrebbero interessare.",
+      "summary": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno, che si adatta al suo archetipo: Come sta (con gli spunti di ROSS), Come avvicinarsi (attività da far proporre a ROSS), Con ROSS e Allegati per provenienza.",
       "paths": [
         "src/pages/Residents.jsx",
         "src/pages/ResidentProfile.jsx",
@@ -80,7 +80,7 @@
       "id": "famiglia",
       "label": "Vista Famiglia",
       "kind": "ui",
-      "summary": "L'app per iPhone di Anna, la figlia di Elena: Oggi · Da lei · + · Da te · Insieme. Vede solo ciò che Elena sceglie di raccontarle; con il + le manda qualcosa a voce o per iscritto, e ROSS lo riordina per Elena.",
+      "summary": "L'app per iPhone di Anna, la figlia di Elena: Oggi · Da lei · + · Da te · Insieme. Vede solo ciò che Elena sceglie di raccontarle; con il + le manda qualcosa a voce o per iscritto (e, se vuole, una copia alla struttura), e ROSS lo riordina per Elena.",
       "paths": [
         "src/pages/FamilyExperience.jsx"
       ]
@@ -120,7 +120,7 @@
       "id": "dati",
       "label": "Contenuti della demo",
       "kind": "data",
-      "summary": "La Residenza Aurora inventata: ospiti, segnali positivi e da osservare, risposte preparate della chat, testi dei report, due attività suggerite per ospite, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia (promemoria semplici, senza medicine).",
+      "summary": "La Residenza Aurora inventata: otto ospiti come otto archetipi, segnali positivi e da osservare, come ognuno usa ROSS, spunti per invogliarli, risposte preparate della chat, testi dei report, allegati simulati, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia.",
       "paths": [
         "src/data"
       ]
@@ -225,11 +225,11 @@
       "steps": [
         {
           "ref": "n:struttura.ospiti",
-          "note": "La lista mette prima chi ha bisogno di più attenzione; si apre il ritratto."
+          "note": "La lista è in ordine alfabetico; si apre il ritratto, che si adatta alla persona (il suo archetipo)."
         },
         {
           "ref": "n:dati",
-          "note": "Il ritratto legge i segnali dell'ospite rispetto alla sua media e la guida \"Come avvicinarsi\"."
+          "note": "Il ritratto legge i segnali rispetto alla sua media, come usa ROSS e gli spunti di ROSS per invogliarla alla vita della residenza."
         },
         {
           "ref": "n:struttura.report",
@@ -309,6 +309,48 @@
           "note": "La sera ROSS lo ripete; Elena risponde «Va bene», «Ricordamelo domattina» o «Non ricordarmelo più». ROSS non controlla se è stato fatto."
         }
       ]
+    },
+    {
+      "id": "invito",
+      "title": "La struttura chiede a ROSS di proporre un'attività",
+      "description": "Lo staff chiede a ROSS di invitare un ospite; ROSS lo fa solo se la modalità lo permette, e decide l'ospite.",
+      "steps": [
+        {
+          "ref": "n:struttura.chat",
+          "note": "Dalla chat (\"Proponi ad Antonio la radio in compagnia\") o dal ritratto (\"Chiedi a ROSS di proporla\")."
+        },
+        {
+          "ref": "f:src/data/chatScript.js",
+          "note": "Il copione trova l'ospite e l'attività dal calendario e controlla la modalità."
+        },
+        {
+          "ref": "f:src/pages/ResidentProfile.jsx",
+          "note": "In modalità Attiva si vede come ROSS lo dirà; in Reattiva o Silenziosa un avviso spiega che l'invito non parte: si propone di persona."
+        },
+        {
+          "ref": "n:stato",
+          "note": "L'invito chiesto resta nel tab \"Con ROSS\", con \"Annulla\" nel toast. Un sì non è una prenotazione; un no non arriva a nessuno."
+        }
+      ]
+    },
+    {
+      "id": "anche-struttura",
+      "title": "Anna condivide anche con la struttura",
+      "description": "Con l'interruttore nel +, una copia di ciò che Anna manda a ROSS arriva anche negli allegati di Elena.",
+      "steps": [
+        {
+          "ref": "n:famiglia",
+          "note": "Anna scrive o detta nel + e accende \"Anche alla struttura\" (spento di default)."
+        },
+        {
+          "ref": "n:stato",
+          "note": "A ROSS il messaggio arriva comunque direttamente; una copia diventa un allegato \"Dalla famiglia\"."
+        },
+        {
+          "ref": "n:struttura.ospiti",
+          "note": "Nel ritratto di Elena, tab «Cosa sa ROSS», in Per conoscerla: la copia arricchisce la sua biografia. La struttura la riceve e basta, non la approva."
+        }
+      ]
     }
   ],
   "tour": [
@@ -321,6 +363,11 @@
       "ref": "n:struttura",
       "title": "La vista Struttura",
       "note": "Lo strumento per l'équipe: chiedere a ROSS, leggere il ritratto di ogni ospite, report e panoramica. La regola d'oro: come sta, mai di cosa ha parlato."
+    },
+    {
+      "ref": "n:struttura.ospiti",
+      "title": "Otto ospiti, otto archetipi",
+      "note": "Ogni ospite rappresenta un modo diverso di vivere ROSS: la nuova arrivata, chi lo usa come uno strumento, chi lo adora troppo, il riservato… Il ritratto si adatta alla persona. Gli archetipi sono per chi presenta, mai etichette nel prodotto."
     },
     {
       "ref": "n:tablet",

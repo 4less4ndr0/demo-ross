@@ -2,7 +2,7 @@
   "files": {
     "src/pages/RossExperience.jsx": {
       "name": "Schermate del tablet",
-      "description": "La home di Elena con le schede \"una cosa alla volta\" (novità da Anna, promemoria, giochi, \"Cosa ricordo di te\") e \"Parla con ROSS\": sottotitoli, frasi \"Puoi dirmi\", ricordo in bozza finché Elena non dice sì, e la scelta se raccontarlo ad Anna."
+      "description": "La home di Elena con le schede \"una cosa alla volta\" (novità da Anna, promemoria, anche quello dall'infermeria, giochi, cosa ricordo di te), \"Oggi in residenza\" e \"Parla con ROSS\" con i sottotitoli."
     }
   }
 }

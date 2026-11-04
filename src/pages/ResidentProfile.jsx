@@ -177,7 +177,6 @@ function RossTips({ resident, onPropose }) {
   </section>;
 }
 
-// Allegati: facoltativi e non strutturati, raggruppati solo per chi li ha portati (mai per tipo o per dato sanitario).
 // «Cosa sa ROSS»: i documenti raggruppati per ciò che ROSS ne fa, non per tipo.
 // Ogni card dice chi l'ha scritto, cosa ne fa ROSS e chi lo vede. Una sezione vuota è un invito, non un buco.
 const families = [

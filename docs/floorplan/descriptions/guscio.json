@@ -18,7 +18,7 @@
     },
     "src/styles.css": {
       "name": "Aspetto di tutte le viste",
-      "description": "Colori, caratteri e spaziature di Struttura, Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\", promemoria, sottotitoli della conversazione), inclusi tema chiaro/scuro e stampa dei report."
+      "description": "Colori, caratteri e spaziature di Struttura (anche spunti di ROSS, \"Con ROSS\", avvisi di modalità e «Cosa sa ROSS»), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."
     }
   }
 }

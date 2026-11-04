@@ -6,7 +6,7 @@
     },
     "src/pages/ResidentProfile.jsx": {
       "name": "Ritratto dell'ospite",
-      "description": "Come sta, come avvicinarsi (con due attività che potrebbero interessare), conversazioni con ROSS e allegati di un ospite, con le sue risorse prima di tutto."
+      "description": "Il ritratto si adatta alla persona: Come sta (risorse, racconto, \"Spunti di ROSS\" per invogliarla alla vita della residenza), Come avvicinarsi (con le attività da far proporre a ROSS, solo in modalità Attiva), Con ROSS (come lo usa, modalità, inviti chiesti) e «Cosa sa ROSS»: i documenti di struttura e famiglia raggruppati per ciò che ROSS ne fa (Per conoscerla · La sua giornata · Per stare bene), compresi i promemoria per le medicine."
     },
     "src/pages/Residents.jsx": {
       "name": "Lista degli ospiti",
