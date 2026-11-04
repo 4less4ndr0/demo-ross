@@ -1,25 +1,32 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, Camera, Clock, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Sparkles } from "lucide-react";
+import { ArrowRight, BellOff, Camera, Check, Clock, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Sparkles } from "lucide-react";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge } from "../components/Common";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
-import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, signalDetail, signalsFor } from "../data/careInsights";
+import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, rossTips, signalDetail, signalsFor, usageStyle } from "../data/careInsights";
 import { buildResidentReport } from "../data/reportNarrative";
 import { scheduledActivities, suggestedActivities } from "../data/activities";
 import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Tabs, TabsList, TabsTrigger } from "../components/ui";
 
 // Ritratto dell'ospite secondo docs/contratto-informativo-struttura.md: come sta, come avvicinarsi,
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
-const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Conversazioni ROSS"], ["allegati", "Allegati"]];
+const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Con ROSS"], ["allegati", "Allegati"]];
 const tabAliases = { documenti: "allegati", panoramica: "sintesi", andamento: "sintesi", attivita: "sintesi", interazioni: "conversazioni", storia: "avvicinare", memorie: "avvicinare", relazioni: "avvicinare", interessi: "avvicinare" };
 const normalizeTab = (value) => { const key = (value || "sintesi").toLowerCase(); const id = tabAliases[key] || key; return tabs.some(([t]) => t === id) ? id : "sintesi"; };
 
 const typeLabels = { Conversazione: "Conversazione libera", Memoria: "Reminiscenza" };
 const participationLabel = (value) => value >= 80 ? "Alta" : value >= 65 ? "Media" : "Bassa";
 const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+const male = (resident) => ["carlo", "mario", "antonio", "bruno"].includes(resident.id);
+// Le tre modalità dette con le parole dell'ospite, e cosa significano per gli inviti della struttura.
+const modeMeaning = {
+  Attiva: ["«Proponimi tu»", "ROSS può proporre attività e inviti, anche quelli che gli chiede la struttura."],
+  Reattiva: ["«Quando ti chiamo»", "ROSS risponde quando lo chiamano, ma non propone nulla di sua iniziativa: gli inviti della struttura non partono."],
+  Silenziosa: ["«Stai in silenzio»", "ROSS non avvia nulla e rispetta il riposo: nessun invito parte."],
+};
 const dayFormat = new Intl.DateTimeFormat("it-IT", { weekday: "short", day: "numeric", month: "short" });
 const shortFormat = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "short" });
 const shiftDays = (iso, days) => { const date = new Date(`${iso}T12:00:00`); date.setDate(date.getDate() + days); return date.toISOString().slice(0, 10); };
@@ -53,7 +60,7 @@ export function ResidentProfile() {
     <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabs.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
     {tab === "sintesi" && <Overview state={state} resident={resident} onApproach={() => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
     {tab === "avvicinare" && <Approach state={state} resident={resident} navigate={navigate} />}
-    {tab === "conversazioni" && <Conversations state={state} resident={resident} />}
+    {tab === "conversazioni" && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} />}
     {tab === "allegati" && <Attachments resident={resident} documents={residentDocuments} onAdd={actions.addDocument} />}
   </div>;
 }
@@ -81,6 +88,7 @@ function Overview({ state, resident, onApproach, onConversations }) {
     <div className="overview-main">
       <section className="resident-resources surface"><span className="eyebrow">LE RISORSE DI {name.toUpperCase()}</span><h3>Cosa aiuta {name} a stare bene</h3><div className="resources-grid">{resources.map(([title, text]) => <div key={title}><strong>{title}</strong><span>{text}</span></div>)}</div><p className="resources-note">Lente salutogenica: si parte da ciò che c'è già e funziona, poi da ciò che è da osservare.</p></section>
       <article className="narrative-card surface"><span className="eyebrow">ULTIMI 7 GIORNI</span><h2>{summary.headline}</h2><p>{summary.paragraphs.join(" ")}</p><div className="narrative-stats">{summary.kpis.slice(0, 3).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div></article>
+      <RossTips resident={resident} onPropose={onApproach} />
       {r && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p>{top?.opener && <p className="continuity-hook"><strong>Per iniziare · {top.label.toLowerCase()}:</strong> {top.opener}</p>}</div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
       <section className="surface participation-card"><header><div><h3>Partecipazione rispetto alla sua media</h3><p>{chart.building ? "ROSS la sta ancora conoscendo: per una media personale servono circa 14 giorni di chiacchierate." : "La linea tratteggiata è la media personale di " + name + ". Mai confronti con altri ospiti."}</p></div><Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} /></header><ParticipationChart series={chart.series} building={chart.building} height={200} /></section>
       <DataExplanation>Descrive solo ciò che accade nelle conversazioni con ROSS. Non è un giudizio sulla salute: ROSS segnala, lo staff osserva e decide.</DataExplanation>
@@ -123,7 +131,7 @@ function Approach({ state, resident, navigate }) {
       {h.activity && <p><span>Da proporre</span>{h.activity}</p>}
       <div className="hook-engagement"><span>Con ROSS</span>{h.engagement ? <><div className="engagement-bar"><i style={{ width: `${Math.min(100, 50 + h.engagement.duration * 0.8)}%` }} /><b style={{ left: "50%" }} /></div><small>Conversazioni {h.engagement.duration >= 0 ? "+" : ""}{h.engagement.duration}% più lunghe della sua media · partecipazione alta {h.engagement.high[0]} volte su {h.engagement.high[1]}</small></> : <small>{building ? "Dati in raccolta: ROSS la sta ancora conoscendo." : "Ancora pochi dati su questo interesse."}</small>}</div>
     </article>)}</div>
-    <ActivitySuggestions resident={resident} name={name} />
+    <ActivitySuggestions state={state} resident={resident} name={name} />
     {guide && <div className="approach-grid approach-grid-2">
       <article className="surface approach-card"><span className="eyebrow">COME PARLA ROSS CON {name.toUpperCase()}</span><div className="style-grid">{styleLabels.map(([key, label]) => <div key={key}><span>{label}</span><strong>{guide.style[key]}</strong></div>)}</div><small>È lo stile a cui ROSS si è adattato: lo staff può rispecchiarlo.</small></article>
       <article className="surface approach-card"><span className="eyebrow">MOMENTI DELLA GIORNATA</span><div className="rhythm-strip">{Object.entries(guide.rhythm).map(([moment, level]) => <div key={moment} className={`rhythm-${level}`}><span>{moment}</span><i><b style={{ height: `${level * 33}%` }} /></i><strong>{rhythmLabels[level]}</strong></div>)}</div><small>Disponibilità a conversare, ricavata da quando {name} parla con ROSS.</small></article>
@@ -132,10 +140,22 @@ function Approach({ state, resident, navigate }) {
   </section>;
 }
 
-function Conversations({ state, resident }) {
+function Conversations({ state, resident, onApproach }) {
   const weeks = [0, 1, 2, 3].map((n) => weekOf(state, resident.id, n)).filter((w) => w.items.length);
   const name = resident.name.split(" ")[0];
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Conversazioni con ROSS</h2><p>Quando, quanto e com'è andata. Il contenuto resta tra ROSS e {name}.</p></div></div>
+  const usage = usageStyle[resident.id];
+  const [said, meaning] = modeMeaning[resident.mode] || modeMeaning.Reattiva;
+  const invites = (state.rossInvites || []).filter((i) => i.residentId === resident.id);
+  return <section className="content-section"><div className="content-toolbar"><div><h2>{name} e ROSS</h2><p>Come usa ROSS, in che modalità e quando ci parla. Il contenuto resta tra ROSS e {name}.</p></div></div>
+    <div className="with-ross-grid">
+      {usage && <article className="surface usage-card"><span className="eyebrow">COME USA ROSS</span><h3>{usage.title}</h3><p>{usage.text}</p>
+        <div className="usage-mix" aria-label="Conversazioni per tipo">{usage.mix.map(([label, value]) => <div key={label}><span>{label}</span><i><b style={{ width: `${value}%` }} /></i><small>{value}%</small></div>)}</div>
+        <small className="usage-note">Per tipo di conversazione negli ultimi 30 giorni, mai il contenuto.{usage.tool ? ` Per ${name} ROSS è uno strumento più che un compagno: va bene così.` : ""}</small></article>}
+      <article className="surface usage-card mode-card"><span className="eyebrow">MODALITÀ</span><h3>{resident.mode} · {said}</h3><p>{meaning}</p>
+        <div className="mode-invites"><strong>Inviti chiesti a ROSS</strong>{invites.length ? invites.map((i) => <div key={i.id} className="mode-invite"><Check size={15} /><span>{i.title}<small>{i.when} · ROSS lo proporrà nel suo momento migliore, decide {name}</small></span></div>) : <small>{resident.mode === "Attiva" ? `Nessuno per ora. Puoi chiederlo da "Come avvicinarsi" o dalla chat.` : `Con questa modalità ROSS non propone attività a ${name}: si propongono di persona.`}</small>}</div>
+        <button className="text-link" onClick={onApproach}>Attività che potrebbero {male(resident) ? "interessargli" : "interessarle"} <ArrowRight size={14} /></button></article>
+    </div>
+    <div className="approach-heading with-ross-when"><h3>Quando parla con ROSS</h3><p>Quando, quanto e com'è andata, settimana per settimana.</p></div>
     {!weeks.length ? <EmptyState title="Nessuna conversazione recente" /> : weeks.map((w, index) => {
       const avg = Math.round(w.items.reduce((sum, i) => sum + i.participation, 0) / w.items.length);
       return <div className="conversation-week" key={w.from}>
@@ -143,43 +163,80 @@ function Conversations({ state, resident }) {
         <div className="table-wrap surface"><table><thead><tr><th>Quando</th><th>Tipo</th><th>Durata</th><th>Partecipazione</th><th>Modalità</th></tr></thead><tbody>{w.items.map((i) => <tr key={i.id}><td>{formatDay(i.date)}<small>{i.time}</small></td><td>{typeLabels[i.type] || i.type}</td><td>{i.duration} min</td><td>{participationLabel(i.participation)}</td><td><ModeBadge mode={i.mode} /></td></tr>)}</tbody></table></div>
       </div>;
     })}
-    <DataExplanation>Nessuna trascrizione, nessun argomento: dal dispositivo escono solo dati aggregati.</DataExplanation>
+    <DataExplanation>Nessuna trascrizione, nessun argomento: dal dispositivo escono solo dati aggregati. Il successo di ROSS non sono i minuti con lui, ma il tempo passato fuori.</DataExplanation>
   </section>;
 }
 
-// Allegati: facoltativi e non strutturati. Una foto fatta con il telefono o un file, chi l'ha allegato e quando.
+// Spunti di ROSS per invogliare alla vita della residenza: cosa fare, e perché ROSS lo suggerisce.
+function RossTips({ resident, onPropose }) {
+  const tips = rossTips[resident.id];
+  if (!tips) return null;
+  return <section className="ross-tips surface"><span className="eyebrow">SPUNTI DI ROSS</span><h3>{tips.title}</h3><p className="ross-tips-intro">{tips.intro}</p>
+    <ol className="ross-tips-list">{tips.tips.map((t) => <li key={t.title}><strong>{t.title}</strong><span>{t.text}</span><small><b>Perché:</b> {t.why.charAt(0).toLowerCase()}{t.why.slice(1)}</small></li>)}</ol>
+    <footer><p><Sparkles size={15} /> {tips.ross}</p><Button variant="outline" onClick={onPropose}><Send size={15} /> Chiedi a ROSS di proporre un'attività</Button></footer>
+  </section>;
+}
+
+// Allegati: facoltativi e non strutturati, raggruppati solo per chi li ha portati (mai per tipo o per dato sanitario).
+const origins = [
+  ["ingresso", "Dall'ingresso", "La biografia compilata all'ingresso, con la famiglia e la struttura."],
+  ["famiglia", "Dalla famiglia", "Ciò che la famiglia ha scelto di condividere con la struttura, all'ingresso o dall'app Famiglia. A ROSS arriva comunque direttamente."],
+  ["staff", "Dallo staff", "Foto e indicazioni pratiche, quando servono."],
+];
+
 function Attachments({ resident, documents, onAdd }) {
   const fileRef = useRef(null);
   const cameraRef = useRef(null);
+  const [open, setOpen] = useState(null);
+  const name = resident.name.split(" ")[0];
   const add = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (file) onAdd({ residentId: resident.id, ...attachmentFrom(file) });
+    if (file) onAdd({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) });
   };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Allegati</h2><p>Se vi è utile, potete allegare una foto o un file su {resident.name.split(" ")[0]}. Non è obbligatorio: i documenti ufficiali restano nel gestionale della struttura.</p></div><div className="attachment-actions"><button className="ghost-button" onClick={() => cameraRef.current?.click()}><Camera size={16} /> Scatta una foto</button><button className="ghost-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Allega un file</button></div>
+  const groups = origins.map(([id, label, hint]) => ({ id, label, hint, items: documents.filter((d) => (d.origin || "staff") === id) })).filter((g) => g.items.length);
+  return <section className="content-section"><div className="content-toolbar"><div><h2>Allegati</h2><p>Ciò che è arrivato con {name} e ciò che lo staff ha voluto aggiungere. Non è obbligatorio: i documenti ufficiali restano nel gestionale della struttura.</p></div><div className="attachment-actions"><button className="ghost-button" onClick={() => cameraRef.current?.click()}><Camera size={16} /> Scatta una foto</button><button className="ghost-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Allega un file</button></div>
     <input ref={cameraRef} type="file" hidden accept="image/*" capture="environment" onChange={add} /><input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} /></div>
-    {!documents.length ? <EmptyState title="Nessun allegato" description="Una foto di un'attività o un'indicazione pratica: allegala da qui o dalla graffetta della chat." icon={Paperclip} /> : <div className="document-list">{documents.map((doc) => <article className="document-card surface" key={doc.id}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt={doc.title} onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<span className="document-meta">{doc.author}</span></div></article>)}</div>}
+    {!groups.length ? <EmptyState title="Nessun allegato" description="Una foto di un'attività o un'indicazione pratica: allegala da qui o dalla graffetta della chat." icon={Paperclip} /> : groups.map((g) => <div className="attachment-group" key={g.id}>
+      <header><FolderOpen size={18} /><h3>{g.label}</h3><span>{g.items.length}</span><p>{g.hint}</p></header>
+      <div className="document-list">{g.items.map((doc) => <button type="button" className="document-card surface" key={doc.id} onClick={() => setOpen(doc)}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<span className="document-meta">{doc.author}</span></div><ArrowRight size={17} /></button>)}</div>
+    </div>)}
+    <Dialog open={Boolean(open)} onClose={() => setOpen(null)} title={open?.title || ""} size="sm">
+      {open && <div className="document-view"><span className="preview-tag">DOCUMENTO DIMOSTRATIVO</span><p className="document-view-meta">{open.kind} · {open.author} · {open.date}</p>
+        {open.image && <img className="document-view-image" src={src(open.image)} alt={open.title} onError={(event) => { event.currentTarget.style.display = "none"; }} />}
+        {open.summary && <p>{open.summary}</p>}
+        {open.body && <dl>{open.body.map(([label, text]) => <div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl>}
+      </div>}
+    </Dialog>
     <DataExplanation>ROSS può citare un allegato come fonte quando serve, ma non interpreta referti né valori e non sostituisce il gestionale.</DataExplanation>
   </section>;
 }
 
 // Attività dal calendario demo, collegate solo agli interessi condivisi. Nessun collegamento reale.
-function ActivitySuggestions({ resident, name }) {
+// La struttura può chiedere a ROSS di proporre un'attività all'ospite: succede solo in modalità Attiva.
+// Altrimenti un avviso spiega perché l'invito non parte e suggerisce di proporla di persona.
+function ActivitySuggestions({ state, resident, name }) {
+  const { actions } = useDemo();
   const items = suggestedActivities[resident.id] || [];
   const [detail, setDetail] = useState(null);
   const [proposal, setProposal] = useState(null);
   const [answer, setAnswer] = useState(null);
   const [all, setAll] = useState(false);
-  const her = ["carlo", "mario", "antonio", "bruno"].includes(resident.id) ? "interessargli" : "interessarle";
-  return <div className="activity-section">
-    <div className="approach-heading"><h3>Attività che potrebbero {her}</h3><p>Proposte dal calendario della struttura, collegate agli interessi che {name} ha condiviso.</p></div>
+  const her = male(resident) ? "interessargli" : "interessarle";
+  const him = male(resident) ? "gli" : "le";
+  const active = resident.mode === "Attiva";
+  const asked = (a) => (state.rossInvites || []).some((i) => i.residentId === resident.id && i.activityId === a.id);
+  const send = (a) => { actions.askRossToInvite({ residentId: resident.id, activityId: a.id, title: a.title, when: a.when }); setProposal(null); };
+  return <div className="activity-section" id="attivita">
+    <div className="approach-heading"><h3>Attività che potrebbero {her}</h3><p>Dal calendario della struttura, collegate agli interessi che {name} ha condiviso. Potete chiedere a ROSS di proporgliele: decide {name}.</p></div>
+    {!active && items.length > 0 && <div className="mode-warning"><BellOff size={17} /><p><strong>ROSS è in modalità {resident.mode.toLowerCase()} con {name}: non può proporre{him === "gli" ? "gli" : "le"} attività.</strong> {modeMeaning[resident.mode]?.[1]} Potete proporle di persona.</p></div>}
     {items.length ? <div className="activity-grid">{items.map((a) => <article key={a.id} className="activity-card surface">
-      <h4>{a.title}</h4>
+      <header className="activity-card-head"><h4>{a.title}</h4>{asked(a) && <span className="invite-badge"><Check size={13} /> Chiesto a ROSS</span>}</header>
       <div className="activity-meta"><span><Clock size={13} />{a.when}</span><span><MapPin size={13} />{a.where}</span></div>
       <p>{a.description}</p>
       <p className="activity-reason"><span>PERCHÉ È SUGGERITA</span>{a.reason}</p>
-      <div className="activity-actions"><Button variant="outline" onClick={() => setDetail(a)}><Info size={15} /> Dettagli attività</Button><Button variant="outline" onClick={() => { setAnswer(null); setProposal(a); }}><MessageCircle size={15} /> Mostra come lo proporrebbe</Button></div>
+      <div className="activity-actions"><Button variant={active && !asked(a) ? "default" : "outline"} onClick={() => { setAnswer(null); setProposal(a); }}><Send size={15} /> {asked(a) ? "Vedi la proposta" : "Chiedi a ROSS di proporla"}</Button><Button variant="ghost" onClick={() => setDetail(a)}><Info size={15} /> Dettagli</Button></div>
     </article>)}</div> : <div className="activity-empty surface"><p>Nessun suggerimento disponibile per ora. Puoi comunque consultare le attività in programma.</p><button className="text-link" onClick={() => setAll(true)}>Vedi tutte le attività <ArrowRight size={14} /></button></div>}
     {items.length > 0 && <div className="activity-footer"><small>Le attività sono suggerimenti, non impegni. {name} può scegliere liberamente se partecipare.</small><button className="text-link" onClick={() => setAll(true)}>Vedi tutte le attività <ArrowRight size={14} /></button></div>}
     <Dialog open={all} onClose={() => setAll(false)} title="Attività in programma" size="sm">
@@ -190,17 +247,21 @@ function ActivitySuggestions({ resident, name }) {
         <dt>Quando</dt><dd>{detail.when}</dd><dt>Dove</dt><dd>{detail.where}</dd><dt>Prenotazione</dt><dd>{detail.booking}</dd><dt>Accompagnamento</dt><dd>{detail.escort}</dd><dt>Referente</dt><dd>{detail.contact}</dd>
       </dl><p className="sim-note">Calendario di esempio: la demo non è collegata al calendario della struttura. Proporre l'attività non è una prenotazione.</p></div>}
     </Dialog>
-    <Dialog open={Boolean(proposal)} onClose={() => setProposal(null)} title="Come ROSS potrebbe proporla" size="sm">
-      {proposal && <div><div className="sim-banner"><Info size={16} /> Esempio simulato: nessun invito è stato inviato.</div>
+    <Dialog open={Boolean(proposal)} onClose={() => setProposal(null)} title={active ? "ROSS la proporrà così" : "ROSS non può proporla"} size="sm">
+      {proposal && (active ? <div>
         <div className="sim-chat">
           <p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.invite}»</p>
           {!answer && <div className="sim-choices"><button onClick={() => setAnswer("si")}>Sì, dimmi di più</button><button onClick={() => setAnswer("no")}>No grazie, oggi preferisco stare qui</button></div>}
           {answer === "si" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«Sì, dimmi di più.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«{proposal.more}»</p></>}
           {answer === "no" && <><p className="sim-bubble sim-elena"><small>{name.toUpperCase()}</small>«No grazie, oggi preferisco stare qui.»</p><p className="sim-bubble sim-ross"><small>ROSS</small>«Va bene, nessun problema.»</p></>}
         </div>
-        <p className="sim-note">Due risposte possibili, entrambe valide. Un «sì» non è una prenotazione e non dice se poi {name} parteciperà; un «no» non viene segnalato a nessuno.</p>
-        {answer && <div className="sim-choices" style={{ marginTop: 10 }}><button onClick={() => setAnswer(null)}>Ricomincia l'esempio</button></div>}
-      </div>}
+        <p className="sim-note">Le risposte qui sopra sono solo un esempio. ROSS la proporrà a {name} nel suo momento migliore. Un «sì» non è una prenotazione; se vuole essere accompagnato, ROSS ve lo dice con il suo permesso. Un «no» non viene segnalato a nessuno.</p>
+        <div className="modal-actions">{asked(proposal) ? <span className="invite-badge"><Check size={13} /> Già chiesto a ROSS</span> : <><Button variant="ghost" onClick={() => setProposal(null)}>Non ora</Button><Button onClick={() => send(proposal)}><Send size={15} /> Chiedi a ROSS di proporla</Button></>}</div>
+      </div> : <div>
+        <div className="mode-warning"><BellOff size={17} /><p><strong>Con {name} ROSS è in modalità {resident.mode.toLowerCase()} ({modeMeaning[resident.mode]?.[0]}).</strong> {modeMeaning[resident.mode]?.[1]} L'invito a «{proposal.title}» non {him} arriverebbe.</p></div>
+        <p className="sim-note">Potete proporgliela di persona: {proposal.when.toLowerCase()}, {proposal.where.toLowerCase()}{relating[resident.id] ? `; il suo momento migliore è ${relating[resident.id].bestTime}` : ""}. Se {name} è d'accordo si può passare alla modalità attiva: la modalità si sceglie con {male(resident) ? "lui" : "lei"}, non per {male(resident) ? "lui" : "lei"}.</p>
+        <div className="modal-actions"><Button variant="ghost" onClick={() => actions.setResidentMode(resident.id, "Attiva")}>{name} è d'accordo: passa ad Attiva</Button><Button onClick={() => setProposal(null)}>La propongo di persona</Button></div>
+      </div>)}
     </Dialog>
   </div>;
 }

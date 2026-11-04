@@ -1,6 +1,7 @@
 import { DEMO_TODAY } from "./demoData";
 import { buildResidentReport, buildTeamReport } from "./reportNarrative";
-import { approachGuide, describeSignal, facilityVoice, groupByResident, hooksFor, journeyInterest, needs, trendOf, needsFor, presenceFor, presenceNotes, relating, signals, signalsFor } from "./careInsights";
+import { approachGuide, describeSignal, facilityVoice, groupByResident, hooksFor, journeyInterest, needs, trendOf, needsFor, presenceFor, presenceNotes, relating, rossTips, signals, signalsFor } from "./careInsights";
+import { suggestedActivities } from "./activities";
 
 // Risposte della chat secondo docs/contratto-informativo-struttura.md:
 // come sta e di cosa ha bisogno l'ospite, mai di cosa ha parlato.
@@ -18,8 +19,8 @@ const legacyRoles = { operatore: "staff", coordinatrice: "staff" };
 export const roleFor = (id) => roles.find((r) => r.id === (legacyRoles[id] || id)) || roles[0];
 
 export const suggestions = {
-  staff: ["Chi ha bisogno di più attenzione oggi?", "Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?", "Come posso coinvolgere Elena?", "Di cosa ha bisogno Antonio?"],
-  educatrice: ["Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?", "Quali attività coinvolgono di più gli ospiti?", "Che spunto posso proporre a ciascuno?", "In quali momenti della giornata parlano meno con ROSS?"],
+  staff: ["Chi ha bisogno di più attenzione oggi?", "Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?", "Come invogliare Antonio a partecipare?", "Proponi a Carlo il giornale del mattino"],
+  educatrice: ["Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?", "Proponi ad Antonio la radio in compagnia", "Quali attività coinvolgono di più gli ospiti?", "Che spunto posso proporre a ciascuno?"],
   psicologa: ["Chi ha espresso segnali da osservare questa settimana?", "Chi sta meglio del solito questa settimana?", "Come sta Lucia rispetto alla sua media?", "Carlo si sta chiudendo?"],
   direzione: ["Cosa dicono gli ospiti della vita in struttura?", "Cosa sta andando bene in struttura?", "Come stanno usando ROSS gli ospiti?", "Prepara il riepilogo d'équipe del mese"],
 };
@@ -257,13 +258,13 @@ const intents = [
       const target = resident || state.residents.find((r) => r.id === "elena");
       const docs = state.documents.filter((d) => d.residentId === target.id);
       if (!docs.length) return { text: `Per ${firstName(target)} non ci sono allegati. Se vi è utile potete aggiungere una foto o un file dalla graffetta qui sotto o dal suo ritratto.`, residents: [target.id], sources: [], action: { label: "Apri gli allegati", to: `/ospiti/${target.id}?tab=allegati` } };
-      const practical = docs.find((d) => d.kind === "Allegato") || docs[0];
+      const practical = docs.find((d) => d.origin === "staff" && !d.image) || docs.find((d) => d.origin === "famiglia") || docs[0];
       const bridge = target.id === "elena" ? " Tra i suoi interessi (biografia d'ingresso) c'è il giardinaggio: una passeggiata al mattino verso le aiuole unisce le due cose." : "";
       return {
         text: byRole(role, {
           staff: `Dall'allegato «${practical.title}» (${practical.author}, ${practical.date}): ${practical.summary}${bridge}`,
           psicologa: `${practical.summary}${bridge}`,
-          direzione: `Per ${firstName(target)} ci sono ${docs.length} allegati, aggiunti dallo staff quando serviva. ROSS li cita come fonte ma non sostituisce i documenti ufficiali del gestionale.`,
+          direzione: `Per ${firstName(target)} ci sono ${docs.length} allegati, portati all'ingresso o aggiunti dallo staff quando serviva. ROSS li cita come fonte ma non sostituisce i documenti ufficiali del gestionale.`,
         }),
         bullets: docs.map((d) => ({ tag: d.kind, text: `${d.title} · ${d.author}, ${d.date}` })),
         residents: [target.id],
@@ -347,15 +348,76 @@ const intents = [
   {
     id: "carlo-chiusura",
     keywords: ["chiud", "isolat", "ritirat"],
+    // Carlo usa ROSS come uno strumento pratico: parlarci poco non è un segnale.
     answer: ({ role }) => ({
       text: byRole(role, {
-        psicologa: "Non posso dirlo: ROSS non interpreta l'umore di nessuno. Posso dirti cosa è cambiato: negli ultimi 4 giorni Carlo ha avviato 2 conversazioni contro una media personale di 5, e le conversazioni sono più brevi. Quando parte dai suoi interessi (sport) la durata torna nella norma. Il resto va osservato di persona.",
-        staff: "Negli ultimi 4 giorni Carlo ha avviato meno conversazioni (2 contro una media di 5). Nessun altro cambiamento notato nelle conversazioni con ROSS.",
+        psicologa: "Non posso dirlo: ROSS non interpreta l'umore di nessuno. Posso dirti che nell'uso di ROSS non è cambiato nulla: Carlo lo usa come uno strumento pratico, con domande brevi al mattino, come ha sempre fatto. Quando chiacchiera il buonumore è quello di sempre. Che parli poco con ROSS è il suo modo, non un segnale: le cose importanti le dice alle persone, ed è lì che va osservato.",
+        staff: "Con ROSS non è cambiato nulla: Carlo lo usa per cose pratiche (il tempo, il programma della giornata, qualche promemoria), con domande brevi al mattino, come sempre. Parla poco con ROSS perché è il suo modo: le cose importanti le dice a voi.",
       }),
+      bullets: [{ tag: "Va bene", text: "Buonumore stabile, in linea con la sua media." }, { tag: "Come usa ROSS", text: "Come uno strumento pratico, non come un compagno: va bene così." }],
       residents: ["carlo"],
-      sources: [src.data("Ultimi 4 giorni · media di 14 giorni")],
-      action: { label: "Apri Carlo", to: "/ospiti/carlo" },
+      sources: [src.data("Ultimi 14 giorni · media personale")],
+      action: { label: "Apri Carlo", to: "/ospiti/carlo?tab=conversazioni" },
     }),
+  },
+  {
+    // La struttura chiede a ROSS di proporre un'attività all'ospite. ROSS la propone solo in modalità Attiva.
+    id: "proponi",
+    keywords: ["proponi a", "proponi ad", "proponigli", "proponile", "fai proporre", "chiedi a ross di proporre", "invita "],
+    answer: ({ state, role, resident, q }) => {
+      if (!resident) return { text: "A chi vuoi che ROSS la proponga? Scrivi il nome dell'ospite, per esempio «Proponi ad Antonio la radio in compagnia».", residents: [], sources: [] };
+      const name = firstName(resident);
+      const options = suggestedActivities[resident.id] || [];
+      const activity = options.find((a) => normalize(a.title).split(/[^a-z]+/).filter((w) => w.length > 3).some((w) => q.includes(w))) || options[0];
+      if (!activity) return { text: `Per ${name} non ci sono attività in calendario vicine ai suoi interessi.`, residents: [resident.id], sources: [] };
+      const r = relating[resident.id];
+      if (resident.mode !== "Attiva") {
+        return {
+          warning: true,
+          text: `Non posso mandarla: con ${name} ROSS è in modalità ${resident.mode.toLowerCase()}, quindi non propone nulla di sua iniziativa${resident.mode === "Silenziosa" ? " e rispetta il suo riposo" : ""}. L'invito non gli arriverebbe.`,
+          bullets: [
+            { tag: "Di persona", text: `Puoi proporgliela tu: «${activity.title}», ${activity.when.toLowerCase()}, ${activity.where.toLowerCase()}.${r ? ` Momento migliore: ${r.bestTime}.` : ""}` },
+            { tag: "Modalità", text: `Se ${name} è d'accordo, dal suo ritratto si può passare alla modalità attiva. La modalità si sceglie con lui, non per lui.` },
+          ],
+          residents: [resident.id],
+          sources: [src.data(`Modalità ${resident.mode.toLowerCase()}`), src.data("Calendario della residenza")],
+          action: { label: `Apri il ritratto di ${name}`, to: `/ospiti/${resident.id}?tab=avvicinare` },
+        };
+      }
+      const already = (state.rossInvites || []).some((i) => i.residentId === resident.id && i.activityId === activity.id);
+      return {
+        text: already
+          ? `L'avevi già chiesto: ROSS proporrà a ${name} «${activity.title}» (${activity.when}, ${activity.where}) nel suo momento migliore.`
+          : byRole(role, {
+            staff: `Va bene: ROSS proporrà a ${name} «${activity.title}» (${activity.when}, ${activity.where})${r ? `, ${r.bestTime}` : ""}. Glielo dirà così:`,
+            direzione: `ROSS proporrà a ${name} «${activity.title}» (${activity.when}). Glielo dirà così:`,
+          }),
+        bullets: [{ tag: "ROSS", text: `«${activity.invite}»` }],
+        after: `Decide ${name}. Un sì non è una prenotazione; se vorrà essere accompagnato, ROSS ve lo dice con il suo permesso. Un no resta suo e non viene segnalato a nessuno.`,
+        effect: already ? null : { type: "invite", residentId: resident.id, activityId: activity.id, title: activity.title, when: activity.when },
+        residents: [resident.id],
+        sources: [src.data("Calendario della residenza"), src.bio("Interessi")],
+        action: { label: `Come avvicinarsi a ${name}`, to: `/ospiti/${resident.id}?tab=avvicinare` },
+      };
+    },
+  },
+  {
+    // Spunti di ROSS per invogliare alla vita della residenza (Antonio, ma anche Lucia, Bruno, Ada).
+    id: "invogliare",
+    keywords: ["invogli", "stimol", "motivar", "spronar", "uscire dalla stanza", "far uscire"],
+    answer: ({ state, role, resident }) => {
+      const target = resident || state.residents.find((r) => r.id === "antonio");
+      const tips = rossTips[target.id];
+      if (!tips) return relating[target.id] ? relatingAnswer(state, role, target) : null;
+      return {
+        text: tips.intro,
+        bullets: tips.tips.map((t) => ({ tag: t.title, text: `${t.text} Perché: ${t.why.charAt(0).toLowerCase()}${t.why.slice(1)}` })),
+        after: tips.ross,
+        residents: [target.id],
+        sources: [src.data("Ultimi 30 giorni · inviti e andamento rispetto alla sua media"), src.bio("Interessi")],
+        action: { label: `Apri il ritratto di ${firstName(target)}`, to: `/ospiti/${target.id}` },
+      };
+    },
   },
   {
     id: "presenza",

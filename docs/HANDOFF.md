@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 2 novembre 2026 · vista Famiglia come app per iPhone. Precedente: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
+> Ultimo aggiornamento: 4 novembre 2026 · ospiti come archetipi e ritratto rivisto. Prima: 2 novembre 2026 · vista Famiglia come app per iPhone. Precedente: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -48,18 +48,20 @@ Nella Struttura ci sono **quattro stakeholder**, e il target principale non è a
 
 ### 0.4 I personaggi della demo (Residenza Aurora)
 
-| Ospite | Con ROSS da | Va bene | Da osservare | Bisogno espresso |
-|---|---|---|---|---|
-| **Antonio Greco**, 74 | 39 giorni | Conversazioni più lunghe | Oggi non ha ancora parlato con ROSS (di solito entro le 11); solitudine | Sentire un familiare |
-| **Lucia Conti**, 76 | 76 giorni | Buonumore | Stanchezza; 2 momenti in cui ha fatto fatica a seguire | Uscire in giardino (3 volte) |
-| **Mario Rossi**, 81 | 64 giorni | Tranquillità | Fastidio fisico riferito | Ginocchio al mattino |
-| **Carlo Ferri**, 83 | 92 giorni | Buonumore | Meno iniziativa (partecipazione sotto la sua media) | — |
-| **Ada Moretti**, 85 | 11 giorni | Curiosità | — (ROSS la sta ancora conoscendo) | Attività di lettura |
-| **Bruno De Angelis**, 80 | 101 giorni | Voglia di raccontare | — | Freddo nel pomeriggio |
-| **Elena Bianchi**, 79 | 118 giorni | Serenità, gratitudine, partecipazione alla vita della residenza | — | — |
-| **Teresa Gallo**, 88 | 143 giorni | Serenità, più iniziativa: il periodo migliore del mese | — | — |
+Ogni ospite rappresenta un **archetipo**: un modo diverso di vivere ROSS e la residenza. Gli archetipi servono al team e a chi presenta; **non compaiono mai come etichette nel prodotto** (scrivere "lo scettico" sulla scheda di Carlo sarebbe stigmatizzante). Il ritratto non è un modulo uguale per tutti: si adatta alla persona.
 
-Elena è la protagonista delle viste Famiglia e ROSS, con la figlia **Anna**. Gli ospiti sono in ordine di attenzione, come nella lista Ospiti.
+| Ospite | Archetipo | Con ROSS da | Modalità | Va bene | Da osservare | Bisogno espresso | Cosa mostra nella demo |
+|---|---|---|---|---|---|---|---|
+| **Elena Bianchi**, 79 | Il ponte che funziona | 118 giorni | Attiva | Serenità, gratitudine, partecipazione | — | — | Invito → uscita → racconto; condivide con Anna |
+| **Ada Moretti**, 85 | La nuova arrivata | 11 giorni | Reattiva | Curiosità | — (ROSS la sta ancora conoscendo) | Attività di lettura | Ritratto "in costruzione"; negli allegati solo la biografia d'ingresso e le note della famiglia |
+| **Teresa Gallo**, 88 | La veterana che trascina gli altri | 143 giorni | Attiva | Serenità, più iniziativa | — | — | Reciprocità: è una risorsa per la comunità |
+| **Carlo Ferri**, 83 | Lo usa come uno strumento | 92 giorni | Reattiva | Buonumore | — | — | Domande pratiche (meteo, programma, promemoria): parlare poco con ROSS **non è un segnale**. In Reattiva gli inviti della struttura non partono |
+| **Antonio Greco**, 74 | Lo adora, forse troppo | 39 giorni | Attiva | Voglia di spiegare | Tanto tempo con ROSS, poco fuori; solitudine; oggi non ha ancora parlato con ROSS | Sentire un familiare | Rischio di dipendenza (Namastè): "Spunti di ROSS" per invogliarlo alla vita della residenza |
+| **Lucia Conti**, 76 | Quella che sta cambiando | 76 giorni | Attiva | Buonumore | Stanchezza; 2 momenti in cui ha fatto fatica a seguire | Uscire in giardino (3 volte) | ROSS rallenta e semplifica; giochi senza punteggi; va accompagnata |
+| **Mario Rossi**, 81 | Il riservato | 64 giorni | Reattiva | Tranquillità | Fastidio fisico riferito | Ginocchio al mattino | Parla con ROSS quando vuole lui, poco e dopo le 17: ROSS ne sa poco ed è giusto così (non "silenzio radio") |
+| **Bruno De Angelis**, 80 | Senza famiglia vicina | 101 giorni | Silenziosa | Voglia di raccontare | — | Freddo nel pomeriggio | Le sue persone sono gli altri ospiti e lo staff; ROSS lo porta verso di loro |
+
+Elena è la protagonista delle viste Famiglia e ROSS, con la figlia **Anna**. La lista Ospiti è in ordine alfabetico.
 
 ### 0.5 Giro della demo in 5 minuti
 Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai sulla card in basso a sinistra → "Ripristina dati demo".
@@ -140,7 +142,7 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 | Sidebar sinistra | Logo, "Residenza Aurora" e data. **Chat:** accordion con Da osservare, **Cosa va bene**, Bisogni espressi, Voce della struttura, Presenza con ROSS e **Cosa ti dice ROSS** (guida alla lettura). **Ospiti (lista), Report e Panoramica:** sidebar larga con lo specchietto verde "Cosa ti dice ROSS" della pagina, aperto di default. **Ritratto e Impostazioni:** colonna di icone. In fondo: Impostazioni e card con l'account del ruolo (menu "Sto chiedendo come", impostazioni, presentazione, ripristino dati). |
 | Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti; 4 domande consigliate per ciascuno dei quattro stakeholder (Staff, Educatrice, Psicologa, Direzione); graffetta per allegare una foto o un file; microfono simulato; menu "…". |
 | Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: foto grande, nome, età, stanza, modalità di ROSS, ultima conversazione e al massimo un avviso da osservare. Cosa va bene, partecipazione e interessi stanno nel ritratto. Le foto (`public/ospiti/`) compaiono anche negli avatar di ritratto, chat e report. |
-| Ritratto (`/ospiti/:id`) | Quattro tab: **Come sta** (narrativa, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, stile di ROSS, momenti della giornata) · **Conversazioni ROSS** (per settimana, mai di cosa) · **Allegati** (facoltativi: foto anche dal telefono o file, da qui o dalla chat). Niente biografia, grafo delle relazioni o contributi della famiglia. |
+| Ritratto (`/ospiti/:id`) | Si adatta all'archetipo dell'ospite (§0.4). Quattro tab: **Come sta** (risorse, narrativa, "Spunti di ROSS" per invogliare alla vita della residenza, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, attività da far proporre a ROSS solo in modalità Attiva, stile di ROSS, momenti della giornata) · **Con ROSS** (come usa ROSS per tipo di conversazione, modalità e inviti chiesti a ROSS, settimane; mai di cosa) · **Allegati** (raggruppati per provenienza: dall'ingresso, dalla famiglia, dallo staff; si aprono e si leggono). Niente grafo delle relazioni; dalla famiglia solo ciò che sceglie di condividere con la struttura. |
 | Report (`/report`) | Solo il **Come sta** del singolo ospite (`?ospite=ID`, `&stampa=1`), scelto da un menu in ordine di attenzione: infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
 | Panoramica (`/panoramica`) | Le analytics della struttura come schermata dell'app: sintesi, 6 numeri chiave, grafici in tre gruppi (Benessere nel tempo · Voce degli ospiti e bisogni · Presenza con ROSS), ognuno con "Cosa mostra" e "Come leggerlo", e i punti da discutere. "Stampa" / "Scarica riepilogo" stampano il **Riepilogo d'équipe** (documento completo con situazione per ospite), tenuto pronto fuori schermo. Le vecchie URL `/analytics` e `/report?ambito=struttura` portano qui. |
 | Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
@@ -233,7 +235,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ## 5. Questioni aperte
 
 1. **Vista ROSS:** riallineata a ottobre (trasparenza, aiuto, "dimentica", modalità). Da progettare: promemoria conversazionale con avviso selettivo all'operatore (Namastè); le date della demo sono ancora di settembre.
-2. **Consenso verso la struttura:** per la famiglia il consenso è modellato (`sharedWithFamily`); per la struttura vale la regola d'oro, ma un eventuale "raccontalo anche alla struttura" è da progettare (contratto, §6.2).
+2. **Consenso verso la struttura:** per la famiglia il consenso è modellato (`sharedWithFamily`); per la struttura vale la regola d'oro, ma un eventuale "raccontalo anche alla struttura" è da progettare (contratto, §6.2). Dal 04/11 la **famiglia** può mandare una copia dei suoi contributi alla struttura ("Anche alla struttura" nel +): da decidere se serva anche il consenso di Elena, visto che si parla di lei.
 3. **Nomi dei documenti:** "Fisioterapia", "Esami del sangue" restano perché sono documenti della struttura. Da decidere se rinominarli nella demo.
 4. **Contenuti da validare:** spunti di "Come avvicinarsi" e dettagli d'ingresso, segnali positivi, azioni suggerite della voce della struttura e testi degli specchietti sono stati scritti per la demo e vanno riletti dal team.
 5. **Consenso revocabile:** nella demo il consenso è per singolo racconto e non si può ritirare; da decidere come l'ospite possa cambiare idea.
@@ -245,10 +247,40 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 11. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
 12. **Ordine della visita:** parte dalla persona e chiude su "cosa la struttura riceve" e sulla pillola "Vista demo". Report e Panoramica sono fuori dal giro, di proposito.
 13. **Idea in coda:** frecce "← precedente · successivo →" nel report del singolo ospite, nello stesso ordine per attenzione, per scorrere l'équipe senza tornare al riepilogo.
+14. **Archetipi:** gli otto ospiti rappresentano otto modi di vivere ROSS (§0.4). Da validare con il team e con le strutture: mancano casi? (per esempio chi rifiuta del tutto ROSS, o chi ha una famiglia molto presente e conflittuale).
 
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 04/11/2026 · Gli ospiti diventano archetipi; ritratto, inviti via ROSS e allegati rivisti
+- **Richiesta:** rivedere le schede degli ospiti in funzione di ciò che è ROSS oggi. Ogni ospite rappresenta un archetipo (la nuova arrivata, lo scettico, quello che lo adora…), e i contenuti seguono. Poi: la struttura può chiedere a ROSS di proporre un'attività all'ospite, ma non in modalità reattiva; Ada ha solo la biografia d'ingresso e le note della famiglia; documenti simulati per ogni ospite; Carlo usa ROSS come uno strumento; per Antonio, consigli di ROSS per invogliarlo; Mario riservato ma non in "silenzio radio". In corso d'opera: nel + della Famiglia, un interruttore per condividere anche con la struttura.
+- **Archetipi** (tabella in §0.4, regole in `AGENTS.md`): solo per il team e per chi presenta, mai etichette nel prodotto.
+  - Dati in `src/data/careInsights.js`: `usageStyle` (come usa ROSS, per tipo di conversazione) e `rossTips` (spunti di ROSS per Antonio, Lucia, Bruno e Ada).
+  - Le conversazioni in `demoData.js` seguono l'archetipo: Carlo fa domande pratiche brevi al mattino, Antonio fa conversazioni lunghe nel pomeriggio, Mario parla dopo le 17.
+- **Segnali corretti:**
+  - "Conversazioni più lunghe" di Antonio diventa **da osservare** ("tanto tempo con ROSS, poco fuori"): il successo è il tempo fuori, non i minuti con ROSS. Il positivo di Antonio è "voglia di spiegare".
+  - Tolto "meno iniziativa" di Carlo, e la sua partecipazione torna "in linea": per lui parlare poco con ROSS è normale. La risposta a "Carlo si sta chiudendo?" ora lo spiega.
+  - Gli scacchi non sono più descritti come "allenare la mente" (lessico da stimolazione cognitiva).
+- **Modalità:** Antonio diventa Attiva (ROSS può invitarlo), Mario Reattiva (era Silenziosa). La modalità salvata nel browser vale solo se l'ha cambiata chi usa la demo (`modeSetByUser`), così i nuovi valori predefiniti si vedono anche senza ripristinare.
+- **Ritratto, quattro tab:** Come sta · Come avvicinarsi · **Con ROSS** (ex "Conversazioni ROSS") · Allegati.
+  - **Come sta:** card "Spunti di ROSS" con cosa fare, il perché (solo andamenti e categorie) e cosa fa già ROSS.
+  - **Con ROSS:** come usa ROSS (barre per tipo di conversazione), la modalità con le parole dell'ospite e cosa significa per gli inviti, gli inviti chiesti a ROSS, poi le settimane.
+- **Invito tramite ROSS:**
+  - **dove si chiede:** da "Attività che potrebbero interessargli" ("Chiedi a ROSS di proporla") o dalla chat ("Proponi ad Antonio la radio in compagnia"; nuovo intent `proponi`);
+  - **in modalità Attiva:** si vede come lo dirà ROSS, la richiesta parte e c'è un toast con "Annulla" (`state.rossInvites`, `askRossToInvite`);
+  - **in Reattiva o Silenziosa:** un avviso spiega che l'invito non parte. Si può proporla di persona, oppure passare ad Attiva se la persona è d'accordo;
+  - **dopo l'invito:** un sì non è una prenotazione; se vuole essere accompagnata, ROSS lo dice alla struttura con il suo permesso; un no non arriva a nessuno.
+  - Domande consigliate aggiornate per Staff ed Educatrice; nuovo intent `invogliare` ("Come invogliare Antonio a partecipare?").
+- **Allegati:**
+  - documenti simulati per ogni ospite, raggruppati per provenienza: **Dall'ingresso** (biografia), **Dalla famiglia**, **Dallo staff**. Mai per tipo o dato sanitario;
+  - si aprono in un dialog con il contenuto ("Documento dimostrativo");
+  - Ada ha solo la biografia d'ingresso e le note della nipote; Bruno non ha documenti della famiglia.
+- **Famiglia → struttura:** nel + c'è l'interruttore **"Anche alla struttura"**, spento di default.
+  - Acceso, una copia va negli Allegati di Elena ("Dalla famiglia", `shareWithFacility`) e arricchisce la sua biografia.
+  - A ROSS il contributo arriva comunque direttamente: la struttura lo riceve e basta, non lo verifica.
+  - In "Da te" il contributo mostra "anche alla struttura".
+- **Da fare:** rigenerare la Mappa (`docs/floorplan/README.md`); valutare se la copia alla struttura richieda anche il consenso di Elena (§5).
 
 ### Novembre 2026 · 03/11/2026 · La visita guidata parte a ogni apertura
 - **Richiesta:** far partire l'onboarding ogni volta che si apre la demo.

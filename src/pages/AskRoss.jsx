@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowRight, ArrowUp, BarChart3, BookOpen, FileText, Heart, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
+import { ArrowRight, ArrowUp, BellOff, BarChart3, BookOpen, FileText, Heart, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
 import { answerQuestion, findResident, roleFor, suggestions } from "../data/chatScript";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { Avatar } from "../components/Common";
@@ -40,7 +40,10 @@ export function AskRoss() {
     setMessages((prev) => [...prev, { id, from: "user", text }, { id: id + 1, from: "ross", pending: true }]);
     setInput("");
     window.setTimeout(() => {
-      setMessages((prev) => prev.map((m) => m.id === id + 1 ? { ...m, pending: false, answer: answerQuestion(state, role.id, text, scopeId) } : m));
+      const answer = answerQuestion(state, role.id, text, scopeId);
+      setMessages((prev) => prev.map((m) => m.id === id + 1 ? { ...m, pending: false, answer } : m));
+      // "Proponi ad Antonio…": in modalità Attiva la richiesta parte davvero (con "Annulla" nel toast).
+      if (answer.effect?.type === "invite") actions.askRossToInvite(answer.effect);
     }, 650);
   };
 
@@ -142,8 +145,8 @@ export function AskRoss() {
 function Answer({ answer, state, navigate }) {
   const people = (answer.residents || []).map((id) => state.residents.find((r) => r.id === id)).filter(Boolean);
   return (
-    <div className="ask-answer">
-      <p>{answer.text}</p>
+    <div className={`ask-answer ${answer.warning ? "ask-answer-warning" : ""}`}>
+      {answer.warning ? <p className="ask-warning"><BellOff size={16} /><span>{answer.text}</span></p> : <p>{answer.text}</p>}
       {answer.bullets?.length > 0 && <ul>{answer.bullets.map((b, i) => <li key={i}>{b.tag && <span className="ask-tag">{b.tag}</span>}<span>{b.text}</span></li>)}</ul>}
       {answer.after && <p className="ask-after">{answer.after}</p>}
       {people.length > 0 && <div className="ask-people">{people.map((r) => <button key={r.id} onClick={() => navigate(`/ospiti/${r.id}`)}><Avatar resident={r} size="sm" />{r.name.split(" ")[0]}</button>)}</div>}

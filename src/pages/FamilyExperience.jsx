@@ -162,6 +162,8 @@ function ComposerSheet({ open, onClose }) {
   const [listening, setListening] = useState(false);
   const [dictated, setDictated] = useState(false);
   const [picker, setPicker] = useState(false);
+  // Facoltativo, spento di default: una copia va anche alla struttura e arricchisce la biografia di Elena (Allegati, "Dalla famiglia").
+  const [forFacility, setForFacility] = useState(false);
   const recRef = useRef(null); const timerRef = useRef(null); const fileRef = useRef(null); const textRef = useRef(text);
   textRef.current = text;
   const stopListening = () => { try { recRef.current?.abort(); } catch { /* già fermo */ } recRef.current = null; window.clearInterval(timerRef.current); setListening(false); };
@@ -204,12 +206,14 @@ function ComposerSheet({ open, onClose }) {
     img.onload = () => { const scale = Math.min(1, 640 / Math.max(img.width, img.height)); const canvas = document.createElement("canvas"); canvas.width = Math.round(img.width * scale); canvas.height = Math.round(img.height * scale); canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height); setAttachment({ image: canvas.toDataURL("image/jpeg", 0.8), name: file.name }); URL.revokeObjectURL(url); };
     img.src = url;
   };
-  const reset = () => { stopListening(); setText(""); setAttachment(null); setDictated(false); setPicker(false); };
+  const reset = () => { stopListening(); setText(""); setAttachment(null); setDictated(false); setPicker(false); setForFacility(false); };
   const close = () => { reset(); onClose(); };
   const send = () => {
     if (!parts.length) return;
     const main = parts[0];
-    actions.addFamilyContribution({ kind: main.kind, title: titleFor({ text, attachmentName: attachment?.name, kind: main.kind }), detail: text.trim() || attachment?.name || "", image: attachment?.image || null, attachmentName: attachment && !attachment.image ? attachment.name : null, parts, via: dictated ? "voce" : "testo", author: "Anna" });
+    const title = titleFor({ text, attachmentName: attachment?.name, kind: main.kind });
+    actions.addFamilyContribution({ kind: main.kind, title, detail: text.trim() || attachment?.name || "", image: attachment?.image || null, attachmentName: attachment && !attachment.image ? attachment.name : null, parts, via: dictated ? "voce" : "testo", author: "Anna", sharedWithFacility: forFacility });
+    if (forFacility) actions.shareWithFacility({ residentId: "elena", title, summary: text.trim() || attachment?.name || "", image: attachment?.image || null });
     close();
   };
   return <Dialog open={open} title="Per Elena" onClose={close} container={container} className="family-dialog fam-sheet fam-composer">
@@ -225,6 +229,7 @@ function ComposerSheet({ open, onClose }) {
       {picker && <div className="fam-attach-picker">{demoImages.map(([src, alt]) => <button type="button" key={src} onClick={() => { setAttachment({ image: src, name: alt }); setPicker(false); }}><img src={src} alt="" /><span>{alt}</span></button>)}<button type="button" className="fam-attach-device" onClick={() => fileRef.current?.click()}><Paperclip size={20} /><span>Dal telefono…</span></button></div>}
       <input ref={fileRef} type="file" accept="image/*,application/pdf" hidden onChange={pickFile} />
     </div>
+    <label className="fam-switch-row"><span className="fam-row-text"><strong>Anche alla struttura</strong><small>Una copia arriva allo staff della residenza e arricchisce la biografia di Elena. Non passa da loro: a ROSS arriva comunque, subito.</small></span><input type="checkbox" role="switch" className="fam-switch" checked={forFacility} onChange={(event) => setForFacility(event.target.checked)} /></label>
     {parts.length > 0 ? <section className="fam-preview" aria-live="polite">
       <span className="fam-kicker">Come lo racconterà ROSS a Elena</span>
       <ol>{parts.map((part, index) => <li key={index}><em>{kindShort(part.kind)}</em><p>{part.rossLine}</p></li>)}</ol>
@@ -426,7 +431,7 @@ export function FamilyFromYou() {
     <LargeTitle kicker="Da te, per Elena" title="Cosa le hai portato">Foto, ricordi, argomenti e canzoni arrivano subito a ROSS, che li proporrà a Elena nel momento giusto. Qui vedi com'è andata.</LargeTitle>
     <dl className="fam-card fam-stats fam-stats-card">{counts.map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     <section className="fam-section">
-      <div className="fam-list fam-card">{state.familyContributions.map((item) => { const Icon = kindIcons[item.kind] || Heart; const status = contributionStatus(item.status); return <button type="button" key={item.id} className="fam-shared-row" onClick={() => setSelected(item)}>{item.image ? <img src={item.image} alt="" /> : <span className="fam-icon coral"><Icon size={20} /></span>}<span className="fam-row-text"><small className="fam-kicker">{kindShort(item.kind)}{item.via === "voce" ? " · detto a voce" : ""}</small><strong>{item.title}</strong><small>{item.detail}</small><em className={status === "Ripreso con Elena" ? "done" : ""}>{status}</em></span><ChevronRight className="fam-chevron" size={18} /></button>; })}</div>
+      <div className="fam-list fam-card">{state.familyContributions.map((item) => { const Icon = kindIcons[item.kind] || Heart; const status = contributionStatus(item.status); return <button type="button" key={item.id} className="fam-shared-row" onClick={() => setSelected(item)}>{item.image ? <img src={item.image} alt="" /> : <span className="fam-icon coral"><Icon size={20} /></span>}<span className="fam-row-text"><small className="fam-kicker">{kindShort(item.kind)}{item.via === "voce" ? " · detto a voce" : ""}</small><strong>{item.title}</strong><small>{item.detail}</small><em className={status === "Ripreso con Elena" ? "done" : ""}>{status}{item.sharedWithFacility ? " · anche alla struttura" : ""}</em></span><ChevronRight className="fam-chevron" size={18} /></button>; })}</div>
     </section>
     {familyMemories.length > 0 && <section className="fam-section">
       <header className="fam-section-head"><h2>I ricordi che hai raccontato</h2></header>
