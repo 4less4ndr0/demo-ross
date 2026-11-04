@@ -13,7 +13,6 @@ export const cardinalPoints = [
 // Segnali espressi negli ultimi 7 giorni: tipo, conteggio "X conversazioni su Y", media personale. Mai l'oggetto.
 export const signals = [
   { residentId: "lucia", signal: "stanchezza", count: 3, of: 6, usual: 1, trend: "in aumento" },
-  { residentId: "carlo", signal: "meno iniziativa", count: 2, of: 4, usual: 5, trend: "in calo", note: "2 conversazioni avviate contro una media di 5" },
   { residentId: "antonio", signal: "solitudine", count: 3, of: 5, usual: 1, trend: "in aumento" },
   { residentId: "mario", signal: "fastidio fisico riferito", count: 2, of: 3, usual: 0, trend: "nuovo" },
   { residentId: "teresa", signal: "serenità", count: 6, of: 7, usual: 4, trend: "in aumento", positive: true },
@@ -24,7 +23,9 @@ export const signals = [
   { residentId: "elena", signal: "partecipazione", count: 4, of: 7, usual: 2, trend: "in aumento", positive: true, note: "ha raccontato 4 attività in residenza questa settimana, di solito 2" },
   { residentId: "lucia", signal: "buonumore", count: 4, of: 6, usual: 4, trend: "stabile", positive: true },
   { residentId: "carlo", signal: "buonumore", count: 3, of: 4, usual: 3, trend: "stabile", positive: true },
-  { residentId: "antonio", signal: "conversazioni più lunghe", count: 5, of: 5, usual: 10, trend: "in aumento", positive: true, note: "15 minuti in media, di solito 10" },
+  // Antonio lo adora, forse troppo: più tempo con ROSS non è un successo se il tempo fuori non cresce.
+  { residentId: "antonio", signal: "voglia di spiegare", count: 3, of: 5, usual: 1, trend: "in aumento", positive: true },
+  { residentId: "antonio", signal: "tanto tempo con ROSS, poco fuori", count: 5, of: 5, usual: 10, trend: "in aumento", note: "conversazioni di 15 minuti in media (di solito 10) e «ci vado» a 1 invito su 6" },
   { residentId: "mario", signal: "tranquillità", count: 3, of: 3, usual: 2, trend: "in aumento", positive: true },
   { residentId: "ada", signal: "curiosità", count: 4, of: 6, usual: null, trend: "prime settimane", positive: true },
   { residentId: "bruno", signal: "voglia di raccontare", count: 4, of: 5, usual: 2, trend: "in aumento", positive: true },
@@ -54,7 +55,7 @@ export const relating = {
   elena: { address: "Lei · «signora Elena»", bestTime: "mattino e dalle 16:00", duration: "15–20 minuti", works: ["Musica italiana", "Fotografie come avvio", "Domande aperte"], avoid: "Dopo le 14 preferisce riposare: non proporre attività", interests: [["Musica italiana", "Biografia d'ingresso"], ["Giardinaggio", "Biografia d'ingresso"], ["Viaggi", "Biografia d'ingresso"], ["Insegnamento", "Biografia d'ingresso"]] },
   carlo: { address: "Tu · «Carlo»", bestTime: "mattino, in sala lettura", duration: "brevi, 5–10 minuti", works: ["Sport", "Giornale del mattino", "Domande concrete"], avoid: "Evitare domande sui sentimenti: preferisce argomenti pratici", interests: [["Calcio", "Biografia d'ingresso"], ["Giornali", "Biografia d'ingresso"], ["Orto", "Emerso con ROSS"]] },
   lucia: { address: "Tu · «Lucia»", bestTime: "primo pomeriggio", duration: "20 minuti", works: ["Giochi di parole", "Piccoli gruppi", "Cucina"], avoid: "Non interromperla quando racconta: chiede lei di cambiare", interests: [["Cucina", "Biografia d'ingresso"], ["Giochi di parole", "Emerso con ROSS"], ["Teatro", "Biografia d'ingresso"]] },
-  mario: { address: "Lei · «signor Rossi»", bestTime: "dopo le 17:00", duration: "lunghe, con pause", works: ["Domande tecniche", "Lavori manuali", "Tempi distesi"], avoid: "Rispettare la modalità silenziosa nel primo pomeriggio", interests: [["Montagna", "Biografia d'ingresso"], ["Falegnameria", "Biografia d'ingresso"]] },
+  mario: { address: "Lei · «signor Rossi»", bestTime: "dopo le 17:00", duration: "lunghe, con pause", works: ["Domande tecniche", "Lavori manuali", "Tempi distesi"], avoid: "Non insistere: quando vuole parlare, torna lui", interests: [["Montagna", "Biografia d'ingresso"], ["Falegnameria", "Biografia d'ingresso"]] },
   teresa: { address: "Tu · «Teresa»", bestTime: "pomeriggio, in gruppo", duration: "20–25 minuti", works: ["Canto di gruppo", "Fiori di stagione", "Insegnare agli altri"], avoid: "Nessuna indicazione particolare", interests: [["Canto corale", "Biografia d'ingresso"], ["Fiori", "Biografia d'ingresso"], ["Lavoro a maglia", "Emerso con ROSS"]] },
   antonio: { address: "Lei · «signor Greco»", bestTime: "pomeriggio, con la radio", duration: "10–15 minuti", works: ["Radio", "Automobili", "Scacchi"], avoid: "All'inizio risposte brevi: lasciargli tempo", interests: [["Radio", "Biografia d'ingresso"], ["Automobili", "Biografia d'ingresso"], ["Scacchi", "Emerso con ROSS"]] },
   ada: { address: "Lei · «signora Ada»", bestTime: "mattino", duration: "brevi, 5–10 minuti", works: ["Poesia", "Cucito"], avoid: "ROSS la sta ancora conoscendo: indicazioni provvisorie", interests: [["Poesia", "Biografia d'ingresso"], ["Cucito", "Biografia d'ingresso"]] },
@@ -122,7 +123,7 @@ export const approachGuide = {
     hooks: {
       Automobili: { lever: "Nostalgia, competenza tecnica", detail: "Seguiva le corse di rally; ha avuto una Lancia d'epoca", opener: "«Che macchina guidava da giovane?»", activity: "Sfogliare insieme una rivista di auto d'epoca", engagement: { duration: 40, high: [4, 5] } },
       Radio: { lever: "Manualità, curiosità", detail: "Da ragazzo smontava e rimontava le radio", opener: "«Come funziona una radio a valvole?»", activity: "Ascoltare insieme la radio del pomeriggio, lasciandogli scegliere la stazione", engagement: { duration: 30, high: [3, 4] } },
-      Scacchi: { lever: "Sfida, allenare la mente", opener: "Proporgli una partita nel pomeriggio", activity: "Partita a scacchi con un altro ospite o con lo staff", engagement: { duration: 60, high: [4, 5] } },
+      Scacchi: { lever: "Sfida, concentrazione", opener: "Proporgli una partita nel pomeriggio", activity: "Partita a scacchi con un altro ospite o con lo staff", engagement: { duration: 60, high: [4, 5] } },
     },
   },
   ada: {
@@ -155,6 +156,62 @@ export function hooksFor(residentId, { withJourney = false } = {}) {
     .map((h) => (h.source === "Emerso con ROSS" ? { ...h, detail: undefined } : h))
     .sort((a, b) => (b.engagement?.duration ?? -1) - (a.engagement?.duration ?? -1));
 }
+
+// Come usa ROSS: ogni ospite a modo suo (gli archetipi della demo, vedi docs/HANDOFF.md §0.4).
+// `mix`: per tipo di conversazione, mai il contenuto. I promemoria restano tra ROSS e la persona: qui solo che li usa.
+export const usageStyle = {
+  elena: { title: "Come un ponte verso fuori", text: "Parla con ROSS al mattino e dopo le 16, spesso avvia lei. Gli inviti di ROSS diventano uscite, e al ritorno racconta com'è andata.", mix: [["Due chiacchiere", 45], ["Musica", 25], ["Ricordi e fotografie", 20], ["Giochi", 10]] },
+  ada: { title: "Prime settimane", text: "ROSS la sta ancora conoscendo: conversazioni brevi al mattino, per ora sulle cose che sono arrivate con lei (la biografia d'ingresso e le note della famiglia).", mix: [["Due chiacchiere", 60], ["Poesia e lettura", 40]] },
+  teresa: { title: "Un'occasione per gli altri", text: "Usa ROSS per trovare canzoni e attività da proporre in gruppo: spesso è lei a portare con sé chi le sta vicino.", mix: [["Musica", 50], ["Due chiacchiere", 30], ["Giochi", 20]] },
+  carlo: { title: "Come uno strumento pratico", text: "Domande brevi, quasi sempre al mattino: che tempo fa, cosa c'è oggi in residenza, qualche promemoria chiesto da lui. Chiacchiera poco, ed è il suo modo: le cose importanti le dice alle persone.", mix: [["Informazioni pratiche", 60], ["Promemoria chiesti da lui", 25], ["Due chiacchiere", 15]], tool: true },
+  antonio: { title: "Come un compagno, forse troppo", text: "Parla con ROSS ogni pomeriggio, sempre più a lungo, e agli inviti risponde quasi sempre «magari un'altra volta». ROSS accorcia le conversazioni e le chiude con un invito verso qualcuno.", mix: [["Due chiacchiere", 70], ["Radio e musica", 20], ["Giochi", 10]] },
+  lucia: { title: "Con giochi e parole", text: "Ama i giochi di parole e chiede lei di ripeterli (senza punteggi). Quando fa fatica a seguire, ROSS rallenta e semplifica.", mix: [["Giochi di parole", 50], ["Due chiacchiere", 35], ["Cucina e ricette", 15]] },
+  mario: { title: "Quando vuole lui", text: "Poche conversazioni, lunghe e distese, quasi sempre dopo le 17. Racconta poco di sé e ROSS non insiste: ne sa poco, ed è giusto così.", mix: [["Due chiacchiere", 70], ["Montagna e lavori manuali", 30]] },
+  bruno: { title: "Per raccontare", text: "Gli piace spiegare: i treni, il paese com'era una volta. Non ha familiari vicini: ROSS chiude le conversazioni verso gli altri ospiti e lo staff.", mix: [["Racconti e storia locale", 55], ["Due chiacchiere", 30], ["Carte", 15]] },
+};
+
+// Spunti di ROSS per invogliare alla vita della residenza: cosa può fare lo staff, e perché ROSS lo suggerisce.
+// `why` cita solo andamenti e categorie, mai di cosa la persona ha parlato.
+export const rossTips = {
+  antonio: {
+    title: "Come invogliarlo a uscire dalla stanza",
+    intro: "Antonio parla volentieri con ROSS, ma il tempo fuori non cresce. ROSS ha notato alcune cose che possono aiutare.",
+    tips: [
+      { title: "Un invito da una persona, non solo da ROSS", text: "Passate a prenderlo voi: «Signor Greco, venga con me in sala comune».", why: "Agli inviti di ROSS ha detto «ci vado» 1 volta su 6. Le volte in cui qualcuno dello staff è passato a prenderlo, è andato." },
+      { title: "Dategli un compito, non un posto a sedere", text: "Chiedetegli di sistemare la radio della sala comune prima dell'ascolto del pomeriggio.", why: "Questa settimana ha espresso voglia di spiegare in 3 conversazioni su 5 (di solito 1): si apre quando può insegnare qualcosa." },
+      { title: "Il momento giusto: dopo la radio del pomeriggio", text: "Tra le 16 e le 17 è più disponibile; la mattina meglio lasciarlo stare.", why: "È la fascia in cui parla di più e in cui ha detto sì all'unico invito accolto." },
+      { title: "Un compagno con la stessa passione", text: "Bruno ama spiegare come funzionano i treni: un pomeriggio insieme tra radio e ferrovie può funzionare.", why: "Interessi vicini per categoria (tecnica, spiegare), entrambi disponibili nel pomeriggio." },
+    ],
+    ross: "Da parte sua, ROSS tiene le conversazioni più brevi, le chiude con un invito verso una persona e gli ricorda le attività sulla radio e sulle auto d'epoca.",
+  },
+  lucia: {
+    title: "Come accompagnarla fuori",
+    intro: "Lucia ha chiesto più volte di uscire in giardino, ma da sola non ci va.",
+    tips: [
+      { title: "Il giardino nel primo pomeriggio", text: "Accompagnatela per un quarto d'ora, quando il tempo lo permette.", why: "Ha espresso il desiderio di uscire in giardino 3 volte questa settimana." },
+      { title: "Brevi e semplici", text: "Una cosa alla volta, frasi corte: se si stanca, si rientra.", why: "In 2 conversazioni ha fatto fatica a seguire il filo (di solito mai) e ha espresso più stanchezza del solito." },
+    ],
+    ross: "ROSS rallenta, semplifica e le propone il giardino quando c'è il sole.",
+  },
+  bruno: {
+    title: "Le sue persone sono qui",
+    intro: "Bruno non ha familiari vicini: gli altri ospiti e lo staff sono la sua rete.",
+    tips: [
+      { title: "Chiedetegli di raccontare il paese", text: "All'incontro sulla storia locale può fare da guida per gli altri.", why: "Questa settimana ha avuto voglia di raccontare in 4 conversazioni su 5 (di solito 2)." },
+      { title: "Un compagno di carte fisso", text: "Al torneo del giovedì, in coppia sempre con la stessa persona.", why: "Le carte sono tra gli interessi della sua biografia d'ingresso e lo mettono in compagnia." },
+    ],
+    ross: "ROSS chiude le conversazioni verso gli altri ospiti e lo staff, non verso di sé.",
+  },
+  ada: {
+    title: "Come aiutarla ad ambientarsi",
+    intro: "Ada è arrivata da 11 giorni: ROSS la sta ancora conoscendo e per ora si basa su ciò che è arrivato con lei.",
+    tips: [
+      { title: "La lettura di poesie, come ha chiesto", text: "Accompagnatela in biblioteca la prima volta, poi decide lei.", why: "Ha chiesto di partecipare all'attività di lettura; la poesia è nella sua biografia d'ingresso." },
+      { title: "Piccoli gruppi, al mattino", text: "Le stanze affollate la mettono a disagio, soprattutto i primi giorni.", why: "Lo dicono le note della famiglia all'ingresso." },
+    ],
+    ross: "ROSS le propone una cosa alla volta e non insiste se dice di no.",
+  },
+};
 
 // Presenza e continuità: assenza di interazione insolita (F12), momenti di difficoltà (F8).
 export const presenceNotes = [

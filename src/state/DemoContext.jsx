@@ -103,6 +103,8 @@ function defaultState() {
     outing: null,
     role: "staff",
     documents: initialDocuments,
+    // Attività che la struttura ha chiesto a ROSS di proporre (solo in modalità Attiva).
+    rossInvites: [],
   };
 }
 
@@ -119,7 +121,7 @@ function getInitialState() {
         scheduledActivities: parsed.scheduledActivities || initialScheduledActivities,
         rossJourney: { ...initialRossJourney, ...(parsed.rossJourney || {}) },
         // I dati degli ospiti vengono dalla demo: dal browser si conservano solo le scelte dell'utente.
-        residents: initialResidents.map((r) => { const saved = (parsed.residents || []).find((x) => x.id === r.id); return saved ? { ...r, mode: saved.mode === "Riposo" ? "Silenziosa" : saved.mode, status: saved.status } : r; }),
+        residents: initialResidents.map((r) => { const saved = (parsed.residents || []).find((x) => x.id === r.id); return saved?.modeSetByUser ? { ...r, mode: saved.mode === "Riposo" ? "Silenziosa" : saved.mode, status: saved.status, modeSetByUser: true } : r; }),
         // Gli allegati della demo vengono sempre dal dataset; dal browser si conservano solo quelli aggiunti.
         documents: [...(parsed.documents || []).filter((d) => d.uploaded), ...initialDocuments],
         role: ["operatore", "coordinatrice"].includes(parsed.role) ? "staff" : parsed.role || defaults.role,
@@ -160,7 +162,7 @@ export function DemoProvider({ children }) {
       notify("Spunto tolto", "neutral", { undo: true });
     },
     setResidentMode: (residentId, mode) => {
-      setState((prev) => ({ ...prev, residents: prev.residents.map((r) => r.id === residentId ? { ...r, mode, status: mode === "Silenziosa" || mode === "Riposo" ? "Riposo" : "Disponibile" } : r) }));
+      setState((prev) => ({ ...prev, residents: prev.residents.map((r) => r.id === residentId ? { ...r, mode, modeSetByUser: true, status: mode === "Silenziosa" || mode === "Riposo" ? "Riposo" : "Disponibile" } : r) }));
       notify(`Modalità ${mode.toLowerCase()} attivata`, "success", { undo: true });
     },
     updateSchedule: (index, patch) => setState((prev) => ({ ...prev, schedule: prev.schedule.map((item, i) => i === index ? { ...item, ...patch } : item) })),
@@ -298,7 +300,7 @@ export function DemoProvider({ children }) {
           memories: memory ? [memory, ...prev.memories] : prev.memories,
         };
       });
-      notify("Mandato a ROSS: lo racconterà a Elena nel momento giusto");
+      notify("Mandato a ROSS: lo racconterà a Elena nel momento giusto", "success", contribution.sharedWithFacility ? { description: "Una copia è arrivata anche alla struttura, tra gli allegati di Elena." } : {});
     },
     // Elena ha ascoltato sul tablet ciò che Anna le ha mandato: l'avviso "Anna ti ha mandato qualcosa" si spegne.
     replayReminders: () => setState((prev) => ({ ...prev, reminders: {} })),
@@ -319,9 +321,21 @@ export function DemoProvider({ children }) {
       notify("Nota operatore aggiunta");
     },
     setRole: (role) => setState((prev) => ({ ...prev, role })),
+    // La struttura chiede a ROSS di proporre un'attività: ROSS la propone all'ospite nel suo momento migliore. Decide l'ospite.
+    askRossToInvite: ({ residentId, activityId, title, when }) => {
+      if ((stateRef.current.rossInvites || []).some((i) => i.residentId === residentId && i.activityId === activityId)) return;
+      const name = stateRef.current.residents.find((r) => r.id === residentId)?.name.split(" ")[0] || "";
+      setState((prev) => ({ ...prev, rossInvites: [{ id: `invite-${Date.now()}`, residentId, activityId, title, when, askedAt: "oggi" }, ...(prev.rossInvites || [])] }));
+      notify(`ROSS proporrà «${title}» a ${name}`, "success", { undo: true, description: "Nel suo momento migliore. Decide la persona." });
+    },
     addDocument: (document) => {
       setState((prev) => ({ ...prev, documents: [{ id: `doc-${Date.now()}`, date: "21 set 2026", author: "Allegato dallo staff", uploaded: true, ...document }, ...prev.documents] }));
       notify("Allegato aggiunto al ritratto", "success", { undo: true });
+    },
+    // Dal + della Famiglia, se Anna accende "Anche alla struttura": una copia negli Allegati di Elena, "Dalla famiglia".
+    // La struttura la riceve e basta: non la verifica e non sta in mezzo tra la famiglia e ROSS.
+    shareWithFacility: ({ residentId, title, summary, image }) => {
+      setState((prev) => ({ ...prev, documents: [{ id: `doc-fam-${Date.now()}`, residentId, origin: "famiglia", kind: "Dalla famiglia", title, summary, image, date: "oggi", author: "Anna Bianchi · figlia, dall'app Famiglia", uploaded: true }, ...prev.documents] }));
     },
     takeInsight: (id) => {
       setState((prev) => ({ ...prev, takenInsights: [...new Set([...prev.takenInsights, id])] }));

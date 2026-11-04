@@ -2,11 +2,11 @@ export const DEMO_TODAY = "2026-09-21";
 
 export const residents = [
   { id: "elena", name: "Elena Bianchi", initials: "EB", age: 79, room: "204", daysWithRoss: 118, mode: "Attiva", status: "Attività", current: "Laboratorio creativo", lastInteraction: "16:20", participation: 8.1, delta: 0.7, color: "coral", interests: ["Musica italiana", "Sicilia", "Fotografia", "Giardinaggio"], routine: ["08:00 Colazione", "10:00 Attività", "12:30 Pranzo", "14:00 Riposo", "16:00 Conversazione", "19:00 Cena"], summary: "Elena ama raccontare attraverso fotografie e musica. Le conversazioni diventano più ricche quando partono da persone e luoghi della sua storia." },
-  { id: "carlo", name: "Carlo Ferri", initials: "CF", age: 83, room: "118", daysWithRoss: 92, mode: "Reattiva", status: "Disponibile", current: "Sala lettura", lastInteraction: "15:44", participation: 6.4, delta: -0.5, color: "mint", interests: ["Calcio", "Giornali", "Orto"] },
+  { id: "carlo", name: "Carlo Ferri", initials: "CF", age: 83, room: "118", daysWithRoss: 92, mode: "Reattiva", status: "Disponibile", current: "Sala lettura", lastInteraction: "15:44", participation: 6.4, delta: 0, color: "mint", interests: ["Calcio", "Giornali", "Orto"] },
   { id: "lucia", name: "Lucia Conti", initials: "LC", age: 76, room: "211", daysWithRoss: 76, mode: "Attiva", status: "Conversazione", current: "Parole e categorie", lastInteraction: "16:02", participation: 7.5, delta: 0.3, color: "lilac", interests: ["Cucina", "Parole", "Teatro"] },
-  { id: "mario", name: "Mario Rossi", initials: "MR", age: 81, room: "106", daysWithRoss: 64, mode: "Silenziosa", status: "Riposo", current: "Non disturbare fino alle 17:00", lastInteraction: "12:28", participation: 5.9, delta: 0.1, color: "sand", interests: ["Montagna", "Legno", "Passeggiate"] },
+  { id: "mario", name: "Mario Rossi", initials: "MR", age: 81, room: "106", daysWithRoss: 64, mode: "Reattiva", status: "Disponibile", current: "In stanza", lastInteraction: "12:28", participation: 5.9, delta: 0.1, color: "sand", interests: ["Montagna", "Legno", "Passeggiate"] },
   { id: "teresa", name: "Teresa Gallo", initials: "TG", age: 88, room: "223", daysWithRoss: 143, mode: "Attiva", status: "Attività", current: "Musica in salotto", lastInteraction: "15:31", participation: 8.4, delta: 0.9, color: "mint", interests: ["Coro", "Fiori", "Maglia"] },
-  { id: "antonio", name: "Antonio Greco", initials: "AG", age: 74, room: "109", daysWithRoss: 39, mode: "Reattiva", status: "Disponibile", current: "Giardino", lastInteraction: "ieri alle 17:40", participation: 6.8, delta: 0.1, color: "coral", interests: ["Radio", "Automobili", "Scacchi"] },
+  { id: "antonio", name: "Antonio Greco", initials: "AG", age: 74, room: "109", daysWithRoss: 39, mode: "Attiva", status: "Disponibile", current: "Giardino", lastInteraction: "ieri alle 17:40", participation: 6.8, delta: 0.1, color: "coral", interests: ["Radio", "Automobili", "Scacchi"] },
   { id: "ada", name: "Ada Moretti", initials: "AM", age: 85, room: "215", daysWithRoss: 11, mode: "Reattiva", status: "Disponibile", current: "Salotto", lastInteraction: "11:18", participation: null, delta: null, color: "lilac", interests: ["Poesia", "Cucito"] },
   { id: "bruno", name: "Bruno De Angelis", initials: "BD", age: 80, room: "121", daysWithRoss: 101, mode: "Silenziosa", status: "Riposo", current: "Quiete pomeridiana", lastInteraction: "12:02", participation: 6.1, delta: 0.2, color: "sand", interests: ["Treni", "Storia", "Carte"] },
 ];
@@ -45,22 +45,32 @@ export const activities = [
 
 const topics = ["Musica", "Famiglia", "Viaggi", "Fotografie", "Giardino", "Lavoro", "Cucina", "Attività di gruppo"];
 const types = ["Conversazione", "Memoria", "Musica", "Gioco", "Socialità"];
+// Ogni ospite usa ROSS a modo suo (archetipi, docs/HANDOFF.md §0.4): tipi, durate e orari diversi.
+const usageProfiles = {
+  carlo: { types: ["Domande pratiche", "Domande pratiche", "Conversazione"], min: 2, span: 4, hours: [8, 9, 10] },
+  antonio: { types: ["Conversazione", "Musica", "Conversazione", "Gioco"], min: 12, span: 7, hours: [15, 16, 17] },
+  mario: { types: ["Conversazione", "Conversazione", "Memoria"], min: 15, span: 10, hours: [17, 18] },
+  ada: { types: ["Conversazione", "Memoria"], min: 5, span: 5, hours: [9, 10, 11] },
+};
 export const interactions = Array.from({ length: 120 }, (_, index) => {
   const dayOffset = Math.floor(index / 4);
   const date = new Date("2026-09-21T10:00:00");
   date.setDate(date.getDate() - dayOffset);
   const resident = residents[(index * 3 + dayOffset) % residents.length];
-  const duration = 7 + ((index * 5 + dayOffset) % 15);
+  const profile = usageProfiles[resident.id];
+  const duration = profile ? profile.min + ((index * 5 + dayOffset) % profile.span) : 7 + ((index * 5 + dayOffset) % 15);
+  const hour = profile ? profile.hours[index % profile.hours.length] : 9 + (index % 9);
   return {
     id: `int-${index + 1}`,
     residentId: resident.id,
     resident: resident.name,
     date: date.toISOString().slice(0, 10),
-    time: `${String(9 + (index % 9)).padStart(2, "0")}:${index % 2 ? "30" : "00"}`,
+    time: `${String(hour).padStart(2, "0")}:${index % 2 ? "30" : "00"}`,
     duration,
-    type: types[(index + dayOffset) % types.length],
+    type: (profile?.types || types)[(index + dayOffset) % (profile?.types || types).length],
     topic: topics[(index * 2 + dayOffset) % topics.length],
-    mode: index % 4 === 0 ? "Reattiva" : "Attiva",
+    // Con la modalità Reattiva o Silenziosa è la persona a chiamare ROSS.
+    mode: resident.mode !== "Attiva" ? "Reattiva" : index % 4 === 0 ? "Reattiva" : "Attiva",
     participation: 55 + ((index * 11) % 42),
     memoriesUsed: 1 + (index % 4),
     emerged: index % 5 === 0 ? 1 : 0,
@@ -70,7 +80,7 @@ export const interactions = Array.from({ length: 120 }, (_, index) => {
 
 export const insights = [
   { id: "i1", category: "Benessere", title: "Teresa ha espresso serenità più spesso del solito", body: "Serenità espressa in 6 conversazioni su 7 questa settimana, rispetto a una media di 4.", period: "Ultimi 7 giorni", evidence: ["6 su 7", "media 4"], residentId: "teresa", action: "Apri il ritratto", tone: "mint" },
-  { id: "i2", category: "Benessere", title: "Carlo ha avviato meno conversazioni", body: "Negli ultimi 4 giorni Carlo ha avviato 3 conversazioni in meno rispetto alla propria media di 14 giorni.", period: "Ultimi 4 giorni", evidence: ["2 iniziative", "media personale 5"], residentId: "carlo", action: "Osserva andamento", tone: "sand" },
+  { id: "i2", category: "Presenza", title: "Antonio parla molto con ROSS, ma esce poco", body: "Conversazioni di 15 minuti in media (di solito 10) e «ci vado» a 1 invito su 6.", period: "Ultimi 7 giorni", evidence: ["15 min", "1 invito su 6"], residentId: "antonio", action: "Apri il ritratto", tone: "sand" },
   { id: "i3", category: "Benessere", title: "Lucia ha espresso stanchezza più del solito", body: "Stanchezza espressa in 3 conversazioni su 6 questa settimana (di solito 1). Da osservare di persona.", period: "Ultimi 7 giorni", evidence: ["3 su 6", "media 1"], residentId: "lucia", action: "Apri il ritratto", tone: "coral" },
   { id: "i4", category: "Presenza", title: "La fascia 10:00–11:30 è la più utilizzata", body: "Le interazioni del mattino sono mediamente 6 minuti più lunghe, senza differenze evidenti nella partecipazione.", period: "Ultimi 30 giorni", evidence: ["38 interazioni", "+6 min durata"], action: "Vedi dettaglio", tone: "lilac" },
 ];
@@ -126,11 +136,48 @@ export const themeOptions = [
   { id: "care", name: "Care", description: "Chiaro, calmo, rassicurante" },
 ];
 
+// Allegati facoltativi e non strutturati, raggruppati solo per chi li ha portati (`origin`):
+// "ingresso" (biografia d'ingresso, con famiglia e struttura), "famiglia" (ciò che la famiglia ha dato all'ingresso),
+// "staff" (foto dal telefono, indicazioni pratiche). Mai dati sanitari come requisito; i documenti ufficiali restano nel gestionale.
+// `body`: il contenuto simulato che si legge aprendo l'allegato.
 export const documents = [
-  // Allegati facoltativi e non strutturati: foto dal telefono, indicazioni pratiche. Mai dati sanitari come requisito.
-  { id: "doc-foto-elena", residentId: "elena", kind: "Foto", title: "Elena al laboratorio dei gerani", date: "18 set 2026", author: "Giulia Serra · educatrice", image: "garden-photo.svg", summary: "Scattata con il telefono durante il travaso: si è fermata a lungo a scegliere i vasi." },
-  { id: "doc-passeggiate-elena", residentId: "elena", kind: "Allegato", title: "Indicazioni per le passeggiate", date: "15 set 2026", author: "Marta Villa · fisioterapista", summary: "Due brevi passeggiate al giorno, preferibilmente al mattino." },
-  { id: "doc-esercizi-carlo", residentId: "carlo", kind: "Allegato", title: "Esercizi da fare seduti", date: "12 set 2026", author: "Marta Villa · fisioterapista", summary: "Tre volte a settimana, con calma." },
+  // Elena: il ponte che funziona.
+  { id: "doc-bio-elena", residentId: "elena", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Elena", date: "26 mag 2026", author: "Compilata all'ingresso con Anna, la figlia", summary: "Maestra elementare per molti anni, ama la musica italiana, i viaggi e il suo giardino.", body: [["Come preferisce essere chiamata", "«Signora Elena», con il lei."], ["La sua storia", "Nata a Padova, ha insegnato per più di trent'anni in una scuola elementare. Vedova di Paolo, ha una figlia, Anna, e una nipote, Sofia. Anna la chiama quasi ogni sera, dopo cena."], ["Cosa le piace", "I cantautori italiani degli anni '60 e '70, le fotografie di viaggio, curare le piante."], ["Abitudini", "Si sveglia presto; dopo pranzo riposa volentieri. Le piace avere qualcosa da fare con le mani."]] },
+  { id: "doc-fam-elena", residentId: "elena", origin: "famiglia", kind: "Dalla famiglia", title: "Le abitudini della mamma", date: "26 mag 2026", author: "Anna Bianchi · figlia", summary: "Cosa la mette di buonumore e cosa la stanca, raccontato da Anna.", body: [["Cosa la mette di buonumore", "Una canzone di Mina, una pianta da sistemare, una domanda sui suoi alunni."], ["Cosa la stanca", "La confusione e la televisione accesa senza che nessuno la guardi."], ["Una cosa da sapere", "Se le si chiede un consiglio, si illumina: le piace ancora spiegare."]] },
+  { id: "doc-foto-elena", residentId: "elena", origin: "staff", kind: "Foto", title: "Elena al laboratorio dei gerani", date: "18 set 2026", author: "Giulia Serra · educatrice", image: "garden-photo.svg", summary: "Scattata con il telefono durante il travaso: si è fermata a lungo a scegliere i vasi." },
+  { id: "doc-passeggiate-elena", residentId: "elena", origin: "staff", kind: "Indicazione", title: "Indicazioni per le passeggiate", date: "15 set 2026", author: "Marta Villa · fisioterapista", summary: "Due brevi passeggiate al giorno, preferibilmente al mattino.", body: [["Quando", "Al mattino, dopo colazione, e se se la sente verso le 17."], ["Come", "Brevi, con qualcuno accanto. Il giardino interno va benissimo."]] },
+
+  // Ada: la nuova arrivata. Solo ciò che è arrivato con lei: la biografia d'ingresso e le note della famiglia.
+  { id: "doc-bio-ada", residentId: "ada", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Ada", date: "10 set 2026", author: "Compilata all'ingresso con la struttura", summary: "Sarta per tutta la vita, conosce a memoria molte poesie. È arrivata da pochi giorni.", body: [["Come preferisce essere chiamata", "«Signora Ada», con il lei."], ["La sua storia", "Ha fatto la sarta in un piccolo laboratorio di paese, cucendo abiti per la famiglia e per i vicini. Ha due nipoti."], ["Cosa le piace", "La poesia (ne ricorda molte studiate a scuola), il cucito, il silenzio del mattino."], ["Per le prime settimane", "È arrivata da poco: meglio conversazioni brevi e senza insistere."]] },
+  { id: "doc-fam-ada", residentId: "ada", origin: "famiglia", kind: "Dalla famiglia", title: "Cosa sapere della nonna", date: "10 set 2026", author: "Chiara Moretti · nipote", summary: "Le abitudini di Ada raccontate dalla nipote, per aiutarla ad ambientarsi.", body: [["Le sue abitudini", "Si alza presto e le piace un caffè prima di tutto il resto. Il pomeriggio legge o sistema qualcosa da cucire."], ["Cosa la fa sentire a casa", "Avere vicino il suo cestino da cucito e una poesia da leggere ad alta voce."], ["Cosa la mette a disagio", "Le stanze troppo affollate, soprattutto i primi giorni."], ["Quando chiamiamo", "La domenica mattina, di solito io o mio fratello."]] },
+
+  // Carlo: lo usa come uno strumento pratico.
+  { id: "doc-bio-carlo", residentId: "carlo", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Carlo", date: "21 giu 2026", author: "Compilata all'ingresso con il figlio Luca", summary: "Ex capo officina, tifoso di calcio, legge il giornale ogni mattina. Pratico e diretto.", body: [["Come preferisce essere chiamato", "«Carlo», con il tu."], ["La sua storia", "Ha diretto un'officina meccanica per trent'anni. Ha due figli; Luca passa a trovarlo il sabato."], ["Cosa gli piace", "Il calcio, il giornale del mattino, l'orto. Le cose concrete."], ["Una cosa da sapere", "Non ama le chiacchiere sui sentimenti: preferisce fare e commentare."]] },
+  { id: "doc-esercizi-carlo", residentId: "carlo", origin: "staff", kind: "Indicazione", title: "Esercizi da fare seduti", date: "12 set 2026", author: "Marta Villa · fisioterapista", summary: "Tre volte a settimana, con calma.", body: [["Quando", "Lunedì, mercoledì e venerdì, a metà mattina."], ["Come", "Seduto, con calma. Gli piace sapere a cosa serve ogni esercizio."]] },
+  { id: "doc-foto-carlo", residentId: "carlo", origin: "staff", kind: "Foto", title: "Carlo nell'orto della residenza", date: "16 set 2026", author: "Marco Neri · animatore", summary: "Ha insegnato a due operatori come legare i pomodori." },
+
+  // Antonio: lo adora, forse troppo. La famiglia è lontana.
+  { id: "doc-bio-antonio", residentId: "antonio", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Antonio", date: "13 ago 2026", author: "Compilata all'ingresso con il figlio Davide", summary: "Ex radiotecnico, appassionato di auto d'epoca. Il figlio vive lontano.", body: [["Come preferisce essere chiamato", "«Signor Greco», con il lei."], ["La sua storia", "Ha riparato radio e televisori in un negozio tutto suo. Vedovo da due anni; il figlio Davide vive a Torino e lo chiama quando riesce."], ["Cosa gli piace", "La radio, le automobili d'epoca (ha avuto una Lancia), smontare e capire come funzionano le cose."], ["Una cosa da sapere", "All'inizio risponde a monosillabi: è timidezza, non disinteresse. Si apre se gli si chiede di spiegare."]] },
+  { id: "doc-fam-antonio", residentId: "antonio", origin: "famiglia", kind: "Dalla famiglia", title: "Due righe da Davide", date: "13 ago 2026", author: "Davide Greco · figlio", summary: "Il figlio chiede di aiutarlo a non chiudersi in stanza.", body: [["Cosa ci preoccupa", "Dopo la morte della mamma è stato molto da solo. Tende a restare in stanza con la radio."], ["Cosa lo aiuta", "Avere un compito: aggiustare qualcosa, spiegare come funziona."], ["Quando chiamo", "Ci provo la domenica sera, ma non sempre riesco."]] },
+  { id: "doc-foto-antonio", residentId: "antonio", origin: "staff", kind: "Foto", title: "Antonio e la radio della sala comune", date: "19 set 2026", author: "Marco Neri · animatore", summary: "Ha sistemato la sintonia della radio e poi è rimasto ad ascoltare con gli altri per mezz'ora." },
+
+  // Lucia: quella che sta cambiando.
+  { id: "doc-bio-lucia", residentId: "lucia", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Lucia", date: "7 lug 2026", author: "Compilata all'ingresso con la figlia Sara", summary: "Cuoca di famiglia, attrice amatoriale, ama i giochi di parole.", body: [["Come preferisce essere chiamata", "«Lucia», con il tu."], ["La sua storia", "Ha cresciuto quattro figli e cucinato per tutti ogni domenica. Per vent'anni ha recitato in una compagnia di paese."], ["Cosa le piace", "Cucinare, il teatro, i cruciverba e gli indovinelli."], ["Una cosa da sapere", "Quando racconta non va interrotta: è lei a cambiare argomento."]] },
+  { id: "doc-fam-lucia", residentId: "lucia", origin: "famiglia", kind: "Dalla famiglia", title: "Le ricette della domenica", date: "7 lug 2026", author: "Sara Conti · figlia", summary: "Tre ricette di famiglia, per farla sentire a casa in cucina.", body: [["Il ragù", "Cottura lunga, «almeno tre ore, sennò non è ragù»."], ["Le polpette", "Con il pane raffermo bagnato nel latte."], ["La crostata", "Con la marmellata di albicocche fatta in casa."]] },
+  { id: "doc-foto-lucia", residentId: "lucia", origin: "staff", kind: "Foto", title: "Il gioco delle parole in salotto", date: "17 set 2026", author: "Paola Riva · animatrice", summary: "Ha guidato lei il gioco per tutto il gruppo." },
+
+  // Mario: il riservato.
+  { id: "doc-bio-mario", residentId: "mario", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Mario", date: "19 lug 2026", author: "Compilata all'ingresso con la figlia Giovanna", summary: "Falegname, uomo di montagna, di poche parole.", body: [["Come preferisce essere chiamato", "«Signor Rossi», con il lei."], ["La sua storia", "Falegname per tutta la vita, d'estate sempre in montagna. Riservato: parla di sé solo quando ne ha voglia."], ["Cosa gli piace", "Il legno, la montagna, le passeggiate senza fretta."], ["Una cosa da sapere", "Ha bisogno dei suoi tempi: meglio non insistere, torna lui."]] },
+  { id: "doc-ind-mario", residentId: "mario", origin: "staff", kind: "Indicazione", title: "Il suo momento di riposo", date: "8 set 2026", author: "Staff di reparto", summary: "Nel primo pomeriggio preferisce non essere disturbato.", body: [["Quando", "Dalle 13:30 alle 16:30 circa."], ["Perché", "Lo ha chiesto lui: è il suo momento per stare tranquillo."]] },
+
+  // Teresa: la veterana che trascina gli altri.
+  { id: "doc-bio-teresa", residentId: "teresa", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Teresa", date: "1 mag 2026", author: "Compilata all'ingresso con il nipote Andrea", summary: "Corista per quarant'anni, ama i fiori e insegnare la maglia.", body: [["Come preferisce essere chiamata", "«Teresa», con il tu."], ["La sua storia", "Ha cantato nel coro della parrocchia per quarant'anni. Ha insegnato a lavorare a maglia a mezzo paese."], ["Cosa le piace", "Cantare, i fiori di stagione, stare in compagnia."]] },
+  { id: "doc-fam-teresa", residentId: "teresa", origin: "famiglia", kind: "Dalla famiglia", title: "Il suo repertorio", date: "1 mag 2026", author: "Andrea Gallo · nipote", summary: "Le canzoni che conosce a memoria, per il canto in salone.", body: [["Le preferite", "Canti popolari, qualche canzone degli anni '50, i canti di Natale."], ["Un consiglio", "Se c'è da intonare, chiedetelo a lei: parte e trascina tutti."]] },
+  { id: "doc-foto-teresa", residentId: "teresa", origin: "staff", kind: "Foto", title: "Il canto del giovedì", date: "18 set 2026", author: "Giulia Serra · educatrice", summary: "Ha insegnato una canzone nuova a tre ospiti arrivati da poco." },
+
+  // Bruno: senza famiglia vicina. Le sue persone sono gli altri ospiti e lo staff.
+  { id: "doc-bio-bruno", residentId: "bruno", origin: "ingresso", kind: "Biografia d'ingresso", title: "La biografia di Bruno", date: "11 giu 2026", author: "Compilata all'ingresso con la struttura", summary: "Ferroviere per quarant'anni, conosce la storia del paese. Nessun familiare vicino.", body: [["Come preferisce essere chiamato", "«Bruno», con il tu."], ["La sua storia", "Ha lavorato nelle ferrovie per quarant'anni. Non ha figli; i parenti più vicini vivono all'estero e si sentono di rado. I contatti sono nel gestionale."], ["Cosa gli piace", "I treni, la storia del paese, le carte al bar la domenica."], ["Una cosa da sapere", "Gli piace spiegare: chiedergli com'era il paese una volta è il modo migliore per iniziare."]] },
+  { id: "doc-foto-bruno", residentId: "bruno", origin: "staff", kind: "Foto", title: "Torneo di scopa", date: "19 set 2026", author: "Marco Neri · animatore", summary: "In coppia con un ospite nuovo, gli ha spiegato le regole con molta pazienza." },
 ];
 
 // Inviti a uscire per Elena: ROSS legge il calendario della residenza (non lo gestisce) e propone
