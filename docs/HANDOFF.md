@@ -254,14 +254,25 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ## 6. Changelog (dal più recente)
 
 ### Novembre 2026 · 04/11/2026 · Mappa rigenerata dopo gli archetipi
-- **Richiesta:** rigenerare la Mappa.
+- **Richiesta:** rigenerare la Mappa (poi unito `main` con «Cosa sa ROSS», PR #48, e mappa rigenerata di nuovo).
 - **Fatto (senza plugin Floorplan):** nuovo script `docs/floorplan/aggiorna-mappa.py`, che rilegge il codice e aggiorna i dati della mappa e i sorgenti in `docs/floorplan/`.
   - **Ricalcolati:** righe, simboli, hash e collegamenti di 37 file. In tutto 88 collegamenti, compreso il nuovo copione della chat → attività.
   - **Descrizioni nuove:** ritratto, segnali, copione, dati, chat, Famiglia, memoria della demo e stili.
   - **Percorsi:** "Dal ritratto al report" aggiornato con gli archetipi; due nuovi, "La struttura chiede a ROSS di proporre un'attività" e "Anna condivide anche con la struttura".
   - **Giro "Start here":** nuova tappa "Otto ospiti, otto archetipi".
   - **Recent work:** in cima "Ospiti come archetipi e ritratto rivisto"; restano le ultime quattro attività.
+  - **Dopo il merge di `main`:** descrizioni e percorsi parlano di «Cosa sa ROSS» (ex Allegati); la copia di Anna per la struttura finisce in «Per conoscerla».
   - **Non rifatto:** il controllo Health.
+
+### Novembre 2026 · 04/11/2026 · «Cosa sa ROSS» e promemoria per le medicine
+- **Richiesta:** inserire in ogni profilo un documento della struttura con le medicine da ricordare, e organizzare i documenti utili a ROSS senza disperderli (anteprima approvata, senza le schede conversazionali del tablet).
+- **Modifiche:**
+  - ritratto: il tab **Allegati diventa «Cosa sa ROSS»**, con le tre sezioni Per conoscerla · La sua giornata · Per stare bene, la striscia "chi lo scrive → cosa ne fa ROSS → dove lo ritrova" e su ogni card chi l'ha scritto, cosa ne fa ROSS e chi lo vede; sezioni vuote come invito;
+  - **promemoria per le medicine** in tutti gli 8 profili (documento della struttura: orari, parole dell'infermeria, frase di ROSS con il tu o il Lei, riquadro "Cosa ROSS non fa", consenso);
+  - nuovi documenti di Elena: Le persone care, Le date importanti, Appuntamenti della settimana;
+  - tablet di Elena: in Promemoria anche quello **dall'infermeria** (stasera alle 19:30); in Spunti per oggi la card **«Oggi in residenza»** (menù, chi c'è di turno, un'attività);
+  - aggiornata in `AGENTS.md` la regola sui promemoria (prima: niente farmaci negli esempi).
+- **Non inclusi (per scelta):** la scheda dedicata del promemoria dell'infermeria sul tablet e le fonti in «Cosa ricordo di te».
 
 ### Novembre 2026 · 04/11/2026 · Gli ospiti diventano archetipi; ritratto, inviti via ROSS e allegati rivisti
 - **Richiesta:** rivedere le schede degli ospiti in funzione di ciò che è ROSS oggi. Ogni ospite rappresenta un archetipo (la nuova arrivata, lo scettico, quello che lo adora…), e i contenuti seguono. Poi: la struttura può chiedere a ROSS di proporre un'attività all'ospite, ma non in modalità reattiva; Ada ha solo la biografia d'ingresso e le note della famiglia; documenti simulati per ogni ospite; Carlo usa ROSS come uno strumento; per Antonio, consigli di ROSS per invogliarlo; Mario riservato ma non in "silenzio radio". In corso d'opera: nel + della Famiglia, un interruttore per condividere anche con la struttura.

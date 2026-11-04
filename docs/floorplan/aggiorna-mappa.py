@@ -14,15 +14,16 @@ arch = json.load(open("docs/floorplan/architecture.json", encoding="utf-8"))
 
 # --- Descrizioni scritte a mano per i file cambiati ---
 desc = {
-  "src/pages/ResidentProfile.jsx": ("Ritratto dell'ospite", "Il ritratto si adatta alla persona: Come sta (risorse, racconto, \"Spunti di ROSS\" per invogliarla alla vita della residenza), Come avvicinarsi (con le attività da far proporre a ROSS, solo in modalità Attiva), Con ROSS (come lo usa, modalità, inviti chiesti) e Allegati per provenienza."),
+  "src/pages/ResidentProfile.jsx": ("Ritratto dell'ospite", "Il ritratto si adatta alla persona: Come sta (risorse, racconto, \"Spunti di ROSS\" per invogliarla alla vita della residenza), Come avvicinarsi (con le attività da far proporre a ROSS, solo in modalità Attiva), Con ROSS (come lo usa, modalità, inviti chiesti) e «Cosa sa ROSS»: i documenti di struttura e famiglia raggruppati per ciò che ROSS ne fa (Per conoscerla · La sua giornata · Per stare bene), compresi i promemoria per le medicine."),
   "src/data/careInsights.js": ("Segnali e guida per ospite", "Per ogni ospite: cosa va bene, cosa osservare rispetto alla sua media, bisogni, la guida \"Come avvicinarsi\", come usa ROSS (il suo archetipo) e gli spunti di ROSS per invogliarlo a uscire."),
   "src/data/chatScript.js": ("Copione della chat", "Domande consigliate per ruolo e tutte le risposte preparate di \"Chiedi a ROSS\", sempre con la fonte; anche \"Proponi ad Antonio…\" (parte solo in modalità Attiva) e \"Come invogliare Antonio?\"."),
-  "src/data/demoData.js": ("Residenza Aurora inventata", "Gli otto ospiti, ognuno un archetipo (la nuova arrivata, chi lo usa come strumento, chi lo adora troppo…), le loro conversazioni con ROSS, gli allegati simulati per provenienza e gli inviti fuori dalla stanza."),
+  "src/data/demoData.js": ("Residenza Aurora inventata", "Gli otto ospiti, ognuno un archetipo (la nuova arrivata, chi lo usa come strumento, chi lo adora troppo…), le loro conversazioni con ROSS, i documenti simulati di «Cosa sa ROSS» (anche i promemoria per le medicine della struttura) e gli inviti fuori dalla stanza."),
   "src/data/reportNarrative.js": ("Testi dei report", "Scrive in forma di racconto il report \"Come sta\" di ogni ospite, coerente con il suo archetipo, e il Riepilogo d'équipe della struttura."),
   "src/pages/AskRoss.jsx": ("Chat \"Chiedi a ROSS\"", "La home della Struttura: si fa una domanda, anche da telefono, e ROSS risponde citando la fonte. Se si chiede di proporre un'attività, la richiesta parte davvero (o compare l'avviso della modalità)."),
   "src/pages/FamilyExperience.jsx": ("Schermate della Famiglia", "L'app per iPhone di Anna: Oggi, Da lei (racconti e ricordi di Elena), il + per mandarle qualcosa (con l'interruttore \"Anche alla struttura\"), Da te e Insieme, con la schermata di blocco."),
+  "src/pages/RossExperience.jsx": ("Schermate del tablet", "La home di Elena con le schede \"una cosa alla volta\" (novità da Anna, promemoria, anche quello dall'infermeria, giochi, cosa ricordo di te), \"Oggi in residenza\" e \"Parla con ROSS\" con i sottotitoli."),
   "src/state/DemoContext.jsx": ("Memoria condivisa della demo", "Tiene ruolo, tema, conversazioni, allegati, consensi, messaggi di Anna (e la copia per la struttura), promemoria, inviti chiesti a ROSS e spunti salvati; li salva nel browser e mostra gli avvisi con \"Annulla\"."),
-  "src/styles.css": ("Aspetto di tutte le viste", "Colori, caratteri e spaziature di Struttura (anche spunti di ROSS, \"Con ROSS\", avvisi di modalità e allegati per provenienza), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."),
+  "src/styles.css": ("Aspetto di tutte le viste", "Colori, caratteri e spaziature di Struttura (anche spunti di ROSS, \"Con ROSS\", avvisi di modalità e «Cosa sa ROSS»), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."),
 }
 
 def symbols(path, old):
@@ -120,7 +121,7 @@ flow_invito = {"id": "invito", "title": "La struttura chiede a ROSS di proporre 
 flow_struttura = {"id": "anche-struttura", "title": "Anna condivide anche con la struttura", "description": "Con l'interruttore nel +, una copia di ciò che Anna manda a ROSS arriva anche negli allegati di Elena.", "steps": [
   {"ref": "n:famiglia", "note": "Anna scrive o detta nel + e accende \"Anche alla struttura\" (spento di default)."},
   {"ref": "n:stato", "note": "A ROSS il messaggio arriva comunque direttamente; una copia diventa un allegato \"Dalla famiglia\"."},
-  {"ref": "n:struttura.ospiti", "note": "Nel ritratto di Elena, tab Allegati: la copia arricchisce la sua biografia. La struttura la riceve e basta, non la approva."}]}
+  {"ref": "n:struttura.ospiti", "note": "Nel ritratto di Elena, tab «Cosa sa ROSS», in Per conoscerla: la copia arricchisce la sua biografia. La struttura la riceve e basta, non la approva."}]}
 for coll in (G["flows"], arch["flows"]):
     coll[:] = [flow_ritratto if f["id"] == "ritratto" else f for f in coll if f["id"] not in ("invito", "anche-struttura")] + [flow_invito, flow_struttura]
 
@@ -132,9 +133,9 @@ for coll in (G["tour"], arch["tour"]):
 # --- Lavori recenti: la nuova attività in cima, si tengono le ultime quattro ---
 task = {"title": "Ospiti come archetipi e ritratto rivisto",
         "request": "Rivedere le schede degli ospiti in funzione di cos'è ROSS oggi: ogni ospite un archetipo; inviti via ROSS solo in modalità Attiva; allegati per ogni ospite; condividere dalla Famiglia anche con la struttura",
-        "summary": "Otto archetipi (Carlo lo usa come strumento, Antonio lo adora troppo, Mario riservato, Ada appena arrivata…). Il ritratto ha \"Spunti di ROSS\", il tab \"Con ROSS\" e gli allegati per provenienza; la struttura può chiedere a ROSS di proporre un'attività, che parte solo in modalità Attiva. Nel + della Famiglia c'è \"Anche alla struttura\"."}
+        "summary": "Otto archetipi (Carlo lo usa come strumento, Antonio lo adora troppo, Mario riservato, Ada appena arrivata…). Il ritratto ha \"Spunti di ROSS\" e il tab \"Con ROSS\"; la struttura può chiedere a ROSS di proporre un'attività, che parte solo in modalità Attiva. Nel + della Famiglia c'è \"Anche alla struttura\"."}
 items = [
-  ("f:src/pages/ResidentProfile.jsx", "Spunti di ROSS, tab \"Con ROSS\", invito con avviso di modalità, allegati per provenienza da aprire."),
+  ("f:src/pages/ResidentProfile.jsx", "Spunti di ROSS, tab \"Con ROSS\", invito con avviso di modalità; dopo PR #48 i documenti stanno in «Cosa sa ROSS»."),
   ("f:src/data/careInsights.js", "Come usa ROSS ogni ospite e gli spunti per invogliarlo; segnali di Antonio e Carlo corretti."),
   ("f:src/data/chatScript.js", "Nuove risposte \"Proponi a…\" e \"Come invogliare…\"; Carlo che parla poco non è un segnale."),
   ("f:src/data/demoData.js", "Documenti simulati per ogni ospite; conversazioni e modalità secondo l'archetipo."),

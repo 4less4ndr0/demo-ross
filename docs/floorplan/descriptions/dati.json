@@ -10,7 +10,7 @@
     },
     "src/data/demoData.js": {
       "name": "Residenza Aurora inventata",
-      "description": "Gli otto ospiti, ognuno un archetipo (la nuova arrivata, chi lo usa come strumento, chi lo adora troppo…), le loro conversazioni con ROSS, gli allegati simulati per provenienza e gli inviti fuori dalla stanza."
+      "description": "Gli otto ospiti, ognuno un archetipo (la nuova arrivata, chi lo usa come strumento, chi lo adora troppo…), le loro conversazioni con ROSS, i documenti simulati di «Cosa sa ROSS» (anche i promemoria per le medicine della struttura) e gli inviti fuori dalla stanza."
     },
     "src/data/reportNarrative.js": {
       "name": "Testi dei report",
