@@ -13,7 +13,7 @@ import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, Dr
 
 // Ritratto dell'ospite secondo docs/contratto-informativo-struttura.md: come sta, come avvicinarsi,
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
-const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Con ROSS"], ["allegati", "Allegati"]];
+const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Con ROSS"], ["allegati", "Cosa sa ROSS"]];
 const tabAliases = { documenti: "allegati", panoramica: "sintesi", andamento: "sintesi", attivita: "sintesi", interazioni: "conversazioni", storia: "avvicinare", memorie: "avvicinare", relazioni: "avvicinare", interessi: "avvicinare" };
 const normalizeTab = (value) => { const key = (value || "sintesi").toLowerCase(); const id = tabAliases[key] || key; return tabs.some(([t]) => t === id) ? id : "sintesi"; };
 
@@ -178,38 +178,50 @@ function RossTips({ resident, onPropose }) {
 }
 
 // Allegati: facoltativi e non strutturati, raggruppati solo per chi li ha portati (mai per tipo o per dato sanitario).
-const origins = [
-  ["ingresso", "Dall'ingresso", "La biografia compilata all'ingresso, con la famiglia e la struttura."],
-  ["famiglia", "Dalla famiglia", "Ciò che la famiglia ha scelto di condividere con la struttura, all'ingresso o dall'app Famiglia. A ROSS arriva comunque direttamente."],
-  ["staff", "Dallo staff", "Foto e indicazioni pratiche, quando servono."],
+// «Cosa sa ROSS»: i documenti raggruppati per ciò che ROSS ne fa, non per tipo.
+// Ogni card dice chi l'ha scritto, cosa ne fa ROSS e chi lo vede. Una sezione vuota è un invito, non un buco.
+const families = [
+  ["conoscere", "Per conoscerla", "Per conoscerlo", "ROSS ne parla con la persona in modo personale.", (n) => `Chiedete alla famiglia di aiutare ROSS a conoscere ${n}: persone care, date importanti, cosa le piace.`],
+  ["giornata", "La sua giornata", "La sua giornata", "ROSS ricorda e propone, una cosa alla volta e senza insistere.", (n) => `Nessun promemoria o appuntamento per ${n}. Menù, attività e avvisi della residenza valgono per tutti.`],
+  ["benessere", "Per stare bene", "Per stare bene", "Indicazioni di fisioterapisti ed educatori: ROSS invita, la persona sceglie.", () => "Nessuna indicazione per ora. Un fisioterapista o un'educatrice può aggiungerne una."],
+  ["lei", "Scritto da lei", "Scritto da lui", "La voce della persona, dettata a ROSS. Arriva qui solo se ha scelto di condividerla.", (n, male) => `Quando vorrà, ${n} potrà dettare a ROSS come preferisce essere ${male ? "trattato" : "trattata"} o una sua storia, e scegliere se condividerla con la struttura.`],
 ];
+const familyOf = (d) => d.family || (d.origin === "struttura" ? "giornata" : d.kind === "Indicazione" ? "benessere" : "conoscere");
+const defaultUse = { conoscere: "Ne parla con la persona in modo personale", giornata: "Glielo ricorda al momento giusto", benessere: "La invita, senza insistere", lei: "È la sua voce: ROSS non la riassume" };
+const sourceOf = (d) => d.origin === "struttura" ? "Struttura" : d.origin === "famiglia" ? "Famiglia" : d.origin === "ingresso" ? "Ingresso" : d.origin === "lei" ? "La persona" : "Staff";
+const malesP = ["carlo", "mario", "antonio", "bruno"];
 
 function Attachments({ resident, documents, onAdd }) {
   const fileRef = useRef(null);
   const cameraRef = useRef(null);
   const [open, setOpen] = useState(null);
   const name = resident.name.split(" ")[0];
+  const male = malesP.includes(resident.id);
   const add = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (file) onAdd({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) });
   };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
-  const groups = origins.map(([id, label, hint]) => ({ id, label, hint, items: documents.filter((d) => (d.origin || "staff") === id) })).filter((g) => g.items.length);
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Allegati</h2><p>Ciò che è arrivato con {name} e ciò che lo staff ha voluto aggiungere. Non è obbligatorio: i documenti ufficiali restano nel gestionale della struttura.</p></div><div className="attachment-actions"><button className="ghost-button" onClick={() => cameraRef.current?.click()}><Camera size={16} /> Scatta una foto</button><button className="ghost-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Allega un file</button></div>
+  const groups = families.map(([id, f, m, hint, empty]) => ({ id, label: male ? m : f, hint, empty: empty(name, male), items: documents.filter((d) => familyOf(d) === id) }));
+  return <section className="content-section"><div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Ciò che la struttura, la famiglia e {name} hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. Ogni cosa ha la sua fonte, e {name} la ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale.</p></div><div className="attachment-actions"><button className="ghost-button" onClick={() => cameraRef.current?.click()}><Camera size={16} /> Scatta una foto</button><button className="ghost-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Aggiungi un documento</button></div>
     <input ref={cameraRef} type="file" hidden accept="image/*" capture="environment" onChange={add} /><input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} /></div>
-    {!groups.length ? <EmptyState title="Nessun allegato" description="Una foto di un'attività o un'indicazione pratica: allegala da qui o dalla graffetta della chat." icon={Paperclip} /> : groups.map((g) => <div className="attachment-group" key={g.id}>
+    <div className="knows-flow"><span><b>Chi lo scrive</b>struttura, famiglia o {name}</span><ArrowRight size={16} /><span><b>Cosa ne fa ROSS</b>ne parla, ricorda, propone</span><ArrowRight size={16} /><span><b>Dove {name} lo ritrova</b>«Cosa ricordo di te», sul tablet</span></div>
+    {groups.map((g) => <div className="attachment-group" key={g.id}>
       <header><FolderOpen size={18} /><h3>{g.label}</h3><span>{g.items.length}</span><p>{g.hint}</p></header>
-      <div className="document-list">{g.items.map((doc) => <button type="button" className="document-card surface" key={doc.id} onClick={() => setOpen(doc)}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<span className="document-meta">{doc.author}</span></div><ArrowRight size={17} /></button>)}</div>
+      {g.items.length ? <div className="document-list">{g.items.map((doc) => <button type="button" className="document-card surface" key={doc.id} onClick={() => setOpen(doc)}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<div className="knows-meta"><span><b>Scritto da</b>{doc.author}</span><span><b>ROSS</b>{doc.use || defaultUse[familyOf(doc)]}</span><span><b>Lo vede</b>{doc.seenBy || "Staff e ROSS"}</span></div></div><ArrowRight size={17} /></button>)}</div>
+        : <p className="knows-empty">{g.empty}</p>}
     </div>)}
     <Dialog open={Boolean(open)} onClose={() => setOpen(null)} title={open?.title || ""} size="sm">
       {open && <div className="document-view"><span className="preview-tag">DOCUMENTO DIMOSTRATIVO</span><p className="document-view-meta">{open.kind} · {open.author} · {open.date}</p>
         {open.image && <img className="document-view-image" src={src(open.image)} alt={open.title} onError={(event) => { event.currentTarget.style.display = "none"; }} />}
         {open.summary && <p>{open.summary}</p>}
+        {open.reminders && <ReminderDoc doc={open} name={name} />}
         {open.body && <dl>{open.body.map(([label, text]) => <div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl>}
+        <p className="knows-source">Fonte: {sourceOf(open)} · ROSS: {open.use || defaultUse[familyOf(open)]} · Lo vede: {open.seenBy || "Staff e ROSS"}</p>
       </div>}
     </Dialog>
-    <DataExplanation>ROSS può citare un allegato come fonte quando serve, ma non interpreta referti né valori e non sostituisce il gestionale.</DataExplanation>
+    <DataExplanation>ROSS usa questi documenti per accompagnare {name}: non interpreta referti né valori e non sostituisce il gestionale. Ciò che {name} racconta a ROSS resta tra loro.</DataExplanation>
   </section>;
 }
 
@@ -263,5 +275,26 @@ function ActivitySuggestions({ state, resident, name }) {
         <div className="modal-actions"><Button variant="ghost" onClick={() => actions.setResidentMode(resident.id, "Attiva")}>{name} è d'accordo: passa ad Attiva</Button><Button onClick={() => setProposal(null)}>La propongo di persona</Button></div>
       </div>)}
     </Dialog>
+  </div>;
+}
+
+// il documento dei promemoria per le medicine, inserito dalla struttura.
+// ROSS ripete le parole scritte all'ora indicata: non sa cosa sono le medicine, non registra se sono state prese, non avvisa nessuno.
+function ReminderDoc({ doc, name }) {
+  return <div className="reminder-doc">
+    <h4>Cosa ricorderà ROSS</h4>
+    <ol className="reminder-list">{doc.reminders.map(([time, moment, what, line]) => <li key={time}>
+      <div className="reminder-time"><strong>{time}</strong><span>{moment}</span></div>
+      <div><p className="reminder-what">{what.charAt(0).toUpperCase() + what.slice(1)}</p><p className="reminder-line"><span>ROSS dirà</span>«{line}»</p></div>
+    </li>)}</ol>
+    <div className="reminder-answers"><span>{name} può rispondere</span><div><em>«Va bene»</em><em>«Ricordamelo tra poco»</em><em>«Non ricordarmelo più»</em></div></div>
+    <div className="reminder-limits"><span>COSA ROSS NON FA</span><ul>
+      <li>Non sa che medicine sono: ripete solo le parole scritte dall'infermeria.</li>
+      <li>Non controlla e non registra se {name} le ha prese.</li>
+      <li>Non avvisa nessuno se {name} dice di no o non risponde.</li>
+      <li>La somministrazione e le eventuali modifiche restano all'infermeria.</li>
+    </ul></div>
+    <p className="reminder-consent">{doc.consent}</p>
+    {doc.silent && <p className="reminder-consent">{name} ha ROSS in modalità silenziosa: ha chiesto di ricevere comunque questi promemoria.</p>}
   </div>;
 }
