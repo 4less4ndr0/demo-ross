@@ -256,9 +256,9 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ### Novembre 2026 · 04/11/2026 · «Cosa sa ROSS» e promemoria per le medicine
 - **Richiesta:** inserire in ogni profilo un documento della struttura con le medicine da ricordare, e organizzare i documenti utili a ROSS senza disperderli (anteprima approvata, senza le schede conversazionali del tablet).
 - **Modifiche:**
-  - ritratto: il tab **Allegati diventa «Cosa sa ROSS»**, con le quattro sezioni Per conoscerla · La sua giornata · Per stare bene · Scritto da lei/lui, la striscia "chi lo scrive → cosa ne fa ROSS → dove lo ritrova" e su ogni card chi l'ha scritto, cosa ne fa ROSS e chi lo vede; sezioni vuote come invito;
+  - ritratto: il tab **Allegati diventa «Cosa sa ROSS»**, con le tre sezioni Per conoscerla · La sua giornata · Per stare bene, la striscia "chi lo scrive → cosa ne fa ROSS → dove lo ritrova" e su ogni card chi l'ha scritto, cosa ne fa ROSS e chi lo vede; sezioni vuote come invito;
   - **promemoria per le medicine** in tutti gli 8 profili (documento della struttura: orari, parole dell'infermeria, frase di ROSS con il tu o il Lei, riquadro "Cosa ROSS non fa", consenso);
-  - nuovi documenti di Elena: Le persone care, Le date importanti, Appuntamenti della settimana, «Come vorrei essere trattata» (scritto da lei);
+  - nuovi documenti di Elena: Le persone care, Le date importanti, Appuntamenti della settimana;
   - tablet di Elena: in Promemoria anche quello **dall'infermeria** (stasera alle 19:30); in Spunti per oggi la card **«Oggi in residenza»** (menù, chi c'è di turno, un'attività);
   - aggiornata in `AGENTS.md` la regola sui promemoria (prima: niente farmaci negli esempi).
 - **Non inclusi (per scelta):** la scheda dedicata del promemoria dell'infermeria sul tablet e le fonti in «Cosa ricordo di te».
