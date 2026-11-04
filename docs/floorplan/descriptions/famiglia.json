@@ -2,7 +2,7 @@
   "files": {
     "src/pages/FamilyExperience.jsx": {
       "name": "Schermate della Famiglia",
-      "description": "L'app per iPhone di Anna: Oggi, Da lei (racconti e ricordi di Elena), il + per mandarle qualcosa, Da te e Insieme, con la schermata di blocco."
+      "description": "L'app per iPhone di Anna: Oggi, Da lei (racconti e ricordi di Elena), il + per mandarle qualcosa (con l'interruttore \"Anche alla struttura\"), Da te e Insieme, con la schermata di blocco."
     }
   }
 }

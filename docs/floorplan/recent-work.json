@@ -1,6 +1,43 @@
 {
-  "updatedAt": "2026-11-02T18:39:31.000Z",
+  "updatedAt": "2026-11-04T17:33:29.000Z",
   "tasks": [
+    {
+      "title": "Ospiti come archetipi e ritratto rivisto",
+      "request": "Rivedere le schede degli ospiti in funzione di cos'è ROSS oggi: ogni ospite un archetipo; inviti via ROSS solo in modalità Attiva; allegati per ogni ospite; condividere dalla Famiglia anche con la struttura",
+      "summary": "Otto archetipi (Carlo lo usa come strumento, Antonio lo adora troppo, Mario riservato, Ada appena arrivata…). Il ritratto ha \"Spunti di ROSS\", il tab \"Con ROSS\" e gli allegati per provenienza; la struttura può chiedere a ROSS di proporre un'attività, che parte solo in modalità Attiva. Nel + della Famiglia c'è \"Anche alla struttura\".",
+      "items": [
+        {
+          "ref": "f:src/pages/ResidentProfile.jsx",
+          "change": "changed",
+          "note": "Spunti di ROSS, tab \"Con ROSS\", invito con avviso di modalità, allegati per provenienza da aprire."
+        },
+        {
+          "ref": "f:src/data/careInsights.js",
+          "change": "changed",
+          "note": "Come usa ROSS ogni ospite e gli spunti per invogliarlo; segnali di Antonio e Carlo corretti."
+        },
+        {
+          "ref": "f:src/data/chatScript.js",
+          "change": "changed",
+          "note": "Nuove risposte \"Proponi a…\" e \"Come invogliare…\"; Carlo che parla poco non è un segnale."
+        },
+        {
+          "ref": "f:src/data/demoData.js",
+          "change": "changed",
+          "note": "Documenti simulati per ogni ospite; conversazioni e modalità secondo l'archetipo."
+        },
+        {
+          "ref": "f:src/pages/FamilyExperience.jsx",
+          "change": "changed",
+          "note": "Interruttore \"Anche alla struttura\" nel +."
+        },
+        {
+          "ref": "f:src/state/DemoContext.jsx",
+          "change": "changed",
+          "note": "Inviti chiesti a ROSS e copia dei messaggi di Anna per la struttura."
+        }
+      ]
+    },
     {
       "title": "\"Parla con ROSS\" come una conversazione vera",
       "request": "Rendere la demo della conversazione il più vicina possibile a come sarebbe davvero",
@@ -79,23 +116,6 @@
           "ref": "f:src/components/GuidedTour.jsx",
           "change": "changed",
           "note": "Nuovo passo \"Il promemoria, all'ora giusta\"."
-        }
-      ]
-    },
-    {
-      "title": "Due attività suggerite per ogni ospite",
-      "request": "Proporre attività concrete nel ritratto",
-      "summary": "Ogni ospite ha due attività del calendario d'esempio, legate agli interessi della biografia d'ingresso, nei suoi momenti migliori e con il tu o il Lei che preferisce.",
-      "items": [
-        {
-          "ref": "f:src/data/activities.js",
-          "change": "changed",
-          "note": "Due attività per ospite."
-        },
-        {
-          "ref": "f:src/pages/ResidentProfile.jsx",
-          "change": "changed",
-          "note": "La lista \"Tutte le attività\" scorre dentro la finestra."
         }
       ]
     }

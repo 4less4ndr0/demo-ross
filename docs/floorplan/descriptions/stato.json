@@ -2,7 +2,7 @@
   "files": {
     "src/state/DemoContext.jsx": {
       "name": "Memoria condivisa della demo",
-      "description": "Tiene ruolo, tema, conversazioni, allegati, consensi, messaggi di Anna, promemoria (di Anna e quelli che Elena ha chiesto lei) con le sue risposte, e spunti salvati; li salva nel browser e mostra gli avvisi con \"Annulla\"."
+      "description": "Tiene ruolo, tema, conversazioni, allegati, consensi, messaggi di Anna (e la copia per la struttura), promemoria, inviti chiesti a ROSS e spunti salvati; li salva nel browser e mostra gli avvisi con \"Annulla\"."
     },
     "src/state/familyNews.js": {
       "name": "Novità e promemoria per la visita",

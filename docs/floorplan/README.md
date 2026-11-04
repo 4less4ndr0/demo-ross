@@ -9,9 +9,9 @@ Si apre **dentro la demo**: pillola "Vista demo" in basso a destra → **Mappa**
 Dentro trovi:
 - **la panoramica**: Guscio dell'app, Vista Struttura (con Chiedi a ROSS, Ospiti e ritratto, Report e Panoramica, Cornice), Vista Famiglia, Tablet di ROSS, Pezzi comuni, Memoria della demo, Contenuti della demo, Pubblicazione, Controlli;
 - **Start here**: un giro di un minuto per chi arriva ora;
-- **Flows**: quattro percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge", "Anna manda, ROSS riordina, Elena ascolta");
+- **Flows**: sette percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge", "Anna manda, ROSS riordina, Elena ascolta", "Un promemoria, all'ora giusta", "La struttura chiede a ROSS di proporre un'attività", "Anna condivide anche con la struttura");
 - **Screens**: le 16 schermate dell'app e cosa c'è dietro a ciascuna;
-- **Recent work**: le ultime modifiche (Famiglia su iPhone, schede Da lei / Da te / Insieme, il + come messaggio libero con il riordino di ROSS, visita guidata e "Ripristina la demo", Ospiti in ordine alfabetico).
+- **Recent work**: le ultime quattro modifiche, in cima "Ospiti come archetipi e ritratto rivisto" (spunti di ROSS, tab "Con ROSS", inviti via ROSS solo in modalità Attiva, allegati per provenienza, "Anche alla struttura" nella Famiglia).
 
 Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codice, niente server esposti.
 
@@ -26,7 +26,7 @@ Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codi
 
 ## Aggiornarla
 
-**Ultimo aggiornamento: 2 novembre 2026 (dopo "Parla con ROSS"), senza plugin.** I dati incorporati nella mappa (`window.FLOORPLAN` dentro `public/mappa-ross.html`) sono stati aggiornati da uno script che rilegge il codice: righe, simboli e collegamenti di import di ogni file, schermate dalle rotte di `App.jsx`, più le descrizioni, i percorsi (ora anche "Un promemoria, all'ora giusta"), il giro e i lavori recenti scritti a mano. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
+**Ultimo aggiornamento: 4 novembre 2026 (dopo gli ospiti come archetipi), senza plugin**, con lo script [`aggiorna-mappa.py`](aggiorna-mappa.py): `python3 docs/floorplan/aggiorna-mappa.py .` dalla radice del progetto. Rilegge il codice (righe, hash, simboli e collegamenti di import di ogni file, compresi gli import dinamici) e aggiorna `window.FLOORPLAN` dentro `public/mappa-ross.html` e i tre sorgenti di questa cartella. Descrizioni, percorsi, giro e lavori recenti sono scritti a mano in cima allo script: per un aggiornamento futuro si cambiano lì. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
 
 
 Floorplan è un plugin di Claude Code (e Codex). Per rigenerare la mappa dopo nuove modifiche:

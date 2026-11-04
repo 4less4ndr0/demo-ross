@@ -6,7 +6,7 @@
     },
     "src/pages/AskRoss.jsx": {
       "name": "Chat \"Chiedi a ROSS\"",
-      "description": "La home della Struttura: si fa una domanda, anche da telefono, e ROSS risponde citando la fonte."
+      "description": "La home della Struttura: si fa una domanda, anche da telefono, e ROSS risponde citando la fonte. Se si chiede di proporre un'attività, la richiesta parte davvero (o compare l'avviso della modalità)."
     }
   }
 }
