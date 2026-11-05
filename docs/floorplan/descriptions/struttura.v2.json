@@ -47,6 +47,14 @@
     "src/data/quickChat.js": {
       "name": "Le risposte di ROSS, al volo",
       "description": "Il motore della piccola chat: riconosce le domande con parole chiave e i nomi degli ospiti, riassume dai momenti, prepara le bozze e rifiuta ciò che è fuori perimetro (contenuto, classifiche, salute, gestione)."
+    },
+    "src/components/ResidenceMap.jsx": {
+      "name": "La residenza, adesso",
+      "description": "La pianta della Residenza Aurora vista dall'alto, un piano alla volta, in apertura del canale: indice dei piani, alloggi e spazi con lo stato del loro ROSS (attivo, acceso, in pausa, da sistemare) e il dettaglio di ciò che si tocca. Mai cosa si dice."
+    },
+    "src/data/residence.js": {
+      "name": "I piani e i ROSS della residenza",
+      "description": "La geometria dei tre piani, lo stato dei dispositivi (mai delle persone), le etichette degli stati e il piano da aprire all'inizio."
     }
   }
 }
