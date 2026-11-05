@@ -10,6 +10,7 @@ import { channelActions, momentFilters, useMoments } from "../state/channelStore
 import { useDemo } from "../state/DemoContext";
 import { PassionNetwork } from "../components/PassionNetwork";
 import { QuickChat } from "../components/QuickChat";
+import { ResidenceMap } from "../components/ResidenceMap";
 
 // Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto e riceve qualcosa in cambio.
 // Due schede: «Il canale» (Proponi uno spunto · Cosa è emerso) e «Ospiti» (lista e ritratto della Struttura,
@@ -62,6 +63,7 @@ export function StructureChannel() {
 
   return (
     <main className="s2-main">
+      <ResidenceMap />
       <section className="s2-hero">
         <span className="s2-eyebrow">Il canale con ROSS</span>
         <h1>Tu porti uno spunto.<br />ROSS ti restituisce un'occasione.</h1>

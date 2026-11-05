@@ -278,6 +278,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Struttura 2.0: «La residenza, adesso»
+- **Richiesta:** nel canale, come immagine d'apertura per la direzione, la piantina di un senior living con i ROSS disposti all'interno: quali sono attivi e quali in uso adesso (anteprima approvata).
+- **Modifiche:**
+  - nuovo `src/components/ResidenceMap.jsx` (dati in `src/data/residence.js`), in cima a «Il canale»;
+  - piantina 3D su tre piani: piano terra con salone, sala lettura, cucina didattica, ingresso e giardino; 12 alloggi, 8 con ROSS;
+  - in alto tre numeri sui dispositivi (alloggi con ROSS, ROSS negli spazi comuni, da sistemare); legenda degli stati;
+  - un ROSS attivo «respira» con onde arancioni (fermo con «riduci movimento»); stati fissi nella demo: attivi Elena, Teresa e il salone, Carlo da sistemare, Mario e Bruno in pausa perché in modalità silenziosa;
+  - scheda dell'alloggio o dello spazio con stato, modalità, passioni e i collegamenti al ritratto; su telefono pianta piatta per piano.
+
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0: «ROSS, al volo», la piccola chat per le domande veloci
 - **Richiesta:** nella 2.0 una bolla in basso a destra con una piccola chat in stile assistenza, per domande veloci. Non è uno strumento per interrogare ROSS sugli ospiti: riassume ciò che ROSS ha già restituito, agisce in fretta (con conferma) e spiega come funziona ROSS. La Struttura attuale e la sua chat restano intatte.
 - **Fatto (solo nella 2.0, su tutte le sue pagine):**
