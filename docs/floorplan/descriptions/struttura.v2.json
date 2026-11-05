@@ -30,7 +30,7 @@
     },
     "src/data/moments.js": {
       "name": "I momenti emersi con ROSS",
-      "description": "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte e cose da guardare di persona, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."
+      "description": "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona e richieste pratiche confermate dall'ospite, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."
     },
     "src/data/demoClock.js": {
       "name": "L'orologio della demo",

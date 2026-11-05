@@ -4,11 +4,19 @@
 //
 // Ogni momento:
 //   id, residentId, quando (data reale, ISO: calcolata da oggi con at(giorniFa, "hh:mm"));
-//   origine: "spunto" | "spontaneo" | "invito" | "scelta" | "da_osservare";
+//   origine: "spunto" | "spontaneo" | "invito" | "scelta" | "da_osservare" | "richiesta";
 //   spunto { testo, tipo } ed esito ("accolto" | "pensa" | "no" | "non_ora" | "attesa"), solo se nasce da uno spunto;
 //   titolo (facoltativo, la frase che apre il momento), racconto (1–2 frasi), cosaPuoiFare (facoltativo);
 //   stato: "nuovo" | "visto" | "fatto"; etichetta e tono facoltativi (altrimenti dipendono dall'origine);
 //   consenso: false se non va scritto «… è contento che tu lo sappia».
+//
+// Le **richieste pratiche** (origine "richiesta") sono piccole cose della quotidianità che l'ospite chiede a ROSS
+// di far sapere al personale e che conferma con un sì: la stanza e gli oggetti (luce, bagno, TV, finestre), il comfort
+// (freddo, caldo, rumore), i piccoli desideri pratici («vorrei il giornale»). Non sono avvisi: ROSS non deduce mai
+// un problema da ciò che sente, e salute e urgenze non diventano mai una richiesta (ROSS rimanda al campanello).
+// Campi: richiesta (una riga con parole semplici), categoria ("stanza" | "comfort" | "desiderio"), chiusura (la frase
+// con cui ROSS chiude il cerchio con l'ospite), stato ("in_attesa" | "ci_pensiamo" | "fatto"), chiusoConOspite.
+// Niente priorità, assegnazioni, tempi di risposta o numeri: non è un sistema di ticket.
 //
 // La voce è sempre quella di un collega, in terza persona («ROSS ha nominato…»), e segue la regola d'oro:
 // come è stato accolto uno spunto e cosa aiuta, mai cosa ha raccontato l'ospite (docs/contratto-informativo-struttura.md).
@@ -28,8 +36,13 @@ const originLabel = {
   invito: "Un invito",
   scelta: "Una sua scelta",
   da_osservare: "Da guardare di persona",
+  richiesta: "Ha chiesto",
 };
 export const labelOf = (m) => m.etichetta || originLabel[m.origine];
+export const requestStates = { in_attesa: "In attesa", ci_pensiamo: "Ci pensiamo noi", fatto: "Fatto" };
+export const requestCategories = ["stanza", "comfort", "desiderio"];
+// La richiesta della lampada che Elena fa sul tablet, nella conversazione con ROSS.
+export const lampRequest = { residentId: "elena", categoria: "stanza", richiesta: "La lampada sul comodino non si accende", chiusura: "Hanno sistemato la lampada sul comodino: adesso la luce va bene?" };
 // Il tono colora il momento nelle linee del tempo: verde va bene, corallo da guardare di persona, neutro il resto.
 export const toneOf = (m) => m.tono || (m.origine === "da_osservare" ? "watch" : m.origine === "spunto" ? (m.esito === "accolto" ? "good" : "neutral") : m.origine === "spontaneo" ? "good" : "neutral");
 
@@ -69,7 +82,6 @@ export const seedMoments = () => [
   // Bruno: senza famiglia vicina.
   m(1, "16:10", { id: "ins-bruno-treni", residentId: "bruno", origine: "spontaneo", racconto: "Con Bruno l'interesse per i treni apre la conversazione: ha voglia di raccontare, più di quanto mostri durante il giorno.", cosaPuoiFare: "Chiedigli dei treni mentre gli porti il caffè del pomeriggio: è un argomento che lo apre.", stato: "nuovo" }),
   m(2, "17:10", { id: "bruno-chiamata", residentId: "bruno", origine: "spontaneo", etichetta: "Di sua iniziativa", titolo: "Ha chiamato ROSS dopo il riposo", racconto: "È in silenzio quasi sempre, ma nel tardo pomeriggio ha voglia di raccontare." }),
-  m(4, "15:20", { id: "bruno-freddo", residentId: "bruno", origine: "da_osservare", titolo: "Ha detto di avere freddo nel pomeriggio", racconto: "Un bisogno che ha espresso a ROSS.", cosaPuoiFare: "Verifica la temperatura della stanza dopo pranzo.", stato: "nuovo" }),
   m(7, "17:00", { id: "h-bruno-carte", residentId: "bruno", origine: "spunto", spunto: { testo: "Il gruppo di carte del giovedì alle 15.", tipo: "attivita" }, esito: "pensa", racconto: "L'idea gli piace, ma alle 15 riposa: chiede se si può fare più tardi." }),
   m(14, "17:15", { id: "h-bruno-ferrovia", residentId: "bruno", origine: "spunto", spunto: { testo: "Gli anni in ferrovia, dalla biografia d'ingresso.", tipo: "ricordo" }, esito: "accolto", racconto: "L'ha accolto volentieri, contento che qualcuno se ne ricordasse." }),
 
@@ -85,7 +97,11 @@ export const seedMoments = () => [
 
   // Mario: il riservato.
   m(0, "17:20", { id: "mario-17", residentId: "mario", origine: "spontaneo", etichetta: "Di sua iniziativa", titolo: "Ha cercato ROSS, come sempre dopo le 17", racconto: "Poche parole, senza fretta: è il suo modo, e va bene così." }),
-  m(2, "08:30", { id: "mario-ginocchio", residentId: "mario", origine: "da_osservare", titolo: "Ha riferito un fastidio al ginocchio, al mattino", racconto: "Un bisogno che ha espresso a ROSS.", cosaPuoiFare: "Chiedigli come va e fallo presente a chi se ne occupa." }),
+
+  // Richieste pratiche di esempio, confermate dall'ospite, con stati diversi. Quella della lampada di Elena nasce sul tablet.
+  m(0, "15:40", { id: "req-bruno-freddo", residentId: "bruno", origine: "richiesta", confermato: true, categoria: "comfort", richiesta: "In camera fa freddo nel pomeriggio", chiusura: "Hanno guardato il riscaldamento della tua camera: adesso il pomeriggio va meglio?", stato: "in_attesa" }),
+  m(1, "09:10", { id: "req-lucia-giornale", residentId: "lucia", origine: "richiesta", confermato: true, categoria: "desiderio", richiesta: "Vorrebbe il giornale al mattino", chiusura: "Da domani il giornale ti arriva al mattino: ti va bene così?", stato: "ci_pensiamo" }),
+  m(2, "18:20", { id: "req-carlo-telecomando", residentId: "carlo", origine: "richiesta", confermato: true, categoria: "stanza", richiesta: "Il telecomando della TV non funziona", chiusura: "Hanno cambiato le pile del telecomando: adesso la TV si accende?", stato: "fatto", chiusoConOspite: true }),
 
   // Teresa: la veterana che trascina gli altri.
   m(0, "15:31", { id: "teresa-canzone", residentId: "teresa", origine: "spontaneo", etichetta: "Di sua iniziativa", titolo: "Ha proposto una canzone per il gruppo", racconto: "Usa ROSS per trovare cose da fare con gli altri." }),

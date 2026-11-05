@@ -1,12 +1,12 @@
 import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Heart, Eye, HandHelping, Leaf, MessageCircle, Send, Sparkles, Users } from "lucide-react";
-import { needsFor, presenceFor, rossTips, signalsFor, usageStyle } from "../data/careInsights";
+import { presenceFor, rossTips, signalsFor, usageStyle } from "../data/careInsights";
 import { narrativeFor } from "../data/reportNarrative";
 import { graphKind, graphStatus, outsideLinks, passionsOf, personalLinks, statusFromEsito, viaOf } from "../data/interestGraph";
 import { channelResident } from "../data/channel";
 import { dayLabel, daysAgo, timeText } from "../data/demoClock";
-import { labelOf, toneOf } from "../data/moments";
+import { labelOf, requestStates, toneOf } from "../data/moments";
 import { momentFilters, useMoments } from "../state/channelStore";
 import { Esito } from "../pages/StructureChannel";
 import { Avatar, residentPhoto } from "./Common";
@@ -38,7 +38,10 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
   const own = signalsFor(resident.id);
   const good = own.filter((s) => s.positive).map((s) => `${capitalize(s.signal)}, ${trendWords(s)}`);
   const watch = [...own.filter((s) => !s.positive).map((s) => `${capitalize(s.signal)}, ${trendWords(s)}`), ...presenceFor(resident.id).map(presenceWords)];
-  const asked = needsFor(resident.id).map((n) => n.text);
+  // «Ha chiesto»: solo le richieste pratiche confermate dall'ospite (stanza, comfort, piccoli desideri).
+  // I bisogni di salute o emotivi della Struttura attuale (needsFor) qui non compaiono.
+  const moments = useMoments();
+  const asked = moments.filter(momentFilters.haChiesto(resident.id));
   const tips = rossTips[resident.id];
 
   return <div className="v2-portrait">
@@ -51,7 +54,7 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
     <div className="v2-three">
       <section className="v2-note is-good"><h3><Heart size={17} />Cosa va bene</h3>{good.length ? <ul>{good.map((t) => <li key={t}>{t}</li>)}</ul> : <p>ROSS lo sta ancora scoprendo.</p>}</section>
       <section className="v2-note is-watch"><h3><Eye size={17} />Da osservare di persona</h3>{watch.length ? <ul>{watch.map((t) => <li key={t}>{t}</li>)}</ul> : <p>Niente di particolare rispetto al solito.</p>}</section>
-      <section className="v2-note is-asked"><h3><HandHelping size={17} />Ha chiesto</h3>{asked.length ? <ul>{asked.map((t) => <li key={t}>{t}</li>)}</ul> : <p>Niente di particolare in questi giorni.</p>}</section>
+      <section className="v2-note is-asked"><h3><HandHelping size={17} />Ha chiesto</h3>{asked.length ? <ul>{asked.map((m) => <li key={m.id}>{m.richiesta} <small className="v2-asked-state">· {requestStates[m.stato].toLowerCase()}</small></li>)}</ul> : <p>Nessuna richiesta pratica in questi giorni.</p>}<small className="v2-asked-note">Solo ciò che ha chiesto a ROSS di far sapere al personale, e ha confermato.</small></section>
     </div>
 
     <InterestMap resident={resident} onProposeText={onProposeText} />
@@ -110,8 +113,13 @@ export function WithRossV2({ resident, onPropose, onOpenSpunti }) {
         <h3>{label}{date && <small>{date}</small>}</h3>
         <ol>{days[day].map((m) => { const tone = toneOf(m); const Icon = toneIcon[tone]; const spunto = m.origine === "spunto"; return <li key={m.id} id={`m-${m.id}`} className={`v2-feed-item is-${tone}${spunto ? " is-spunto" : ""}`}>
           <time>{timeText(m.quando)}</time>
-          <span className="v2-feed-dot">{spunto ? <Send size={13} /> : <Icon size={14} />}</span>
-          {spunto
+          <span className="v2-feed-dot">{spunto ? <Send size={13} /> : m.origine === "richiesta" ? <HandHelping size={13} /> : <Icon size={14} />}</span>
+          {m.origine === "richiesta"
+            ? <div className="v2-feed-card v2-feed-row">
+                <div className="v2-feed-meta"><span>Ha chiesto · confermato da {name}</span><em className={`s2-request-state is-${m.stato}`}>{requestStates[m.stato]}</em></div>
+                <p className="v2-feed-spunto">{m.richiesta}</p>
+              </div>
+            : spunto
             ? <div className="v2-feed-card v2-feed-row">
                 <div className="v2-feed-meta"><span>Dal tuo spunto</span><Esito value={m.esito} /></div>
                 <p className="v2-feed-spunto">«{m.spunto.testo}»</p>

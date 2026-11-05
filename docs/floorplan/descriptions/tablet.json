@@ -2,7 +2,7 @@
   "files": {
     "src/pages/RossExperience.jsx": {
       "name": "Schermate del tablet",
-      "description": "La home di Elena con le schede \"una cosa alla volta\" (novità da Anna, promemoria, anche quello dall'infermeria, giochi, cosa ricordo di te), \"Oggi in residenza\" e \"Parla con ROSS\" con i sottotitoli."
+      "description": "La home di Elena con le schede \"una cosa alla volta\" e \"Parla con ROSS\" con i sottotitoli. Nella conversazione Elena può chiedere a ROSS di far sapere al personale una piccola cosa pratica (la lampada), con conferma; quando è sistemata ROSS glielo dice. Salute e urgenze: solo il campanello."
     }
   }
 }
