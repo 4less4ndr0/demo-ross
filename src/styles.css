@@ -1907,7 +1907,7 @@ body.has-quickchat [data-sonner-toaster]{--offset-bottom:140px!important;--mobil
    rosso = da sistemare. Il rosso si usa solo per «da sistemare». */
 .rm{--rm-h:222px;--rm-on:#f2a676;--rm-on-ring:#a5632f;--rm-pause:#80878a;--rm-fix:#b42318;--rm-plan-bg:#ece6da;--rm-flat:#fffdf8;--rm-empty:#ebe8e1;--rm-empty-text:#575e5b;--rm-muted:#566060;--rm-common:#f4efe6;--rm-garden:#e4f1e0;
   display:grid;grid-template-columns:164px minmax(0,1fr);grid-template-areas:"head head" "floors stage" "floors legend";column-gap:22px;row-gap:10px;align-items:start;
-  max-height:380px;box-sizing:border-box;margin:28px 0 8px;padding:20px 24px;border-radius:28px;background:linear-gradient(180deg,#fffdf8,#f6f1e7);box-shadow:var(--shadow)}
+  max-height:380px;box-sizing:border-box;margin:24px 0 28px;padding:20px 24px;border-radius:28px;background:linear-gradient(180deg,#fffdf8,#f6f1e7);box-shadow:var(--shadow)}
 .rm.has-panel{grid-template-columns:164px minmax(0,1fr) 292px;grid-template-areas:"head head panel" "floors stage panel" "floors legend panel"}
 .rm-head{grid-area:head;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 16px}
 .rm-head .s2-eyebrow{flex-basis:100%}
