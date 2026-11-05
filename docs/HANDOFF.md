@@ -258,6 +258,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · «Aggiungi un documento» con contenuto testuale
+- **Richiesta:** in «Cosa sa ROSS» togliere «Scatta una foto» e lasciare solo «Aggiungi un documento», con la possibilità di caricare un file o di incollare un testo che diventa un `.txt`.
+- **Fatto (in tutte e due le Strutture, perché il componente è lo stesso):**
+  - un solo bottone, «Aggiungi un documento», con un menu a due voci:
+    - **Carica dal dispositivo:** foto, PDF, Word o `.txt`. Un `.txt` viene letto e il suo testo diventa il contenuto del documento;
+    - **Aggiungi contenuto testuale:** un dialog con titolo facoltativo e testo da incollare. Nasce un documento «Nome.txt» (tipo "Testo"), che si apre e si legge;
+  - nel ritratto della 2.0 il bottone in alto si chiama anche lui «Aggiungi un documento».
+- Codice: `textDocument` e `TextDocumentDialog` in `ResidentProfile.jsx`, stili `.text-doc-*` in fondo a `styles.css`.
+
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0 senza «Come avvicinarsi»
 - **Richiesta:** togliere la scheda «Come avvicinarsi»: nella 2.0 sono gli spunti il modo per avvicinarsi.
 - **Fatto, solo nella Struttura 2.0:**

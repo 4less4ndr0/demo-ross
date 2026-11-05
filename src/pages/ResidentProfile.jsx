@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, BellOff, Camera, Check, Clock, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Sparkles } from "lucide-react";
+import { ArrowRight, BellOff, Check, Clock, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Sparkles, TextCursorInput, Upload } from "lucide-react";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge, useStructureView } from "../components/Common";
@@ -10,7 +10,7 @@ import { DEMO_TODAY } from "../data/demoData";
 import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, rossTips, signalDetail, signalsFor, usageStyle } from "../data/careInsights";
 import { buildResidentReport } from "../data/reportNarrative";
 import { scheduledActivities, suggestedActivities } from "../data/activities";
-import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Tabs, TabsList, TabsTrigger } from "../components/ui";
+import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Input, Select, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
 
 // Ritratto dell'ospite secondo docs/contratto-informativo-struttura.md: come sta, come avvicinarsi,
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
@@ -61,7 +61,7 @@ export function ResidentProfile() {
   return <div className="profile-screen screen-enter">
     <section className="profile-header">
       <div className="profile-person"><Avatar resident={resident} size="xl" /><div><span className="eyebrow">RITRATTO · STANZA {resident.room}</span><h1>{resident.name}</h1><p>{resident.age} anni · {resident.daysWithRoss} giorni con ROSS · ultima conversazione {resident.lastInteraction}</p></div></div>
-      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} />{v2 ? <><Button onClick={() => { setTab("spunti"); window.setTimeout(() => document.querySelector(".s2-propose textarea")?.focus(), 50); }}><Send size={16} /> Proponi uno spunto</Button><Button variant="outline" onClick={() => setTab("allegati")}><Paperclip size={16} /> Allega una foto o un file</Button></> : <><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></>}</div>
+      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} />{v2 ? <><Button onClick={() => { setTab("spunti"); window.setTimeout(() => document.querySelector(".s2-propose textarea")?.focus(), 50); }}><Send size={16} /> Proponi uno spunto</Button><Button variant="outline" onClick={() => setTab("allegati")}><Paperclip size={16} /> Aggiungi un documento</Button></> : <><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></>}</div>
     </section>
     <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabList.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
     {tab === "spunti" && <ResidentSpunti resident={resident} />}
@@ -200,19 +200,23 @@ const malesP = ["carlo", "mario", "antonio", "bruno"];
 
 function Attachments({ resident, documents, onAdd }) {
   const fileRef = useRef(null);
-  const cameraRef = useRef(null);
   const [open, setOpen] = useState(null);
+  const [writing, setWriting] = useState(false);
   const name = resident.name.split(" ")[0];
   const male = malesP.includes(resident.id);
   const add = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (file) onAdd({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) });
+    if (!file) return;
+    // Un .txt si legge subito: il testo diventa il contenuto del documento.
+    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => onAdd(textDocument(resident.id, file.name.replace(/\.[^.]+$/, ""), text)));
+    else onAdd({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) });
   };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
   const groups = families.map(([id, f, m, hint, empty]) => ({ id, label: male ? m : f, hint, empty: empty(name, male), items: documents.filter((d) => familyOf(d) === id) }));
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Ciò che la struttura e la famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. Ogni cosa ha la sua fonte, e {name} la ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale.</p></div><div className="attachment-actions"><button className="ghost-button" onClick={() => cameraRef.current?.click()}><Camera size={16} /> Scatta una foto</button><button className="ghost-button" onClick={() => fileRef.current?.click()}><Paperclip size={16} /> Aggiungi un documento</button></div>
-    <input ref={cameraRef} type="file" hidden accept="image/*" capture="environment" onChange={add} /><input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} /></div>
+  return <section className="content-section"><div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Ciò che la struttura e la famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. Ogni cosa ha la sua fonte, e {name} la ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale.</p></div><div className="attachment-actions"><DropdownMenu><DropdownMenuTrigger asChild><button className="ghost-button"><Paperclip size={16} /> Aggiungi un documento</button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem icon={Upload} onSelect={() => fileRef.current?.click()}>Carica dal dispositivo</DropdownMenuItem><DropdownMenuItem icon={TextCursorInput} onSelect={() => setWriting(true)}>Aggiungi contenuto testuale</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
+    <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} /></div>
+    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} onSave={(title, text) => { onAdd(textDocument(resident.id, title, text)); setWriting(false); }} />
     <div className="knows-flow"><span><b>Chi lo scrive</b>struttura o famiglia</span><ArrowRight size={16} /><span><b>Cosa ne fa ROSS</b>ne parla, ricorda, propone</span><ArrowRight size={16} /><span><b>Dove {name} lo ritrova</b>«Cosa ricordo di te», sul tablet</span></div>
     {groups.map((g) => <div className="attachment-group" key={g.id}>
       <header><FolderOpen size={18} /><h3>{g.label}</h3><span>{g.items.length}</span><p>{g.hint}</p></header>
@@ -222,7 +226,7 @@ function Attachments({ resident, documents, onAdd }) {
     <Dialog open={Boolean(open)} onClose={() => setOpen(null)} title={open?.title || ""} size="sm">
       {open && <div className="document-view"><span className="preview-tag">DOCUMENTO DIMOSTRATIVO</span><p className="document-view-meta">{open.kind} · {open.author} · {open.date}</p>
         {open.image && <img className="document-view-image" src={src(open.image)} alt={open.title} onError={(event) => { event.currentTarget.style.display = "none"; }} />}
-        {open.summary && <p>{open.summary}</p>}
+        {open.summary && open.kind !== "Testo" && <p>{open.summary}</p>}
         {open.reminders && <ReminderDoc doc={open} name={name} />}
         {open.body && <dl>{open.body.map(([label, text]) => <div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl>}
         <p className="knows-source">Fonte: {sourceOf(open)} · ROSS: {open.use || defaultUse[familyOf(open)]} · Lo vede: {open.seenBy || "Staff e ROSS"}</p>
@@ -230,6 +234,29 @@ function Attachments({ resident, documents, onAdd }) {
     </Dialog>
     <DataExplanation>ROSS usa questi documenti per accompagnare {name}: non interpreta referti né valori e non sostituisce il gestionale. Ciò che {name} racconta a ROSS resta tra loro.</DataExplanation>
   </section>;
+}
+
+// «Aggiungi contenuto testuale»: si incolla un testo e diventa un documento .txt di «Cosa sa ROSS».
+const textDocument = (residentId, title, text) => {
+  const clean = text.trim();
+  const name = (title.trim() || clean.split("\n")[0].slice(0, 60) || "Testo").replace(/\.txt$/i, "");
+  return { residentId, origin: "staff", kind: "Testo", title: `${name}.txt`, summary: clean.length > 160 ? `${clean.slice(0, 157)}…` : clean, body: [["Testo", clean]] };
+};
+
+function TextDocumentDialog({ open, onClose, onSave, name }) {
+  const [title, setTitle] = useState("");
+  const [text, setText] = useState("");
+  const close = () => { setTitle(""); setText(""); onClose(); };
+  const save = (event) => { event.preventDefault(); if (!text.trim()) return; onSave(title, text); setTitle(""); setText(""); };
+  return <Dialog open={open} onClose={close} title="Aggiungi contenuto testuale" size="md">
+    <form className="text-doc-form" onSubmit={save}>
+      <p>Incolla o scrivi un testo: diventa un documento .txt che ROSS usa per accompagnare {name}.</p>
+      <label><span>Titolo <small>(se vuoi)</small></span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Per esempio: Note dell'educatrice" /></label>
+      <label><span>Testo</span><Textarea rows={9} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo…" autoFocus /></label>
+      {text.trim() && <small className="text-doc-preview"><FileText size={14} />{(title.trim() || text.trim().split("\n")[0].slice(0, 60)).replace(/\.txt$/i, "")}.txt · {text.trim().length} caratteri</small>}
+      <div className="text-doc-actions"><Button type="button" variant="outline" onClick={close}>Annulla</Button><Button type="submit" disabled={!text.trim()}>Aggiungi il documento</Button></div>
+    </form>
+  </Dialog>;
 }
 
 // Attività dal calendario demo, collegate solo agli interessi condivisi. Nessun collegamento reale.

@@ -1544,3 +1544,13 @@ button.document-card:hover{background:var(--surface-2)}
 @media(max-width:700px){.s2-top{grid-template-columns:1fr;gap:10px}.s2-top-spacer{display:none}.s2-top .top-tabs{order:0;width:auto;margin:0;border:0;background:transparent;padding:0;justify-content:flex-start}}
 @media(max-width:600px){.s2-top,.s2-main{padding-inline:16px}.s2-hero{padding:14px 0 28px}.s2-hero>p{font-size:17px}.s2-flow{flex-direction:column;align-items:stretch}.s2-flow-arrow{display:none!important}.s2-card{padding:22px 18px;border-radius:24px}.s2-insight{padding:20px 18px}.s2-story{font-size:17px}.s2-people{gap:6px}}
 @media(prefers-reduced-motion:reduce){.s2-insight{transition:none}.s2-insight.is-arrived{animation:none}}
+/* «Aggiungi contenuto testuale» in «Cosa sa ROSS» */
+.text-doc-form{display:grid;gap:14px;padding:4px 2px 2px}
+.text-doc-form>p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
+.text-doc-form label{display:grid;gap:6px}
+.text-doc-form label>span{font-size:12px;font-weight:700}
+.text-doc-form label small{font-weight:500;color:var(--muted)}
+.text-doc-form textarea{resize:vertical;min-height:180px;font:400 15px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;padding:12px 14px}
+.text-doc-preview{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.text-doc-actions{display:flex;justify-content:flex-end;gap:8px}
+.document-view dd{white-space:pre-line}
