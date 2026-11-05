@@ -264,6 +264,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Struttura 2.0: l'header resta in alto, intero e leggibile
+- **Richiesta:** su desktop le schede «Il canale · Ospiti» restavano fisse (la regola `.top-tabs{position:fixed}` per le finestre larghe), ma nella 2.0 erano senza sfondo e l'header non era fisso. Scorrendo passavano sopra il contenuto e sulle foto degli ospiti diventavano illeggibili.
+- **Fatto (solo nella 2.0):**
+  - è fisso l'**intero header** `.s2-top` (marchio e schede): `position:sticky`, sopra il contenuto, con lo sfondo della pagina velato (`color-mix` all'88%) e `backdrop-filter: blur(12px)`. Lo sfondo copre tutta la larghezza, anche oltre i 1180px del contenuto;
+  - al primo scroll compare una linea sottile in basso (classe `is-scrolled`, aggiunta da `StructureChannelLayout`);
+  - dentro l'header la regola fissa è annullata a tutte le larghezze (`position:static; transform:none`). Selettori con `.s2-app`, così la Struttura attuale non cambia;
+  - **schede:** inattive in `var(--muted)`, in hover con sfondo `var(--surface-2)`, attiva con `var(--surface-3)`. Restano su una riga fino a 3 voci, con lo spazio per «Richieste»;
+  - **telefono (fino a 700px):** header sticky anche lì; marchio e schede su una riga se ci stanno, altrimenti le schede vanno sotto, a tutta larghezza, su fondo pieno con un bordo;
+  - **ancore:** `scroll-margin-top` sugli elementi con `id` e sulla rete delle passioni, così un link a una sezione non finisce sotto l'header. La pillola «Vista demo» (120), i menu (200) e i toast restano sopra l'header (40).
+- **Verificato** scrollando a 1400, 1024 e 390px su canale, lista Ospiti e ritratto di Antonio: le schede restano sempre in cima e cliccabili. La scheda «Richieste» non è su `main` (sta nella PR 53): con questa regola ci sta, su una riga.
+
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0: una sola fonte di momenti, due grafi distinti, ROSS in terza persona, date intorno a oggi
 - **Richiesta:** quattro sistemazioni della 2.0, senza toccare la Struttura attuale:
   - un'unica fonte per i momenti emersi con ROSS, con un filtro diverso per canale, Spunti e Con ROSS;
