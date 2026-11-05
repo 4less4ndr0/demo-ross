@@ -203,7 +203,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
 | `src/pages/StructureChannel.jsx` | **Struttura 2.0** (`/struttura-2`): `StructureChannelLayout` (marchio e schede Il canale · Ospiti · Richieste, con il pallino sulle richieste da vedere, fornisce `StructureView` con `base` e `v2`), `StructureChannelPage` (contenitore per Ospiti e ritratto, gli stessi componenti della Struttura), la pagina del canale (flusso in 3 passi, riga di rimando alle richieste, rete delle passioni, «Proponi uno spunto», «Cosa è emerso» con il filtro `momentFilters.canale`), `ProposeCard` (anche nel ritratto, con `fixedId` e `prefill`), `MomentCard`, `MomentActions` (Visto/Fatto) ed `Esito`. Stili `.s2-*` in fondo a `styles.css`. |
-| `src/components/ResidenceMap.jsx` | Canale della 2.0, in apertura: **«La residenza, adesso»**, la pianta vista dall'alto un piano alla volta. Indice dei piani (`Tabs` verticali; su telefono pillole), pianta con alloggi e spazi posizionati in percentuale sulla geometria 18 × 6 di `floorsPlan`, pallino dello stato nell'angolo (`Pin`), tooltip Radix con lo stato a parole, legenda, dettaglio a destra (`RoomPanel`; su telefono `Sheet` dal basso). «Fatto, è ricollegato» con «Annulla», salvato in `ross-residence-v1`. |
+| `src/components/ResidenceMap.jsx` | Canale della 2.0: **«La residenza, adesso»**, un piano alla volta; su desktop il piano scelto è in 3D (`Floor3D`, `Room3D`: SVG con nomi e pallini in HTML sopra), su telefono la pianta piatta (`Plan`). Indice dei piani (`Tabs` verticali; su telefono pillole), pianta con alloggi e spazi posizionati in percentuale sulla geometria 18 × 6 di `floorsPlan`, pallino dello stato nell'angolo (`Pin`), tooltip Radix con lo stato a parole, legenda, dettaglio a destra (`RoomPanel`; su telefono `Sheet` dal basso). «Fatto, è ricollegato» con «Annulla», salvato in `ross-residence-v1`. |
 | `src/data/residence.js` | Dati della pianta: `floorsPlan` (tre piani, alloggi e spazi comuni con coordinate), `deviceState` e `deviceNote` (stato del dispositivo, mai della persona), `stateLabel` e `legendLabel`, `stateOrder`, `roomState(stanza, ospiti, ricollegati)` (la modalità Silenziosa diventa «in pausa») e `startFloor` (il piano da aprire all'inizio). |
 | `src/state/channelStore.js` | **La sola fonte dei momenti** letta da canale, Spunti e Con ROSS: `useMoments()`, `channelActions.send({ residentId, testo, tipo })` (crea un momento «spunto» in attesa; nella demo ROSS risponde in 6 secondi con `simulatedReply`) e `channelActions.mark(id, stato)` per Visto/Fatto, con «Annulla». I filtri delle tre viste sono in `momentFilters` (`canale`, `spunti(id)`, `storia(id)`). Nel browser (`ross-struttura2-v2`) si salvano solo lo stato dei momenti di partenza e i momenti nati da nuovi spunti; quelli di partenza si ricalcolano ogni volta da oggi. Per le richieste: `channelActions.request` (dal tablet, dopo il sì), `requestStep(id, "ci_pensiamo" o "fatto")` con «Annulla», `closeWithResident`, i filtri `richieste`, `haChiesto(id)` e `daChiudere(id)`, `getMoments()`. Tablet e Struttura 2.0 leggono lo stesso stato, anche in due finestre (evento `storage`). Richieste ripetute: `request` aggiorna la card esistente. Comunicazioni: `announce`, `toldTo`, filtri `daVedere`, `ciPensiamo`, `fatteOggi`, `comunicazioni`, `comunicazioniPer`; le comunicazioni sono escluse da `storia`. |
 | `src/components/ResidentSpunti.jsx` | Ritratto → **Spunti** (una persona → come proporle meglio): «Cosa ha capito ROSS» (`spuntoReading` e i tipi che funzionano o per ora meno, dagli esiti), poi solo i momenti con origine «spunto» raggruppati per esito (in attesa, sono piaciuti, ci sta pensando, non sono piaciuti o non era il momento), in card compatte; «Cosa puoi fare» solo finché non è Fatto. Accanto il modulo per proporne uno (con `?spunto=…&tipo=…` arriva già scritto). |
@@ -279,6 +279,23 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 05/11/2026 · «La residenza, adesso»: il piano scelto in 3D
+- **Richiesta:** mettere in 3D solo il piano che si sta guardando, non i tre insieme.
+- **Fatto:**
+  - su desktop il piano scelto è una **lastra in 3D**, vista dall'alto e un po' di lato (`Floor3D` e `Room3D` in `ResidenceMap.jsx`), con:
+    - gli alloggi e gli spazi con i muretti in fondo e a sinistra;
+    - la fila in fondo disegnata prima di quella davanti;
+    - gli stessi colori della pianta 2D: bordo tenue dello stato, alloggio selezionato con il bordo scuro, un alone verde che pulsa sotto i ROSS attivi;
+  - **nomi e pallini** stanno in HTML sopra l'SVG, in percentuale: restano leggibili a ogni larghezza, e la dimensione del testo segue la larghezza della pianta (`cqw`);
+  - **cosa resta uguale:** indice dei piani, tooltip, tastiera (Invio o spazio su un alloggio), dettaglio, legenda e card entro circa 380px;
+  - **telefono:** resta la pianta piatta, perché in 3D a 390px sarebbe troppo piccola.
+- **Verificato** a 1400, 1024 e 390px:
+  - si apre sul primo piano con Carlo, e il tooltip dice «ROSS: da sistemare»;
+  - il dettaglio si apre e si chiude con il clic e con la tastiera, e si cambia piano;
+  - il Salone si può selezionare, e il glow verde compare su Elena, Teresa e il Salone;
+  - nessun errore in console. `npm run build` e `npm run test:sites` passano; la mappa è rigenerata.
+- **Da sapere:** a 1024px con il dettaglio aperto il piano 3D diventa piccolo, ma i nomi si leggono ancora. Se serve più spazio, si può aprire il dettaglio sopra la pianta invece che accanto.
 
 ### Novembre 2026 · 05/11/2026 · Canale: il messaggio d'apertura torna in cima, sopra la pianta
 - **Richiesta:** mettere il messaggio del canale («Tu porti uno spunto. ROSS ti restituisce un'occasione.», la descrizione, il flusso in tre passi e il rimando alle richieste) sopra la pianta dei piani.

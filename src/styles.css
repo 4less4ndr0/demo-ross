@@ -1946,6 +1946,36 @@ body.has-quickchat [data-sonner-toaster]{--offset-bottom:140px!important;--mobil
 .rm-room.has-pausa{box-shadow:inset 0 0 0 2px #cdd0cf}
 .rm-room.has-da_sistemare{box-shadow:inset 0 0 0 2px #eeb0a8}
 .rm-room.is-selected{box-shadow:inset 0 0 0 2.5px var(--text)}
+/* Il piano scelto in 3D (desktop): lastra, alloggi con i muretti in fondo e a sinistra, nomi e pallini in HTML sopra */
+.rm-3d{position:relative;width:100%;max-width:calc(250px * var(--rm-ratio));aspect-ratio:var(--rm-ratio);margin:0 auto;container-type:inline-size}
+.rm-3d svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.rm-slab-top{fill:var(--rm-plan-bg);stroke:#d9d0bf;stroke-width:1;vector-effect:non-scaling-stroke}
+.rm-slab-side{fill:#ddd3c2}.rm-slab-side.is-right{fill:#d0c4ae}
+.rm-r{cursor:pointer;outline:none}
+.rm-r-floor{fill:var(--rm-flat);stroke:#d9d2c4;stroke-width:1.5;vector-effect:non-scaling-stroke;transition:filter .15s}
+.rm-r-wall{fill:#f2ece1;stroke:#d8cfbf;stroke-width:1;vector-effect:non-scaling-stroke}.rm-r-wall.is-left{fill:#e8e0d1}
+.rm-r:hover .rm-r-floor{filter:brightness(.97)}
+.rm-r.is-empty .rm-r-floor{fill:var(--rm-empty);stroke:#d3ccbf}
+.rm-r.is-empty .rm-r-wall{fill:#e4e0d8}.rm-r.is-empty .rm-r-wall.is-left{fill:#dbd6cc}
+.rm-r.is-comune .rm-r-floor{fill:var(--rm-common)}
+.rm-r.is-giardino .rm-r-floor{fill:var(--rm-garden);stroke:#bcd6b4}
+.rm-r.is-giardino .rm-r-wall{fill:#d8e9d2}.rm-r.is-giardino .rm-r-wall.is-left{fill:#cde2c6}
+.rm-r.has-attivo .rm-r-floor{fill:color-mix(in srgb,var(--green) 7%,var(--rm-flat));stroke:color-mix(in srgb,var(--green) 50%,#fff);stroke-width:2}
+.rm-r.is-comune.has-attivo .rm-r-floor{fill:color-mix(in srgb,var(--green) 8%,var(--rm-common))}
+.rm-r.has-acceso .rm-r-floor{stroke:#e8c2a2;stroke-width:2}
+.rm-r.has-pausa .rm-r-floor{stroke:#c9cdcc;stroke-width:2}
+.rm-r.has-da_sistemare .rm-r-floor{stroke:#eba79e;stroke-width:2}
+.rm-r.is-selected .rm-r-floor{stroke:var(--text);stroke-width:2.5}
+.rm-r:focus-visible .rm-r-floor{stroke:var(--green);stroke-width:3}
+.rm-r-glow{pointer-events:none;animation:rmGlow 2.6s ease-in-out infinite}
+@keyframes rmGlow{0%,100%{opacity:.55}50%{opacity:1}}
+.rm-3d-label{position:absolute;display:grid;gap:1px;pointer-events:none;font-size:clamp(9.5px,1.75cqw,12.5px);line-height:1.15;white-space:nowrap}
+.rm-3d-label strong{font-weight:700;color:var(--text)}
+.rm-3d-label small{font-size:.92em;color:var(--rm-muted)}
+.rm-3d-label.is-empty strong,.rm-3d-label.is-empty small{color:var(--rm-empty-text)}.rm-3d-label.is-empty strong{font-weight:600}
+.rm-3d-pin{position:absolute;width:0;height:0;pointer-events:none}
+.rm-3d-pin .rm-pin{top:0;right:auto;left:0;transform:translate(-50%,-50%)}
+@media (prefers-reduced-motion:reduce){.rm-r-glow{animation:none}}
 /* Il pallino dello stato, nell'angolo */
 .rm-pin{position:absolute;top:7px;right:7px;display:grid;place-items:center;width:12px;height:12px;border-radius:50%;background:var(--rm-on);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--rm-on-ring);color:#fff;font:800 10px/1 Inter,sans-serif}
 .rm-pin.is-attivo{background:var(--green);box-shadow:0 0 0 2px #fff}

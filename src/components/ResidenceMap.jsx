@@ -9,7 +9,7 @@ import { channelResident } from "../data/channel";
 import { deviceNote, floorsPlan, legendLabel, roomState, startFloor, stateLabel, stateOrder } from "../data/residence";
 import { useDemo } from "../state/DemoContext";
 
-// «La residenza, adesso»: l'immagine d'apertura del canale. Una pianta vista dall'alto, un piano alla volta:
+// «La residenza, adesso»: la pianta dei ROSS nel canale. Un piano alla volta, in 3D (su telefono la pianta piatta):
 // a sinistra l'indice dei piani, al centro la pianta, a destra il dettaglio (solo se si tocca qualcosa).
 // Mostra i ROSS e gli spazi, non le persone: lo stato del dispositivo, mai cosa si dice né da quanto.
 // Su telefono l'indice diventa una fila di pillole e il dettaglio un foglio dal basso.
@@ -73,7 +73,9 @@ export function ResidenceMap() {
             {floorsTopDown.map((f) => <FloorTab key={f.id} floor={f} rooms={rooms.filter((r) => r.floor.id === f.id)} active={f.id === floorId} />)}
           </TabsList>
           {floorsPlan.map((f) => <TabsContent key={f.id} value={f.id} className="rm-stage">
-            <Plan floor={f} rooms={rooms.filter((r) => r.floor.id === f.id)} selected={selected} onSelect={setSelected} />
+            {phone
+              ? <Plan floor={f} rooms={rooms.filter((r) => r.floor.id === f.id)} selected={selected} onSelect={setSelected} />
+              : <Floor3D floor={f} rooms={rooms.filter((r) => r.floor.id === f.id)} selected={selected} onSelect={setSelected} />}
           </TabsContent>)}
           <Legend />
           {!phone && sel && <aside className="rm-panel" aria-live="polite">{panel}</aside>}
@@ -95,7 +97,66 @@ function FloorTab({ floor, rooms, active }) {
   </TabsTrigger>;
 }
 
-// La pianta del piano vista dall'alto: stesse proporzioni di floorsPlan (18 × 6), alloggi e spazi come rettangoli.
+// Il piano scelto in 3D: una lastra vista dall'alto, un po' di lato, con gli alloggi e i loro muretti.
+// La geometria è nell'SVG (si tocca un alloggio o uno spazio); nomi e pallini sono in HTML sopra, in percentuale,
+// così restano leggibili a ogni larghezza.
+const S = 40, WALL = 0.6, SLAB = 0.45;
+const P = (x, y, z = 0) => [(x * 0.98 - y * 0.46) * S, (x * 0.1 + y * 0.56 - z) * S];
+const pts = (list) => list.map((q) => P(...q).join(",")).join(" ");
+const corners = [[0, 0, WALL], [W, 0, WALL], [0, D, WALL], [0, 0, -SLAB], [W, 0, -SLAB], [0, D, -SLAB], [W, D, -SLAB]].map((q) => P(...q));
+const PAD = 6;
+const minX = Math.min(...corners.map((c) => c[0])) - PAD, maxX = Math.max(...corners.map((c) => c[0])) + PAD;
+const minY = Math.min(...corners.map((c) => c[1])) - 14, maxY = Math.max(...corners.map((c) => c[1])) + PAD;
+const VW = maxX - minX, VH = maxY - minY;
+const at = (x, y, z = 0) => { const [px, py] = P(x, y, z); return { left: `${((px - minX) / VW) * 100}%`, top: `${((py - minY) / VH) * 100}%` }; };
+
+function Floor3D({ floor, rooms, selected, onSelect }) {
+  // Prima la fila in fondo, poi quella davanti: i muretti di chi sta davanti coprono il bordo di chi sta dietro.
+  const order = [...rooms].sort((a, b) => a.y0 - b.y0 || a.x0 - b.x0);
+  return <div className="rm-3d" style={{ "--rm-ratio": (VW / VH).toFixed(3) }}>
+    <svg viewBox={`${minX} ${minY} ${VW} ${VH}`} role="group" aria-label={`${floor.label}, in 3D`}>
+      <defs><radialGradient id="rm-glow3d"><stop offset="0%" stopColor="var(--green)" stopOpacity=".35" /><stop offset="100%" stopColor="var(--green)" stopOpacity="0" /></radialGradient></defs>
+      <polygon className="rm-slab-side" points={pts([[0, D, 0], [W, D, 0], [W, D, -SLAB], [0, D, -SLAB]])} />
+      <polygon className="rm-slab-side is-right" points={pts([[W, 0, 0], [W, D, 0], [W, D, -SLAB], [W, 0, -SLAB]])} />
+      <polygon className="rm-slab-top" points={pts([[0, 0, 0], [W, 0, 0], [W, D, 0], [0, D, 0]])} />
+      {order.map((r) => <Room3D key={r.id} room={r} active={selected === r.id} onSelect={onSelect} />)}
+    </svg>
+    {order.map((r) => {
+      const res = r.residentId && channelResident(r.residentId);
+      return <span key={r.id} className={`rm-3d-label${r.kind === "alloggio" && !r.state ? " is-empty" : ""}`} style={at(r.x0 + 0.45, r.y0 + 0.55)} aria-hidden="true">
+        <strong>{r.kind === "alloggio" ? r.id : r.name}</strong>
+        {(res || r.kind === "alloggio") && <small>{res ? res.first : "senza ROSS"}</small>}
+      </span>;
+    })}
+    {order.filter((r) => r.state).map((r) => <span key={r.id} className="rm-3d-pin" style={at(r.x1 - 0.45, r.y0 + 0.5, 0.3)}><Pin state={r.state} /></span>)}
+  </div>;
+}
+
+function Room3D({ room: r, active, onSelect }) {
+  const i = 0.14;
+  const a = [r.x0 + i, r.y0 + i], b = [r.x1 - i, r.y1 - i];
+  const floorPts = pts([[a[0], a[1], 0], [b[0], a[1], 0], [b[0], b[1], 0], [a[0], b[1], 0]]);
+  const back = pts([[a[0], a[1], 0], [b[0], a[1], 0], [b[0], a[1], WALL], [a[0], a[1], WALL]]);
+  const left = pts([[a[0], a[1], 0], [a[0], b[1], 0], [a[0], b[1], WALL], [a[0], a[1], WALL]]);
+  const [gx, gy] = P(r.x1 - 0.6, r.y0 + 0.7, 0);
+  const pick = () => onSelect(active ? null : r.id);
+  return <TooltipPrimitive.Root>
+    <TooltipPrimitive.Trigger asChild>
+      <g className={`rm-r is-${r.kind}${r.state ? ` has-${r.state}` : r.kind === "alloggio" ? " is-empty" : ""}${active ? " is-selected" : ""}`} role="button" tabIndex={0} aria-pressed={active} aria-label={`${roomName(r)}. ${tipOf(r)}`}
+        onClick={pick} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } }}>
+        <polygon className="rm-r-wall" points={back} />
+        <polygon className="rm-r-wall is-left" points={left} />
+        <polygon className="rm-r-floor" points={floorPts} />
+        {r.state === "attivo" && <ellipse className="rm-r-glow" cx={gx} cy={gy} rx="58" ry="30" fill="url(#rm-glow3d)" />}
+      </g>
+    </TooltipPrimitive.Trigger>
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Content className="ui-tooltip rm-tip" side="top" sideOffset={6} collisionPadding={12}>{tipOf(r)}</TooltipPrimitive.Content>
+    </TooltipPrimitive.Portal>
+  </TooltipPrimitive.Root>;
+}
+
+// Su telefono: la pianta del piano vista dall'alto, stesse proporzioni di floorsPlan (18 × 6), alloggi e spazi come rettangoli.
 function Plan({ floor, rooms, selected, onSelect }) {
   return <div className="rm-plan" role="group" aria-label={`Pianta: ${floor.label.toLowerCase()}`}>
     {rooms.map((r) => {
