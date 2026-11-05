@@ -264,6 +264,13 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Struttura 2.0 tutta al tu
+- **Richiesta:** uniformare tutto al tu.
+- **Fatto:**
+  - al tu tutti i «Cosa puoi fare» dei momenti (`moments.js`) e le risposte simulate di ROSS (`simulatedReply` in `channel.js`), per esempio «Tienile un posto in fondo» e «Passa a prenderlo tu»;
+  - gli «Spunti di ROSS» nel «Come sta» della 2.0 si leggono al tu grazie a una piccola conversione (`tu()` in `PortraitV2.jsx`), senza toccare `careInsights.js`, che serve anche alla Struttura attuale.
+- **Da sapere:** la Struttura attuale resta com'era, con gli spunti al voi.
+
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0: una sola fonte di momenti, due grafi distinti, ROSS in terza persona, date intorno a oggi
 - **Richiesta:** quattro sistemazioni della 2.0, senza toccare la Struttura attuale:
   - un'unica fonte per i momenti emersi con ROSS, con un filtro diverso per canale, Spunti e Con ROSS;
@@ -292,7 +299,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
     - sul tablet la ricorrenza «Il 23 settembre nasceva Gino Paoli» resta; la sua etichetta ora è «Una ricorrenza» invece di «Mercoledì è una ricorrenza»;
     - nella Famiglia restano testi come «la festa dei compleanni di settembre», «Il primo giorno del mese» e «dopo l'estate», anche se le date ora cambiano;
   - lo stato salvato prima (`ross-struttura2-v1`) non viene più letto: si riparte dai momenti di partenza;
-  - i testi di «Cosa puoi fare» sono al voi («Tenetele un posto…»), perché parlano all'équipe.
+  - i testi di «Cosa puoi fare» sono poi passati al tu: vedi la voce successiva.
 
 ### Novembre 2026 · 05/11/2026 · La rete delle passioni sale in cima al canale
 - **Richiesta:** la rete delle passioni non deve stare in fondo.

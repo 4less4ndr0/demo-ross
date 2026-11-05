@@ -26,6 +26,10 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 // L'andamento detto a parole, rispetto alla sua media: mai il numero.
 const trendWords = (s) => ({ "in aumento": "più del solito", stabile: "come sempre", nuovo: "da questa settimana", "prime settimane": "fin dai primi giorni" }[s.trend] || s.trend);
 const presenceWords = (p) => p.kind === "assenza" ? "Oggi non ha ancora parlato con ROSS, di solito a quest'ora sì" : "A volte ha fatto fatica a seguire il filo: ROSS ha rallentato e semplificato";
+// Nella 2.0 si dà del tu a chi lavora in struttura (decisione del 05/11/2026). Gli «Spunti di ROSS» vengono da
+// careInsights.js, che usa anche la Struttura attuale al voi: qui si leggono al tu, senza toccare i dati.
+const tuForms = [["Passate a prenderlo voi", "Passa a prenderlo tu"], ["Dategli", "Dagli"], ["Chiedetegli", "Chiedigli"], ["Accompagnatela", "Accompagnala"], ["Passate", "Passa"], ["Proponetegli", "Proponigli"], ["Invitatela", "Invitala"]];
+const tu = (text = "") => tuForms.reduce((t, [voi, te]) => t.split(voi).join(te), text);
 const list = (items) => items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} e ${items.at(-1)}`;
 
 export function HowIsV2({ resident, onPropose, onProposeText }) {
@@ -55,7 +59,7 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
     <section className="v2-todo surface">
       <span className="eyebrow">COSA PUOI FARE</span>
       <h3>{story.next}</h3>
-      {tips && <ul>{tips.tips.map((t) => <li key={t.title}><b>{t.title}.</b> {t.text}</li>)}</ul>}
+      {tips && <ul>{tips.tips.map((t) => <li key={t.title}><b>{tu(t.title)}.</b> {tu(t.text)}</li>)}</ul>}
       <Button variant="outline" onClick={onPropose}><Send size={15} /> Proponi uno spunto per {name}</Button>
     </section>
 
