@@ -116,3 +116,24 @@ export const graphStatus = {
   prova: { label: "Da provare", color: "var(--accent)" },
 };
 export const graphKind = { attivita: "Attività", ricordo: "Ricordo", evento: "Evento", persona: "Persona" };
+
+// La rete delle passioni (Struttura 2.0, nel canale): gli ospiti uniti da passioni in comune, per categoria.
+// Serve a vedere chi potrebbe fare qualcosa insieme. Mai le relazioni o ciò che si sono raccontati:
+// solo interessi dichiarati (biografia d'ingresso) o emersi con ROSS, detti come categoria.
+// `via`: l'interesse di ciascuno che lo lega alla passione. `idea`: l'occasione, da mandare come spunto a tutti.
+export const passions = [
+  { id: "mani", label: "Lavori con le mani", members: [["ada", "cucito"], ["teresa", "maglia"], ["mario", "legno"]],
+    idea: "Giovedì pomeriggio, in salotto, un'ora di lavori a mano insieme: chi cuce, chi fa la maglia, chi intaglia." },
+  { id: "verde", label: "Piante e aria aperta", members: [["elena", "piante e giardino"], ["teresa", "fiori"], ["carlo", "orto"], ["lucia", "stare all'aperto"]],
+    idea: "Domani mattina, se c'è il sole, si rinvasano i gerani in giardino: c'è posto per tutti." },
+  { id: "musica", label: "Musica e canto", members: [["elena", "musica italiana"], ["teresa", "coro"], ["antonio", "radio"]],
+    idea: "Oggi alle 17:30 in salone si canta insieme: si può proporre una canzone." },
+  { id: "tecnica", label: "Come funzionano le cose", members: [["antonio", "radio e automobili"], ["bruno", "treni"]],
+    idea: "Un pomeriggio in sala comune tra radio e ferrovie: ognuno spiega la sua passione all'altro." },
+  { id: "parole", label: "Parole e letture", members: [["ada", "poesia"], ["lucia", "giochi di parole"], ["carlo", "giornali"]],
+    idea: "Domani alle 10:30 in biblioteca si legge ad alta voce: poesie, giornale e qualche gioco di parole." },
+  { id: "giochi", label: "Carte e scacchi", members: [["antonio", "scacchi"], ["bruno", "carte"]],
+    idea: "Sabato mattina un tavolo per carte e scacchi in salotto, dopo il riposo." },
+  { id: "storie", label: "Storie e luoghi di una volta", members: [["bruno", "storia del paese"], ["mario", "montagna"], ["elena", "fotografie di viaggio"]],
+    idea: "All'incontro sulla storia locale ognuno porta un luogo che ama: una foto, un racconto, una cartina." },
+];

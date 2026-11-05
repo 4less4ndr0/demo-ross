@@ -1666,3 +1666,39 @@ button.document-card:hover{background:var(--surface-2)}
 .v2-map-list button.is-prova{border-color:var(--accent);border-style:dashed}
 .v2-map-list button[aria-pressed=true]{background:var(--surface-2);font-weight:700}
 @media(max-width:700px){.v2-map-svg{display:none}.v2-map-list{display:grid}}
+/* Struttura 2.0 · la rete delle passioni, nel canale (src/components/PassionNetwork.jsx) */
+.s2-network{margin-top:40px;padding:30px 32px}
+.s2-network .s2-lead{max-width:780px}
+.s2-network-body{display:grid;grid-template-columns:1fr 330px;gap:24px;align-items:center}
+.s2-network-svg{width:100%;height:auto;overflow:visible}
+.s2-network-edge{stroke:var(--line);stroke-width:2;transition:stroke .2s,stroke-width .2s}
+.s2-network-edge.is-on{stroke:var(--green);stroke-width:3.5}
+.s2-network-ring{fill:var(--surface-2);stroke:var(--line);stroke-width:3;transition:stroke .2s}
+.s2-network-person{opacity:.55;transition:opacity .2s}
+.s2-network-person.is-on{opacity:1}
+.s2-network-person.is-on .s2-network-ring{stroke:var(--green);stroke-width:4}
+.s2-network-name{font:600 15px Inter,ui-sans-serif,system-ui,sans-serif;fill:var(--text)}
+.s2-network-hub{cursor:pointer;outline:none}
+.s2-network-hub rect{fill:var(--surface);stroke:color-mix(in srgb,var(--lilac) 55%,transparent);stroke-width:1.5;transition:fill .2s}
+.s2-network-hub text{font:700 13px Inter,ui-sans-serif,system-ui,sans-serif;fill:var(--text)}
+.s2-network-hub:hover rect{fill:var(--lilac-soft)}
+.s2-network-hub.is-on rect{fill:var(--green);stroke:var(--green)}
+.s2-network-hub.is-on text{fill:#fff}
+.s2-network-hub:focus-visible rect{stroke:var(--text);stroke-width:3}
+.s2-network-detail{display:grid;gap:12px;padding:20px;border-radius:22px;background:var(--surface-2)}
+.s2-network-detail .s2-label{display:flex;align-items:center;gap:6px;font-size:13px}
+.s2-network-detail ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.s2-network-detail li{display:flex;align-items:center;gap:10px;font-size:14px}
+.s2-network-detail li span{display:grid}
+.s2-network-detail li b{font-weight:700}
+.s2-network-idea{margin:0;padding:12px 14px;border-radius:16px;background:var(--green-soft);font:400 16px/1.45 var(--serif)}
+.s2-network-idea span{display:block;font:800 10px Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:3px}
+.s2-network-detail small{font-size:12px;line-height:1.45;color:var(--muted)}
+.s2-network-list{display:none;list-style:none;margin:0;padding:0;gap:8px}
+.s2-network-list button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:52px;padding:8px 14px;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);color:var(--text);cursor:pointer;text-align:left}
+.s2-network-list button[aria-pressed=true]{border-color:var(--green);background:var(--green-soft)}
+.s2-network-list strong{font-size:14px}
+.s2-network-list span{display:flex;gap:2px}
+@media(max-width:1000px){.s2-network-body{grid-template-columns:1fr}}
+@media(max-width:700px){.s2-network{padding:22px 18px}.s2-network-svg{display:none}.s2-network-list{display:grid}}
+@media(prefers-reduced-motion:reduce){.s2-network-edge,.s2-network-person,.s2-network-ring,.s2-network-hub rect{transition:none}}

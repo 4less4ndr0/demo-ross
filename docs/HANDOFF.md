@@ -259,6 +259,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · La rete delle passioni, nel canale
+- **Richiesta:** fare la rete delle passioni nel canale (prima idea in coda della voce precedente).
+- **Fatto:** sotto «Proponi uno spunto» e «Cosa è emerso», una card **«Chi potrebbe fare qualcosa insieme»**:
+  - gli otto ospiti in cerchio, con la foto, e al centro sette passioni in comune: lavori con le mani, piante e aria aperta, musica e canto, come funzionano le cose, parole e letture, carte e scacchi, storie e luoghi di una volta. Ogni passione è collegata a chi la condivide;
+  - toccando una passione si illuminano le sue persone. A destra si vede cosa ama ciascuno (per categoria), un'occasione e **«Proponilo a tutti e N»**: lo spunto arriva a ognuno ed entra in «In attesa del momento giusto»; ROSS risponde come per gli altri spunti;
+  - le etichette si dispongono in cerchio dalla parte delle persone che legano e si allontanano se si toccano. Su telefono la rete diventa un elenco di passioni con le foto.
+- **Privacy:** solo interessi dichiarati o emersi con ROSS, detti come categoria. Mai relazioni, ciò che si sono raccontati o chi ha detto sì.
+- **Codice:** `PassionNetwork.jsx`, `passions` in `interestGraph.js`, stili `.s2-network-*`.
+
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0: «Come sta» e «Con ROSS» a racconto, con la mappa dei legami
 - **Richiesta:**
   - il grafico della partecipazione è inutile e le schede sono dei report: bisogna puntare sulla qualità, non sulla quantità;
@@ -279,7 +288,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
     - sotto, ciò che sta fuori dai suoi interessi e non è piaciuto. Su telefono la mappa diventa un elenco;
   - il racconto di Ada non dice più «4 conversazioni su 6».
 - **Da discutere:** quali altri strumenti danno valore alla qualità. Le idee in coda:
-  1. **la rete delle passioni**: nel canale, gli ospiti uniti da interessi in comune, per capire chi potrebbe fare qualcosa insieme. Solo per categoria, mai le relazioni raccontate;
+  1. ~~**la rete delle passioni**~~: fatta (voce successiva);
   2. **il filo dei momenti belli**: gli spunti accolti e le uscite raccontate dall'ospite, in fila nel tempo, senza conteggi;
   3. **il «prima e dopo» di uno spunto**: proposto, come l'ha accolto, cosa è successo dopo;
   4. **i momenti buoni della giornata**: mattino, pomeriggio e sera detti a parole, per sapere quando proporre;

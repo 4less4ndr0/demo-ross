@@ -85,6 +85,7 @@
         "src/pages/StructureChannel.jsx",
         "src/components/ResidentSpunti.jsx",
         "src/components/PortraitV2.jsx",
+        "src/components/PassionNetwork.jsx",
         "src/data/channel.js",
         "src/data/interestGraph.js",
         "src/state/channelStore.js"

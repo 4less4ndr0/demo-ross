@@ -6,6 +6,7 @@ import { Button, Textarea } from "../components/ui";
 import { channelResident, channelResidents, receptions, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
 import { channelActions, useChannel } from "../state/channelStore";
 import { useDemo } from "../state/DemoContext";
+import { PassionNetwork } from "../components/PassionNetwork";
 
 // Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto e riceve qualcosa in cambio.
 // Due schede: «Il canale» (Proponi uno spunto · Cosa è emerso) e «Ospiti» (lista e ritratto della Struttura,
@@ -66,6 +67,8 @@ export function StructureChannel() {
           <ul className="s2-insights">{data.insights.map((insight) => <InsightCard key={insight.id} insight={insight} />)}</ul>
         </section>
       </div>
+
+      <PassionNetwork />
 
       <p className="s2-footnote"><MessageCircleHeart size={16} />ROSS traduce, non trasmette: racconta come è stato accolto lo spunto e cosa può aiutare, mai cosa ha detto l'ospite.</p>
     </main>
