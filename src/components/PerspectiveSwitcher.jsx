@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BellRing, Building2, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, RotateCcw, Smartphone, Sparkles } from "lucide-react";
+import { BellRing, Building2, Send, ChevronUp, Compass, FlaskConical, HeartHandshake, Map as MapIcon, RotateCcw, Smartphone, Sparkles } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDemo } from "../state/DemoContext";
 import { startTour } from "./GuidedTour";
@@ -8,6 +8,7 @@ import { Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMe
 
 const perspectives = [
   { id: "structure", label: "Struttura", description: "Operatori", icon: Building2, path: "/", key: "1" },
+  { id: "structure2", label: "Struttura 2.0", description: "il canale con ROSS", icon: Send, path: "/struttura-2", key: "5" },
   { id: "family", label: "Famiglia", description: "Anna", icon: HeartHandshake, path: "/famiglia", key: "2" },
   { id: "ross", label: "ROSS", description: "Elena", icon: Sparkles, path: "/ross", key: "3" },
   { id: "map", label: "Mappa", description: "come è fatta la demo", icon: MapIcon, path: "/mappa", key: "4" },
@@ -20,6 +21,7 @@ const simulated = [
   ["Conversazione con copione", "Il dialogo tra ROSS ed Elena è scritto: chi presenta lo fa avanzare con un clic, con le frecce o con «Riproduci». Le scelte di Elena cambiano il seguito, ma non c'è riconoscimento vocale."],
   ["Meteo, ora, ricorrenze e attività", "Gli spunti e gli inviti del tablet di Elena (meteo, ricorrenze, calendario della residenza) sono scritti per la demo, non letti da un servizio esterno."],
   ["Voce e messaggi", "La dettatura di Anna usa quella del browser quando c'è, altrimenti scrive una frase d'esempio. ROSS «riordina» i messaggi con regole semplici sul testo; sul tablet il racconto è a schermo, senza voce."],
+  ["Struttura 2.0", "Spunti e insight sono esempi scritti per la demo. Dopo un nuovo spunto ROSS «risponde» in pochi secondi con un testo preparato; nella realtà risponderebbe solo se e quando l'ospite ne parla."],
   ["Nessun dispositivo collegato", "Niente tablet o companion reale, nessuna chiamata, nessun avviso inviato a qualcuno."],
 ];
 const principles = [
@@ -58,7 +60,7 @@ export function PerspectiveSwitcher() {
     resetAnnounced = true;
     window.setTimeout(() => notify("Demo ripristinata: tutto è tornato com'era"), 400);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : location.pathname.startsWith("/mappa") ? "map" : "structure";
+  const active = location.pathname.startsWith("/famiglia") ? "family" : location.pathname.startsWith("/ross") ? "ross" : location.pathname.startsWith("/mappa") ? "map" : location.pathname.startsWith("/struttura-2") ? "structure2" : "structure";
   const current = perspectives.find((p) => p.id === active);
   const [aboutOpen, setAboutOpen] = useState(false);
 

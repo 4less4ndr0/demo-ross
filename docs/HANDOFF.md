@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 4 novembre 2026 · ospiti come archetipi e ritratto rivisto. Prima: 2 novembre 2026 · vista Famiglia come app per iPhone. Precedente: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
+> Ultimo aggiornamento: 5 novembre 2026 · nuova vista **Struttura 2.0** (il canale con ROSS). Prima: 4 novembre 2026 · ospiti come archetipi e ritratto rivisto. Prima ancora: 2 novembre 2026 · vista Famiglia come app per iPhone. Precedente: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -38,6 +38,7 @@ Il metodo con cui è pensata è la **salutogenesi** ([`salutogenesi.md`](salutog
 |---|---|---|---|---|
 | **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#27) |
 | **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21); **app per iPhone** (novembre) |
+| **Struttura 2.0** (`/struttura-2`) | Staff della struttura | Un canale, non un archivio: propone a ROSS uno **spunto** per un ospite e riceve in cambio **cosa è emerso** (sintesi narrativa + suggerimento) | Trascrizioni, punteggi, grafici, report, dati sanitari | **Nuova** (5/11), accanto alla Struttura attuale, che resta intatta |
 | **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Riallineata** (ottobre): trasparenza sull'IA, aiuto non di emergenza, "dimentica", chiusura verso le persone vere |
 
 Nella Struttura ci sono **quattro stakeholder**, e il target principale non è ancora scelto: per questo esiste il selettore di ruolo.
@@ -191,6 +192,8 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti, Report e Panoramica; testi in `residentsGuide`, `reportsGuide` e `overviewGuide`. |
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
+| `src/pages/StructureChannel.jsx` | **Struttura 2.0** (`/struttura-2`): pagina unica con «Proponi uno spunto» (ospite, testo ≤ 160 caratteri, tipo facoltativo) e «Cosa è emerso» (insight, i più recenti in alto, Visto/Fatto con «Annulla»). Stato in localStorage `ross-struttura2-v1`; dopo un nuovo spunto ROSS «risponde» in 6 secondi (simulato). Stili `.s2-*` in fondo a `styles.css`. |
+| `src/data/channel.js` | Dati della Struttura 2.0: `channelResidents` (Elena, Ada, Antonio, Bruno), `spuntoTypes`, `timingFor` (come ROSS porta lo spunto secondo la modalità), `initialInsights` (6 esempi, con e senza spunto), `simulatedInsight` (testi per tipo di spunto). |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
 | `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
@@ -252,6 +255,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 05/11/2026 · Struttura 2.0: il canale con ROSS
+- **Richiesta:** cambiare punto di vista. La Struttura oggi è un archivio (inserisce, consulta, interroga): va provata una logica a **canale**. La struttura manda a ROSS uno spunto, ROSS lo porta all'ospite solo se ci sta, e restituisce di sua iniziativa ciò che è emerso. Per non rompere nulla, è una **vista nuova** e la Struttura attuale resta com'è.
+- **Fatto:**
+  - nuova vista **Struttura 2.0** (`/struttura-2`), nella pillola "Vista demo" (tasto `5`); la visita guidata non parte da sola qui;
+  - una sola schermata: in alto il flusso in tre passi (Tu proponi → ROSS ne parla, se l'ospite ci sta → Tu ricevi cosa è emerso), poi **Proponi uno spunto** e **Cosa è emerso**;
+  - **Proponi uno spunto:** foto dell'ospite, testo libero breve, tipo facoltativo (Attività, Ricordo, Evento, Persona). Una riga dice come ROSS lo porterà secondo la modalità dell'ospite (Attiva, Reattiva, Silenziosa);
+  - **Cosa è emerso:** 6 insight di esempio su 4 ospiti. Ognuno ha l'ospite, lo spunto di partenza oppure "L'ha raccontato lei, spontaneamente", 1–2 frasi narrative, "Cosa puoi fare" e "… è contenta che tu lo sappia". Un esempio mostra l'ospite che non segue lo spunto (Ada e la nipote). Azioni solo **Visto** e **Fatto**, con "Annulla";
+  - nella demo, 6 secondi dopo un nuovo spunto ROSS restituisce un insight preparato (toast con "Leggi"). È dichiarato in "Cosa è reale e cosa è simulato".
+- **Non fatto, di proposito:** niente dashboard, KPI, grafici, punteggi, report, trascrizioni o schede da compilare. Panoramica e Report restano solo nella Struttura attuale.
+- **Da discutere:** la Struttura 2.0 riceve *di cosa* ha parlato l'ospite (in sintesi narrativa, con il suo permesso). È diverso dalla regola d'oro della Struttura attuale ("mai di cosa ha parlato"): va deciso quale delle due vale.
 
 ### Novembre 2026 · 04/11/2026 · Mappa rigenerata dopo gli archetipi
 - **Richiesta:** rigenerare la Mappa (poi unito `main` con «Cosa sa ROSS», PR #48, e mappa rigenerata di nuovo).
