@@ -11,7 +11,7 @@ export const highlightKinds = {
   interesse: { label: "Interesse emerso", tone: "good" },
   invito: { label: "Un invito", tone: "neutral" },
   scelta: { label: "Una sua scelta", tone: "neutral" },
-  delicato: { label: "Da osservare di persona", tone: "watch" },
+  delicato: { label: "Da guardare di persona", tone: "watch" },
   spunto: { label: "Dal tuo spunto", tone: "neutral" },
   spontaneo: { label: "L'ha raccontato spontaneamente", tone: "good" },
 };

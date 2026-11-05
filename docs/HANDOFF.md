@@ -259,6 +259,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Filtri nel feed di «Con ROSS»
+- **Richiesta:** aggiungere il filtro nel feed.
+- **Fatto:**
+  - sopra il feed ci sono quattro pillole:
+    - **Tutto**;
+    - **Belle notizie:** ciò che va bene e gli spunti accolti volentieri. Diventa verde quando è attiva;
+    - **Da guardare di persona:** diventa corallo quando è attiva;
+    - **I tuoi spunti**;
+  - una pillola senza momenti è spenta (per esempio Teresa non ha nulla da guardare di persona); se un filtro è vuoto, una frase lo dice;
+  - niente conteggi sulle pillole;
+  - l'etichetta dei momenti delicati è ora «Da guardare di persona», come il filtro;
+  - codice: `feedFilters` in `PortraitV2.jsx`, stili `.v2-feed-filters`.
+
 ### Novembre 2026 · 05/11/2026 · «Con ROSS» diventa il feed dei momenti da ricordare
 - **Richiesta:** provare «Con ROSS» come feed degli highlights, cioè le cose più interessanti che emergono, con le date e ben formattate.
 - **Fatto (ritratto della 2.0):**

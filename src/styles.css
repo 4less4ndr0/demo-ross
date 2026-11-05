@@ -1734,3 +1734,11 @@ button.document-card:hover{background:var(--surface-2)}
 .v2-feed-suggestion{margin:4px 0 0;padding:10px 12px;border-radius:14px;background:var(--green-soft);font-size:14px;line-height:1.45}
 @media(max-width:900px){.v2-story-compact{grid-template-columns:1fr}}
 @media(max-width:600px){.v2-feed-item{grid-template-columns:44px 26px 1fr}.v2-feed-item::before{left:56px}.v2-feed-dot{width:26px;height:26px}.v2-feed-card{margin-left:8px;padding:14px 16px}.v2-feed-title{font-size:16px}}
+.v2-feed-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.v2-feed-filters button{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--text);font-size:13px;font-weight:650;cursor:pointer}
+.v2-feed-filters button:hover:not(:disabled){background:var(--surface-2)}
+.v2-feed-filters button[aria-pressed=true]{background:var(--text);border-color:var(--text);color:var(--surface)}
+.v2-feed-filters button.is-belle[aria-pressed=true]{background:var(--green);border-color:var(--green)}
+.v2-feed-filters button.is-osservare[aria-pressed=true]{background:var(--accent);border-color:var(--accent)}
+.v2-feed-filters button:disabled{opacity:.45;cursor:default}
+.v2-feed-filters button:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 30%,transparent)}

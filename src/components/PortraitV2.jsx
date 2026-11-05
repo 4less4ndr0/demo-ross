@@ -63,8 +63,16 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
 // «Con ROSS» come feed: i momenti più interessanti emersi con ROSS, giorno per giorno, i più recenti in alto.
 // Uniscono i momenti di ogni ospite (highlights.js), ciò che ROSS ha restituito nel canale e gli spunti passati.
 const toneIcon = { good: Sparkles, neutral: MessageCircle, watch: Eye };
+// Filtri del feed: per un operatore di passaggio, cosa va bene, cosa guardare oggi, com'è andato ciò che hai proposto.
+const feedFilters = [
+  { id: "tutto", label: "Tutto", match: () => true, empty: "" },
+  { id: "belle", label: "Belle notizie", match: (it) => highlightKinds[it.kind].tone === "good" || it.reception === "volentieri", empty: "Niente di nuovo da festeggiare, per ora. ROSS te lo dirà appena succede." },
+  { id: "osservare", label: "Da guardare di persona", match: (it) => highlightKinds[it.kind].tone === "watch", empty: "Niente da guardare di persona in questi giorni." },
+  { id: "spunti", label: "I tuoi spunti", match: (it) => it.kind === "spunto", empty: "Nessuno spunto ancora: proponine uno, ROSS ti dirà com'è andata." },
+];
 export function WithRossV2({ resident, onPropose }) {
   const name = resident.name.split(" ")[0];
+  const [filter, setFilter] = useState("tutto");
   const usage = usageStyle[resident.id];
   const [said] = modeMeaning[resident.mode] || modeMeaning.Reattiva;
   const channel = useChannel();
@@ -75,7 +83,9 @@ export function WithRossV2({ resident, onPropose }) {
   const fromHistory = spuntoHistory.filter((h) => h.residentId === resident.id).map((h) => ({ id: h.id, ...dayAndTime(h.when), kind: "spunto", reception: h.reception, title: `«${h.text}»`, text: h.story }));
   const own = (rossHighlights[resident.id] || []).map((h, i) => ({ id: `hl-${resident.id}-${i}`, ...h }));
   const items = [...own, ...fromChannel, ...fromHistory].sort((x, y) => x.day - y.day || (y.time || "").localeCompare(x.time || ""));
-  const days = items.reduce((acc, it) => { const key = it.day; (acc[key] = acc[key] || []).push(it); return acc; }, {});
+  const active = feedFilters.find((f) => f.id === filter);
+  const shown = items.filter(active.match);
+  const days = shown.reduce((acc, it) => { const key = it.day; (acc[key] = acc[key] || []).push(it); return acc; }, {});
 
   return <div className="v2-portrait">
     <article className="v2-story v2-story-compact surface">
@@ -89,6 +99,8 @@ export function WithRossV2({ resident, onPropose }) {
 
     <section className="v2-feed">
       <header><span className="eyebrow">I MOMENTI DA RICORDARE</span><h2>Cosa è emerso con ROSS, giorno per giorno</h2><p>Le cose più interessanti, non tutte le conversazioni: iniziative, uscite raccontate, scelte, interessi e ciò che è da guardare di persona.</p></header>
+      <div className="v2-feed-filters" role="group" aria-label="Filtra i momenti">{feedFilters.map((f) => { const some = items.some(f.match); return <button type="button" key={f.id} aria-pressed={filter === f.id} className={`is-${f.id}`} onClick={() => setFilter(f.id)} disabled={!some && f.id !== "tutto"}>{f.id === "belle" && <Sparkles size={14} />}{f.id === "osservare" && <Eye size={14} />}{f.id === "spunti" && <Send size={14} />}{f.label}</button>; })}</div>
+      {!shown.length && <p className="knows-empty">{active.empty}</p>}
       {Object.keys(days).sort((x, y) => x - y).map((day) => { const [label, date] = dayLabel(Number(day)); return <div key={day} className="v2-feed-day">
         <h3>{label}{date && <small>{date}</small>}</h3>
         <ol>{days[day].map((it) => { const k = highlightKinds[it.kind]; const Icon = toneIcon[k.tone]; return <li key={it.id} className={`v2-feed-item is-${k.tone}`}>
