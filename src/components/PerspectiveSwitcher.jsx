@@ -22,7 +22,7 @@ const simulated = [
   ["Meteo, ora, ricorrenze e attività", "Gli spunti e gli inviti del tablet di Elena (meteo, ricorrenze, calendario della residenza) sono scritti per la demo, non letti da un servizio esterno."],
   ["Voce e messaggi", "La dettatura di Anna usa quella del browser quando c'è, altrimenti scrive una frase d'esempio. ROSS «riordina» i messaggi con regole semplici sul testo; sul tablet il racconto è a schermo, senza voce."],
   ["Struttura 2.0", "Spunti e insight sono esempi scritti per la demo. Dopo un nuovo spunto ROSS «risponde» in pochi secondi con un testo preparato; nella realtà risponderebbe solo se e quando l'ospite ne parla."],
-  ["Richieste pratiche", "La richiesta della lampada di Elena è scritta nel copione della conversazione e si conferma con un clic: ROSS non riconosce davvero le richieste. Parte solo con il sì dell'ospite; salute e urgenze non diventano mai una richiesta (ROSS rimanda al campanello). «Ci pensiamo noi» e «Fatto» non avvisano nessuno: tornano solo al tablet."],
+  ["Richieste e comunicazioni", "La richiesta della lampada di Elena è scritta nel copione della conversazione e si conferma con un clic: ROSS non riconosce davvero le richieste. Parte solo con il sì dell'ospite; salute e urgenze non diventano mai una richiesta (ROSS rimanda al campanello). Nella scheda «Richieste», «Ci pensiamo noi» e «Fatto» non avvisano nessuno: tornano solo al tablet. Le comunicazioni agli ospiti compaiono sul tablet di Elena con le parole della struttura; il loro stato («In corso», «Detto a tutti») è simulato."],
   ["Nessun dispositivo collegato", "Niente tablet o companion reale, nessuna chiamata, nessun avviso inviato a qualcuno."],
 ];
 const principles = [

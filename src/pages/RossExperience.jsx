@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AlarmClock, ArrowLeft, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, UtensilsCrossed, Volume2, X } from "lucide-react";
+import { AlarmClock, ArrowLeft, Megaphone, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, UtensilsCrossed, Volume2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "../components/ui";
 import { useDemo } from "../state/DemoContext";
@@ -7,7 +7,7 @@ import { asset } from "../asset.js";
 import { outsideInvites } from "../data/demoData";
 import { dayText, daysUntil } from "../data/demoClock";
 import { lampRequest } from "../data/moments";
-import { channelActions, getMoments, momentFilters } from "../state/channelStore";
+import { channelActions, getMoments, momentFilters, useMoments } from "../state/channelStore";
 import { byPriority } from "../data/familyMessages";
 import { consumeFamilyNews, consumeReminders } from "../state/familyNews";
 
@@ -181,6 +181,10 @@ function RossStage({ flow, onClose, onAnswer }) {
 
 export function RossHome() {
   const { state, actions, notify } = useDemo();
+  // «ROSS ti dice»: le comunicazioni pratiche della struttura per Elena (per tutti, per il suo piano o solo per lei),
+  // con le parole semplici di ROSS. Sono informazioni, non spunti.
+  const announcements = useMoments().filter(momentFilters.comunicazioniPer(state.residents.find((r) => r.id === "elena")));
+  useEffect(() => { announcements.forEach((m) => channelActions.toldTo(m.id, "elena")); }, [announcements.map((m) => m.id).join()]); // eslint-disable-line react-hooks/exhaustive-deps
   const navigate = useNavigate();
   const [panel, setPanel] = useState(null);
   const [rossState, setRossState] = useState("rest");
@@ -285,6 +289,14 @@ export function RossHome() {
               {laterReminders.length ? <ul>{laterReminders.map((item) => <li key={item.key}><button type="button" onClick={() => setStage({ kind: "reminder", item })}><span className="ross-reminder-dot"><AlarmClock /></span><span><strong>{item.text.replace(/[.!…]+$/, "")}</strong><small>{whoOf(item)}{item.when ? ` · ${item.when}` : ""}</small></span><ArrowRight /></button></li>)}</ul> : <p>Nient'altro, per ora. Se vuoi, dimmi «ricordami che…».</p>}
             </article>
           </div>
+        </section>}
+
+        {announcements.length > 0 && <section className="ross-section ross-tells" aria-label="ROSS ti dice">
+          <h2 className="ross-section-title">ROSS ti dice</h2>
+          <div className="ross-tells-list">{announcements.map((m) => <article key={m.id} className="ross-prompt-card ross-tell">
+            <header><span className="ross-prompt-icon"><Megaphone /></span><div><small>Dalla residenza</small><h3>{m.frase}</h3></div></header>
+            <button type="button" onClick={() => notify("Chiedimelo pure: ti rispondo io, o chiedo al personale", "neutral")}>Ho una domanda</button>
+          </article>)}</div>
         </section>}
 
         <section className="ross-section ross-spunti" aria-label="Spunti per oggi">

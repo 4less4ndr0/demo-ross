@@ -7,7 +7,8 @@
 // I momenti di partenza si ricalcolano ogni volta da oggi, così la demo resta sempre «intorno a oggi».
 import { useSyncExternalStore } from "react";
 import { toast } from "sonner";
-import { channelResident, simulatedReply } from "../data/channel";
+import { channelResident, floorOf, simulatedReply } from "../data/channel";
+import { announcementPhrase } from "../data/moments";
 import { daysAgo } from "../data/demoClock";
 import { seedMoments } from "../data/moments";
 
@@ -73,6 +74,9 @@ export const channelActions = {
   // Non crea un avviso: arriva in «Hanno chiesto» nel canale della Struttura 2.0.
   request({ residentId, richiesta, categoria, chiusura }) {
     const now = new Date().toISOString();
+    // Chiesta di nuovo, e non ancora fatta: nessuna card nuova, quella esistente lo ricorda.
+    const same = snapshot.find((m) => m.origine === "richiesta" && m.residentId === residentId && m.richiesta === richiesta && m.stato !== "fatto");
+    if (same) { set(update(same.id, { richiestoDiNuovo: now })); return same; }
     const moment = { id: `req-${residentId}-${Date.now()}`, residentId, quando: now, origine: "richiesta", categoria, richiesta, chiusura, confermato: true, stato: "in_attesa", chiusoConOspite: false };
     set({ ...saved, created: [moment, ...saved.created] });
     return moment;
@@ -84,9 +88,22 @@ export const channelActions = {
     const moment = snapshot.find((m) => m.id === id);
     if (!moment) return;
     const stato = moment.stato === next ? "in_attesa" : next;
-    set(update(id, { stato, chiusoConOspite: false }));
+    set(update(id, { stato, chiusoConOspite: false, fattoIl: stato === "fatto" ? new Date().toISOString() : null }));
     const first = channelResident(moment.residentId).first;
     toast(stato === "fatto" ? `Fatto: ROSS lo dirà a ${first} alla prossima conversazione` : stato === "ci_pensiamo" ? `Ci pensiamo noi: ${first} lo saprà quando è fatto` : "Di nuovo in attesa", { action: { label: "Annulla", onClick: () => set(before) } });
+  },
+  // Una comunicazione pratica agli ospiti (non è uno spunto): ROSS la dice a ciascuno nel suo momento.
+  announce({ testo, perChi, quandoDirlo }) {
+    const moment = { id: `com-${Date.now()}`, quando: new Date().toISOString(), origine: "comunicazione", testo: testo.trim(), frase: announcementPhrase(testo, quandoDirlo), perChi, quandoDirlo, stato: "in_corso", dettaA: [] };
+    set({ ...saved, created: [moment, ...saved.created] });
+    toast("Inviata a ROSS", { description: "La dirà a ciascuno nel suo momento, con parole semplici.", action: { label: "Annulla", onClick: () => set({ ...saved, created: saved.created.filter((m) => m.id !== moment.id) }) } });
+    return moment;
+  },
+  // Il tablet l'ha detta a un ospite: se era solo per lui, è «Detto a tutti».
+  toldTo(id, residentId) {
+    const m = snapshot.find((x) => x.id === id);
+    if (!m || (m.dettaA || []).includes(residentId)) return;
+    set(update(id, { dettaA: [...(m.dettaA || []), residentId], ...(m.perChi?.tipo === "ospite" ? { stato: "detto" } : {}) }));
   },
   // Il tablet ha chiuso il cerchio con l'ospite: la frase non si ripete.
   closeWithResident(id) { set(update(id, { chiusoConOspite: true })); },
@@ -107,8 +124,15 @@ export const momentFilters = {
   // Canale, «Cosa è emerso»: cosa fare adesso, per tutti gli ospiti. Solo ciò che ha un «Cosa puoi fare»,
   // non ancora Fatto, degli ultimi 7 giorni; i più recenti in alto.
   canale: (m) => m.origine !== "richiesta" && Boolean(m.cosaPuoiFare) && m.stato !== "fatto" && m.esito !== "attesa" && daysAgo(m.quando) < 7,
-  // Canale, «Hanno chiesto»: le richieste pratiche confermate e non ancora fatte, per tutti gli ospiti.
+  // Scheda «Richieste», dagli ospiti: le richieste pratiche confermate, per stato. «Fatte oggi»: solo oggi e ieri.
   richieste: (m) => m.origine === "richiesta" && m.stato !== "fatto",
+  daVedere: (m) => m.origine === "richiesta" && m.stato === "in_attesa",
+  ciPensiamo: (m) => m.origine === "richiesta" && m.stato === "ci_pensiamo",
+  fatteOggi: (m) => m.origine === "richiesta" && m.stato === "fatto" && daysAgo(m.fattoIl || m.quando) <= 1,
+  // Scheda «Richieste», agli ospiti: le comunicazioni pratiche inviate.
+  comunicazioni: (m) => m.origine === "comunicazione",
+  // Tablet: le comunicazioni per quell'ospite (per tutti, per il suo piano o solo per lui).
+  comunicazioniPer: (resident) => (m) => m.origine === "comunicazione" && (m.perChi?.tipo === "tutti" || (m.perChi?.tipo === "piano" && m.perChi.piano === floorOf(resident)) || (m.perChi?.tipo === "ospite" && m.perChi.residentId === resident.id)),
   // Ritratto → Come sta, «Ha chiesto»: solo le richieste pratiche confermate da quella persona, delle categorie ammesse.
   haChiesto: (residentId) => (m) => m.residentId === residentId && m.origine === "richiesta" && m.confermato !== false && ["stanza", "comfort", "desiderio"].includes(m.categoria),
   // Tablet: una richiesta fatta di cui l'ospite non sa ancora niente (ROSS apre la conversazione chiudendo il cerchio).
@@ -116,7 +140,8 @@ export const momentFilters = {
   // Ritratto → Spunti: solo i momenti nati da uno spunto, di quella persona.
   spunti: (residentId) => (m) => m.residentId === residentId && m.origine === "spunto",
   // Ritratto → Con ROSS: la sua storia, tutto tranne gli spunti ancora in attesa.
-  storia: (residentId) => (m) => m.residentId === residentId && m.esito !== "attesa",
+  // Le comunicazioni agli ospiti non entrano nella storia della persona.
+  storia: (residentId) => (m) => m.residentId === residentId && m.origine !== "comunicazione" && m.esito !== "attesa",
 };
 
 const subscribe = (listener) => { listeners.add(listener); return () => listeners.delete(listener); };

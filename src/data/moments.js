@@ -4,7 +4,7 @@
 //
 // Ogni momento:
 //   id, residentId, quando (data reale, ISO: calcolata da oggi con at(giorniFa, "hh:mm"));
-//   origine: "spunto" | "spontaneo" | "invito" | "scelta" | "da_osservare" | "richiesta";
+//   origine: "spunto" | "spontaneo" | "invito" | "scelta" | "da_osservare" | "richiesta" | "comunicazione";
 //   spunto { testo, tipo } ed esito ("accolto" | "pensa" | "no" | "non_ora" | "attesa"), solo se nasce da uno spunto;
 //   titolo (facoltativo, la frase che apre il momento), racconto (1–2 frasi), cosaPuoiFare (facoltativo);
 //   stato: "nuovo" | "visto" | "fatto"; etichetta e tono facoltativi (altrimenti dipendono dall'origine);
@@ -16,7 +16,17 @@
 // un problema da ciò che sente, e salute e urgenze non diventano mai una richiesta (ROSS rimanda al campanello).
 // Campi: richiesta (una riga con parole semplici), categoria ("stanza" | "comfort" | "desiderio"), chiusura (la frase
 // con cui ROSS chiude il cerchio con l'ospite), stato ("in_attesa" | "ci_pensiamo" | "fatto"), chiusoConOspite.
+// Se lo stesso ospite chiede di nuovo la stessa cosa, non nasce una card nuova: quella esistente ricorda
+// quando l'ha chiesto di nuovo (richiestoDiNuovo). Con «Fatto» si salva fattoIl, per «Fatte oggi».
+// Le lamentele su cose e servizi («la minestra arriva fredda») si accettano come piccolo desiderio;
+// quelle su persone (staff o ospiti) per ora non si inoltrano.
 // Niente priorità, assegnazioni, tempi di risposta o numeri: non è un sistema di ticket.
+//
+// Le **comunicazioni** (origine "comunicazione") vanno nella direzione opposta: un'informazione pratica che la
+// struttura vuole far sapere agli ospiti («domani manca l'acqua calda»). ROSS la dice a ciascuno nel suo momento,
+// con parole semplici. Campi: testo, frase (come la dice ROSS), perChi { tipo: "tutti" | "piano" | "ospite",
+// piano, residentId }, quandoDirlo ("oggi" | "domani"), stato ("in_corso" | "detto"). Non sono spunti e non entrano
+// nella storia della persona.
 //
 // La voce è sempre quella di un collega, in terza persona («ROSS ha nominato…»), e segue la regola d'oro:
 // come è stato accolto uno spunto e cosa aiuta, mai cosa ha raccontato l'ospite (docs/contratto-informativo-struttura.md).
@@ -39,7 +49,11 @@ const originLabel = {
   richiesta: "Ha chiesto",
 };
 export const labelOf = (m) => m.etichetta || originLabel[m.origine];
-export const requestStates = { in_attesa: "In attesa", ci_pensiamo: "Ci pensiamo noi", fatto: "Fatto" };
+export const requestStates = { in_attesa: "Da vedere", ci_pensiamo: "Ci pensiamo noi", fatto: "Fatto" };
+export const requestCategoryLabels = { stanza: "Stanza e oggetti", comfort: "Comfort", desiderio: "Piccoli desideri" };
+export const announcementStates = { in_corso: "In corso", detto: "Detto a tutti" };
+// Come ROSS dice all'ospite una comunicazione scritta dalla struttura: le parole della struttura, più il quando.
+export const announcementPhrase = (testo, quandoDirlo) => `${testo.trim().replace(/[.!]?$/, ".")}${quandoDirlo === "domani" ? " Te lo ricordo domattina." : ""}`;
 export const requestCategories = ["stanza", "comfort", "desiderio"];
 // La richiesta della lampada che Elena fa sul tablet, nella conversazione con ROSS.
 export const lampRequest = { residentId: "elena", categoria: "stanza", richiesta: "La lampada sul comodino non si accende", chiusura: "Hanno sistemato la lampada sul comodino: adesso la luce va bene?" };
@@ -99,9 +113,14 @@ export const seedMoments = () => [
   m(0, "17:20", { id: "mario-17", residentId: "mario", origine: "spontaneo", etichetta: "Di sua iniziativa", titolo: "Ha cercato ROSS, come sempre dopo le 17", racconto: "Poche parole, senza fretta: è il suo modo, e va bene così." }),
 
   // Richieste pratiche di esempio, confermate dall'ospite, con stati diversi. Quella della lampada di Elena nasce sul tablet.
-  m(0, "15:40", { id: "req-bruno-freddo", residentId: "bruno", origine: "richiesta", confermato: true, categoria: "comfort", richiesta: "In camera fa freddo nel pomeriggio", chiusura: "Hanno guardato il riscaldamento della tua camera: adesso il pomeriggio va meglio?", stato: "in_attesa" }),
+  m(1, "15:40", { id: "req-bruno-freddo", residentId: "bruno", origine: "richiesta", confermato: true, categoria: "comfort", richiesta: "In camera fa freddo nel pomeriggio", chiusura: "Hanno guardato il riscaldamento della tua camera: adesso il pomeriggio va meglio?", stato: "in_attesa", richiestoDiNuovo: iso(0, "15:10") }),
+  m(0, "12:40", { id: "req-teresa-minestra", residentId: "teresa", origine: "richiesta", confermato: true, categoria: "desiderio", richiesta: "La minestra della cena arriva fredda", chiusura: "In cucina hanno saputo della minestra: stasera com'era?", stato: "in_attesa" }),
   m(1, "09:10", { id: "req-lucia-giornale", residentId: "lucia", origine: "richiesta", confermato: true, categoria: "desiderio", richiesta: "Vorrebbe il giornale al mattino", chiusura: "Da domani il giornale ti arriva al mattino: ti va bene così?", stato: "ci_pensiamo" }),
-  m(2, "18:20", { id: "req-carlo-telecomando", residentId: "carlo", origine: "richiesta", confermato: true, categoria: "stanza", richiesta: "Il telecomando della TV non funziona", chiusura: "Hanno cambiato le pile del telecomando: adesso la TV si accende?", stato: "fatto", chiusoConOspite: true }),
+  m(2, "18:20", { id: "req-carlo-telecomando", residentId: "carlo", origine: "richiesta", confermato: true, categoria: "stanza", richiesta: "Il telecomando della TV non funziona", chiusura: "Hanno cambiato le pile del telecomando: adesso la TV si accende?", stato: "fatto", fattoIl: iso(0, "10:30"), chiusoConOspite: true }),
+
+  // Comunicazioni dalla struttura agli ospiti, di esempio.
+  m(0, "09:00", { id: "com-acqua", origine: "comunicazione", testo: "Domani mattina manca l'acqua calda fino alle 10", frase: "Domani mattina, fino alle 10, l'acqua calda non c'è. Te lo ricordo domattina.", perChi: { tipo: "tutti" }, quandoDirlo: "oggi", stato: "in_corso" }),
+  m(2, "11:00", { id: "com-parrucchiere", origine: "comunicazione", testo: "Giovedì alle 15 arriva il parrucchiere al primo piano", frase: "Giovedì alle 15 arriva il parrucchiere al primo piano.", perChi: { tipo: "piano", piano: "1" }, quandoDirlo: "oggi", stato: "detto" }),
 
   // Teresa: la veterana che trascina gli altri.
   m(0, "15:31", { id: "teresa-canzone", residentId: "teresa", origine: "spontaneo", etichetta: "Di sua iniziativa", titolo: "Ha proposto una canzone per il gruppo", racconto: "Usa ROSS per trovare cose da fare con gli altri." }),

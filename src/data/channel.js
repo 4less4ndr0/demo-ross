@@ -11,6 +11,10 @@ export const channelResidents = residents
   .map((r) => ({ ...r, first: r.name.split(" ")[0], f: female.has(r.id) }))
   .sort((a, b) => a.name.localeCompare(b.name, "it"));
 export const channelResident = (id) => channelResidents.find((r) => r.id === id);
+// Il piano di un ospite, dalla prima cifra della stanza (118 → primo piano). Serve solo alle comunicazioni.
+export const floorOf = (r) => String(r.room || "").charAt(0);
+export const floors = [...new Set(channelResidents.map(floorOf))].sort();
+export const floorLabel = (f) => ({ 1: "Primo piano", 2: "Secondo piano", 3: "Terzo piano" }[f] || `Piano ${f}`);
 
 export const spuntoTypes = [
   { id: "attivita", label: "Attività" },

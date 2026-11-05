@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { ArrowRight, BookOpen, Check, Eye, HandHelping, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ClipboardList, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
 import { Avatar, StructureView } from "../components/Common";
 import { Button, Textarea } from "../components/ui";
 import { channelResident, channelResidents, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
 import { whenText } from "../data/demoClock";
-import { esiti, labelOf, requestStates, toneOf } from "../data/moments";
+import { esiti, labelOf, toneOf } from "../data/moments";
 import { channelActions, momentFilters, useMoments } from "../state/channelStore";
 import { useDemo } from "../state/DemoContext";
 import { PassionNetwork } from "../components/PassionNetwork";
@@ -18,6 +18,8 @@ const MAX = 160;
 const view = { base: BASE, v2: true };
 
 export function StructureChannelLayout() {
+  // La scheda «Richieste» mostra un pallino (senza numero) quando ci sono richieste da vedere.
+  const toSee = useMoments().some(momentFilters.daVedere);
   return (
     <StructureView.Provider value={view}>
       <div className="app-shell s2-app">
@@ -26,6 +28,7 @@ export function StructureChannelLayout() {
           <nav className="top-tabs" aria-label="Sezioni">
             <NavLink to={BASE} end><Send size={16} /><span>Il canale</span></NavLink>
             <NavLink to={`${BASE}/ospiti`}><Users size={16} /><span>Ospiti</span></NavLink>
+            <NavLink to={`${BASE}/richieste`} className={({ isActive }) => `${isActive ? "active " : ""}${toSee ? "has-dot" : ""}`} aria-label={toSee ? "Richieste: ci sono richieste da vedere" : "Richieste"}><ClipboardList size={16} /><span>Richieste</span>{toSee && <i className="s2-tab-dot" aria-hidden="true" />}</NavLink>
           </nav>
           <span className="s2-top-spacer" aria-hidden="true" />
         </header>
@@ -44,7 +47,7 @@ export function StructureChannel() {
   const moments = useMoments();
   // «Cosa è emerso»: per tutti gli ospiti, cosa fare adesso (vedi momentFilters.canale).
   const feed = moments.filter(momentFilters.canale);
-  const requests = moments.filter(momentFilters.richieste);
+  const toSee = moments.filter(momentFilters.daVedere).length;
   const fresh = feed.filter((m) => m.stato === "nuovo").length;
 
   return (
@@ -62,15 +65,13 @@ export function StructureChannel() {
         </ol>
       </section>
 
+      {/* Le cose pratiche stanno nella scheda «Richieste»: qui solo un rimando discreto, se c'è qualcosa da vedere. */}
+      {toSee > 0 && <NavLink to={`${BASE}/richieste`} className="s2-rq-link"><ClipboardList size={15} />{toSee === 1 ? "1 richiesta nuova dagli ospiti" : `${toSee} richieste nuove dagli ospiti`} <ArrowRight size={14} /> Richieste</NavLink>}
+
       <PassionNetwork />
 
       <div className="s2-columns">
         <ProposeCard />
-        <div className="s2-feed-column">
-        <section className="s2-requests" aria-labelledby="s2-requests-title">
-          <div className="s2-feed-head"><div><span className="s2-eyebrow">Dagli ospiti, tramite ROSS</span><h2 id="s2-requests-title">Hanno chiesto</h2><p className="s2-feed-lead">Piccole cose della giornata che un ospite ha chiesto a ROSS di farti sapere, e ha confermato. Non sono avvisi: niente salute né urgenze, per quelle c'è il campanello.</p></div></div>
-          {requests.length ? <ul className="s2-request-list">{requests.map((m) => <RequestCard key={m.id} moment={m} />)}</ul> : <p className="knows-empty">Nessuna richiesta in sospeso.</p>}
-        </section>
         <section className="s2-feed" aria-labelledby="s2-feed-title">
           <div className="s2-feed-head">
             <div><span className="s2-eyebrow">Da ROSS, per te</span><h2 id="s2-feed-title">Cosa è emerso</h2><p className="s2-feed-lead">Cosa puoi fare adesso, per tutti gli ospiti: gli ultimi 7 giorni, finché non lo segni come fatto. La storia di ciascuno è nel suo ritratto.</p></div>
@@ -78,7 +79,6 @@ export function StructureChannel() {
           </div>
           {feed.length ? <ul className="s2-insights">{feed.map((m) => <MomentCard key={m.id} moment={m} />)}</ul> : <p className="knows-empty">Per ora niente da fare: quando emerge qualcosa di utile, ROSS te lo racconta qui.</p>}
         </section>
-        </div>
       </div>
 
       <p className="s2-footnote"><MessageCircleHeart size={16} />ROSS traduce, non trasmette: racconta come è stato accolto lo spunto e cosa può aiutare, mai cosa ha detto l'ospite.</p>
@@ -191,26 +191,6 @@ function MomentCard({ moment: m }) {
       <p className="s2-suggestion"><span>Cosa puoi fare</span>{m.cosaPuoiFare}</p>
       <MomentActions moment={m} />
       <NavLink to={`${BASE}/ospiti/${r.id}?tab=conversazioni`} className="s2-story-link"><BookOpen size={14} /> Vedi la storia di {r.first}</NavLink>
-    </li>
-  );
-}
-
-// Una richiesta pratica: chi, dove, quando, cosa ha chiesto in una riga, e che l'ha confermata.
-// Azioni solo «Ci pensiamo noi» e «Fatto» (con «Annulla»): niente priorità, assegnazioni o tempi.
-function RequestCard({ moment: m }) {
-  const r = channelResident(m.residentId);
-  return (
-    <li id={`m-${m.id}`} className={`s2-card s2-request is-${m.stato}`}>
-      <Avatar resident={r} size="lg" />
-      <div className="s2-request-body">
-        <div className="s2-request-who"><NavLink to={`${BASE}/ospiti/${r.id}?tab=conversazioni`} className="s2-name">{r.name}</NavLink><small>stanza {r.room} · {whenText(m.quando)}</small></div>
-        <p className="s2-request-text"><HandHelping size={16} />{m.richiesta}</p>
-        <div className="s2-request-tags"><em className="s2-confirmed"><Check size={12} />Confermato da {r.first}</em>{m.stato === "ci_pensiamo" && <em className="s2-request-state">{requestStates.ci_pensiamo}</em>}</div>
-      </div>
-      <div className="s2-actions">
-        <button type="button" className="s2-mark" aria-pressed={m.stato === "ci_pensiamo"} onClick={() => channelActions.requestStep(m.id, "ci_pensiamo")}>Ci pensiamo noi</button>
-        <button type="button" className="s2-mark is-done" onClick={() => channelActions.requestStep(m.id, "fatto")}><Check size={15} />Fatto</button>
-      </div>
     </li>
   );
 }
