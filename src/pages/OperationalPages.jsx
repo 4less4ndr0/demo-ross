@@ -8,7 +8,7 @@ import { byAttention } from "../data/careInsights";
 import { buildResidentReport, buildTeamReport } from "../data/reportNarrative";
 import { useDemo } from "../state/DemoContext";
 import { Button, Select } from "../components/ui";
-import { Avatar, SectionTitle } from "../components/Common";
+import { Avatar, SectionTitle, RossLogo } from "../components/Common";
 
 // Report per l'équipe (docs/contratto-informativo-struttura.md): Riepilogo d'équipe sui cinque punti cardinali
 // oppure "Come sta" del singolo ospite. Mai il contenuto delle conversazioni, confronti solo con la media della persona.
@@ -125,7 +125,7 @@ function Overview({ report, period, onResident }) {
 }
 
 function PaperHeader({ period }) {
-  return <header><div><span className="brand-mark small">R</span><div><strong>R.O.S.S.</strong><small>Residenza Aurora · uso interno équipe</small></div></div><span>Generato il 21 settembre 2026 · ultimi {period} giorni</span></header>;
+  return <header><div><RossLogo className="brand-logo is-small" /><div><strong>R.O.S.S.</strong><small>Residenza Aurora · uso interno équipe</small></div></div><span>Generato il 21 settembre 2026 · ultimi {period} giorni</span></header>;
 }
 
 function TeamReport({ report, period, onResident }) {

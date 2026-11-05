@@ -1,3 +1,4 @@
+import { RossLogo } from "../components/Common";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { dayShort, dayText, monthText, rangeText } from "../data/demoClock";
 import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -80,11 +81,11 @@ function LockScreen({ lines, onOpen }) {
     <div className="fam-lock-clock"><Lock size={16} aria-hidden="true" /><span>{dayText(0)}</span><strong>17:20</strong></div>
     <div className="fam-lock-stack">
       <button type="button" className="fam-lock-note" onClick={() => open("/famiglia")}>
-        <span className="fam-lock-app" aria-hidden="true">R</span>
+        <span className="fam-lock-app is-logo" aria-hidden="true"><RossLogo /></span>
         <span className="fam-lock-text"><span className="fam-lock-meta"><strong>ROSS</strong><small>ora</small></span><strong>Elena ha voluto raccontarti una cosa</strong><span>Il sorriso di oggi: {lines.smile}</span></span>
       </button>
       <button type="button" className="fam-lock-note is-older" onClick={() => open("/famiglia/attivita/cartolina")}>
-        <span className="fam-lock-app" aria-hidden="true">R</span>
+        <span className="fam-lock-app is-logo" aria-hidden="true"><RossLogo /></span>
         <span className="fam-lock-text"><span className="fam-lock-meta"><strong>ROSS</strong><small>ieri</small></span><strong>La tua cartolina è arrivata a Elena</strong><span>Ha riconosciuto subito Cefalù: guarda com'è andata.</span></span>
       </button>
     </div>
@@ -125,7 +126,7 @@ function FamilyShell({ title, tab, back, onContribute, children }) {
       <StatusBar />
       <div className="fam-scroll" inert={locked || undefined} onScroll={(event) => setScrolled(event.currentTarget.scrollTop > 64)}>
         <header className={`fam-navbar${scrolled ? " is-scrolled" : ""}`}>
-          <div className="fam-navbar-side">{back ? <button type="button" className="fam-nav-back" onClick={() => navigate(back.to)}><ChevronLeft size={26} strokeWidth={2.2} />{back.label}</button> : <NavLink className="fam-brand" to="/famiglia" aria-label="ROSS per la famiglia: Oggi"><span>R</span><small>ROSS</small></NavLink>}</div>
+          <div className="fam-navbar-side">{back ? <button type="button" className="fam-nav-back" onClick={() => navigate(back.to)}><ChevronLeft size={26} strokeWidth={2.2} />{back.label}</button> : <NavLink className="fam-brand" to="/famiglia" aria-label="ROSS per la famiglia: Oggi"><RossLogo className="fam-brand-logo" /><small>ROSS</small></NavLink>}</div>
           <strong className="fam-navbar-title" aria-hidden={!scrolled}>{title}</strong>
           <div className="fam-navbar-side fam-navbar-end" />
         </header>

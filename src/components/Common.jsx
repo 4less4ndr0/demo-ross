@@ -1,3 +1,4 @@
+import { asset } from "../asset.js";
 import { HelpCircle, Info } from "lucide-react";
 import { createContext, useContext, useRef, useState } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
@@ -73,4 +74,10 @@ export function ProgressBar({ value, tone = "mint" }) {
 
 export function DataExplanation({ children }) {
   return <div className="data-explanation"><Info size={15} />{children}</div>;
+}
+
+// Il logo di ROSS: i due occhi con la sfumatura dal blu al verde (public/ross-logo.svg).
+// Accanto alla scritta «ROSS» o «R.O.S.S.» è decorativo (alt vuoto); da solo va passato un `alt`.
+export function RossLogo({ className = "", alt = "" }) {
+  return <img src={asset("ross-logo.svg")} alt={alt} aria-hidden={alt ? undefined : true} className={`ross-logo ${className}`.trim()} />;
 }

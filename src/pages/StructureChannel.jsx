@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { ArrowRight, BookOpen, Check, ClipboardList, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
-import { Avatar, StructureView } from "../components/Common";
+import { Avatar, StructureView, RossLogo } from "../components/Common";
 import { Button, Textarea } from "../components/ui";
 import { channelResident, channelResidents, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
 import { whenText } from "../data/demoClock";
@@ -34,7 +34,7 @@ export function StructureChannelLayout() {
     <StructureView.Provider value={view}>
       <div className="app-shell s2-app">
         <header className={`s2-top${scrolled ? " is-scrolled" : ""}`}>
-          <div className="s2-brand"><span className="brand-mark">R</span><div><strong>R.O.S.S.</strong><small>Residenza Aurora</small></div></div>
+          <div className="s2-brand"><RossLogo className="brand-logo" /><div><strong>R.O.S.S.</strong><small>Residenza Aurora</small></div></div>
           <nav className="top-tabs" aria-label="Sezioni">
             <NavLink to={BASE} end><Send size={16} /><span>Il canale</span></NavLink>
             <NavLink to={`${BASE}/ospiti`}><Users size={16} /><span>Ospiti</span></NavLink>

@@ -2224,3 +2224,21 @@ body.has-quickchat [data-sonner-toaster]{--offset-bottom:140px!important;--mobil
 @media(max-width:700px){.ross-m-today{padding:16px;border-radius:24px}.ross-m-today-grid{grid-template-columns:1fr}.ross-m-today-grid>.ross-m-feature{min-height:0}}
 .ross-m-today-grid>.ross-m-feature{margin:0}
 .ross-m-today-grid .ross-m-feature .ross-m-body{margin:0;font-size:19px;line-height:1.55;color:var(--ross-text)}
+/* Il logo di ROSS (public/ross-logo.svg): i due occhi con la sfumatura dal blu al verde, su fondo trasparente.
+   Sostituisce la vecchia «R» in un quadrato e gli occhi arancioni (ross-eyes.png), in tutte le viste. */
+.ross-logo{display:block;flex:none;width:auto;height:auto;object-fit:contain}
+.brand-logo{height:30px;width:36px}
+.brand-logo.is-small{height:24px;width:29px}
+.ask-avatar.is-logo{background:#fff;border:1px solid var(--line)}
+.ask-avatar.is-logo .ross-logo{width:20px;height:17px}
+.fam-lock-app.is-logo{background:#fff}
+.fam-lock-app.is-logo .ross-logo{width:26px;height:22px}
+.fam-brand-logo{width:30px;height:25px}
+.ross-m-logo{width:44px;height:37px}
+.ross-wordmark-logo{width:34px;height:28px}
+.ross-stage-logo{width:150px;height:126px;margin-bottom:14px;filter:drop-shadow(0 16px 30px rgba(63,115,186,.25));animation:rossFloat 4s ease-in-out infinite alternate}
+.ross-app .ross-eyes.ross-chat-eyes{width:150px;height:126px;filter:drop-shadow(0 16px 30px rgba(63,115,186,.22))}
+.ross-app .ross-chat-main{background:radial-gradient(circle at 50% 22%,rgba(120,191,174,.16),transparent 34%)}
+.ross-eyes.complete{width:120px;height:101px;margin-bottom:0}
+@media(max-width:700px){.ross-app .ross-eyes.ross-chat-eyes{width:110px;height:92px}.ross-stage-logo{width:110px;height:92px}}
+@media(prefers-reduced-motion:reduce){.ross-stage-logo{animation:none}}
