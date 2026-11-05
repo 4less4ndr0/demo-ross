@@ -11,6 +11,10 @@ export const channelResidents = residents
   .map((r) => ({ ...r, first: r.name.split(" ")[0], f: female.has(r.id) }))
   .sort((a, b) => a.name.localeCompare(b.name, "it"));
 export const channelResident = (id) => channelResidents.find((r) => r.id === id);
+// Il piano di un ospite, dalla prima cifra della stanza (118 → primo piano). Serve solo alle comunicazioni.
+export const floorOf = (r) => String(r.room || "").charAt(0);
+export const floors = [...new Set(channelResidents.map(floorOf))].sort();
+export const floorLabel = (f) => ({ 1: "Primo piano", 2: "Secondo piano", 3: "Terzo piano" }[f] || `Piano ${f}`);
 
 export const spuntoTypes = [
   { id: "attivita", label: "Attività" },
@@ -43,11 +47,11 @@ export function simulatedReply(moment) {
   const contenta = r.f ? "contenta" : "contento";
   const tipo = moment.spunto?.tipo;
   const replies = {
-    attivita: ["pensa", `${r.first} ha ascoltato la proposta con curiosità e ha chiesto a ROSS qualche dettaglio. Ci sta pensando.`, "Riproponetegliela di persona il giorno stesso: un invito a voce conta più di un avviso in bacheca."],
-    ricordo: ["accolto", `${r.first} ha ripreso volentieri il ricordo e ci si è ${r.f ? "soffermata" : "soffermato"} a lungo.`, `Chiedete${le} di raccontarvelo, la prossima volta che passate: sarà ${contenta} che qualcuno se ne ricordi.`],
-    evento: ["accolto", `${r.first} è ${contenta} di saperlo in anticipo e ha detto a ROSS che ci vuole essere.`, `Ricordateglielo la mattina stessa e chiedete${le} dove preferisce sedersi.`],
-    persona: ["accolto", `Quando ROSS ha nominato questa persona, ${r.first} ha avuto voglia di parlarne.`, `Se vi capita, chiedete${le} di questa persona: è un argomento che ${r.f ? "la" : "lo"} fa stare bene.`],
+    attivita: ["pensa", `${r.first} ha ascoltato la proposta con curiosità e ha chiesto a ROSS qualche dettaglio. Ci sta pensando.`, "Riproponigliela di persona il giorno stesso: un invito a voce conta più di un avviso in bacheca."],
+    ricordo: ["accolto", `${r.first} ha ripreso volentieri il ricordo e ci si è ${r.f ? "soffermata" : "soffermato"} a lungo.`, `Chiedi${le} di raccontartelo, la prossima volta che passi: sarà ${contenta} che qualcuno se ne ricordi.`],
+    evento: ["accolto", `${r.first} è ${contenta} di saperlo in anticipo e ha detto a ROSS che ci vuole essere.`, `Ricordaglielo la mattina stessa e chiedi${le} dove preferisce sedersi.`],
+    persona: ["accolto", `Quando ROSS ha nominato questa persona, ${r.first} ha avuto voglia di parlarne.`, `Se ti capita, chiedi${le} di questa persona: è un argomento che ${r.f ? "la" : "lo"} fa stare bene.`],
   };
-  const [esito, racconto, cosaPuoiFare] = replies[tipo] || ["accolto", `${r.first} ha accolto lo spunto con piacere.`, `Riprendetelo con ${r.f ? "lei" : "lui"} quando ne avete occasione: è un buon punto da cui partire.`];
+  const [esito, racconto, cosaPuoiFare] = replies[tipo] || ["accolto", `${r.first} ha accolto lo spunto con piacere.`, `Riprendilo con ${r.f ? "lei" : "lui"} quando ne hai occasione: è un buon punto da cui partire.`];
   return { esito, racconto, cosaPuoiFare };
 }

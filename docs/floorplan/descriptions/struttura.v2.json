@@ -30,11 +30,15 @@
     },
     "src/data/moments.js": {
       "name": "I momenti emersi con ROSS",
-      "description": "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte e cose da guardare di persona, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."
+      "description": "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona e richieste pratiche confermate dall'ospite, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."
     },
     "src/data/demoClock.js": {
       "name": "L'orologio della demo",
       "description": "Fa partire la Struttura 2.0, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana, la settimana scorsa)."
+    },
+    "src/pages/StructureRequests.jsx": {
+      "name": "Le richieste, in due direzioni",
+      "description": "La scheda Richieste della Struttura 2.0: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti, che ROSS dice a ciascuno."
     }
   }
 }

@@ -14,7 +14,7 @@ arch = json.load(open("docs/floorplan/architecture.json", encoding="utf-8"))
 
 # --- Struttura 2.0: nuovo gruppo e nuovi file (si aggiungono una volta sola) ---
 V2 = "struttura.v2"
-v2_files = ["src/pages/StructureChannel.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx", "src/components/PassionNetwork.jsx", "src/data/channel.js", "src/data/interestGraph.js", "src/data/moments.js", "src/data/demoClock.js", "src/state/channelStore.js"]
+v2_files = ["src/pages/StructureChannel.jsx", "src/pages/StructureRequests.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx", "src/components/PassionNetwork.jsx", "src/data/channel.js", "src/data/interestGraph.js", "src/data/moments.js", "src/data/demoClock.js", "src/state/channelStore.js"]
 v2_node = {"id": V2, "parent": "struttura", "label": "Struttura 2.0 · il canale", "kind": "ui",
   "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
   "details": "", "tags": [], "paths": v2_files, "packages": [], "hosts": []}
@@ -40,8 +40,10 @@ for coll in (G["nodes"], arch["nodes"]):
 
 # --- Descrizioni scritte a mano per i file cambiati ---
 desc = {
+  "src/pages/RossExperience.jsx": ("Schermate del tablet", "La home di Elena con le schede \"una cosa alla volta\" e \"Parla con ROSS\" con i sottotitoli. Nella conversazione Elena può chiedere a ROSS di far sapere al personale una piccola cosa pratica (la lampada), con conferma; quando è sistemata ROSS glielo dice. Salute e urgenze: solo il campanello."),
   "src/components/DocumentDialogs.jsx": ("Cartelle e aggiunta di documenti", "Le quattro cartelle di «Cosa sa ROSS» e le finestre per aggiungere un documento: un file con anteprima, titolo e cartella (dalla chat anche per quale ospite) o un testo incollato che diventa un .txt."),
-  "src/data/moments.js": ("I momenti emersi con ROSS", "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte e cose da guardare di persona, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."),
+  "src/pages/StructureRequests.jsx": ("Le richieste, in due direzioni", "La scheda Richieste della Struttura 2.0: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti, che ROSS dice a ciascuno."),
+  "src/data/moments.js": ("I momenti emersi con ROSS", "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona e richieste pratiche confermate dall'ospite, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."),
   "src/data/demoClock.js": ("L'orologio della demo", "Fa partire la Struttura 2.0, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana, la settimana scorsa)."),
   "src/state/channelStore.js": ("Memoria dei momenti", "Tiene la sola fonte dei momenti della Struttura 2.0 e i filtri delle tre viste; Visto e Fatto cambiano in un posto e valgono ovunque; nella demo ROSS risponde agli spunti dopo pochi secondi."),
   "src/components/PassionNetwork.jsx": ("La rete delle passioni", "In cima al canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."),

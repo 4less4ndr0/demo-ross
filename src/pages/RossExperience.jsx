@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { AlarmClock, ArrowLeft, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, UtensilsCrossed, Volume2, X } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AlarmClock, ArrowLeft, Megaphone, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, UtensilsCrossed, Volume2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "../components/ui";
 import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { outsideInvites } from "../data/demoData";
 import { dayText, daysUntil } from "../data/demoClock";
+import { lampRequest } from "../data/moments";
+import { channelActions, getMoments, momentFilters, useMoments } from "../state/channelStore";
 import { byPriority } from "../data/familyMessages";
 import { consumeFamilyNews, consumeReminders } from "../state/familyNews";
 
@@ -15,7 +17,7 @@ import { consumeFamilyNews, consumeReminders } from "../state/familyNews";
 // note: spiegazioni per chi guarda la demo, mostrate solo con "Note per chi presenta".
 const script = [
   { id: "apertura", speaker: "ross", line: "Ciao Elena, sono ROSS. Ti va di stare un po' insieme?", note: "ROSS si presenta e chiede, senza imporre un argomento. Elena può dire di no.",
-    choices: [{ label: "Sì, volentieri", next: "si" }, { label: "Non adesso", next: "non-adesso" }] },
+    choices: [{ label: "Sì, volentieri", next: "si" }, { label: "Non adesso", next: "non-adesso" }, { label: "Sono caduta", next: "salute" }] },
   { id: "si", speaker: "elena", line: "Sì, volentieri. Oggi ho ascoltato Mina.", note: "È Elena a scegliere da dove partire." },
   { id: "scelta", speaker: "ross", line: "Mi avevi raccontato che Mina ti ricorda i pomeriggi in cucina. Restiamo sulla musica, o guardiamo una fotografia?", note: "ROSS usa solo un ricordo che Elena ha già confermato, e le lascia la scelta.",
     choices: [{ label: "Guardiamo una fotografia", next: "foto-elena" }, { label: "Restiamo sulla musica", next: "musica" }] },
@@ -26,14 +28,33 @@ const script = [
   { id: "dettaglio", speaker: "elena", line: "La luce della sera. Paolo portava sempre una piccola macchina fotografica rossa." },
   { id: "bozza", speaker: "ross", line: "Questa della macchina fotografica rossa non la sapevo. Se per te va bene, me la segno.", draft: "La macchina fotografica rossa di Paolo", note: "Il dettaglio nuovo resta in bozza: ROSS lo tiene solo se Elena è d'accordo.",
     choices: [{ label: "Sì, segnatela", next: "ricordo" }, { label: "No, lasciamo stare", next: "non-segnare" }] },
-  { id: "non-segnare", speaker: "ross", line: "Va bene, non me la segno. Mi è piaciuto ascoltarti.", forget: true, next: "saluto" },
+  { id: "non-segnare", speaker: "ross", line: "Va bene, non me la segno. Mi è piaciuto ascoltarti.", forget: true, next: "lampada" },
   { id: "ricordo", speaker: "elena", line: "Sì. Mi fotografava sul lungomare e poi rideva perché chiudevo gli occhi.", draft: "La macchina fotografica rossa di Paolo", saved: true },
   { id: "consenso", speaker: "ross", line: "Che bel ricordo. Ti va se lo racconto anche ad Anna? Credo le farebbe piacere.", draft: "La macchina fotografica rossa di Paolo", saved: true, note: "Il consenso nasce qui, un racconto alla volta. Anna non riceve la conversazione, solo questo ricordo, e solo se Elena dice sì.",
     choices: [{ label: "Sì, raccontaglielo", next: "condiviso", share: true }, { label: "No, tienilo per te", next: "per-te", share: false }] },
-  { id: "condiviso", speaker: "ross", line: "Va bene: le racconto solo questo ricordo, non il resto della nostra chiacchierata.", next: "saluto" },
-  { id: "per-te", speaker: "ross", line: "Va bene, resta tra noi due.", next: "saluto" },
+  { id: "condiviso", speaker: "ross", line: "Va bene: le racconto solo questo ricordo, non il resto della nostra chiacchierata.", next: "lampada" },
+  { id: "per-te", speaker: "ross", line: "Va bene, resta tra noi due.", next: "lampada" },
+  // Una richiesta pratica: parte solo se Elena dice sì. ROSS non deduce mai un problema da ciò che sente.
+  { id: "lampada", speaker: "elena", line: "Prima di salutarci: la lampada sul comodino non si accende più." },
+  { id: "lampada-conferma", speaker: "ross", line: "Mi dispiace, così la sera è scomodo. Vuoi che lo dica al personale?", note: "Una richiesta pratica parte solo con il sì di Elena. Con il no ROSS lascia perdere e non ci torna. Non è un avviso: arriva alla struttura come «Hanno chiesto», senza priorità né tempi.",
+    choices: [{ label: "Sì, diglielo", next: "lampada-si", request: "lampada" }, { label: "No, lascia stare", next: "lampada-no" }] },
+  { id: "lampada-si", speaker: "ross", line: "Va bene, lo faccio sapere al personale.", note: "Nella Struttura 2.0 la richiesta compare in «Hanno chiesto», con «Confermato da Elena».", next: "saluto" },
+  { id: "lampada-no", speaker: "ross", line: "Va bene, lascio stare.", note: "Senza un sì non parte niente.", next: "saluto" },
   { id: "saluto", speaker: "ross", line: "Le altre fotografie le guardiamo un'altra volta. Alle 17:30 in salone si canta, e c'è anche Mina: ci vai? Poi mi racconti com'è andata.", note: "ROSS chiude verso fuori: è un ponte verso le persone vere, non la meta.",
     choices: [{ label: "Sì, ci vado", end: "out" }, { label: "Magari un'altra volta", end: "home" }] },
+  // Salute e urgenze non diventano mai una richiesta: ROSS rimanda subito al campanello e al personale.
+  { id: "salute", speaker: "elena", line: "Sono caduta prima, e adesso mi fa male la gamba." },
+  { id: "salute-risposta", speaker: "ross", line: "Per questo è meglio chiamare subito il personale: puoi usare il campanello qui accanto. Io non sono un sistema di emergenza.", note: "ROSS non crea nessuna richiesta e non avvisa nessuno al posto di Elena: salute e urgenze passano dal campanello e dal personale, mai da ROSS. ROSS non è un sistema di emergenza.",
+    choices: [{ label: "Va bene, suono il campanello", end: "help" }] },
+  // Chiusura del cerchio: se la struttura ha segnato «Fatto», ROSS apre così la conversazione successiva.
+  { id: "cerchio", speaker: "ross", line: "Ciao Elena. Hanno sistemato la lampada sul comodino: adesso la luce va bene?", note: "La struttura ha segnato la richiesta come «Fatto» nella Struttura 2.0: ROSS lo dice a Elena alla prima occasione, una volta sola.",
+    choices: [{ label: "Sì, adesso va bene", next: "cerchio-ok" }, { label: "Non ancora", next: "cerchio-no" }] },
+  { id: "cerchio-ok", speaker: "ross", line: "Bene, mi fa piacere. Ti va di stare un po' insieme?",
+    choices: [{ label: "Sì, volentieri", next: "si" }, { label: "Non adesso", next: "non-adesso" }] },
+  { id: "cerchio-no", speaker: "ross", line: "Mi dispiace. Vuoi che lo dica di nuovo al personale?", note: "Anche qui serve il sì di Elena.",
+    choices: [{ label: "Sì, diglielo", next: "cerchio-ridetto", request: "lampada" }, { label: "No, lascia stare", next: "cerchio-ok" }] },
+  { id: "cerchio-ridetto", speaker: "ross", line: "Va bene, lo faccio sapere di nuovo al personale. Intanto, ti va di stare un po' insieme?",
+    choices: [{ label: "Sì, volentieri", next: "si" }, { label: "Non adesso", next: "non-adesso" }] },
   { id: "non-adesso", speaker: "ross", line: "Va bene, possiamo farlo un'altra volta. Quando ti va, chiamami tu.", note: "Il no si accetta così, senza insistere.", choices: [{ label: "Grazie, ROSS", end: "later" }] },
 ];
 const scriptIndex = Object.fromEntries(script.map((turn, index) => [turn.id, index]));
@@ -160,6 +181,10 @@ function RossStage({ flow, onClose, onAnswer }) {
 
 export function RossHome() {
   const { state, actions, notify } = useDemo();
+  // «ROSS ti dice»: le comunicazioni pratiche della struttura per Elena (per tutti, per il suo piano o solo per lei),
+  // con le parole semplici di ROSS. Sono informazioni, non spunti.
+  const announcements = useMoments().filter(momentFilters.comunicazioniPer(state.residents.find((r) => r.id === "elena")));
+  useEffect(() => { announcements.forEach((m) => channelActions.toldTo(m.id, "elena")); }, [announcements.map((m) => m.id).join()]); // eslint-disable-line react-hooks/exhaustive-deps
   const navigate = useNavigate();
   const [panel, setPanel] = useState(null);
   const [rossState, setRossState] = useState("rest");
@@ -266,6 +291,14 @@ export function RossHome() {
           </div>
         </section>}
 
+        {announcements.length > 0 && <section className="ross-section ross-tells" aria-label="ROSS ti dice">
+          <h2 className="ross-section-title">ROSS ti dice</h2>
+          <div className="ross-tells-list">{announcements.map((m) => <article key={m.id} className="ross-prompt-card ross-tell">
+            <header><span className="ross-prompt-icon"><Megaphone /></span><div><small>Dalla residenza</small><h3>{m.frase}</h3></div></header>
+            <button type="button" onClick={() => notify("Chiedimelo pure: ti rispondo io, o chiedo al personale", "neutral")}>Ho una domanda</button>
+          </article>)}</div>
+        </section>}
+
         <section className="ross-section ross-spunti" aria-label="Spunti per oggi">
           <h2 className="ross-section-title">Spunti per oggi</h2>
           <div className="ross-prompt-grid">{dayPrompts.map((item) => { const Icon = item.icon; return <article key={item.id} className="ross-prompt-card">
@@ -326,14 +359,20 @@ export function RossHome() {
 export function RossConversation() {
   const { state, actions, notify } = useDemo();
   const navigate = useNavigate();
-  const [history, setHistory] = useState(["apertura"]);
+  // Se la struttura ha segnato «Fatto» una richiesta di Elena, la conversazione si apre chiudendo il cerchio.
+  const [closing] = useState(() => getMoments().find(momentFilters.daChiudere("elena")) || null);
+  const asked = useRef(false); // una richiesta per conversazione, anche tornando indietro
+  const [history, setHistory] = useState(closing ? ["cerchio"] : ["apertura"]);
   const [shown, setShown] = useState(0); // parole già comparse nella frase in corso
   const [auto, setAuto] = useState(false);
   const [notes, setNotes] = useState(false);
   const [shared, setShared] = useState(true);
-  const [ended, setEnded] = useState(state.rossJourney.stage === "complete" ? "done" : null);
-  const turn = script[scriptIndex[history[history.length - 1]]];
+  const [ended, setEnded] = useState(!closing && state.rossJourney.stage === "complete" ? "done" : null);
+  const base = script[scriptIndex[history[history.length - 1]]];
+  const turn = base.id === "cerchio" && closing ? { ...base, line: `Ciao Elena. ${closing.chiusura}` } : base;
   const words = turn.line.split(" ");
+  // La frase di chiusura si dice una volta sola.
+  useEffect(() => { if (closing) channelActions.closeWithResident(closing.id); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const revealed = shown >= words.length;
   const previous = history.slice(-3, -1).map((id) => script[scriptIndex[id]]);
   const mood = turn.speaker === "elena" ? (revealed ? "processing" : "listening") : "response";
@@ -349,6 +388,7 @@ export function RossConversation() {
 
   const finish = (end, isShared = shared) => {
     if (end === "later") { notify("Va bene: ROSS resta qui, quando vuoi"); navigate("/ross"); return; }
+    if (end === "help") { notify("Il campanello chiama il personale: arriva di persona", "neutral", { description: "ROSS non ha creato nessuna richiesta: non è un sistema di emergenza." }); navigate("/ross"); return; }
     // Il ricordo nuovo esiste solo se Elena ha detto «Sì, segnatela»; arriva ad Anna solo se ha detto sì anche al racconto.
     if (history.includes("ricordo")) actions.completeRossConversation(isShared);
     if (end === "out") actions.goOut("canto");
@@ -356,6 +396,8 @@ export function RossConversation() {
   };
   const go = (id) => setHistory((list) => [...list, id]);
   const choose = (choice) => {
+    // Con il sì di Elena la richiesta arriva alla Struttura 2.0, in «Hanno chiesto».
+    if (choice.request === "lampada" && !asked.current) { asked.current = true; channelActions.request(lampRequest); }
     if (choice.share !== undefined) setShared(choice.share);
     if (choice.end) return finish(choice.end, choice.share ?? shared);
     go(choice.next);
