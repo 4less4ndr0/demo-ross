@@ -26,7 +26,7 @@
     },
     "src/components/PassionNetwork.jsx": {
       "name": "La rete delle passioni",
-      "description": "Nel canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."
+      "description": "In cima al canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."
     },
     "src/data/highlights.js": {
       "name": "I momenti da ricordare",

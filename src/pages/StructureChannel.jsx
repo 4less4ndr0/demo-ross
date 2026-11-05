@@ -57,6 +57,8 @@ export function StructureChannel() {
         </ol>
       </section>
 
+      <PassionNetwork />
+
       <div className="s2-columns">
         <ProposeCard spunti={data.spunti} />
         <section className="s2-feed" aria-labelledby="s2-feed-title">
@@ -67,8 +69,6 @@ export function StructureChannel() {
           <ul className="s2-insights">{data.insights.map((insight) => <InsightCard key={insight.id} insight={insight} />)}</ul>
         </section>
       </div>
-
-      <PassionNetwork />
 
       <p className="s2-footnote"><MessageCircleHeart size={16} />ROSS traduce, non trasmette: racconta come è stato accolto lo spunto e cosa può aiutare, mai cosa ha detto l'ospite.</p>
     </main>

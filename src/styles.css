@@ -1667,7 +1667,7 @@ button.document-card:hover{background:var(--surface-2)}
 .v2-map-list button[aria-pressed=true]{background:var(--surface-2);font-weight:700}
 @media(max-width:700px){.v2-map-svg{display:none}.v2-map-list{display:grid}}
 /* Struttura 2.0 · la rete delle passioni, nel canale (src/components/PassionNetwork.jsx) */
-.s2-network{margin-top:40px;padding:30px 32px}
+.s2-network{margin:0 0 32px;padding:30px 32px}
 .s2-network .s2-lead{max-width:780px}
 .s2-network-body{display:grid;grid-template-columns:1fr 330px;gap:24px;align-items:center}
 .s2-network-svg{width:100%;height:auto;overflow:visible}

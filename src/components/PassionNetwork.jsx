@@ -43,7 +43,7 @@ export function PassionNetwork() {
   };
 
   return <section className="s2-card s2-network" aria-labelledby="s2-network-title">
-    <span className="s2-eyebrow">La rete delle passioni</span>
+    <span className="s2-eyebrow">Da dove partire · la rete delle passioni</span>
     <h2 id="s2-network-title">Chi potrebbe fare qualcosa insieme</h2>
     <p className="s2-lead">Gli ospiti uniti da una passione in comune. Viene da ciò che amano (dalla biografia d'ingresso o emerso con ROSS), detto solo come categoria: mai di cosa hanno parlato né con chi. Tocca una passione per vedere l'occasione.</p>
     <div className="s2-network-body">

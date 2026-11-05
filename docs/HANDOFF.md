@@ -259,6 +259,10 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · La rete delle passioni sale in cima al canale
+- **Richiesta:** la rete delle passioni non deve stare in fondo.
+- **Fatto:** nel canale ora viene subito dopo il flusso in tre passi e prima di «Proponi uno spunto» e «Cosa è emerso». L'etichetta è «Da dove partire · la rete delle passioni»: si guarda chi potrebbe fare qualcosa insieme, poi si propone.
+
 ### Novembre 2026 · 05/11/2026 · Filtri nel feed di «Con ROSS»
 - **Richiesta:** aggiungere il filtro nel feed.
 - **Fatto:**
@@ -287,7 +291,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ### Novembre 2026 · 05/11/2026 · La rete delle passioni, nel canale
 - **Richiesta:** fare la rete delle passioni nel canale (prima idea in coda della voce precedente).
-- **Fatto:** sotto «Proponi uno spunto» e «Cosa è emerso», una card **«Chi potrebbe fare qualcosa insieme»**:
+- **Fatto:** una card **«Chi potrebbe fare qualcosa insieme»** (all'inizio sotto le due funzioni, poi spostata in cima: vedi la voce successiva):
   - gli otto ospiti in cerchio, con la foto, e al centro sette passioni in comune: lavori con le mani, piante e aria aperta, musica e canto, come funzionano le cose, parole e letture, carte e scacchi, storie e luoghi di una volta. Ogni passione è collegata a chi la condivide;
   - toccando una passione si illuminano le sue persone. A destra si vede cosa ama ciascuno (per categoria), un'occasione e **«Proponilo a tutti e N»**: lo spunto arriva a ognuno ed entra in «In attesa del momento giusto»; ROSS risponde come per gli altri spunti;
   - le etichette si dispongono in cerchio dalla parte delle persone che legano e si allontanano se si toccano. Su telefono la rete diventa un elenco di passioni con le foto.
