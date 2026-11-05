@@ -258,6 +258,14 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Scelta della cartella nel contenuto testuale
+- **Richiesta:** in «Aggiungi contenuto testuale» poter scegliere la cartella.
+- **Fatto:**
+  - nel dialog c'è «In quale cartella», con tre pillole: Chi è {nome} · Dalla famiglia · Per stare bene. Parte selezionata la cartella aperta;
+  - La sua giornata non si può scegliere, perché la compone ROSS;
+  - l'anteprima dice dove finirà il `.txt`. Dopo il salvataggio, se la cartella scelta è un'altra, si apre quella;
+  - codice in `TextDocumentDialog` (`choices`, `initial`), stili `.text-doc-folders`.
+
 ### Novembre 2026 · 05/11/2026 · «Cosa sa ROSS» in cartelle, con il controllo di cosa dirà ROSS
 - **Richiesta:** rendere «Cosa sa ROSS» più chiaro, organizzato in cartelle (le informazioni dell'ospite, ciò che ha condiviso la famiglia, le cose fondamentali per stare bene, la sua giornata). Aggiungere un modo per controllare cosa ROSS sta per proporre, se si vuole vedere se sbaglia qualcosa.
 - **Fatto (in tutte e due le Strutture):**

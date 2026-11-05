@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowRight, BellOff, Check, ChevronLeft, Clock, Folder, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Pause, Play, Sparkles, TextCursorInput, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -252,7 +252,7 @@ function Attachments({ resident, documents, onAdd }) {
 
   return <section className="content-section">
     <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} />
-    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} onSave={(title, text) => { onAdd(withFolder(textDocument(resident.id, title, text))); setWriting(false); }} />
+    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} choices={folders.filter((f) => f.id !== "giornata").map((f) => ({ id: f.id, color: f.color, label: f.title(name) }))} initial={folder && folder !== "giornata" ? folder : "persona"} onSave={(title, text, family) => { onAdd({ ...textDocument(resident.id, title, text), family }); setWriting(false); if (folder && folder !== family) setFolder(family); }} />
     {!current ? <>
       <div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Quattro cartelle con ciò che struttura e famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. {name} lo ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale. Per aggiungere qualcosa, apri la cartella giusta.</p></div></div>
       <div className="folder-grid">{folders.map((f) => <button type="button" key={f.id} className={`folder-card surface folder-${f.color}`} onClick={() => setFolder(f.id)}>
@@ -297,17 +297,21 @@ const textDocument = (residentId, title, text) => {
   return { residentId, origin: "staff", kind: "Testo", title: `${name}.txt`, summary: clean.length > 160 ? `${clean.slice(0, 157)}…` : clean, body: [["Testo", clean]] };
 };
 
-function TextDocumentDialog({ open, onClose, onSave, name }) {
+// La cartella parte da quella aperta; si può scegliere un'altra (La sua giornata no: la compone ROSS).
+function TextDocumentDialog({ open, onClose, onSave, name, choices, initial }) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
+  const [family, setFamily] = useState(initial);
+  useEffect(() => { if (open) setFamily(initial); }, [open, initial]);
   const close = () => { setTitle(""); setText(""); onClose(); };
-  const save = (event) => { event.preventDefault(); if (!text.trim()) return; onSave(title, text); setTitle(""); setText(""); };
+  const save = (event) => { event.preventDefault(); if (!text.trim()) return; onSave(title, text, family); setTitle(""); setText(""); };
   return <Dialog open={open} onClose={close} title="Aggiungi contenuto testuale" size="md">
     <form className="text-doc-form" onSubmit={save}>
       <p>Incolla o scrivi un testo: diventa un documento .txt che ROSS usa per accompagnare {name}.</p>
       <label><span>Titolo <small>(se vuoi)</small></span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Per esempio: Note dell'educatrice" /></label>
+      <fieldset className="text-doc-folders"><legend>In quale cartella</legend><div>{choices.map((c) => <button type="button" key={c.id} className={`folder-${c.color}`} aria-pressed={family === c.id} onClick={() => setFamily(c.id)}><span className="folder-icon"><Folder size={15} /></span>{c.label}</button>)}</div></fieldset>
       <label><span>Testo</span><Textarea rows={9} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo…" autoFocus /></label>
-      {text.trim() && <small className="text-doc-preview"><FileText size={14} />{txtName(title, text)}.txt · {text.trim().length} caratteri</small>}
+      {text.trim() && <small className="text-doc-preview"><FileText size={14} />{txtName(title, text)}.txt · {text.trim().length} caratteri · in «{choices.find((c) => c.id === family)?.label}»</small>}
       <div className="text-doc-actions"><Button type="button" variant="outline" onClick={close}>Annulla</Button><Button type="submit" disabled={!text.trim()}>Aggiungi il documento</Button></div>
     </form>
   </Dialog>;
