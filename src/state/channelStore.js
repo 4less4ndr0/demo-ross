@@ -54,6 +54,11 @@ const schedule = (moment) => {
   }, REPLY_DELAY));
 };
 if (typeof window !== "undefined") saved.created.filter((m) => m.esito === "attesa").forEach(schedule);
+// Se tablet e Struttura 2.0 sono aperti in due finestre, una modifica in una si vede anche nell'altra.
+if (typeof window !== "undefined") window.addEventListener("storage", (event) => {
+  if (event.key !== STORAGE_KEY) return;
+  saved = load(); snapshot = build(); listeners.forEach((listener) => listener());
+});
 
 export const channelActions = {
   // Uno spunto (dal canale, dal ritratto o dalla rete delle passioni) crea un momento «spunto» in attesa.
@@ -64,6 +69,27 @@ export const channelActions = {
     schedule(moment);
     return moment;
   },
+  // Richiesta pratica dal tablet: parte solo dopo il sì dell'ospite («Sì, diglielo»), mai da una deduzione di ROSS.
+  // Non crea un avviso: arriva in «Hanno chiesto» nel canale della Struttura 2.0.
+  request({ residentId, richiesta, categoria, chiusura }) {
+    const now = new Date().toISOString();
+    const moment = { id: `req-${residentId}-${Date.now()}`, residentId, quando: now, origine: "richiesta", categoria, richiesta, chiusura, confermato: true, stato: "in_attesa", chiusoConOspite: false };
+    set({ ...saved, created: [moment, ...saved.created] });
+    return moment;
+  },
+  // «Ci pensiamo noi» e «Fatto» sulle richieste, con «Annulla». Con «Fatto» ROSS chiude il cerchio con l'ospite
+  // alla conversazione successiva; dal canale la richiesta sparisce.
+  requestStep(id, next) {
+    const before = saved;
+    const moment = snapshot.find((m) => m.id === id);
+    if (!moment) return;
+    const stato = moment.stato === next ? "in_attesa" : next;
+    set(update(id, { stato, chiusoConOspite: false }));
+    const first = channelResident(moment.residentId).first;
+    toast(stato === "fatto" ? `Fatto: ROSS lo dirà a ${first} alla prossima conversazione` : stato === "ci_pensiamo" ? `Ci pensiamo noi: ${first} lo saprà quando è fatto` : "Di nuovo in attesa", { action: { label: "Annulla", onClick: () => set(before) } });
+  },
+  // Il tablet ha chiuso il cerchio con l'ospite: la frase non si ripete.
+  closeWithResident(id) { set(update(id, { chiusoConOspite: true })); },
   // Visto e Fatto si accendono e si spengono, con «Annulla».
   mark(id, next) {
     const before = saved;
@@ -80,7 +106,13 @@ export const channelActions = {
 export const momentFilters = {
   // Canale, «Cosa è emerso»: cosa fare adesso, per tutti gli ospiti. Solo ciò che ha un «Cosa puoi fare»,
   // non ancora Fatto, degli ultimi 7 giorni; i più recenti in alto.
-  canale: (m) => Boolean(m.cosaPuoiFare) && m.stato !== "fatto" && m.esito !== "attesa" && daysAgo(m.quando) < 7,
+  canale: (m) => m.origine !== "richiesta" && Boolean(m.cosaPuoiFare) && m.stato !== "fatto" && m.esito !== "attesa" && daysAgo(m.quando) < 7,
+  // Canale, «Hanno chiesto»: le richieste pratiche confermate e non ancora fatte, per tutti gli ospiti.
+  richieste: (m) => m.origine === "richiesta" && m.stato !== "fatto",
+  // Ritratto → Come sta, «Ha chiesto»: solo le richieste pratiche confermate da quella persona, delle categorie ammesse.
+  haChiesto: (residentId) => (m) => m.residentId === residentId && m.origine === "richiesta" && m.confermato !== false && ["stanza", "comfort", "desiderio"].includes(m.categoria),
+  // Tablet: una richiesta fatta di cui l'ospite non sa ancora niente (ROSS apre la conversazione chiudendo il cerchio).
+  daChiudere: (residentId) => (m) => m.residentId === residentId && m.origine === "richiesta" && m.stato === "fatto" && !m.chiusoConOspite,
   // Ritratto → Spunti: solo i momenti nati da uno spunto, di quella persona.
   spunti: (residentId) => (m) => m.residentId === residentId && m.origine === "spunto",
   // Ritratto → Con ROSS: la sua storia, tutto tranne gli spunti ancora in attesa.
@@ -89,3 +121,4 @@ export const momentFilters = {
 
 const subscribe = (listener) => { listeners.add(listener); return () => listeners.delete(listener); };
 export const useMoments = () => useSyncExternalStore(subscribe, () => snapshot);
+export const getMoments = () => snapshot;

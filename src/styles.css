@@ -1771,3 +1771,21 @@ button.document-card:hover{background:var(--surface-2)}
 .v2-map-list .v2-map-list-passion .avatar{width:22px;height:22px;margin-left:-4px;border:2px solid var(--surface)}
 .v2-map-list button.is-attesa{border-color:var(--lilac)}
 .s2-spunto-meta .s2-reception{margin-left:0}
+/* Struttura 2.0 · «Hanno chiesto»: le richieste pratiche confermate dagli ospiti */
+.s2-feed-column{display:grid;gap:30px;align-content:start;min-width:0}
+.s2-request-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.s2-request{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:18px 22px}
+.s2-request-body{display:grid;gap:6px;min-width:0}
+.s2-request-who{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.s2-request-who small{font-size:12px;color:var(--muted)}
+.s2-request-text{display:flex;align-items:center;gap:8px;margin:0;font:400 18px/1.4 var(--serif)}
+.s2-request-text svg{flex:none;color:#83621f}
+.s2-request-tags{display:flex;gap:8px;flex-wrap:wrap}
+.s2-confirmed,.s2-request-state{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--green-soft);color:var(--green)}
+.s2-request-state{background:var(--sand-soft);color:#83621f}
+.s2-request .s2-actions{margin:0;flex-direction:column;align-items:stretch}
+@media(max-width:700px){.s2-request{grid-template-columns:auto 1fr}.s2-request .s2-actions{grid-column:1/-1;flex-direction:row}}
+.v2-asked-state{font-size:12px;color:var(--muted)}
+.v2-asked-note{display:block;margin-top:10px;font-size:12px;color:#83621f}
+.s2-request-state.is-in_attesa{background:var(--lilac-soft);color:var(--lilac)}
+.s2-request-state.is-fatto{background:var(--green-soft);color:var(--green)}
