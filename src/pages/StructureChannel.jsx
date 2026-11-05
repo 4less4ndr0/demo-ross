@@ -63,7 +63,6 @@ export function StructureChannel() {
 
   return (
     <main className="s2-main">
-      <ResidenceMap />
       <section className="s2-hero">
         <span className="s2-eyebrow">Il canale con ROSS</span>
         <h1>Tu porti uno spunto.<br />ROSS ti restituisce un'occasione.</h1>
@@ -79,6 +78,9 @@ export function StructureChannel() {
 
       {/* Le cose pratiche stanno nella scheda «Richieste»: qui solo un rimando discreto, se c'è qualcosa da vedere. */}
       {toSee > 0 && <NavLink to={`${BASE}/richieste`} className="s2-rq-link"><ClipboardList size={15} />{toSee === 1 ? "1 richiesta nuova dagli ospiti" : `${toSee} richieste nuove dagli ospiti`} <ArrowRight size={14} /> Richieste</NavLink>}
+
+      {/* «La residenza, adesso»: la pianta dei ROSS, sotto il messaggio del canale. */}
+      <ResidenceMap />
 
       <PassionNetwork />
 

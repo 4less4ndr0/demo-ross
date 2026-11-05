@@ -280,6 +280,12 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Canale: il messaggio d'apertura torna in cima, sopra la pianta
+- **Richiesta:** mettere il messaggio del canale («Tu porti uno spunto. ROSS ti restituisce un'occasione.», la descrizione, il flusso in tre passi e il rimando alle richieste) sopra la pianta dei piani.
+- **Fatto:** in `StructureChannel.jsx` l'ordine del canale ora è: messaggio d'apertura → rimando alle richieste → «La residenza, adesso» → rete delle passioni → Proponi uno spunto e Cosa è emerso. La pianta ha più spazio sotto (`margin: 24px 0 28px`), così non tocca la rete delle passioni.
+- **Verificato** a 1400 e 390px: l'ordine è giusto e non ci sono errori in console. `npm run build` e `npm run test:sites` passano; la mappa è rigenerata.
+- **Da sapere:** la pianta non è più la prima cosa che si vede. Chi presenta alla direzione scorre di poco per arrivarci.
+
 ### Novembre 2026 · 05/11/2026 · «La residenza, adesso» diventa una pianta 2D, un piano alla volta
 - **Richiesta:** la piantina 3D in apertura del canale mostrava i tre piani insieme in assonometria. Occupava troppo spazio, si leggeva male e i colori confondevano: l'attivo era arancione, come gli accenti della pagina. Serviva una pianta vista dall'alto, un piano alla volta, con un indice dei piani e colori leggibili al primo sguardo.
 - **Fatto (solo nella 2.0):**
