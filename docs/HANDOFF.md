@@ -211,7 +211,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/pages/StructureRequests.jsx` | Struttura 2.0, scheda **Richieste** (`/struttura-2/richieste`): «Dagli ospiti» (le richieste confermate in tre gruppi: Da vedere · Ci pensiamo noi · Fatte oggi; card con categoria, «Confermato da …», «L'ha chiesto di nuovo oggi», «ROSS gliel'ha detto») e «Agli ospiti» (`AnnounceCard`: testo, a chi, quando dirlo, anteprima di come lo dirà ROSS; elenco delle comunicazioni con lo stato a parole). |
 | `src/components/QuickChat.jsx` | Struttura 2.0, **«ROSS, al volo»**: la bolla in basso a destra (sopra la pillola «Vista demo») e il pannello (380×560 su desktop, non modale; `Sheet` a tutto schermo su telefono). Saluto e pillole, campo libero, messaggi di ROSS con al massimo 3 voci e un link alla schermata giusta, bozze da confermare (`DraftCard`: Mando · Modifica · Annulla) che chiamano `channelActions.send` o `channelActions.announce`. Esc chiude, il focus va al campo e poi torna alla bolla. La conversazione sta solo nella sessione (`sessionStorage`, `ross-quick-v1`). Il link «Cosa è reale e cosa è simulato» manda l'evento `ross:about` alla pillola. |
 | `src/data/quickChat.js` | Il motore di «ROSS, al volo», separato dalla chat della Struttura attuale: `quickAnswer(domanda, momenti)` riconosce gli intenti con parole chiave normalizzate (senza accenti) e i nomi degli otto ospiti (`residentIn`). Tre capacità: **riassumere** (ultime 3 cose emerse, richieste aperte, cosa è emerso con una persona negli ultimi 7 giorni, spunti piaciuti, tutto dai filtri di `channelStore`), **agire con conferma** (bozza di spunto o di comunicazione, `draftSummary`), **spiegare ROSS** (cosa vede la struttura, perché non si sa di cosa parlano, cos'è uno spunto, il no dell'ospite, le urgenze). I rifiuti (contenuto, classifiche, salute, gestione) hanno testi fissi. Più `suggestions` e `greeting`. |
-| `src/pages/RossExperience.jsx` | Tablet di Elena: la home con le schede «una cosa alla volta» e «Parla con ROSS» (`RossConversation`, copione `script`). Nel copione c'è la **richiesta pratica** della lampada: turni `lampada`, `lampada-conferma` (con «Sì, diglielo» parte `channelActions.request(lampRequest)`), la **chiusura del cerchio** (`cerchio`, se c'è una richiesta «Fatto» da chiudere: `momentFilters.daChiudere`) e il **caso salute** (`salute`, nessuna richiesta, rimando al campanello). In home la card **«ROSS ti dice»** con le comunicazioni per Elena (`momentFilters.comunicazioniPer`), che segna come dette (`toldTo`). |
+| `src/pages/RossExperience.jsx` | Tablet di Elena, con l'anatomia e l'estetica della schermata «Maria» (classi `ross-m-*`, semicerchio `ross-talk-arc`, dialog `ross-dialog`): la home con le schede «una cosa alla volta» e «Parla con ROSS» (`RossConversation`, copione `script`). Nel copione c'è la **richiesta pratica** della lampada: turni `lampada`, `lampada-conferma` (con «Sì, diglielo» parte `channelActions.request(lampRequest)`), la **chiusura del cerchio** (`cerchio`, se c'è una richiesta «Fatto» da chiudere: `momentFilters.daChiudere`) e il **caso salute** (`salute`, nessuna richiesta, rimando al campanello). In home la card **«ROSS ti dice»** con le comunicazioni per Elena (`momentFilters.comunicazioniPer`), che segna come dette (`toldTo`). |
 | `src/data/moments.js` | I **momenti di partenza** della 2.0 (`seedMoments`): gli insight del canale, gli spunti passati e i momenti di ogni ospite (iniziative, uscite raccontate, scelte, interessi emersi, cose da guardare di persona). Ognuno ha `id`, `residentId`, `quando` (calcolato da oggi con `at(giorniFa, "hh:mm")`), `origine` (spunto · spontaneo · invito · scelta · da_osservare), `spunto` ed `esito` se nasce da uno spunto, `titolo`, `racconto`, `cosaPuoiFare`, `stato`. Più `esiti`, `labelOf` e `toneOf`. Sempre in terza persona, mai il contenuto delle conversazioni. Più le **richieste pratiche** (origine `richiesta`: `richiesta`, `categoria` stanza · comfort · desiderio, `chiusura`, `stato` in_attesa · ci_pensiamo · fatto, `chiusoConOspite`), con `requestStates` e `lampRequest`. Più le **comunicazioni** agli ospiti (origine `comunicazione`: `testo`, `frase`, `perChi`, `quandoDirlo`, `stato` in_corso · detto) e, nelle richieste, `richiestoDiNuovo` e `fattoIl`. |
 | `src/data/demoClock.js` | L'**orologio della demo** per Struttura 2.0, Famiglia e tablet: `demoToday()`, `at(giorniFa, "hh:mm")`, `daysAgo`, `dayLabel` (Oggi · Ieri · giorno della settimana fino a 6 giorni · «La settimana scorsa» · «N settimane fa», con la data), `whenText`, `dayText`, `dayShort`, `rangeText`, `monthText`, `daysUntil`. La Struttura attuale resta sul giorno fisso `DEMO_TODAY`. |
 | `src/data/interestGraph.js` | **Una sola fonte per i due grafi**: `passions` (passioni con chi le condivide e un'occasione; `sharedPassions` sono quelle con almeno 2 ospiti), `passionsOf`, `viaOf`, `personalLinks` (le occasioni di ciascuno, collegate al momento che ne dice l'esito), `outsideLinks`, `graphStatus` e `statusFromEsito`. |
@@ -279,6 +279,46 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 05/11/2026 · Il tablet di Elena con l'anatomia e l'estetica di «Maria»
+- **Richiesta:** prendere dal progetto Lovable «ross» la schermata di Maria (`/maria`), studiarne UI e UX (organizzazione, gioco del giorno, ricordi, album, promemoria, estetica) e portarla in tutta l'esperienza dell'ospite nella demo, conversazione compresa. Battito, passi e sonno non servono.
+- **Studio di Maria** (dal codice sorgente: l'anteprima pubblicata non si apre da questo ambiente):
+  - **struttura dall'alto:**
+    1. barra con avatar e nome a sinistra, meteo e ora a destra;
+    2. data piccola, saluto grande in serif e una frase calda, più tranquilla dopo le 17;
+    3. due card grandi con un'icona in un cerchio tenue, titolo, sottotitolo, testo in tono di conversazione e un bottone a pillola nero;
+    4. quattro scorciatoie piccole;
+    5. due colonne: la giornata come fila nel tempo e il benessere;
+    6. i promemoria in tre riquadri;
+    7. una riga finale e, fisso in basso al centro, un semicerchio con il microfono;
+  - **estetica:** fondo bianco caldo, card bianche con un bordo di mezzo pixel e raggio di 20px, inchiostro quasi nero, accenti pesca, ambra e salvia, Fraunces più DM Sans e un'entrata a cascata delle card.
+- **Fatto (solo tablet):**
+  - **la home di `RossHome` segue quell'anatomia**, con le funzioni di prima:
+    - barra con ROSS, meteo · ora e **«Aiuto»** (prima era una delle quattro scorciatoie);
+    - saluto con la trasparenza sull'IA, poi le novità da Anna e «ROSS ti dice»;
+    - **«Il gioco del giorno»** (Indovina la canzone) e **«I tuoi ricordi»**, che apre la conversazione;
+    - scorciatoie **Ascolta musica · Giochi insieme · Album foto · Anna ti chiama**;
+    - **«Oggi, fuori da qui»** come fila nel tempo, con «Ci vado» e «Un'altra volta», e **«Spunti per oggi»** a righe;
+    - **«I tuoi promemoria»** in tre riquadri, con il prossimo in pesca e «Ascoltalo»;
+    - «Da Anna, per te», le modalità a segmenti e il **semicerchio «Parla con ROSS»**;
+  - **stessa estetica ovunque:** home, scheda «una cosa alla volta» (le frasi «Puoi dirmi» diventano card con il microfono in un cerchio pesca), dialog (`ross-dialog`), conversazione e chiusura. Caratteri locali con `@fontsource-variable/fraunces` e `@fontsource-variable/dm-sans`;
+  - visita guidata: i passi «Spunti per oggi» e «Aiuto» puntano ai nuovi elementi (`.ross-spunti`, `.ross-help-button`).
+- **Da Maria restano fuori:**
+  - battito, passi, sonno e ogni valore di salute;
+  - nomi dei farmaci e «Segna come preso»: ROSS non registra se un promemoria è stato fatto;
+  - «Allena la mente» ed «Esercizi cognitivi», per il rischio dispositivo medico;
+  - i punteggi («ieri ne hai indovinate 4 su 5»);
+  - l'agenda della struttura con le attività barrate;
+  - «Rossana è sempre qui con te», per il rischio di dipendenza.
+- **Verificato** a 1280, 1024 × 768 e 390px:
+  - la home e la scheda di un gioco, «Aiuto» e la conversazione funzionano;
+  - il semicerchio non copre la pillola «Vista demo» e i caratteri si caricano;
+  - nessun errore in console. `npm run build` e `npm run test:sites` passano; la mappa è rigenerata.
+- **Da sapere:**
+  - il semicerchio è fisso, come in Maria: scorrendo copre per un attimo il centro in basso, e la pagina ha 150px di spazio in fondo;
+  - su telefono è più piccolo e spostato a sinistra, per lasciare posto alla pillola;
+  - la frase più tranquilla della sera di Maria non c'è, perché la demo resta alle 16:40: è un'idea per quando l'ora sarà reale;
+  - la vecchia CSS della home (`.ross-hero-copy`, `.ross-touch-grid`…) è ancora nel file ma non si usa più.
 
 ### Novembre 2026 · 05/11/2026 · «La residenza, adesso»: il piano scelto in 3D
 - **Richiesta:** mettere in 3D solo il piano che si sta guardando, non i tre insieme.
