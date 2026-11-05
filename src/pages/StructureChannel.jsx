@@ -20,10 +20,18 @@ const view = { base: BASE, v2: true };
 export function StructureChannelLayout() {
   // La scheda «Richieste» mostra un pallino (senza numero) quando ci sono richieste da vedere.
   const toSee = useMoments().some(momentFilters.daVedere);
+  // L'header resta in alto: al primo scroll compare una linea sottile sotto.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
     <StructureView.Provider value={view}>
       <div className="app-shell s2-app">
-        <header className="s2-top">
+        <header className={`s2-top${scrolled ? " is-scrolled" : ""}`}>
           <div className="s2-brand"><span className="brand-mark">R</span><div><strong>R.O.S.S.</strong><small>Residenza Aurora</small></div></div>
           <nav className="top-tabs" aria-label="Sezioni">
             <NavLink to={BASE} end><Send size={16} /><span>Il canale</span></NavLink>
