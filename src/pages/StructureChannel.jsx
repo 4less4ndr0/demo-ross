@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { ArrowRight, BookOpen, Check, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Check, ClipboardList, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
 import { Avatar, StructureView } from "../components/Common";
 import { Button, Textarea } from "../components/ui";
 import { channelResident, channelResidents, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
@@ -18,6 +18,8 @@ const MAX = 160;
 const view = { base: BASE, v2: true };
 
 export function StructureChannelLayout() {
+  // La scheda «Richieste» mostra un pallino (senza numero) quando ci sono richieste da vedere.
+  const toSee = useMoments().some(momentFilters.daVedere);
   return (
     <StructureView.Provider value={view}>
       <div className="app-shell s2-app">
@@ -26,6 +28,7 @@ export function StructureChannelLayout() {
           <nav className="top-tabs" aria-label="Sezioni">
             <NavLink to={BASE} end><Send size={16} /><span>Il canale</span></NavLink>
             <NavLink to={`${BASE}/ospiti`}><Users size={16} /><span>Ospiti</span></NavLink>
+            <NavLink to={`${BASE}/richieste`} className={({ isActive }) => `${isActive ? "active " : ""}${toSee ? "has-dot" : ""}`} aria-label={toSee ? "Richieste: ci sono richieste da vedere" : "Richieste"}><ClipboardList size={16} /><span>Richieste</span>{toSee && <i className="s2-tab-dot" aria-hidden="true" />}</NavLink>
           </nav>
           <span className="s2-top-spacer" aria-hidden="true" />
         </header>
@@ -44,6 +47,7 @@ export function StructureChannel() {
   const moments = useMoments();
   // «Cosa è emerso»: per tutti gli ospiti, cosa fare adesso (vedi momentFilters.canale).
   const feed = moments.filter(momentFilters.canale);
+  const toSee = moments.filter(momentFilters.daVedere).length;
   const fresh = feed.filter((m) => m.stato === "nuovo").length;
 
   return (
@@ -60,6 +64,9 @@ export function StructureChannel() {
           <li><span>3</span><div><b>Tu</b>ricevi cosa è emerso e cosa puoi fare</div></li>
         </ol>
       </section>
+
+      {/* Le cose pratiche stanno nella scheda «Richieste»: qui solo un rimando discreto, se c'è qualcosa da vedere. */}
+      {toSee > 0 && <NavLink to={`${BASE}/richieste`} className="s2-rq-link"><ClipboardList size={15} />{toSee === 1 ? "1 richiesta nuova dagli ospiti" : `${toSee} richieste nuove dagli ospiti`} <ArrowRight size={14} /> Richieste</NavLink>}
 
       <PassionNetwork />
 

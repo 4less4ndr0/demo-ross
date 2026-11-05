@@ -83,6 +83,7 @@
       "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
       "paths": [
         "src/pages/StructureChannel.jsx",
+        "src/pages/StructureRequests.jsx",
         "src/components/ResidentSpunti.jsx",
         "src/components/PortraitV2.jsx",
         "src/components/PassionNetwork.jsx",
