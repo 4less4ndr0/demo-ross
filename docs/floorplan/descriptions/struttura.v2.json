@@ -21,16 +21,20 @@
       "description": "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto; e Con ROSS è il feed dei momenti da ricordare, giorno per giorno. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."
     },
     "src/data/interestGraph.js": {
-      "name": "Mappa dei legami e rete delle passioni",
+      "name": "Le passioni, per i due grafi",
       "description": "Per ogni ospite, i suoi interessi e le attività, i ricordi, gli eventi e le persone della residenza collegati, con com'è andato lo spunto: è piaciuto, ci sta pensando, non è piaciuto, da provare. In più le passioni in comune tra gli ospiti, con un'occasione per ciascuna."
     },
     "src/components/PassionNetwork.jsx": {
       "name": "La rete delle passioni",
       "description": "In cima al canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."
     },
-    "src/data/highlights.js": {
-      "name": "I momenti da ricordare",
-      "description": "Per ogni ospite, i momenti più interessanti emersi con ROSS: iniziative, uscite raccontate, scelte, interessi, cose da guardare di persona. Con giorno e ora, per categoria, mai il contenuto delle conversazioni."
+    "src/data/moments.js": {
+      "name": "I momenti emersi con ROSS",
+      "description": "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte e cose da guardare di persona, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."
+    },
+    "src/data/demoClock.js": {
+      "name": "L'orologio della demo",
+      "description": "Fa partire la Struttura 2.0, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana, la settimana scorsa)."
     }
   }
 }

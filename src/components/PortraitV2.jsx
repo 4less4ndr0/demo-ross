@@ -1,12 +1,15 @@
 import { useId, useState } from "react";
-import { Heart, Eye, HandHelping, Leaf, MessageCircle, Send, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Heart, Eye, HandHelping, Leaf, MessageCircle, Send, Sparkles, Users } from "lucide-react";
 import { needsFor, presenceFor, rossTips, signalsFor, usageStyle } from "../data/careInsights";
 import { narrativeFor } from "../data/reportNarrative";
-import { graphKind, graphStatus, interestGraph } from "../data/interestGraph";
-import { dayAndTime, dayLabel, highlightKinds, rossHighlights } from "../data/highlights";
-import { receptions, spuntoHistory } from "../data/channel";
-import { useChannel } from "../state/channelStore";
-import { residentPhoto } from "./Common";
+import { graphKind, graphStatus, outsideLinks, passionsOf, personalLinks, statusFromEsito, viaOf } from "../data/interestGraph";
+import { channelResident } from "../data/channel";
+import { dayLabel, daysAgo, timeText } from "../data/demoClock";
+import { labelOf, toneOf } from "../data/moments";
+import { momentFilters, useMoments } from "../state/channelStore";
+import { Esito } from "../pages/StructureChannel";
+import { Avatar, residentPhoto } from "./Common";
 import { Button } from "./ui";
 
 // Struttura 2.0: «Come sta» e «Con ROSS» raccontano, non misurano (decisione del 05/11/2026).
@@ -60,32 +63,30 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
   </div>;
 }
 
-// «Con ROSS» come feed: i momenti più interessanti emersi con ROSS, giorno per giorno, i più recenti in alto.
-// Uniscono i momenti di ogni ospite (highlights.js), ciò che ROSS ha restituito nel canale e gli spunti passati.
+// «Con ROSS» (una persona → la sua storia): la linea del tempo di tutti i suoi momenti, dalla sola fonte
+// (src/data/moments.js), tranne gli spunti ancora in attesa. Al centro i momenti spontanei, gli inviti, le scelte
+// e ciò che è da guardare di persona; gli spunti sono una riga compatta con il link alla scheda Spunti.
 const toneIcon = { good: Sparkles, neutral: MessageCircle, watch: Eye };
-// Filtri del feed: per un operatore di passaggio, cosa va bene, cosa guardare oggi, com'è andato ciò che hai proposto.
+// Filtri: per un operatore di passaggio, cosa va bene, cosa guardare oggi, com'è andato ciò che hai proposto.
 const feedFilters = [
   { id: "tutto", label: "Tutto", match: () => true, empty: "" },
-  { id: "belle", label: "Belle notizie", match: (it) => highlightKinds[it.kind].tone === "good" || it.reception === "volentieri", empty: "Niente di nuovo da festeggiare, per ora. ROSS te lo dirà appena succede." },
-  { id: "osservare", label: "Da guardare di persona", match: (it) => highlightKinds[it.kind].tone === "watch", empty: "Niente da guardare di persona in questi giorni." },
-  { id: "spunti", label: "I tuoi spunti", match: (it) => it.kind === "spunto", empty: "Nessuno spunto ancora: proponine uno, ROSS ti dirà com'è andata." },
+  { id: "belle", label: "Belle notizie", match: (m) => toneOf(m) === "good", empty: "Niente di nuovo da festeggiare, per ora. ROSS lo racconterà appena succede." },
+  { id: "osservare", label: "Da guardare di persona", match: (m) => toneOf(m) === "watch", empty: "Niente da guardare di persona in questi giorni." },
+  { id: "spunti", label: "I tuoi spunti", match: (m) => m.origine === "spunto", empty: "Nessuno spunto ancora: proponine uno, ROSS racconterà com'è andata." },
 ];
-export function WithRossV2({ resident, onPropose }) {
+export function WithRossV2({ resident, onPropose, onOpenSpunti }) {
   const name = resident.name.split(" ")[0];
   const [filter, setFilter] = useState("tutto");
   const usage = usageStyle[resident.id];
   const [said] = modeMeaning[resident.mode] || modeMeaning.Reattiva;
-  const channel = useChannel();
+  const moments = useMoments();
   const kinds = usage ? [...usage.mix].sort((x, y) => y[1] - x[1]).map(([label]) => label.toLowerCase()) : [];
   const enjoys = kinds.length ? `Soprattutto ${list(kinds.slice(0, 2))}${kinds.length > 2 ? `; a volte ${list(kinds.slice(2))}` : ""}.` : "";
 
-  const fromChannel = channel.insights.filter((i) => i.residentId === resident.id).map((i) => ({ id: i.id, ...dayAndTime(i.when), kind: i.spunto ? "spunto" : "spontaneo", reception: i.reception, title: i.spunto ? `«${i.spunto.text}»` : i.story, text: i.spunto ? i.story : "", suggestion: i.suggestion, fresh: i.state === "nuovo" }));
-  const fromHistory = spuntoHistory.filter((h) => h.residentId === resident.id).map((h) => ({ id: h.id, ...dayAndTime(h.when), kind: "spunto", reception: h.reception, title: `«${h.text}»`, text: h.story }));
-  const own = (rossHighlights[resident.id] || []).map((h, i) => ({ id: `hl-${resident.id}-${i}`, ...h }));
-  const items = [...own, ...fromChannel, ...fromHistory].sort((x, y) => x.day - y.day || (y.time || "").localeCompare(x.time || ""));
+  const items = moments.filter(momentFilters.storia(resident.id));
   const active = feedFilters.find((f) => f.id === filter);
   const shown = items.filter(active.match);
-  const days = shown.reduce((acc, it) => { const key = it.day; (acc[key] = acc[key] || []).push(it); return acc; }, {});
+  const days = shown.reduce((acc, m) => { const key = Math.max(0, daysAgo(m.quando)); (acc[key] = acc[key] || []).push(m); return acc; }, {});
 
   return <div className="v2-portrait">
     <article className="v2-story v2-story-compact surface">
@@ -98,20 +99,26 @@ export function WithRossV2({ resident, onPropose }) {
     </article>
 
     <section className="v2-feed">
-      <header><span className="eyebrow">I MOMENTI DA RICORDARE</span><h2>Cosa è emerso con ROSS, giorno per giorno</h2><p>Le cose più interessanti, non tutte le conversazioni: iniziative, uscite raccontate, scelte, interessi e ciò che è da guardare di persona.</p></header>
+      <header><span className="eyebrow">I MOMENTI DA RICORDARE</span><h2>La storia di {name} con ROSS</h2><p>Le cose più interessanti, non tutte le conversazioni: iniziative, uscite raccontate, scelte e ciò che è da guardare di persona. Com'è andato ogni spunto lo trovi in Spunti.</p></header>
       <div className="v2-feed-filters" role="group" aria-label="Filtra i momenti">{feedFilters.map((f) => { const some = items.some(f.match); return <button type="button" key={f.id} aria-pressed={filter === f.id} className={`is-${f.id}`} onClick={() => setFilter(f.id)} disabled={!some && f.id !== "tutto"}>{f.id === "belle" && <Sparkles size={14} />}{f.id === "osservare" && <Eye size={14} />}{f.id === "spunti" && <Send size={14} />}{f.label}</button>; })}</div>
-      {!shown.length && <p className="knows-empty">{active.empty}</p>}
-      {Object.keys(days).sort((x, y) => x - y).map((day) => { const [label, date] = dayLabel(Number(day)); return <div key={day} className="v2-feed-day">
+      {!shown.length && <p className="knows-empty">{active.empty || `Ancora nessun momento con ${name}.`}</p>}
+      {Object.keys(days).sort((x, y) => x - y).map((day) => { const [label, date] = dayLabel(days[day][0].quando); return <div key={day} className="v2-feed-day">
         <h3>{label}{date && <small>{date}</small>}</h3>
-        <ol>{days[day].map((it) => { const k = highlightKinds[it.kind]; const Icon = toneIcon[k.tone]; return <li key={it.id} className={`v2-feed-item is-${k.tone}`}>
-          <time>{it.time && it.time !== "adesso" ? it.time : it.time === "adesso" ? "Adesso" : ""}</time>
-          <span className="v2-feed-dot"><Icon size={14} /></span>
-          <div className="v2-feed-card">
-            <div className="v2-feed-meta"><span>{k.label}</span>{it.reception && <em className={`s2-reception is-${it.reception}`}>{receptions[it.reception]}</em>}{it.fresh && <em className="s2-new">Nuovo</em>}</div>
-            <p className="v2-feed-title">{it.title}</p>
-            {it.text && <p className="v2-feed-text">{it.text}</p>}
-            {it.suggestion && <p className="v2-feed-suggestion"><b>Cosa puoi fare.</b> {it.suggestion}</p>}
-          </div>
+        <ol>{days[day].map((m) => { const tone = toneOf(m); const Icon = toneIcon[tone]; const spunto = m.origine === "spunto"; return <li key={m.id} id={`m-${m.id}`} className={`v2-feed-item is-${tone}${spunto ? " is-spunto" : ""}`}>
+          <time>{timeText(m.quando)}</time>
+          <span className="v2-feed-dot">{spunto ? <Send size={13} /> : <Icon size={14} />}</span>
+          {spunto
+            ? <div className="v2-feed-card v2-feed-row">
+                <div className="v2-feed-meta"><span>Dal tuo spunto</span><Esito value={m.esito} /></div>
+                <p className="v2-feed-spunto">«{m.spunto.testo}»</p>
+                <button type="button" className="v2-feed-more" onClick={onOpenSpunti}>Vedi in Spunti <ArrowRight size={13} /></button>
+              </div>
+            : <div className="v2-feed-card">
+                <div className="v2-feed-meta"><span>{labelOf(m)}</span>{m.stato === "nuovo" && <em className="s2-new">Nuovo</em>}</div>
+                <p className="v2-feed-title">{m.titolo || m.racconto}</p>
+                {m.titolo && m.racconto && <p className="v2-feed-text">{m.racconto}</p>}
+                {m.cosaPuoiFare && m.stato !== "fatto" && <p className="v2-feed-suggestion"><b>Cosa puoi fare.</b> {m.cosaPuoiFare}</p>}
+              </div>}
         </li>; })}</ol>
       </div>; })}
     </section>
@@ -120,68 +127,89 @@ export function WithRossV2({ resident, onPropose }) {
   </div>;
 }
 
-// La mappa dei legami: la persona al centro, i suoi interessi, e attorno attività, ricordi, eventi e persone
-// della residenza collegati, colorati per come è andato lo spunto. Un supporto per proporre meglio, mai il centro.
+// «Le passioni di …» (una persona → le sue occasioni): solo i suoi interessi, dalla stessa fonte della rete
+// della residenza (src/data/interestGraph.js). Il colore dice l'esito dei suoi spunti (dai momenti); gli altri ospiti
+// compaiono solo come «con chi la condivide». L'azione è individuale: «Proponilo come spunto».
 const advice = {
   volentieri: "È piaciuto: si può riproporre, magari con qualcuno.",
   pensa: "Ci sta pensando: un invito di persona può aiutare.",
+  attesa: "Lo spunto è già partito: ROSS lo porterà nella conversazione quando ne avrà occasione.",
   no: "Non è piaciuto, o non era il momento: meglio non insistere.",
   prova: "Non è ancora stato proposto.",
 };
 const wrap = (text, max = 22) => text.split(" ").reduce((lines, word) => { const last = lines[lines.length - 1]; if (last && (last + " " + word).length <= max) lines[lines.length - 1] = `${last} ${word}`; else lines.push(word); return lines; }, []).slice(0, 3);
+const males = ["carlo", "mario", "antonio", "bruno"];
 
 function InterestMap({ resident, onProposeText }) {
   const clip = useId().replace(/:/g, "");
   const name = resident.name.split(" ")[0];
-  const data = interestGraph[resident.id];
+  const moments = useMoments();
   const [selected, setSelected] = useState(null);
-  if (!data) return null;
+  const mine = passionsOf(resident.id);
+  if (!mine.length) return null;
+  // L'esito di un'occasione: dal momento collegato, o dall'ultimo spunto con lo stesso testo.
+  const statusOf = (link) => {
+    const m = (link.momento && moments.find((x) => x.id === link.momento)) || moments.find((x) => x.residentId === resident.id && x.origine === "spunto" && x.spunto?.testo === link.label);
+    return statusFromEsito(m?.esito);
+  };
   const W = 880, H = 540, cx = W / 2, cy = H / 2, R1 = 130, R2 = 225;
-  const n = data.interests.length;
-  const nodes = data.interests.map((interest, i) => {
+  const n = mine.length;
+  const nodes = mine.map((p, i) => {
     const angle = (-90 + (i * 360) / n) * (Math.PI / 180);
-    const k = interest.links.length;
-    return { ...interest, x: cx + R1 * Math.cos(angle), y: cy + R1 * Math.sin(angle),
-      links: interest.links.map((link, j) => { const a = angle + ((j - (k - 1) / 2) * 30 * Math.PI) / 180; return { ...link, interest: interest.label, id: `${i}-${j}`, a, x: cx + R2 * Math.cos(a), y: cy + R2 * Math.sin(a) }; }) };
+    const links = (personalLinks[resident.id]?.[p.id] || []);
+    const k = links.length;
+    const others = p.members.map(([id]) => id).filter((id) => id !== resident.id);
+    const label = viaOf(p, resident.id);
+    return { p, others, label: label.charAt(0).toUpperCase() + label.slice(1), x: cx + R1 * Math.cos(angle), y: cy + R1 * Math.sin(angle),
+      links: links.map((link, j) => { const a = angle + ((j - (k - 1) / 2) * 30 * Math.PI) / 180; return { ...link, status: statusOf(link), passion: p.id, interest: label, id: `${i}-${j}`, a, x: cx + R2 * Math.cos(a), y: cy + R2 * Math.sin(a) }; }) };
   });
   const all = nodes.flatMap((nd) => nd.links);
-  // Il riquadro si stringe attorno ai punti, così non resta spazio vuoto.
-  const ys = [cy - 44, cy + 44, ...nodes.map((nd) => nd.y), ...all.map((l) => l.y)];
+  const ys = [cy - 44, cy + 44, ...nodes.map((nd) => nd.y + 34), ...all.map((l) => l.y)];
   const top = Math.max(0, Math.min(...ys) - 64), bottom = Math.min(H, Math.max(...ys) + 64);
   const current = all.find((l) => l.id === selected);
+  const currentInterest = !current && nodes.find((nd) => `p-${nd.p.id}` === selected);
   const photo = residentPhoto(resident);
-  const person = (id) => residentPhoto({ id });
+  const outside = (outsideLinks[resident.id] || []).map((o) => ({ ...o, status: statusOf(o) })).filter((o) => o.status === "no");
+  const names = (ids) => { const f = ids.map((id) => channelResident(id).first); return f.length < 2 ? f.join("") : `${f.slice(0, -1).join(", ")} e ${f.at(-1)}`; };
+  const pick = (id) => setSelected(selected === id ? null : id);
+  const keys = (id) => (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(id); } };
 
   return <section className="v2-map surface">
-    <span className="eyebrow">COSA LEGA {name.toUpperCase()} ALLA VITA DELLA RESIDENZA</span>
-    <h3>I suoi interessi, e dove possono portar{["carlo", "mario", "antonio", "bruno"].includes(resident.id) ? "lo" : "la"}</h3>
-    <p className="v2-map-lead">Attività, ricordi, eventi e persone collegati a ciò che {name} ama. Il colore dice com'è andato lo spunto; il tratteggio, cosa resta da provare. Tocca un punto per sapere di più.</p>
-    <svg viewBox={`0 ${top} ${W} ${bottom - top}`} className="v2-map-svg" role="img" aria-label={`Mappa dei legami di ${name}: ${nodes.map((nd) => `${nd.label}, collegato a ${nd.links.map((l) => `${l.label} (${graphStatus[l.status].label.toLowerCase()})`).join(", ")}`).join("; ")}`}>
-      <defs><clipPath id={`c-${clip}`}><circle cx={cx} cy={cy} r="40" /></clipPath></defs>
-      {nodes.map((nd) => <line key={nd.label} x1={cx} y1={cy} x2={nd.x} y2={nd.y} className="v2-map-spoke" />)}
-      {all.map((l) => { const from = nodes.find((nd) => nd.label === l.interest); return <line key={l.id} x1={from.x} y1={from.y} x2={l.x} y2={l.y} stroke={graphStatus[l.status].color} strokeWidth={selected === l.id ? 4 : 2.5} strokeDasharray={l.status === "prova" ? "6 6" : undefined} strokeLinecap="round" />; })}
+    <span className="eyebrow">COSA {males.includes(resident.id) ? "LO" : "LA"} LEGA ALLA VITA DELLA RESIDENZA</span>
+    <h3>Le passioni di {name}</h3>
+    <p className="v2-map-lead">I suoi interessi e le occasioni collegate. Il colore dice com'è andato il tuo spunto; il tratteggio, cosa resta da provare. Accanto a ogni passione, con chi la condivide. Tocca un punto per sapere di più.</p>
+    <svg viewBox={`0 ${top} ${W} ${bottom - top}`} className="v2-map-svg" role="img" aria-label={`Le passioni di ${name}: ${nodes.map((nd) => `${nd.label}, ${nd.links.map((l) => `${l.label} (${graphStatus[l.status].label.toLowerCase()})`).join(", ")}${nd.others.length ? `; la condivide con ${names(nd.others)}` : ""}`).join("; ")}`}>
+      <defs><clipPath id={`c-${clip}`}><circle cx={cx} cy={cy} r="40" /></clipPath>{nodes.flatMap((nd) => nd.others.slice(0, 4).map((id, j) => <clipPath key={`${nd.p.id}-${id}`} id={`o-${clip}-${nd.p.id}-${id}`}><circle cx={nd.x - ((Math.min(nd.others.length, 4) - 1) * 9) + j * 18} cy={nd.y + 34} r="11" /></clipPath>))}</defs>
+      {nodes.map((nd) => <line key={nd.p.id} x1={cx} y1={cy} x2={nd.x} y2={nd.y} className="v2-map-spoke" />)}
+      {all.map((l) => { const from = nodes.find((nd) => nd.p.id === l.passion); return <line key={l.id} x1={from.x} y1={from.y} x2={l.x} y2={l.y} stroke={graphStatus[l.status].color} strokeWidth={selected === l.id ? 4 : 2.5} strokeDasharray={l.status === "prova" ? "6 6" : undefined} strokeLinecap="round" />; })}
       <circle cx={cx} cy={cy} r="44" className="v2-map-center" />
       {photo ? <image href={photo} x={cx - 40} y={cy - 40} width="80" height="80" clipPath={`url(#c-${clip})`} preserveAspectRatio="xMidYMid slice" /> : <text x={cx} y={cy + 6} textAnchor="middle" className="v2-map-initials">{resident.initials}</text>}
-      {nodes.map((nd) => { const w = Math.max(90, nd.label.length * 7.6 + 28); return <g key={nd.label}><rect x={nd.x - w / 2} y={nd.y - 17} width={w} height="34" rx="17" className="v2-map-interest" /><text x={nd.x} y={nd.y + 5} textAnchor="middle" className="v2-map-interest-label">{nd.label}</text></g>; })}
+      {nodes.map((nd) => { const w = Math.max(90, nd.label.length * 7.6 + 28); const on = selected === `p-${nd.p.id}`; const shown = nd.others.slice(0, 4); return <g key={nd.p.id} className={`v2-map-passion${on ? " is-selected" : ""}`} role="button" tabIndex="0" aria-label={`${nd.label}${nd.others.length ? `: la condivide con ${names(nd.others)}` : ""}`} onClick={() => pick(`p-${nd.p.id}`)} onKeyDown={keys(`p-${nd.p.id}`)}>
+        <rect x={nd.x - w / 2} y={nd.y - 17} width={w} height="34" rx="17" className="v2-map-interest" /><text x={nd.x} y={nd.y + 5} textAnchor="middle" className="v2-map-interest-label">{nd.label}</text>
+        {shown.map((id, j) => { const ox = nd.x - ((shown.length - 1) * 9) + j * 18; const img = residentPhoto({ id }); return <g key={id}><circle cx={ox} cy={nd.y + 34} r="12.5" className="v2-map-other-ring" />{img && <image href={img} x={ox - 11} y={nd.y + 23} width="22" height="22" clipPath={`url(#o-${clip}-${nd.p.id}-${id})`} preserveAspectRatio="xMidYMid slice" />}</g>; })}
+      </g>; })}
       {all.map((l) => {
         const cos = Math.cos(l.a); const sin = Math.sin(l.a);
         const anchor = cos > 0.25 ? "start" : cos < -0.25 ? "end" : "middle";
         const lines = wrap(l.label);
         const tx = l.x + (anchor === "start" ? 20 : anchor === "end" ? -20 : 0);
         const ty = anchor === "middle" ? (sin < 0 ? l.y - 24 - (lines.length - 1) * 16 : l.y + 32) : l.y + 5 - ((lines.length - 1) * 16) / 2;
-        const img = l.person && person(l.person);
-        return <g key={l.id} className={`v2-map-node${selected === l.id ? " is-selected" : ""}`} role="button" tabIndex="0" aria-label={`${l.label}: ${graphStatus[l.status].label}`} onClick={() => setSelected(selected === l.id ? null : l.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(selected === l.id ? null : l.id); } }}>
-          {img ? <><clipPath id={`p-${clip}-${l.id}`}><circle cx={l.x} cy={l.y} r="14" /></clipPath><circle cx={l.x} cy={l.y} r="16" fill={graphStatus[l.status].color} /><image href={img} x={l.x - 14} y={l.y - 14} width="28" height="28" clipPath={`url(#p-${clip}-${l.id})`} preserveAspectRatio="xMidYMid slice" /></>
-            : <circle cx={l.x} cy={l.y} r="11" fill={l.status === "prova" ? "var(--surface)" : graphStatus[l.status].color} stroke={graphStatus[l.status].color} strokeWidth="3" />}
+        return <g key={l.id} className={`v2-map-node${selected === l.id ? " is-selected" : ""}`} role="button" tabIndex="0" aria-label={`${l.label}: ${graphStatus[l.status].label}`} onClick={() => pick(l.id)} onKeyDown={keys(l.id)}>
+          <circle cx={l.x} cy={l.y} r="11" fill={l.status === "prova" ? "var(--surface)" : graphStatus[l.status].color} stroke={graphStatus[l.status].color} strokeWidth="3" />
           <text x={tx} y={ty} textAnchor={anchor} className="v2-map-label">{lines.map((line, i) => <tspan key={line} x={tx} dy={i ? 16 : 0}>{line}</tspan>)}</text>
         </g>;
       })}
     </svg>
-    <ul className="v2-map-list">{nodes.map((nd) => <li key={nd.label}><strong>{nd.label}</strong><div>{nd.links.map((l) => <button type="button" key={l.id} className={`is-${l.status}`} aria-pressed={selected === l.id} onClick={() => setSelected(selected === l.id ? null : l.id)}>{l.label}</button>)}</div></li>)}</ul>
-    <div className="v2-map-legend">{Object.entries(graphStatus).map(([id, s]) => <span key={id}><i style={{ background: id === "prova" ? "transparent" : s.color, borderColor: s.color, borderStyle: id === "prova" ? "dashed" : "solid" }} />{s.label}</span>)}</div>
-    {current ? <div className="v2-map-detail" role="status">
+    <ul className="v2-map-list">{nodes.map((nd) => <li key={nd.p.id}><button type="button" className="v2-map-list-passion" aria-pressed={selected === `p-${nd.p.id}`} onClick={() => pick(`p-${nd.p.id}`)}>{nd.label}{nd.others.length > 0 && <span>{nd.others.slice(0, 4).map((id) => <Avatar key={id} resident={channelResident(id)} size="sm" />)}</span>}</button><div>{nd.links.map((l) => <button type="button" key={l.id} className={`is-${l.status}`} aria-pressed={selected === l.id} onClick={() => pick(l.id)}>{l.label}</button>)}</div></li>)}</ul>
+    <div className="v2-map-legend">{Object.entries(graphStatus).map(([id, s]) => <span key={id}><i style={{ background: id === "prova" ? "transparent" : s.color, borderColor: s.color, borderStyle: id === "prova" ? "dashed" : "solid" }} />{s.label}</span>)}<span><i className="v2-map-legend-people" />Con chi la condivide</span></div>
+    {current && <div className="v2-map-detail" role="status">
       <div><small>{graphKind[current.kind]} · legato a «{current.interest}»</small><strong>{current.label}</strong><p><b style={{ color: graphStatus[current.status].color }}>{graphStatus[current.status].label}.</b> {advice[current.status]}</p></div>
-      {current.status !== "no" && <Button variant={current.status === "prova" ? "default" : "outline"} onClick={() => onProposeText(current.label, current.kind)}><Send size={15} /> {current.status === "prova" ? "Proponilo come spunto" : "Riproponilo"}</Button>}
-    </div> : data.other.length > 0 && <p className="v2-map-other">Fuori dai suoi interessi: {data.other.map((o) => `${o.label.toLowerCase()} (${graphStatus[o.status].label.toLowerCase()})`).join(", ")}. Le proposte che non toccano ciò che {name} ama funzionano meno.</p>}
+      {!["no", "attesa"].includes(current.status) && <Button variant={current.status === "prova" ? "default" : "outline"} onClick={() => onProposeText(current.label, current.kind)}><Send size={15} /> {current.status === "prova" ? "Proponilo come spunto" : "Riproponilo"}</Button>}
+    </div>}
+    {currentInterest && <div className="v2-map-detail" role="status">
+      <div><small>Una passione di {name}</small><strong>{currentInterest.label}</strong><p>{currentInterest.others.length ? <>La condivide con {names(currentInterest.others)}, nella passione «{currentInterest.p.label}».</> : "Per ora nessun altro ospite la condivide."}</p></div>
+      {currentInterest.others.length > 0 && <Link className="ui-button ui-button-outline ui-button-md" to={`/struttura-2?passione=${currentInterest.p.id}`}><Users size={15} /> Vedi chi altro la condivide</Link>}
+    </div>}
+    {!current && !currentInterest && outside.length > 0 && <p className="v2-map-other">Fuori dalle sue passioni: {outside.map((o) => o.label.toLowerCase()).join(", ")} (non è piaciuto). Le proposte che non toccano ciò che {name} ama funzionano meno.</p>}
   </section>;
 }

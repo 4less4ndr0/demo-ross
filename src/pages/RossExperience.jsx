@@ -5,6 +5,7 @@ import { Dialog } from "../components/ui";
 import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { outsideInvites } from "../data/demoData";
+import { dayText, daysUntil } from "../data/demoClock";
 import { byPriority } from "../data/familyMessages";
 import { consumeFamilyNews, consumeReminders } from "../state/familyNews";
 
@@ -42,11 +43,11 @@ const nextOf = (turn) => turn.next || script[scriptIndex[turn.id] + 1]?.id;
 const modes = [["Attiva", "Proponimi tu"], ["Reattiva", "Quando ti chiamo"], ["Silenziosa", "Stai in silenzio"]];
 
 // Spunti del giorno: meteo e ricorrenze diventano occasioni di conversazione (dati simulati nella demo).
-const today = { date: "Lunedì 21 settembre", time: "16:40", weather: "Pioggia leggera", temp: "17°" };
+const today = { date: dayText(0, { capital: true }), time: "16:40", weather: "Pioggia leggera", temp: "17°" };
 const dayPrompts = [
   { id: "residenza", icon: UtensilsCrossed, kicker: "Oggi in residenza", title: "Stasera minestrone e torta di mele", text: "Oggi pomeriggio c'è Giulia, l'educatrice. E venerdì in salotto si leggono commedie a più voci: te ne parlo se ti va.", cta: "Dimmi di più", talk: true },
   { id: "meteo", icon: CloudRain, kicker: "Oggi piove", title: "Un pomeriggio da fotografie", text: "I gerani sul balcone si annaffiano da soli. Ti va di guardare le foto di Cefalù e raccontarmi la luce della sera?", cta: "Raccontami", talk: true },
-  { id: "ricorrenza", icon: CalendarHeart, kicker: "Mercoledì è una ricorrenza", title: "Il 23 settembre nasceva Gino Paoli", text: "Ha scritto «Il cielo in una stanza», la canzone che Mina ha portato al successo nel 1960. La ascoltiamo insieme?", cta: "Ascoltiamola", track: "Il cielo in una stanza · Mina" },
+  { id: "ricorrenza", icon: CalendarHeart, kicker: "Una ricorrenza", title: "Il 23 settembre nasceva Gino Paoli", text: "Ha scritto «Il cielo in una stanza», la canzone che Mina ha portato al successo nel 1960. La ascoltiamo insieme?", cta: "Ascoltiamola", track: "Il cielo in una stanza · Mina" },
 ];
 
 // I contributi di Anna arrivano qui come spunti: la famiglia sceglie cosa portare a Elena, ROSS lo propone.
@@ -61,8 +62,14 @@ const familyPrompt = {
 // Quando arriva qualcosa di nuovo, ROSS lo annuncia e lo racconta a voce, una cosa alla volta e in ordine.
 const newsKicker = { reminder: "Un promemoria di Anna", photo: "Una foto di Anna", message: "Un pensiero di Anna", topic: "Una domanda di Anna", memory: "Un ricordo di Anna", music: "Musica da Anna" };
 const alreadyShared = (item) => item.status === "Ripreso con Elena" || item.status === "Confermato";
-// Quando arriva un promemoria, per metterli in fila: oggi è lunedì 21 settembre.
-const daysAhead = (when = "") => ({ "per stasera": 0, "per domani": 1, "per martedì": 1, "per mercoledì": 2, "per giovedì": 3, "per venerdì": 4, "per sabato": 5, "per domenica": 6, "": 9 })[when] ?? 8;
+// Quando arriva un promemoria, per metterli in fila: i giorni si contano da oggi (src/data/demoClock.js).
+const daysAhead = (when = "") => {
+  if (when === "per stasera") return 0;
+  if (when === "per domani") return 1;
+  if (!when) return 9;
+  const n = daysUntil(when.replace(/^per\s+/, ""));
+  return n === null ? 8 : n || 7;
+};
 const whoOf = (item) => (item.from === "infermeria" ? "Dall'infermeria" : item.mine ? "Me l'hai chiesto tu" : "Da Anna");
 const count = (n) => (n === 1 ? "una cosa" : n === 2 ? "due cose" : n === 3 ? "tre cose" : `${n} cose`);
 

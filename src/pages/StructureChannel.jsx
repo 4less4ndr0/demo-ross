@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { ArrowRight, Check, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Check, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
 import { Avatar, StructureView } from "../components/Common";
 import { Button, Textarea } from "../components/ui";
-import { channelResident, channelResidents, receptions, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
-import { channelActions, useChannel } from "../state/channelStore";
+import { channelResident, channelResidents, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
+import { whenText } from "../data/demoClock";
+import { esiti, labelOf, toneOf } from "../data/moments";
+import { channelActions, momentFilters, useMoments } from "../state/channelStore";
 import { useDemo } from "../state/DemoContext";
 import { PassionNetwork } from "../components/PassionNetwork";
 
@@ -39,8 +41,10 @@ export function StructureChannelPage({ children }) {
 }
 
 export function StructureChannel() {
-  const data = useChannel();
-  const fresh = data.insights.filter((i) => i.state === "nuovo").length;
+  const moments = useMoments();
+  // «Cosa è emerso»: per tutti gli ospiti, cosa fare adesso (vedi momentFilters.canale).
+  const feed = moments.filter(momentFilters.canale);
+  const fresh = feed.filter((m) => m.stato === "nuovo").length;
 
   return (
     <main className="s2-main">
@@ -60,13 +64,13 @@ export function StructureChannel() {
       <PassionNetwork />
 
       <div className="s2-columns">
-        <ProposeCard spunti={data.spunti} />
+        <ProposeCard />
         <section className="s2-feed" aria-labelledby="s2-feed-title">
           <div className="s2-feed-head">
-            <div><span className="s2-eyebrow">Da ROSS, per te</span><h2 id="s2-feed-title">Cosa è emerso</h2></div>
+            <div><span className="s2-eyebrow">Da ROSS, per te</span><h2 id="s2-feed-title">Cosa è emerso</h2><p className="s2-feed-lead">Cosa puoi fare adesso, per tutti gli ospiti: gli ultimi 7 giorni, finché non lo segni come fatto. La storia di ciascuno è nel suo ritratto.</p></div>
             {fresh > 0 && <span className="s2-count">{fresh} {fresh === 1 ? "nuovo" : "nuovi"}</span>}
           </div>
-          <ul className="s2-insights">{data.insights.map((insight) => <InsightCard key={insight.id} insight={insight} />)}</ul>
+          {feed.length ? <ul className="s2-insights">{feed.map((m) => <MomentCard key={m.id} moment={m} />)}</ul> : <p className="knows-empty">Per ora niente da fare: quando emerge qualcosa di utile, ROSS te lo racconta qui.</p>}
         </section>
       </div>
 
@@ -76,14 +80,15 @@ export function StructureChannel() {
 }
 
 // «Proponi uno spunto». Con `fixedId` (nel ritratto) l'ospite è già scelto.
-export function ProposeCard({ spunti, fixedId, prefill }) {
+export function ProposeCard({ fixedId, prefill }) {
   const { state } = useDemo();
+  const moments = useMoments();
   const [residentId, setResidentId] = useState(fixedId || null);
   const [text, setText] = useState("");
   const [type, setType] = useState(null);
   const [sent, setSent] = useState(null);
   const field = useRef(null);
-  // Dalla mappa dei legami (Come sta) arriva uno spunto già scritto, da rileggere prima di inviarlo.
+  // Dalle passioni del ritratto arriva uno spunto già scritto, da rileggere prima di inviarlo.
   useEffect(() => { if (prefill?.text) { setText(prefill.text.slice(0, MAX)); setType(prefill.type || null); setSent(null); window.setTimeout(() => field.current?.focus(), 60); } }, [prefill?.text, prefill?.type]);
   // La modalità può cambiare dal ritratto: si legge sempre quella attuale.
   const live = (id) => id && { ...channelResident(id), mode: state.residents.find((r) => r.id === id)?.mode || channelResident(id).mode };
@@ -93,13 +98,11 @@ export function ProposeCard({ spunti, fixedId, prefill }) {
   const submit = (event) => {
     event.preventDefault();
     if (!ready) return;
-    const spunto = { id: `sp-${Date.now()}`, residentId, text: text.trim(), type, status: "attesa", sentAt: Date.now() };
-    channelActions.send(spunto);
-    setSent(spunto);
+    setSent(channelActions.send({ residentId, testo: text.trim(), tipo: type }));
     setText(""); setType(null);
   };
 
-  const pending = spunti.filter((s) => s.status === "attesa");
+  const pending = moments.filter((m) => m.esito === "attesa");
   const who = fixedId ? `${resident.first} è liber${resident.f ? "a" : "o"}` : "l'ospite è libero";
 
   return (
@@ -150,43 +153,51 @@ export function ProposeCard({ spunti, fixedId, prefill }) {
       {!fixedId && pending.length > 0 && (
         <div className="s2-pending">
           <span className="s2-label">In attesa del momento giusto</span>
-          <ul>{pending.map((s) => <li key={s.id}><Avatar resident={channelResident(s.residentId)} size="sm" /><span>{s.text}</span></li>)}</ul>
+          <ul>{pending.map((m) => <li key={m.id}><Avatar resident={channelResident(m.residentId)} size="sm" /><span>{m.spunto.testo}</span></li>)}</ul>
         </div>
       )}
     </section>
   );
 }
 
-export function Reception({ value }) {
-  return value ? <em className={`s2-reception is-${value}`}>{receptions[value]}</em> : null;
+// L'esito di uno spunto, come pillola.
+const esitoClass = { accolto: "volentieri", pensa: "pensa", no: "no", non_ora: "non-ora", attesa: "attesa" };
+export function Esito({ value }) {
+  return value ? <em className={`s2-reception is-${esitoClass[value]}`}>{esiti[value]}</em> : null;
 }
 
-function InsightCard({ insight }) {
-  const r = channelResident(insight.residentId);
+// Il momento come card completa del canale: chi, quando, da dove nasce, cosa è emerso, cosa puoi fare.
+function MomentCard({ moment: m }) {
+  const r = channelResident(m.residentId);
+  const tone = toneOf(m);
   return (
-    <li id={insight.id} className={`s2-card s2-insight is-${insight.state}${insight.simulated && insight.state === "nuovo" ? " is-arrived" : ""}`}>
+    <li id={`m-${m.id}`} className={`s2-card s2-insight is-${m.stato}${m.simulato && m.stato === "nuovo" ? " is-arrived" : ""}`}>
       <header>
         <Avatar resident={r} size="lg" />
-        <div><NavLink to={`${BASE}/ospiti/${r.id}?tab=spunti`} className="s2-name">{r.name}</NavLink><small>{insight.when} · stanza {r.room}</small></div>
-        {insight.state === "nuovo" && <span className="s2-new">Nuovo</span>}
+        <div><NavLink to={`${BASE}/ospiti/${r.id}?tab=conversazioni`} className="s2-name">{r.name}</NavLink><small>{whenText(m.quando)} · stanza {r.room}</small></div>
+        {m.stato === "nuovo" && <span className="s2-new">Nuovo</span>}
       </header>
-      {insight.spunto
-        ? <p className="s2-origin"><span>Dal tuo spunto{insight.spunto.type ? ` · ${spuntoTypeLabel(insight.spunto.type)}` : ""}<Reception value={insight.reception} /></span>«{insight.spunto.text}»</p>
-        : <p className="s2-origin is-spontaneous"><span><Sparkles size={13} />L'ha raccontato {r.f ? "lei" : "lui"}, spontaneamente</span></p>}
-      <p className="s2-story">{insight.story}</p>
-      <p className="s2-suggestion"><span>Cosa puoi fare</span>{insight.suggestion}</p>
-      <InsightFooter insight={insight} resident={r} />
+      {m.origine === "spunto"
+        ? <p className="s2-origin"><span>Dal tuo spunto{m.spunto.tipo ? ` · ${spuntoTypeLabel(m.spunto.tipo)}` : ""}<Esito value={m.esito} /></span>«{m.spunto.testo}»</p>
+        : <p className={`s2-origin is-${tone === "watch" ? "watch" : "spontaneous"}`}><span>{tone === "watch" ? <Eye size={13} /> : <Sparkles size={13} />}{labelOf(m)}</span></p>}
+      <p className="s2-story">{m.titolo ? <><b>{m.titolo}.</b> {m.racconto}</> : m.racconto}</p>
+      <p className="s2-suggestion"><span>Cosa puoi fare</span>{m.cosaPuoiFare}</p>
+      <MomentActions moment={m} />
+      <NavLink to={`${BASE}/ospiti/${r.id}?tab=conversazioni`} className="s2-story-link"><BookOpen size={14} /> Vedi la storia di {r.first}</NavLink>
     </li>
   );
 }
 
-export function InsightFooter({ insight, resident: r }) {
+// Consenso e Visto/Fatto: lo stesso stato in tutte le viste.
+export function MomentActions({ moment: m, compact }) {
+  const r = channelResident(m.residentId);
+  const consent = m.consenso !== false && ["spunto", "spontaneo", "scelta"].includes(m.origine);
   return (
-    <footer className="s2-insight-footer">
-      {insight.consent !== false && <small className="s2-consent">{r.first} è {r.f ? "contenta" : "contento"} che tu lo sappia</small>}
+    <footer className={`s2-insight-footer${compact ? " is-compact" : ""}`}>
+      {consent && !compact && <small className="s2-consent">{r.first} è {r.f ? "contenta" : "contento"} che tu lo sappia</small>}
       <div className="s2-actions">
-        <button type="button" className="s2-mark" aria-pressed={insight.state !== "nuovo"} onClick={() => channelActions.mark(insight.id, "visto")}><Eye size={15} />Visto</button>
-        <button type="button" className="s2-mark is-done" aria-pressed={insight.state === "fatto"} onClick={() => channelActions.mark(insight.id, "fatto")}><Check size={15} />Fatto</button>
+        <button type="button" className="s2-mark" aria-pressed={m.stato !== "nuovo"} onClick={() => channelActions.mark(m.id, "visto")}><Eye size={15} />Visto</button>
+        <button type="button" className="s2-mark is-done" aria-pressed={m.stato === "fatto"} onClick={() => channelActions.mark(m.id, "fatto")}><Check size={15} />Fatto</button>
       </div>
     </footer>
   );

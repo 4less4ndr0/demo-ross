@@ -6,7 +6,7 @@ import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge, useStructureView } from "../components/Common";
 import { ResidentSpunti } from "../components/ResidentSpunti";
-import { useChannel } from "../state/channelStore";
+import { useMoments } from "../state/channelStore";
 import { AddDocumentMenu, familyOf, folders, useOf } from "../components/DocumentDialogs";
 import { HowIsV2, modeMeaning, WithRossV2 } from "../components/PortraitV2";
 import { ParticipationChart } from "../components/ParticipationChart";
@@ -65,7 +65,7 @@ export function ResidentProfile() {
     <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabList.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
     {tab === "spunti" && <ResidentSpunti resident={resident} />}
     {tab === "sintesi" && v2 && <HowIsV2 resident={resident} onPropose={() => setTab("spunti")} onProposeText={(text, kind) => setParams({ tab: "spunti", spunto: text, tipo: kind })} />}
-    {tab === "conversazioni" && v2 && <WithRossV2 resident={resident} onPropose={() => setTab("spunti")} />}
+    {tab === "conversazioni" && v2 && <WithRossV2 resident={resident} onPropose={() => setTab("spunti")} onOpenSpunti={() => setTab("spunti")} />}
     {tab === "sintesi" && !v2 && <Overview state={state} resident={resident} onPropose={v2 ? () => setTab("spunti") : undefined} onApproach={v2 ? undefined : () => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
     {tab === "avvicinare" && <Approach state={state} resident={resident} navigate={navigate} />}
     {tab === "conversazioni" && !v2 && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} onPropose={v2 ? () => setTab("spunti") : undefined} />}
@@ -215,8 +215,9 @@ function Attachments({ resident, documents, onAdd }) {
   const saved = (family) => { if (folder && folder !== family) setFolder(family); };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
   const { v2 } = useStructureView();
-  const channel = useChannel();
-  const upcoming = upcomingFor(resident, documents, v2 ? channel.spunti : []);
+  const moments = useMoments();
+  const waiting = moments.filter((m) => m.esito === "attesa").map((m) => ({ id: m.id, residentId: m.residentId, status: "attesa", text: m.spunto.testo }));
+  const upcoming = upcomingFor(resident, documents, v2 ? waiting : []);
   const count = (id) => id === "giornata" ? upcoming.length + documents.filter((d) => familyOf(d) === id).length : documents.filter((d) => familyOf(d) === id).length;
   const current = folders.find((f) => f.id === folder);
   const items = current ? documents.filter((d) => familyOf(d) === current.id) : [];

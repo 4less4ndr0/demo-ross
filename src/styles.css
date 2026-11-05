@@ -1742,3 +1742,32 @@ button.document-card:hover{background:var(--surface-2)}
 .v2-feed-filters button.is-osservare[aria-pressed=true]{background:var(--accent);border-color:var(--accent)}
 .v2-feed-filters button:disabled{opacity:.45;cursor:default}
 .v2-feed-filters button:focus-visible{outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 30%,transparent)}
+/* Struttura 2.0 · una sola fonte di momenti (canale, Spunti, Con ROSS) */
+.s2-feed-lead{margin:6px 0 0;font-size:13px;line-height:1.45;color:var(--muted);max-width:560px}
+.s2-origin.is-watch{background:var(--accent-soft);padding:9px 14px}
+.s2-origin.is-watch span{margin:0;color:var(--accent)}
+.s2-story b{font-weight:600}
+.s2-story-link{display:inline-flex;align-items:center;gap:6px;width:fit-content;font-size:13px;font-weight:700;color:var(--green);text-decoration:none}
+.s2-story-link:hover{text-decoration:underline;text-underline-offset:3px}
+.s2-reception.is-attesa{background:var(--lilac-soft);color:var(--lilac)}
+.s2-insight-footer.is-compact{justify-content:flex-end}
+.s2-insight-footer.is-compact .s2-mark{min-height:34px;padding:0 12px;font-size:12px}
+/* Con ROSS: gli spunti come riga compatta, con il link a Spunti */
+.v2-feed-row{gap:4px;padding:12px 18px;background:var(--surface-2);box-shadow:none}
+.v2-feed-spunto{margin:0;font-size:14px;line-height:1.45;color:var(--text)}
+.v2-feed-more{justify-self:start;display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;padding:2px 0;color:var(--green);font-size:12px;font-weight:700;cursor:pointer}
+.v2-feed-more:hover{text-decoration:underline;text-underline-offset:3px}
+.v2-feed-item.is-spunto .v2-feed-dot{background:var(--surface-2);color:var(--muted)}
+/* Le passioni di …: le passioni si toccano, gli altri ospiti sono «con chi la condivide» */
+.v2-map-passion{cursor:pointer;outline:none}
+.v2-map-passion.is-selected .v2-map-interest,.v2-map-passion:hover .v2-map-interest{fill:var(--lilac);}
+.v2-map-passion.is-selected .v2-map-interest-label{fill:#fff}
+.v2-map-passion:focus-visible .v2-map-interest{stroke:var(--text);stroke-width:3}
+.v2-map-other-ring{fill:var(--surface-2);stroke:var(--surface);stroke-width:2}
+.v2-map-legend-people{width:14px!important;height:14px!important;border:2px solid var(--line)!important;border-radius:50%;background:var(--surface-2)}
+.v2-map-list .v2-map-list-passion{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:4px 12px;border-radius:999px;border:0;background:var(--lilac-soft);font-size:13px;font-weight:750;color:var(--text);cursor:pointer}
+.v2-map-list .v2-map-list-passion[aria-pressed=true]{background:var(--lilac);color:#fff}
+.v2-map-list .v2-map-list-passion span{display:inline-flex}
+.v2-map-list .v2-map-list-passion .avatar{width:22px;height:22px;margin-left:-4px;border:2px solid var(--surface)}
+.v2-map-list button.is-attesa{border-color:var(--lilac)}
+.s2-spunto-meta .s2-reception{margin-left:0}

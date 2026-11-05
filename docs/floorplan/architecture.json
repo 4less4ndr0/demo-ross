@@ -88,7 +88,8 @@
         "src/components/PassionNetwork.jsx",
         "src/data/channel.js",
         "src/data/interestGraph.js",
-        "src/data/highlights.js",
+        "src/data/moments.js",
+        "src/data/demoClock.js",
         "src/state/channelStore.js"
       ]
     },
