@@ -1490,6 +1490,9 @@ button.document-card:hover{background:var(--surface-2)}
 .s2-new{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:5px 10px;border-radius:999px}
 .s2-origin{margin:0;padding:11px 14px;border-radius:14px;background:var(--surface-2);font-size:14px;line-height:1.45}
 .s2-origin span{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.s2-reception{margin-left:auto;font-style:normal;letter-spacing:0;text-transform:none;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--muted)}
+.s2-reception.is-volentieri{background:var(--green-soft);color:var(--green)}
+.s2-reception.is-pensa{background:var(--sand-soft);color:#83621f}
 .s2-origin.is-spontaneous{background:var(--sand-soft);padding:9px 14px}
 .s2-origin.is-spontaneous span{margin:0;color:#83621f}
 .s2-story{margin:0;font:400 19px/1.5 var(--serif)}

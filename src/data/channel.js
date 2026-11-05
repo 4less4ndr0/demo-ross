@@ -27,6 +27,14 @@ export const timingFor = (resident) => ({
   Silenziosa: `${resident.first} ha chiesto a ROSS di stare in silenzio: lo spunto aspetterà che sia ${resident.f ? "lei" : "lui"} a chiamarlo.`,
 }[resident.mode]);
 
+// Come è stato accolto uno spunto: è tutto ciò che la struttura deve sapere della conversazione.
+// La regola d'oro resta: ROSS dice come è andata e cosa può aiutare, mai cosa ha raccontato l'ospite.
+export const receptions = {
+  volentieri: "Accolto volentieri",
+  pensa: "Ci sta pensando",
+  "non-ora": "Non era il momento",
+};
+
 // Insight di esempio: i più recenti in alto. `spunto` è facoltativo (gli insight nascono anche da ciò che
 // l'ospite racconta spontaneamente). `state`: "nuovo" | "visto" | "fatto".
 export const initialInsights = [
@@ -35,7 +43,7 @@ export const initialInsights = [
     residentId: "ada",
     when: "Oggi, 11:20",
     spunto: null,
-    story: "Ada mi ha raccontato volentieri degli anni in cui faceva la sarta: quando parla di stoffe e cartamodelli le si accende la voce.",
+    story: "Con Ada il cucito è un argomento che le accende la voce: ne parla volentieri, e a lungo.",
     suggestion: "Potrebbe sentirsi a casa al laboratorio di cucito del giovedì. Invitala di persona, magari chiedendole un consiglio.",
     state: "nuovo",
   },
@@ -44,7 +52,8 @@ export const initialInsights = [
     residentId: "elena",
     when: "Oggi, 10:05",
     spunto: { type: "evento", text: "Venerdì alle 16 il coro dei bambini della scuola Rodari canta in salone." },
-    story: "All'inizio Elena era incerta, poi ha detto che i bambini che cantano le ricordano i nipoti piccoli. Ci vuole andare.",
+    reception: "volentieri",
+    story: "All'inizio Elena era incerta, poi l'idea le è piaciuta: ci vuole andare.",
     suggestion: "Tenetele un posto in fondo, vicino alla porta: preferisce poter uscire quando vuole.",
     state: "nuovo",
   },
@@ -53,6 +62,7 @@ export const initialInsights = [
     residentId: "antonio",
     when: "Ieri, 17:40",
     spunto: { type: "attivita", text: "Sabato mattina torneo di scacchi in salotto." },
+    reception: "pensa",
     story: "Antonio ha ascoltato con interesse e ha chiesto chi ci sarà. Gli piacerebbe, ma da solo non se la sente di presentarsi.",
     suggestion: "Se qualcuno lo accompagna per i primi minuti, probabilmente resta. Bruno gioca a carte con lui: potrebbero andarci insieme.",
     state: "visto",
@@ -62,7 +72,7 @@ export const initialInsights = [
     residentId: "bruno",
     when: "Ieri, 16:10",
     spunto: null,
-    story: "Bruno ha voluto raccontarmi dei suoi anni da capotreno. Ha tanta voglia di raccontare, più di quanto mostri durante il giorno.",
+    story: "Con Bruno i treni sono l'argomento che apre la conversazione: ha voglia di raccontare, più di quanto mostri durante il giorno.",
     suggestion: "Chiedigli dei treni mentre gli porti il caffè del pomeriggio: è un argomento che lo apre.",
     state: "nuovo",
   },
@@ -71,6 +81,7 @@ export const initialInsights = [
     residentId: "ada",
     when: "Ieri, 11:00",
     spunto: { type: "persona", text: "Sabato viene a trovarla la nipote Chiara." },
+    reception: "non-ora",
     story: "Ho nominato Chiara, ma oggi Ada non aveva voglia di parlarne. Non ho insistito: ci tornerò solo se sarà lei a riprendere il discorso.",
     suggestion: "Nessuna fretta. Sabato, quando arriva Chiara, basta chiedere ad Ada dove preferisce riceverla.",
     state: "visto",
@@ -81,7 +92,8 @@ export const initialInsights = [
     residentId: "elena",
     when: "Lunedì, 15:30",
     spunto: { type: "ricordo", text: "Il suo orto a Treviso, con i pomodori e il basilico." },
-    story: "Elena ha ripreso con piacere il ricordo dell'orto e mi ha chiesto se in residenza c'è qualche pianta di cui potersi prendere cura.",
+    reception: "volentieri",
+    story: "Elena ha ripreso con piacere questo ricordo e mi ha chiesto se in residenza c'è qualche pianta di cui potersi prendere cura.",
     suggestion: "Affidatele i vasi del terrazzo al secondo piano: le darebbe un piccolo compito tutto suo.",
     state: "fatto",
   },
@@ -117,6 +129,7 @@ export function simulatedInsight(spunto) {
   ];
   return {
     id: `ins-${spunto.id}`,
+    reception: spunto.type === "attivita" ? "pensa" : "volentieri",
     residentId: r.id,
     when: "Adesso",
     spunto: { type: spunto.type, text: spunto.text },

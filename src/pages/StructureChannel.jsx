@@ -3,7 +3,7 @@ import { ArrowRight, Check, Eye, MessageCircleHeart, Send, Sparkles } from "luci
 import { toast } from "sonner";
 import { Avatar } from "../components/Common";
 import { Button, Textarea } from "../components/ui";
-import { channelResident, channelResidents, initialInsights, simulatedInsight, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
+import { channelResident, channelResidents, initialInsights, receptions, simulatedInsight, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
 
 // Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto e riceve qualcosa in cambio.
 // Due funzioni sole: «Proponi uno spunto» e «Cosa è emerso». Niente dashboard, punteggi o trascrizioni.
@@ -171,7 +171,7 @@ function InsightCard({ insight, onMark }) {
         {insight.state === "nuovo" && <span className="s2-new">Nuovo</span>}
       </header>
       {insight.spunto
-        ? <p className="s2-origin"><span>Dal tuo spunto{insight.spunto.type ? ` · ${spuntoTypeLabel(insight.spunto.type)}` : ""}</span>«{insight.spunto.text}»</p>
+        ? <p className="s2-origin"><span>Dal tuo spunto{insight.spunto.type ? ` · ${spuntoTypeLabel(insight.spunto.type)}` : ""}{insight.reception && <em className={`s2-reception is-${insight.reception}`}>{receptions[insight.reception]}</em>}</span>«{insight.spunto.text}»</p>
         : <p className="s2-origin is-spontaneous"><span><Sparkles size={13} />L'ha raccontato {r.f ? "lei" : "lui"}, spontaneamente</span></p>}
       <p className="s2-story">{insight.story}</p>
       <p className="s2-suggestion"><span>Cosa puoi fare</span>{insight.suggestion}</p>

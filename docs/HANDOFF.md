@@ -38,7 +38,7 @@ Il metodo con cui è pensata è la **salutogenesi** ([`salutogenesi.md`](salutog
 |---|---|---|---|---|
 | **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#27) |
 | **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21); **app per iPhone** (novembre) |
-| **Struttura 2.0** (`/struttura-2`) | Staff della struttura | Un canale, non un archivio: propone a ROSS uno **spunto** per un ospite e riceve in cambio **cosa è emerso** (sintesi narrativa + suggerimento) | Trascrizioni, punteggi, grafici, report, dati sanitari | **Nuova** (5/11), accanto alla Struttura attuale, che resta intatta |
+| **Struttura 2.0** (`/struttura-2`) | Staff della struttura | Un canale, non un archivio: propone a ROSS uno **spunto** per un ospite e riceve in cambio **cosa è emerso** (come è stato accolto lo spunto + suggerimento) | Di cosa ha parlato l'ospite, trascrizioni, punteggi, grafici, report, dati sanitari | **Nuova** (5/11), accanto alla Struttura attuale, che resta intatta |
 | **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS | — | **Riallineata** (ottobre): trasparenza sull'IA, aiuto non di emergenza, "dimentica", chiusura verso le persone vere |
 
 Nella Struttura ci sono **quattro stakeholder**, e il target principale non è ancora scelto: per questo esiste il selettore di ruolo.
@@ -265,7 +265,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
   - **Cosa è emerso:** 6 insight di esempio su 4 ospiti. Ognuno ha l'ospite, lo spunto di partenza oppure "L'ha raccontato lei, spontaneamente", 1–2 frasi narrative, "Cosa puoi fare" e "… è contenta che tu lo sappia". Un esempio mostra l'ospite che non segue lo spunto (Ada e la nipote). Azioni solo **Visto** e **Fatto**, con "Annulla";
   - nella demo, 6 secondi dopo un nuovo spunto ROSS restituisce un insight preparato (toast con "Leggi"). È dichiarato in "Cosa è reale e cosa è simulato".
 - **Non fatto, di proposito:** niente dashboard, KPI, grafici, punteggi, report, trascrizioni o schede da compilare. Panoramica e Report restano solo nella Struttura attuale.
-- **Da discutere:** la Struttura 2.0 riceve *di cosa* ha parlato l'ospite (in sintesi narrativa, con il suo permesso). È diverso dalla regola d'oro della Struttura attuale ("mai di cosa ha parlato"): va deciso quale delle due vale.
+- **Privacy (deciso il 05/11):** la regola d'oro resta valida anche qui. L'insight è un racconto narrativo di **come è stato accolto** lo spunto della struttura (etichetta "Accolto volentieri", "Ci sta pensando", "Non era il momento") e di cosa può aiutare. Non riporta cosa ha raccontato l'ospite. Gli insight spontanei nominano solo un interesse per categoria (il cucito, i treni), mai l'episodio. I testi d'esempio sono stati riscritti con questo criterio.
 
 ### Novembre 2026 · 04/11/2026 · Mappa rigenerata dopo gli archetipi
 - **Richiesta:** rigenerare la Mappa (poi unito `main` con «Cosa sa ROSS», PR #48, e mappa rigenerata di nuovo).
