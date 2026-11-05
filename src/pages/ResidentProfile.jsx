@@ -224,14 +224,21 @@ function Attachments({ resident, documents, onAdd }) {
   const [paused, setPaused] = useState(readPaused);
   const name = resident.name.split(" ")[0];
   const male = malesP.includes(resident.id);
-  const withFolder = (doc) => ({ ...doc, family: folder && folder !== "giornata" ? folder : "persona" }); // si aggiunge nella cartella aperta
+  // Scelto il file, si sceglie la cartella (e si può correggere il titolo) prima di aggiungerlo.
+  const [pending, setPending] = useState(null);
   const add = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (!file) return;
+    if (file) setPending(file);
+  };
+  const choices = folders.filter((f) => f.id !== "giornata").map((f) => ({ id: f.id, color: f.color, label: f.title(name) }));
+  const startFolder = folder && folder !== "giornata" ? folder : "persona";
+  const saved = (family) => { if (folder && folder !== family) setFolder(family); };
+  const saveFile = (file, title, family) => {
     // Un .txt si legge subito: il testo diventa il contenuto del documento.
-    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => onAdd(withFolder(textDocument(resident.id, file.name.replace(/\.[^.]+$/, ""), text))));
-    else onAdd(withFolder({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) }));
+    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => onAdd({ ...textDocument(resident.id, title, text), family }));
+    else { const doc = attachmentFrom(file); onAdd({ residentId: resident.id, origin: "staff", ...doc, title: title.trim() || doc.title, family }); }
+    setPending(null); saved(family);
   };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
   const { v2 } = useStructureView();
@@ -252,7 +259,8 @@ function Attachments({ resident, documents, onAdd }) {
 
   return <section className="content-section">
     <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} />
-    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} choices={folders.filter((f) => f.id !== "giornata").map((f) => ({ id: f.id, color: f.color, label: f.title(name) }))} initial={folder && folder !== "giornata" ? folder : "persona"} onSave={(title, text, family) => { onAdd({ ...textDocument(resident.id, title, text), family }); setWriting(false); if (folder && folder !== family) setFolder(family); }} />
+    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} choices={choices} initial={startFolder} onSave={(title, text, family) => { onAdd({ ...textDocument(resident.id, title, text), family }); setWriting(false); saved(family); }} />
+    <FileDocumentDialog file={pending} onClose={() => setPending(null)} name={name} choices={choices} initial={startFolder} onSave={saveFile} />
     {!current ? <>
       <div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Quattro cartelle con ciò che struttura e famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. {name} lo ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale. Per aggiungere qualcosa, apri la cartella giusta.</p></div></div>
       <div className="folder-grid">{folders.map((f) => <button type="button" key={f.id} className={`folder-card surface folder-${f.color}`} onClick={() => setFolder(f.id)}>
@@ -297,7 +305,38 @@ const textDocument = (residentId, title, text) => {
   return { residentId, origin: "staff", kind: "Testo", title: `${name}.txt`, summary: clean.length > 160 ? `${clean.slice(0, 157)}…` : clean, body: [["Testo", clean]] };
 };
 
-// La cartella parte da quella aperta; si può scegliere un'altra (La sua giornata no: la compone ROSS).
+// «In quale cartella»: parte da quella aperta; si può sceglierne un'altra (La sua giornata no: la compone ROSS).
+function FolderChoice({ choices, value, onChange }) {
+  return <fieldset className="text-doc-folders"><legend>In quale cartella</legend><div>{choices.map((c) => <button type="button" key={c.id} className={`folder-${c.color}`} aria-pressed={value === c.id} onClick={() => onChange(c.id)}><span className="folder-icon"><Folder size={15} /></span>{c.label}</button>)}</div></fieldset>;
+}
+
+// «Carica dal dispositivo»: scelto il file, si vede cosa si sta aggiungendo, si corregge il titolo e si sceglie la cartella.
+function FileDocumentDialog({ file, onClose, onSave, name, choices, initial }) {
+  const [title, setTitle] = useState("");
+  const [family, setFamily] = useState(initial);
+  const [preview, setPreview] = useState(null);
+  useEffect(() => {
+    if (!file) return undefined;
+    setTitle(file.name.replace(/\.[^.]+$/, ""));
+    setFamily(initial);
+    const url = file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
+    setPreview(url);
+    return () => { if (url) URL.revokeObjectURL(url); };
+  }, [file, initial]);
+  const ext = file ? (file.name.match(/\.([^.]+)$/)?.[1] || "").toLowerCase() : "";
+  const size = file ? (file.size > 1048576 ? `${(file.size / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} kB`) : "";
+  const save = (event) => { event.preventDefault(); onSave(file, title, family); };
+  return <Dialog open={Boolean(file)} onClose={onClose} title="Aggiungi un file" size="md">
+    {file && <form className="text-doc-form" onSubmit={save}>
+      <div className="file-doc-preview">{preview ? <img src={preview} alt="" /> : <span className="document-icon"><FileText size={22} /></span>}<div><strong>{file.name}</strong><small>{[ext.toUpperCase(), size].filter(Boolean).join(" · ")}{ext === "txt" ? " · il testo diventa il contenuto del documento" : ""}</small></div></div>
+      <label><span>Titolo</span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Come comparirà in «Cosa sa ROSS»" /></label>
+      <FolderChoice choices={choices} value={family} onChange={setFamily} />
+      <p className="text-doc-note">ROSS lo usa per accompagnare {name}: non interpreta referti né valori.</p>
+      <div className="text-doc-actions"><Button type="button" variant="outline" onClick={onClose}>Annulla</Button><Button type="submit">Aggiungi il documento</Button></div>
+    </form>}
+  </Dialog>;
+}
+
 function TextDocumentDialog({ open, onClose, onSave, name, choices, initial }) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
@@ -309,7 +348,7 @@ function TextDocumentDialog({ open, onClose, onSave, name, choices, initial }) {
     <form className="text-doc-form" onSubmit={save}>
       <p>Incolla o scrivi un testo: diventa un documento .txt che ROSS usa per accompagnare {name}.</p>
       <label><span>Titolo <small>(se vuoi)</small></span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Per esempio: Note dell'educatrice" /></label>
-      <fieldset className="text-doc-folders"><legend>In quale cartella</legend><div>{choices.map((c) => <button type="button" key={c.id} className={`folder-${c.color}`} aria-pressed={family === c.id} onClick={() => setFamily(c.id)}><span className="folder-icon"><Folder size={15} /></span>{c.label}</button>)}</div></fieldset>
+      <FolderChoice choices={choices} value={family} onChange={setFamily} />
       <label><span>Testo</span><Textarea rows={9} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo…" autoFocus /></label>
       {text.trim() && <small className="text-doc-preview"><FileText size={14} />{txtName(title, text)}.txt · {text.trim().length} caratteri · in «{choices.find((c) => c.id === family)?.label}»</small>}
       <div className="text-doc-actions"><Button type="button" variant="outline" onClick={close}>Annulla</Button><Button type="submit" disabled={!text.trim()}>Aggiungi il documento</Button></div>

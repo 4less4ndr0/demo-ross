@@ -258,6 +258,16 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Scelta della cartella anche per «Carica dal dispositivo»
+- **Richiesta:** la stessa scelta della cartella del contenuto testuale, anche quando si carica un file.
+- **Fatto:**
+  - scelto il file, si apre «Aggiungi un file», con:
+    - l'anteprima (miniatura per le foto, icona per gli altri file), tipo e peso;
+    - il titolo, già compilato dal nome del file e modificabile;
+    - «In quale cartella», che parte da quella aperta;
+  - con «Aggiungi il documento» il file finisce lì; con «Annulla» non si aggiunge niente. Un `.txt` continua a diventare un documento leggibile;
+  - la scelta della cartella è un componente comune (`FolderChoice`), usato anche da `TextDocumentDialog`; il nuovo dialog è `FileDocumentDialog`; stili `.file-doc-preview`.
+
 ### Novembre 2026 · 05/11/2026 · Scelta della cartella nel contenuto testuale
 - **Richiesta:** in «Aggiungi contenuto testuale» poter scegliere la cartella.
 - **Fatto:**
