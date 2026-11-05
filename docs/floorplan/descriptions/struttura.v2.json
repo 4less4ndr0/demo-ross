@@ -1,0 +1,20 @@
+{
+  "files": {
+    "src/pages/StructureChannel.jsx": {
+      "name": "Struttura 2.0: il canale",
+      "description": "La Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve cosa è emerso. Schede Il canale · Ospiti; Proponi uno spunto e Cosa è emerso (Visto, Fatto)."
+    },
+    "src/components/ResidentSpunti.jsx": {
+      "name": "Scheda Spunti del ritratto",
+      "description": "Nel ritratto della Struttura 2.0: cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, ciò che è emerso senza spunto e il modulo per proporne uno."
+    },
+    "src/data/channel.js": {
+      "name": "Spunti e insight d'esempio",
+      "description": "Gli spunti della struttura e gli insight di ROSS d'esempio, come è stato accolto ciascuno, gli spunti più vecchi e cosa ha capito ROSS di ogni ospite. Mai cosa ha raccontato l'ospite."
+    },
+    "src/state/channelStore.js": {
+      "name": "Memoria del canale",
+      "description": "Tiene spunti inviati e insight della Struttura 2.0, condivisi tra canale e ritratto; nella demo la risposta di ROSS arriva dopo pochi secondi, anche se si cambia pagina."
+    }
+  }
+}

@@ -6,7 +6,7 @@
     },
     "src/App.jsx": {
       "name": "Mappa delle schermate",
-      "description": "Decide quale schermata mostrare per ogni indirizzo delle tre viste e rimanda i vecchi indirizzi a quelli nuovi (per esempio /famiglia/storia a Da lei)."
+      "description": "Decide quale schermata mostrare per ogni indirizzo delle viste (anche la Struttura 2.0 in /struttura-2) e rimanda i vecchi indirizzi a quelli nuovi."
     },
     "src/asset.js": {
       "name": "Percorsi di immagini e file",
@@ -18,7 +18,7 @@
     },
     "src/styles.css": {
       "name": "Aspetto di tutte le viste",
-      "description": "Colori, caratteri e spaziature di Struttura (anche spunti di ROSS, \"Con ROSS\", avvisi di modalità e «Cosa sa ROSS»), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."
+      "description": "Colori, caratteri e spaziature di Struttura e Struttura 2.0 (canale, scheda Spunti), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."
     }
   }
 }

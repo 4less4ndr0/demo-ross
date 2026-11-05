@@ -27,7 +27,7 @@
       "id": "struttura",
       "label": "Vista Struttura",
       "kind": "ui",
-      "summary": "Lo strumento per l'équipe della RSA: chiedere a ROSS, vedere come sta ogni ospite rispetto alla sua media, leggere report e panoramica. Mai il contenuto delle conversazioni."
+      "summary": "Lo strumento per l'équipe della RSA in due versioni da confrontare: la Struttura (chiedere a ROSS, ritratti, report e panoramica) e la Struttura 2.0 (il canale: la struttura propone uno spunto, ROSS restituisce cosa è emerso). Mai il contenuto delle conversazioni."
     },
     {
       "id": "struttura.chat",
@@ -74,6 +74,18 @@
         "src/components/Layout.jsx",
         "src/components/PageGuide.jsx",
         "src/pages/Settings.jsx"
+      ]
+    },
+    {
+      "id": "struttura.v2",
+      "label": "Struttura 2.0 · il canale",
+      "kind": "ui",
+      "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
+      "paths": [
+        "src/pages/StructureChannel.jsx",
+        "src/components/ResidentSpunti.jsx",
+        "src/data/channel.js",
+        "src/state/channelStore.js"
       ]
     },
     {
@@ -351,6 +363,29 @@
           "note": "Nel ritratto di Elena, tab «Cosa sa ROSS», in Per conoscerla: la copia arricchisce la sua biografia. La struttura la riceve e basta, non la approva."
         }
       ]
+    },
+    {
+      "id": "canale",
+      "title": "La struttura propone, ROSS restituisce",
+      "description": "Struttura 2.0: uno spunto per un ospite va a ROSS, che lo porta nella conversazione solo se l'ospite ci sta, e torna come racconto di com'è andata.",
+      "steps": [
+        {
+          "ref": "f:src/pages/StructureChannel.jsx",
+          "note": "Nel canale o nel ritratto (scheda Spunti) si sceglie l'ospite e si scrive lo spunto: attività, ricordo, evento o persona."
+        },
+        {
+          "ref": "f:src/state/channelStore.js",
+          "note": "Lo spunto resta in attesa del momento giusto, secondo la modalità dell'ospite; nella demo ROSS risponde dopo pochi secondi."
+        },
+        {
+          "ref": "f:src/data/channel.js",
+          "note": "Torna un insight: come è stato accolto, 1–2 frasi narrative e cosa si può fare. Mai cosa ha raccontato l'ospite."
+        },
+        {
+          "ref": "f:src/components/ResidentSpunti.jsx",
+          "note": "Nel ritratto gli spunti si dividono in piaciuti, in sospeso e non piaciuti, e ROSS dice cosa ha capito per proporre meglio."
+        }
+      ]
     }
   ],
   "tour": [
@@ -368,6 +403,11 @@
       "ref": "n:struttura.ospiti",
       "title": "Otto ospiti, otto archetipi",
       "note": "Ogni ospite rappresenta un modo diverso di vivere ROSS: la nuova arrivata, chi lo usa come uno strumento, chi lo adora troppo, il riservato… Il ritratto si adatta alla persona. Gli archetipi sono per chi presenta, mai etichette nel prodotto."
+    },
+    {
+      "ref": "n:struttura.v2",
+      "title": "Struttura 2.0: un canale, non un archivio",
+      "note": "Una seconda versione della Struttura, da confrontare con la prima: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve com'è andata. Niente dashboard, punteggi o trascrizioni."
     },
     {
       "ref": "n:tablet",

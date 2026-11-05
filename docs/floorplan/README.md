@@ -7,11 +7,11 @@ Mappa interattiva di come è fatta la demo, generata con [Floorplan](https://git
 Si apre **dentro la demo**: pillola "Vista demo" in basso a destra → **Mappa** (tasto 4), oppure l'indirizzo `/mappa`. Il file è [`public/mappa-ross.html`](../../public/mappa-ross.html): unico, offline, senza codice sorgente.
 
 Dentro trovi:
-- **la panoramica**: Guscio dell'app, Vista Struttura (con Chiedi a ROSS, Ospiti e ritratto, Report e Panoramica, Cornice), Vista Famiglia, Tablet di ROSS, Pezzi comuni, Memoria della demo, Contenuti della demo, Pubblicazione, Controlli;
+- **la panoramica**: Guscio dell'app, Vista Struttura (con Chiedi a ROSS, Ospiti e ritratto, Report e Panoramica, Cornice, Struttura 2.0 · il canale), Vista Famiglia, Tablet di ROSS, Pezzi comuni, Memoria della demo, Contenuti della demo, Pubblicazione, Controlli;
 - **Start here**: un giro di un minuto per chi arriva ora;
-- **Flows**: sette percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge", "Anna manda, ROSS riordina, Elena ascolta", "Un promemoria, all'ora giusta", "La struttura chiede a ROSS di proporre un'attività", "Anna condivide anche con la struttura");
-- **Screens**: le 16 schermate dell'app e cosa c'è dietro a ciascuna;
-- **Recent work**: le ultime quattro modifiche, in cima "Ospiti come archetipi e ritratto rivisto" (spunti di ROSS, tab "Con ROSS", inviti via ROSS solo in modalità Attiva, allegati per provenienza, "Anche alla struttura" nella Famiglia).
+- **Flows**: otto percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge", "Anna manda, ROSS riordina, Elena ascolta", "Un promemoria, all'ora giusta", "La struttura chiede a ROSS di proporre un'attività", "Anna condivide anche con la struttura", "La struttura propone, ROSS restituisce");
+- **Screens**: le 19 schermate dell'app e cosa c'è dietro a ciascuna;
+- **Recent work**: le ultime quattro modifiche, in cima "Struttura 2.0: il canale con ROSS" (Proponi uno spunto, Cosa è emerso, Ospiti e ritratto con la scheda Spunti).
 
 Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codice, niente server esposti.
 
@@ -26,7 +26,7 @@ Il controllo automatico (Health) non ha trovato problemi: niente chiavi nel codi
 
 ## Aggiornarla
 
-**Ultimo aggiornamento: 4 novembre 2026 (dopo gli ospiti come archetipi), senza plugin**, con lo script [`aggiorna-mappa.py`](aggiorna-mappa.py): `python3 docs/floorplan/aggiorna-mappa.py .` dalla radice del progetto. Rilegge il codice (righe, hash, simboli e collegamenti di import di ogni file, compresi gli import dinamici) e aggiorna `window.FLOORPLAN` dentro `public/mappa-ross.html` e i tre sorgenti di questa cartella. Descrizioni, percorsi, giro e lavori recenti sono scritti a mano in cima allo script: per un aggiornamento futuro si cambiano lì. Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
+**Ultimo aggiornamento: 5 novembre 2026 (dopo la Struttura 2.0), senza plugin**, con lo script [`aggiorna-mappa.py`](aggiorna-mappa.py): `python3 docs/floorplan/aggiorna-mappa.py .` dalla radice del progetto. Rilegge il codice (righe, hash, simboli e collegamenti di import di ogni file, compresi gli import dinamici) e aggiorna `window.FLOORPLAN` dentro `public/mappa-ross.html` e i tre sorgenti di questa cartella. Descrizioni, percorsi, giro e lavori recenti sono scritti a mano in cima allo script: per un aggiornamento futuro si cambiano lì. I file nuovi non entrano da soli: si aggiungono con il loro gruppo, come fa la sezione "Struttura 2.0" dello script (nodo `struttura.v2`, file, schermate e `descriptions/struttura.v2.json`). Il controllo automatico (Health) non è stato rifatto: va rigenerato con il plugin quando possibile.
 
 
 Floorplan è un plugin di Claude Code (e Codex). Per rigenerare la mappa dopo nuove modifiche:

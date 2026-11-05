@@ -182,7 +182,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 3. Mappa del codice
 
-> **Mappa interattiva:** vista **Mappa** della demo (pillola "Vista demo" → Mappa, tasto 4, indirizzo `/mappa`; file `public/mappa-ross.html`): parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
+> **Mappa interattiva** (aggiornata al 5/11, con la Struttura 2.0): vista **Mappa** della demo (pillola "Vista demo" → Mappa, tasto 4, indirizzo `/mappa`; file `public/mappa-ross.html`): parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
 
 | File | Ruolo |
 |---|---|
@@ -270,7 +270,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
   - spunti e insight sono ora in uno stato condiviso (`channelStore.js`): uno spunto inviato dal ritratto compare anche nel canale, e viceversa. «Proponi uno spunto» del canale mostra tutti e otto gli ospiti;
   - nuova accoglienza "Non è piaciuto" accanto a quelle che c'erano; 9 spunti più vecchi (`spuntoHistory`) per Elena, Ada, Antonio e Bruno.
 - **Da sapere:** le schede Come sta, Come avvicinarsi, Con ROSS e Cosa sa ROSS sono quelle della Struttura, con grafici e segnali "da osservare". Nella 2.0 sono state riprese su richiesta, anche se il canale li esclude.
-- **Non fatto:** la Mappa (`public/mappa-ross.html`) non è rigenerata. Lo script aggiorna solo i file che conosce già: i quattro file nuovi della Struttura 2.0 vanno aggiunti alla mappa.
+- **Mappa rigenerata** con `docs/floorplan/aggiorna-mappa.py`, che ora aggiunge anche i file nuovi. Ci sono il gruppo "Struttura 2.0 · il canale" con i suoi 4 file, 3 schermate `/struttura-2…`, il percorso "La struttura propone, ROSS restituisce", una tappa nel giro "Start here" e la voce in cima a "Recent work". Lo script collega anche le pagine che App.jsx carica al bisogno.
 
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0: il canale con ROSS
 - **Richiesta:** cambiare punto di vista. La Struttura oggi è un archivio (inserisce, consulta, interroga): va provata una logica a **canale**. La struttura manda a ROSS uno spunto, ROSS lo porta all'ospite solo se ci sta, e restituisce di sua iniziativa ciò che è emerso. Per non rompere nulla, è una **vista nuova** e la Struttura attuale resta com'è.

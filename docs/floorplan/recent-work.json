@@ -1,6 +1,48 @@
 {
-  "updatedAt": "2026-11-04T17:52:19.000Z",
+  "updatedAt": "2026-11-05T11:07:59.000Z",
   "tasks": [
+    {
+      "title": "Struttura 2.0: il canale con ROSS",
+      "request": "Cambiare punto di vista: la struttura non consulta né interroga ROSS, gli propone spunti e riceve insight. In una vista nuova, senza rompere la Struttura attuale; poi Ospiti e ritratto, con una scheda per gli spunti piaciuti e non piaciuti",
+      "summary": "Nuova vista /struttura-2 (tasto 5): Proponi uno spunto e Cosa è emerso, con Visto e Fatto. Gli insight dicono come è stato accolto lo spunto, mai cosa ha raccontato l'ospite. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
+      "items": [
+        {
+          "ref": "f:src/pages/StructureChannel.jsx",
+          "change": "changed",
+          "note": "Nuovo: schede Il canale · Ospiti, Proponi uno spunto, Cosa è emerso."
+        },
+        {
+          "ref": "f:src/components/ResidentSpunti.jsx",
+          "change": "changed",
+          "note": "Nuovo: la scheda Spunti del ritratto."
+        },
+        {
+          "ref": "f:src/data/channel.js",
+          "change": "changed",
+          "note": "Nuovo: spunti, insight, accoglienza e cosa ha capito ROSS."
+        },
+        {
+          "ref": "f:src/state/channelStore.js",
+          "change": "changed",
+          "note": "Nuovo: stato condiviso tra canale e ritratto, risposta simulata di ROSS."
+        },
+        {
+          "ref": "f:src/pages/ResidentProfile.jsx",
+          "change": "changed",
+          "note": "Nella Struttura 2.0: scheda Spunti, niente chat né report."
+        },
+        {
+          "ref": "f:src/pages/Residents.jsx",
+          "change": "changed",
+          "note": "I link seguono la Struttura in cui si è."
+        },
+        {
+          "ref": "f:src/components/PerspectiveSwitcher.jsx",
+          "change": "changed",
+          "note": "Voce Struttura 2.0 (tasto 5) e nota in \"Cosa è reale e cosa è simulato\"."
+        }
+      ]
+    },
     {
       "title": "Ospiti come archetipi e ritratto rivisto",
       "request": "Rivedere le schede degli ospiti in funzione di cos'è ROSS oggi: ogni ospite un archetipo; inviti via ROSS solo in modalità Attiva; allegati per ogni ospite; condividere dalla Famiglia anche con la struttura",
@@ -89,33 +131,6 @@
           "ref": "f:src/styles.css",
           "change": "changed",
           "note": "Stile dell'elenco dei promemoria."
-        }
-      ]
-    },
-    {
-      "title": "Tablet di Elena: una cosa alla volta",
-      "request": "Migliorare il tablet senza cambiare la home: promemoria, giochi e memoria controllabile",
-      "summary": "Sopra la home si aprono a tutto schermo le schede \"una cosa alla volta\": novità da Anna, promemoria semplici la sera, giochi senza punteggi e \"Cosa ricordo di te\", in cui Elena conferma, corregge o fa dimenticare.",
-      "items": [
-        {
-          "ref": "f:src/pages/RossExperience.jsx",
-          "change": "changed",
-          "note": "La scheda RossStage, i giochi e \"Cosa ricordo di te\"."
-        },
-        {
-          "ref": "f:src/data/familyMessages.js",
-          "change": "changed",
-          "note": "Promemoria semplici: ROSS non riconosce le medicine."
-        },
-        {
-          "ref": "f:src/state/familyNews.js",
-          "change": "changed",
-          "note": "La visita guidata apre il promemoria della sera."
-        },
-        {
-          "ref": "f:src/components/GuidedTour.jsx",
-          "change": "changed",
-          "note": "Nuovo passo \"Il promemoria, all'ora giusta\"."
         }
       ]
     }

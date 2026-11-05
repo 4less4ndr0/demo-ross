@@ -6,11 +6,11 @@
     },
     "src/pages/ResidentProfile.jsx": {
       "name": "Ritratto dell'ospite",
-      "description": "Il ritratto si adatta alla persona: Come sta (risorse, racconto, \"Spunti di ROSS\" per invogliarla alla vita della residenza), Come avvicinarsi (con le attività da far proporre a ROSS, solo in modalità Attiva), Con ROSS (come lo usa, modalità, inviti chiesti) e «Cosa sa ROSS»: i documenti di struttura e famiglia raggruppati per ciò che ROSS ne fa (Per conoscerla · La sua giornata · Per stare bene), compresi i promemoria per le medicine."
+      "description": "Il ritratto si adatta alla persona: Come sta, Come avvicinarsi, Con ROSS e «Cosa sa ROSS» (i documenti di struttura e famiglia per ciò che ROSS ne fa). Nella Struttura 2.0 ha in più la scheda Spunti e niente chat né report."
     },
     "src/pages/Residents.jsx": {
       "name": "Lista degli ospiti",
-      "description": "Mostra gli ospiti in ordine alfabetico, con foto, chi sono e come avvicinarli."
+      "description": "Mostra gli ospiti in ordine alfabetico, con foto, modalità e ultima conversazione con ROSS. È la stessa nella Struttura e nella Struttura 2.0."
     }
   }
 }
