@@ -14,7 +14,7 @@ arch = json.load(open("docs/floorplan/architecture.json", encoding="utf-8"))
 
 # --- Struttura 2.0: nuovo gruppo e nuovi file (si aggiungono una volta sola) ---
 V2 = "struttura.v2"
-v2_files = ["src/pages/StructureChannel.jsx", "src/pages/StructureRequests.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx", "src/components/PassionNetwork.jsx", "src/data/channel.js", "src/data/interestGraph.js", "src/data/moments.js", "src/data/demoClock.js", "src/state/channelStore.js", "src/components/QuickChat.jsx", "src/data/quickChat.js"]
+v2_files = ["src/pages/StructureChannel.jsx", "src/pages/StructureRequests.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx", "src/components/PassionNetwork.jsx", "src/data/channel.js", "src/data/interestGraph.js", "src/data/moments.js", "src/data/demoClock.js", "src/state/channelStore.js", "src/components/QuickChat.jsx", "src/data/quickChat.js", "src/components/ResidenceMap.jsx", "src/data/residence.js"]
 v2_node = {"id": V2, "parent": "struttura", "label": "Struttura 2.0 · il canale", "kind": "ui",
   "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
   "details": "", "tags": [], "paths": v2_files, "packages": [], "hosts": []}
@@ -42,6 +42,8 @@ for coll in (G["nodes"], arch["nodes"]):
 desc = {
   "src/pages/RossExperience.jsx": ("Schermate del tablet", "La home di Elena con le schede \"una cosa alla volta\" e \"Parla con ROSS\" con i sottotitoli. Nella conversazione Elena può chiedere a ROSS di far sapere al personale una piccola cosa pratica (la lampada), con conferma; quando è sistemata ROSS glielo dice. Salute e urgenze: solo il campanello."),
   "src/components/DocumentDialogs.jsx": ("Cartelle e aggiunta di documenti", "Le quattro cartelle di «Cosa sa ROSS» e le finestre per aggiungere un documento: un file con anteprima, titolo e cartella (dalla chat anche per quale ospite) o un testo incollato che diventa un .txt."),
+  "src/components/ResidenceMap.jsx": ("La residenza, adesso", "La pianta della Residenza Aurora vista dall'alto, un piano alla volta, in apertura del canale: indice dei piani, alloggi e spazi con lo stato del loro ROSS (attivo, acceso, in pausa, da sistemare) e il dettaglio di ciò che si tocca. Mai cosa si dice."),
+  "src/data/residence.js": ("I piani e i ROSS della residenza", "La geometria dei tre piani, lo stato dei dispositivi (mai delle persone), le etichette degli stati e il piano da aprire all'inizio."),
   "src/components/QuickChat.jsx": ("ROSS, al volo", "La bolla in basso a destra della Struttura 2.0 e la sua piccola chat: domande veloci su ciò che ROSS ha già raccontato, bozze di spunti e comunicazioni che partono solo dopo «Mando»."),
   "src/data/quickChat.js": ("Le risposte di ROSS, al volo", "Il motore della piccola chat: riconosce le domande con parole chiave e i nomi degli ospiti, riassume dai momenti, prepara le bozze e rifiuta ciò che è fuori perimetro (contenuto, classifiche, salute, gestione)."),
   "src/pages/StructureRequests.jsx": ("Le richieste, in due direzioni", "La scheda Richieste della Struttura 2.0: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti, che ROSS dice a ciascuno."),

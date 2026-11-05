@@ -1,4 +1,4 @@
-// La Residenza Aurora vista dall'alto (Struttura 2.0, «Il canale»). Dati dimostrativi.
+// La Residenza Aurora vista dall'alto, un piano alla volta (Struttura 2.0, «Il canale»). Dati dimostrativi.
 // Si mostra lo stato dei ROSS e degli spazi, non lo stato delle persone: dispositivo acceso, attivo,
 // in pausa perché l'ospite ha scelto il silenzio, da sistemare. Mai cosa si dice, mai da quanto.
 // 12 alloggi, 8 con ROSS: ROSS si sceglie, non si impone.
@@ -49,14 +49,31 @@ export const stateLabel = {
   pausa: "In pausa: silenzio scelto dall'ospite",
   da_sistemare: "Da sistemare",
 };
+// Le stesse parole, per la legenda (più corte).
+export const legendLabel = {
+  attivo: "Attivo adesso",
+  acceso: "Acceso",
+  pausa: "In pausa, silenzio scelto",
+  da_sistemare: "Da sistemare",
+};
+// L'ordine con cui gli stati compaiono nell'indice dei piani e nella legenda.
+export const stateOrder = ["attivo", "acceso", "pausa", "da_sistemare"];
 
 // Lo stato di un ROSS in un alloggio, tenendo conto della modalità attuale dell'ospite.
-export function roomState(room, residents) {
+// `fixed`: gli alloggi che la struttura ha segnato «Fatto, è ricollegato».
+export function roomState(room, residents, fixed = []) {
   if (room.kind !== "alloggio") return room.ross || null;
   if (!room.residentId) return null;
   const mode = residents.find((r) => r.id === room.residentId)?.mode;
   const s = deviceState[room.residentId];
-  if (s === "da_sistemare") return s;
+  if (s === "da_sistemare" && !fixed.includes(room.id)) return s;
   if (mode === "Silenziosa") return "pausa";
-  return s || "acceso";
+  return s && s !== "da_sistemare" ? s : "acceso";
+}
+
+// Il piano da aprire all'inizio: quello con un ROSS da sistemare, se c'è; altrimenti il primo con alloggi.
+export function startFloor(rooms) {
+  const fix = rooms.find((r) => r.state === "da_sistemare");
+  if (fix) return fix.floor.id;
+  return floorsPlan.find((f) => f.rooms.some((r) => r.kind === "alloggio"))?.id || floorsPlan[0].id;
 }
