@@ -80,6 +80,11 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
   - **Non è un alert né un sistema di ticket:** parte solo da una richiesta esplicita e confermata, mai da una deduzione di ROSS. Niente priorità, assegnazioni, tempi, numeri o storico per stanza.
   - **Salute e urgenze non diventano mai una richiesta:** ROSS rimanda al campanello («Per questo è meglio chiamare subito il personale…») e dice di non essere un sistema di emergenza.
   - **Dati:** origine `richiesta` nei momenti (`src/data/moments.js`, `channelStore.js`).
+- **«ROSS, al volo»** (decisione del 05/11/2026; `src/components/QuickChat.jsx`, motore in `src/data/quickChat.js`): bolla in basso a destra su tutte le pagine della 2.0, sopra la pillola «Vista demo» senza coprirla; pannello piccolo su desktop, Sheet a tutto schermo su telefono. **Non serve a interrogare ROSS sugli ospiti**: fa solo tre cose.
+  - **Riassume** ciò che la 2.0 mostra già (dai filtri di `channelStore`), in al massimo 3 righe, con il link alla schermata giusta.
+  - **Agisce con conferma:** spunti e comunicazioni partono solo dopo «Mando».
+  - **Spiega ROSS.**
+  - Rifiuta con un testo fisso e un'alternativa il contenuto delle conversazioni, le classifiche, la salute e le urgenze, la gestione. Non toccare la chat della Struttura attuale né importarne gli intenti.
 - **La regola d'oro vale anche qui** (decisione del 05/11/2026): l'insight racconta **come è stato accolto lo spunto** (Accolto volentieri · Ci sta pensando · Non era il momento, campo `reception`) e cosa può aiutare, mai cosa ha raccontato l'ospite. Gli insight spontanei nominano un interesse per categoria, mai l'episodio, le persone o i ricordi raccontati. Finché è così, non si condivide nulla di sensibile.
 - Vincoli: niente dashboard, grafici, KPI, aggregati, punteggi o classifiche; niente alert, parametri vitali, farmaci o dati sanitari; niente trascrizioni (ROSS traduce, non trasmette); niente schede anagrafiche. Tono da collega che segnala qualcosa di bello o utile, non da sorveglianza. L'ospite è al centro ed è libero di non seguire lo spunto.
 

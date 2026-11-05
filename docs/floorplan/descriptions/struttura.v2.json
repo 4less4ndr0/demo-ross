@@ -39,6 +39,14 @@
     "src/pages/StructureRequests.jsx": {
       "name": "Le richieste, in due direzioni",
       "description": "La scheda Richieste della Struttura 2.0: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti, che ROSS dice a ciascuno."
+    },
+    "src/components/QuickChat.jsx": {
+      "name": "ROSS, al volo",
+      "description": "La bolla in basso a destra della Struttura 2.0 e la sua piccola chat: domande veloci su ciò che ROSS ha già raccontato, bozze di spunti e comunicazioni che partono solo dopo «Mando»."
+    },
+    "src/data/quickChat.js": {
+      "name": "Le risposte di ROSS, al volo",
+      "description": "Il motore della piccola chat: riconosce le domande con parole chiave e i nomi degli ospiti, riassume dai momenti, prepara le bozze e rifiuta ciò che è fuori perimetro (contenuto, classifiche, salute, gestione)."
     }
   }
 }
