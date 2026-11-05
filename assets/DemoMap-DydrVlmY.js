@@ -1,0 +1,1 @@
+import{r as a,j as e}from"./index-D6kwkiku.js";function o(){return a.useEffect(()=>{const t=document.title;return document.title="Mappa della demo · ROSS",()=>{document.title=t}},[]),e.jsx("main",{className:"demo-map",children:e.jsx("iframe",{src:"/demo-ross/mappa-ross.html",title:"Mappa della demo ROSS: parti, schermate e collegamenti"})})}export{o as DemoMap};
