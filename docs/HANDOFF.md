@@ -259,6 +259,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · «Con ROSS» diventa il feed dei momenti da ricordare
+- **Richiesta:** provare «Con ROSS» come feed degli highlights, cioè le cose più interessanti che emergono, con le date e ben formattate.
+- **Fatto (ritratto della 2.0):**
+  - in alto una card compatta: come vive ROSS, cosa fa volentieri (a parole), la modalità, «Proponi uno spunto»;
+  - sotto, **«Cosa è emerso con ROSS, giorno per giorno»**: una linea del tempo, i più recenti in alto;
+  - i giorni sono Oggi e Ieri con la data, poi il giorno della settimana, poi «La settimana scorsa» e «N settimane fa» con la data. Ogni momento ha l'ora, un'icona e un colore: verde per ciò che va bene, corallo per ciò che è da guardare di persona, neutro per inviti e spunti. Ha anche il tipo (Di sua iniziativa, Fuori dalla stanza, Con la famiglia, Interesse emerso, Un invito, Una sua scelta, Dal tuo spunto…), un titolo in serif e una riga;
+  - **fonti:**
+    - 2–4 momenti scritti per ogni ospite (`src/data/highlights.js`);
+    - gli insight del canale, con com'è stato accolto lo spunto, «Nuovo» e «Cosa puoi fare»;
+    - gli spunti passati;
+  - le etichette del canale («Oggi, 11:20», «Venerdì», «2 settimane fa») si convertono in giorni con `dayAndTime` (giorno della demo: lunedì 21 settembre). L'insight sull'orto di Elena ora è «Venerdì», non «Lunedì».
+- **Privacy:** solo categorie, scelte e come è andata. Per la famiglia si scrive «alla figlia», non il nome.
+
 ### Novembre 2026 · 05/11/2026 · La rete delle passioni, nel canale
 - **Richiesta:** fare la rete delle passioni nel canale (prima idea in coda della voce precedente).
 - **Fatto:** sotto «Proponi uno spunto» e «Cosa è emerso», una card **«Chi potrebbe fare qualcosa insieme»**:

@@ -18,7 +18,7 @@
     },
     "src/components/PortraitV2.jsx": {
       "name": "Come sta e Con ROSS, a racconto",
-      "description": "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto, come vive ROSS. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."
+      "description": "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto; e Con ROSS è il feed dei momenti da ricordare, giorno per giorno. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."
     },
     "src/data/interestGraph.js": {
       "name": "Mappa dei legami e rete delle passioni",
@@ -27,6 +27,10 @@
     "src/components/PassionNetwork.jsx": {
       "name": "La rete delle passioni",
       "description": "Nel canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."
+    },
+    "src/data/highlights.js": {
+      "name": "I momenti da ricordare",
+      "description": "Per ogni ospite, i momenti più interessanti emersi con ROSS: iniziative, uscite raccontate, scelte, interessi, cose da guardare di persona. Con giorno e ora, per categoria, mai il contenuto delle conversazioni."
     }
   }
 }

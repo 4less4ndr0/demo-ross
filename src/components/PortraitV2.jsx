@@ -1,8 +1,11 @@
 import { useId, useState } from "react";
-import { Heart, Eye, HandHelping, Leaf, Send, Sparkles } from "lucide-react";
+import { Heart, Eye, HandHelping, Leaf, MessageCircle, Send, Sparkles } from "lucide-react";
 import { needsFor, presenceFor, rossTips, signalsFor, usageStyle } from "../data/careInsights";
 import { narrativeFor } from "../data/reportNarrative";
 import { graphKind, graphStatus, interestGraph } from "../data/interestGraph";
+import { dayAndTime, dayLabel, highlightKinds, rossHighlights } from "../data/highlights";
+import { receptions, spuntoHistory } from "../data/channel";
+import { useChannel } from "../state/channelStore";
 import { residentPhoto } from "./Common";
 import { Button } from "./ui";
 
@@ -57,27 +60,48 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
   </div>;
 }
 
+// «Con ROSS» come feed: i momenti più interessanti emersi con ROSS, giorno per giorno, i più recenti in alto.
+// Uniscono i momenti di ogni ospite (highlights.js), ciò che ROSS ha restituito nel canale e gli spunti passati.
+const toneIcon = { good: Sparkles, neutral: MessageCircle, watch: Eye };
 export function WithRossV2({ resident, onPropose }) {
   const name = resident.name.split(" ")[0];
   const usage = usageStyle[resident.id];
-  const [said, meaning] = modeMeaning[resident.mode] || modeMeaning.Reattiva;
-  const kinds = usage ? [...usage.mix].sort((a, b) => b[1] - a[1]).map(([label]) => label.toLowerCase()) : [];
+  const [said] = modeMeaning[resident.mode] || modeMeaning.Reattiva;
+  const channel = useChannel();
+  const kinds = usage ? [...usage.mix].sort((x, y) => y[1] - x[1]).map(([label]) => label.toLowerCase()) : [];
   const enjoys = kinds.length ? `Soprattutto ${list(kinds.slice(0, 2))}${kinds.length > 2 ? `; a volte ${list(kinds.slice(2))}` : ""}.` : "";
 
-  return <div className="v2-portrait">
-    {usage ? <article className="v2-story surface">
-      <span className="eyebrow">COME VIVE ROSS</span>
-      <h2>{usage.title}</h2>
-      <p>{usage.text}</p>
-      {enjoys && <p className="v2-enjoys"><Sparkles size={15} /><span><b>Cosa fa volentieri con ROSS.</b> {enjoys}</span></p>}
-      {usage.tool && <p className="v2-enjoys"><Leaf size={15} /><span>Per {name} ROSS è uno strumento più che un compagno: va bene così.</span></p>}
-    </article> : <article className="v2-story surface"><span className="eyebrow">COME VIVE ROSS</span><h2>ROSS e {name} si stanno conoscendo</h2><p>Tra qualche settimana ROSS saprà raccontare come {name} lo vive.</p></article>}
+  const fromChannel = channel.insights.filter((i) => i.residentId === resident.id).map((i) => ({ id: i.id, ...dayAndTime(i.when), kind: i.spunto ? "spunto" : "spontaneo", reception: i.reception, title: i.spunto ? `«${i.spunto.text}»` : i.story, text: i.spunto ? i.story : "", suggestion: i.suggestion, fresh: i.state === "nuovo" }));
+  const fromHistory = spuntoHistory.filter((h) => h.residentId === resident.id).map((h) => ({ id: h.id, ...dayAndTime(h.when), kind: "spunto", reception: h.reception, title: `«${h.text}»`, text: h.story }));
+  const own = (rossHighlights[resident.id] || []).map((h, i) => ({ id: `hl-${resident.id}-${i}`, ...h }));
+  const items = [...own, ...fromChannel, ...fromHistory].sort((x, y) => x.day - y.day || (y.time || "").localeCompare(x.time || ""));
+  const days = items.reduce((acc, it) => { const key = it.day; (acc[key] = acc[key] || []).push(it); return acc; }, {});
 
-    <section className="v2-mode surface">
-      <span className="eyebrow">MODALITÀ</span>
-      <h3>{resident.mode} · {said}</h3>
-      <p>{meaning} L'ha scelta {name}, e può cambiarla quando vuole.</p>
-      <Button variant="outline" onClick={onPropose}><Send size={15} /> Proponi uno spunto</Button>
+  return <div className="v2-portrait">
+    <article className="v2-story v2-story-compact surface">
+      <div><span className="eyebrow">COME VIVE ROSS</span><h2>{usage ? usage.title : `ROSS e ${name} si stanno conoscendo`}</h2>{usage && <p>{usage.text}</p>}</div>
+      <aside>
+        {enjoys && <p><b>Cosa fa volentieri</b>{enjoys}</p>}
+        <p><b>Modalità</b>{resident.mode} · {said}, scelta da {name}</p>
+        <Button variant="outline" onClick={onPropose}><Send size={15} /> Proponi uno spunto</Button>
+      </aside>
+    </article>
+
+    <section className="v2-feed">
+      <header><span className="eyebrow">I MOMENTI DA RICORDARE</span><h2>Cosa è emerso con ROSS, giorno per giorno</h2><p>Le cose più interessanti, non tutte le conversazioni: iniziative, uscite raccontate, scelte, interessi e ciò che è da guardare di persona.</p></header>
+      {Object.keys(days).sort((x, y) => x - y).map((day) => { const [label, date] = dayLabel(Number(day)); return <div key={day} className="v2-feed-day">
+        <h3>{label}{date && <small>{date}</small>}</h3>
+        <ol>{days[day].map((it) => { const k = highlightKinds[it.kind]; const Icon = toneIcon[k.tone]; return <li key={it.id} className={`v2-feed-item is-${k.tone}`}>
+          <time>{it.time && it.time !== "adesso" ? it.time : it.time === "adesso" ? "Adesso" : ""}</time>
+          <span className="v2-feed-dot"><Icon size={14} /></span>
+          <div className="v2-feed-card">
+            <div className="v2-feed-meta"><span>{k.label}</span>{it.reception && <em className={`s2-reception is-${it.reception}`}>{receptions[it.reception]}</em>}{it.fresh && <em className="s2-new">Nuovo</em>}</div>
+            <p className="v2-feed-title">{it.title}</p>
+            {it.text && <p className="v2-feed-text">{it.text}</p>}
+            {it.suggestion && <p className="v2-feed-suggestion"><b>Cosa puoi fare.</b> {it.suggestion}</p>}
+          </div>
+        </li>; })}</ol>
+      </div>; })}
     </section>
 
     <p className="v2-footnote"><Leaf size={15} />Non contiamo i minuti: più tempo con ROSS non è un buon segno se non cresce anche il tempo con le persone. Il contenuto delle conversazioni resta tra ROSS e {name}.</p>

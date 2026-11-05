@@ -112,7 +112,7 @@ export const initialInsights = [
   {
     id: "ins-elena-piante",
     residentId: "elena",
-    when: "Lunedì, 15:30",
+    when: "Venerdì, 15:30",
     spunto: { type: "ricordo", text: "Il suo orto a Treviso, con i pomodori e il basilico." },
     reception: "volentieri",
     story: "Elena ha ripreso con piacere questo ricordo e mi ha chiesto se in residenza c'è qualche pianta di cui potersi prendere cura.",
