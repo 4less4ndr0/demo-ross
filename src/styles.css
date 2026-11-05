@@ -2214,3 +2214,13 @@ body.has-quickchat [data-sonner-toaster]{--offset-bottom:140px!important;--mobil
 .ross-app .ross-eyes.ross-chat-eyes{width:260px}
 @media(max-width:700px){.ross-app .ross-talk-arc{height:92px;width:164px;border-radius:82px 82px 0 0;padding-bottom:22px;gap:2px;font-size:16px}.ross-app .ross-talk-arc svg{width:24px;height:24px}.ross-app .ross-eyes.ross-chat-eyes{width:200px}}
 .ross-dialog header h2,.ross-dialog .ross-help h3{font-family:var(--ross-display)!important;font-weight:600}
+/* Le cose importanti di oggi: una cornice propria, con quattro card uguali in 2 × 2 */
+.ross-m-today{display:grid;gap:18px;padding:26px;border:1px solid var(--ross-line);border-radius:28px;background:#f1ece3}
+.ross-m-today-title{margin:0 4px;font:600 26px var(--ross-display)}
+.ross-m-today-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.ross-m-today-grid>.ross-m-feature{min-height:290px}
+.ross-m-today-grid>.ross-m-feature>.ross-m-pill,.ross-m-today-grid>.ross-m-feature>.ross-m-actions{margin-top:auto}
+.ross-m-feature.is-news{background:linear-gradient(160deg,#fff4e8,#fff 60%);border-color:#f6d3b5}
+@media(max-width:700px){.ross-m-today{padding:16px;border-radius:24px}.ross-m-today-grid{grid-template-columns:1fr}.ross-m-today-grid>.ross-m-feature{min-height:0}}
+.ross-m-today-grid>.ross-m-feature{margin:0}
+.ross-m-today-grid .ross-m-feature .ross-m-body{margin:0;font-size:19px;line-height:1.55;color:var(--ross-text)}

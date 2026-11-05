@@ -280,6 +280,14 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Tablet: «Le cose importanti di oggi» in una cornice
+- **Richiesta:** le novità da Anna, «ROSS ti dice», il gioco del giorno e i ricordi sono le quattro cose importanti della giornata. Vanno in una cornice propria, con quattro card uguali, come quelle del gioco e dei ricordi.
+- **Fatto:**
+  - nuova sezione `ross-m-today` con il titolo «Le cose importanti di oggi» e una griglia 2 × 2 di card uguali: icona, titolo, sottotitolo, testo e azioni in fondo. Su telefono le card vanno una sotto l'altra;
+  - «Da Anna» non sparisce più con «Più tardi»: resta con «Va bene: te le racconto quando vuoi» e «Raccontamele adesso», così la griglia non ha buchi.
+- **Verificato** a 1280 e 390px: le quattro card sono alte uguali e non ci sono errori in console.
+- **Da sapere:** non è ancora pubblicato. È nel branch locale `claude/tablet-come-maria`, insieme al resto del tablet in stile Maria, e la PR 60 è stata chiusa su richiesta.
+
 ### Novembre 2026 · 05/11/2026 · Il tablet di Elena con l'anatomia e l'estetica di «Maria»
 - **Richiesta:** prendere dal progetto Lovable «ross» la schermata di Maria (`/maria`), studiarne UI e UX (organizzazione, gioco del giorno, ricordi, album, promemoria, estetica) e portarla in tutta l'esperienza dell'ospite nella demo, conversazione compresa. Battito, passi e sonno non servono.
 - **Studio di Maria** (dal codice sorgente: l'anteprima pubblicata non si apre da questo ambiente):

@@ -262,30 +262,33 @@ export function RossHome() {
           <small className="ross-ai-note">Sono ROSS, un compagno digitale basato sull'intelligenza artificiale: non sono una persona. Quello che ci diciamo resta qui.</small>
         </section>
 
-        {newsItems.length > 0 && !newsLater && outing?.status !== "out" && <section className="ross-news ross-m-card ross-m-news" aria-live="polite">
-          <span className="ross-m-icon is-peach"><Heart /></span>
-          <div><small>Da Anna, adesso</small><h2>Anna ti ha mandato {count(newsItems.length)}. Vuoi che {newsItems.length === 1 ? "te la racconti" : "te le racconti"}?</h2><p>Puoi anche dirmelo a voce: «Sì, raccontamele».{reminders.length > 0 ? " C'è anche un promemoria: te lo dico stasera." : ""}</p></div>
-          <div className="ross-m-actions"><button type="button" className="ross-m-pill" onClick={() => openNews()}>Sì, raccontamele</button><button type="button" className="ross-m-pill is-quiet" onClick={() => setNewsLater(true)}>Più tardi</button></div>
-        </section>}
-
-        {announcements.length > 0 && <section className="ross-tells" aria-label="ROSS ti dice">{announcements.map((m) => <article key={m.id} className="ross-m-card ross-m-tell">
-          <span className="ross-m-icon is-sand"><Megaphone /></span>
-          <div><small>ROSS ti dice · dalla residenza</small><h3>{m.frase}</h3></div>
-          <button type="button" className="ross-m-pill is-quiet" onClick={() => notify("Chiedimelo pure: ti rispondo io, o chiedo al personale", "neutral")}>Ho una domanda</button>
-        </article>)}</section>}
-
-        {/* Le due cose principali, grandi: un gioco per stare insieme e i ricordi. */}
-        <section className="ross-m-main-grid" aria-label="Per te, oggi">
-          <article className="ross-m-card ross-m-feature">
-            <header><span className="ross-m-icon is-peach"><Puzzle /></span><div><h2>Il gioco del giorno</h2><p>{gameOfDay.title}</p></div></header>
-            <p className="ross-m-body">Ti dico l'inizio di una canzone di una volta e tu mi dici chi la cantava. Senza fretta: non ci sono punteggi.</p>
-            <button type="button" className="ross-m-pill" onClick={() => setStage({ kind: "game", id: "canzone" })}>Giochiamo</button>
-          </article>
-          <article className="ross-m-card ross-m-feature">
-            <header><span className="ross-m-icon is-amber"><BookOpen /></span><div><h2>I tuoi ricordi</h2><p>Parliamo insieme</p></div></header>
-            <p className="ross-m-body">{sharedPhoto ? `Raccontami del viaggio in Sicilia che ami tanto. Anna ti ha mandato una foto: «${sharedPhoto.title}».` : "Raccontami del viaggio in Sicilia che ami tanto. Ho anche la cartolina di Cefalù."}</p>
-            <button type="button" className="ross-m-pill" onClick={() => navigate("/ross/conversazione")}>Raccontami</button>
-          </article>
+        {/* Le cose importanti di oggi: una cornice sola, quattro card uguali (da Anna, dalla residenza, il gioco, i ricordi). */}
+        <section className="ross-m-today" aria-labelledby="ross-today-title">
+          <h2 id="ross-today-title" className="ross-m-today-title">Le cose importanti di oggi</h2>
+          <div className="ross-m-today-grid">
+            {newsItems.length > 0 && outing?.status !== "out" && <article className={`ross-news ross-m-card ross-m-feature${newsLater ? "" : " is-news"}`} aria-live="polite">
+              <header><span className="ross-m-icon is-peach"><Heart /></span><div><h2>Da Anna</h2><p>Ti ha mandato {count(newsItems.length)}</p></div></header>
+              {newsLater
+                ? <><p className="ross-m-body">Va bene: {newsItems.length === 1 ? "te la racconto" : "te le racconto"} quando vuoi.</p><button type="button" className="ross-m-pill is-quiet" onClick={() => { setNewsLater(false); openNews(); }}>Raccontamele adesso</button></>
+                : <><p className="ross-m-body">Vuoi che {newsItems.length === 1 ? "te la racconti" : "te le racconti"}? Puoi anche dirmelo a voce: «Sì, raccontamele».{reminders.length > 0 ? " C'è anche un promemoria: te lo dico stasera." : ""}</p>
+                  <div className="ross-m-actions"><button type="button" className="ross-m-pill" onClick={() => openNews()}>Sì, raccontamele</button><button type="button" className="ross-m-pill is-quiet" onClick={() => setNewsLater(true)}>Più tardi</button></div></>}
+            </article>}
+            {announcements.map((m) => <article key={m.id} className="ross-tells ross-m-card ross-m-feature" aria-label="ROSS ti dice">
+              <header><span className="ross-m-icon is-sand"><Megaphone /></span><div><h2>ROSS ti dice</h2><p>Dalla residenza</p></div></header>
+              <p className="ross-m-body">{m.frase}</p>
+              <button type="button" className="ross-m-pill is-quiet" onClick={() => notify("Chiedimelo pure: ti rispondo io, o chiedo al personale", "neutral")}>Ho una domanda</button>
+            </article>)}
+            <article className="ross-m-card ross-m-feature">
+              <header><span className="ross-m-icon is-peach"><Puzzle /></span><div><h2>Il gioco del giorno</h2><p>{gameOfDay.title}</p></div></header>
+              <p className="ross-m-body">Ti dico l'inizio di una canzone di una volta e tu mi dici chi la cantava. Senza fretta: non ci sono punteggi.</p>
+              <button type="button" className="ross-m-pill" onClick={() => setStage({ kind: "game", id: "canzone" })}>Giochiamo</button>
+            </article>
+            <article className="ross-m-card ross-m-feature">
+              <header><span className="ross-m-icon is-amber"><BookOpen /></span><div><h2>I tuoi ricordi</h2><p>Parliamo insieme</p></div></header>
+              <p className="ross-m-body">{sharedPhoto ? `Raccontami del viaggio in Sicilia che ami tanto. Anna ti ha mandato una foto: «${sharedPhoto.title}».` : "Raccontami del viaggio in Sicilia che ami tanto. Ho anche la cartolina di Cefalù."}</p>
+              <button type="button" className="ross-m-pill" onClick={() => navigate("/ross/conversazione")}>Raccontami</button>
+            </article>
+          </div>
         </section>
 
         <section className="ross-m-tiles" aria-label="Cosa vuoi fare">

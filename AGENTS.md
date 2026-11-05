@@ -141,8 +141,7 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
   - **anatomia della home**, dall'alto:
     - barra con ROSS (avatar a sfera calda) a sinistra, meteo · ora e **«Aiuto»** sempre a portata a destra;
     - saluto: data, «Buon pomeriggio, Elena», una frase e la trasparenza sull'IA;
-    - novità da Anna e «ROSS ti dice»;
-    - **due card grandi**: «Il gioco del giorno» (Indovina la canzone) e «I tuoi ricordi»;
+    - **«Le cose importanti di oggi»** (decisione del 05/11/2026): una cornice propria con **quattro card uguali in 2 × 2**, cioè «Da Anna» (le novità; con «Più tardi» la card resta e offre «Raccontamele adesso»), «ROSS ti dice» (dalla residenza), «Il gioco del giorno» (Indovina la canzone) e «I tuoi ricordi». Sono gli highlight della giornata, non l'agenda;
     - **quattro scorciatoie**: Ascolta musica · Giochi insieme · Album foto · Anna ti chiama;
     - **due colonne**: «Oggi, fuori da qui» come fila nel tempo, solo inviti, e «Spunti per oggi» a righe;
     - **«I tuoi promemoria»** in tre riquadri, con il prossimo in pesca;
