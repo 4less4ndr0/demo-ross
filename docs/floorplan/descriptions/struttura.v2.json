@@ -15,6 +15,14 @@
     "src/state/channelStore.js": {
       "name": "Memoria del canale",
       "description": "Tiene spunti inviati e insight della Struttura 2.0, condivisi tra canale e ritratto; nella demo la risposta di ROSS arriva dopo pochi secondi, anche se si cambia pagina."
+    },
+    "src/components/PortraitV2.jsx": {
+      "name": "Come sta e Con ROSS, a racconto",
+      "description": "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto, come vive ROSS. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."
+    },
+    "src/data/interestGraph.js": {
+      "name": "Mappa dei legami",
+      "description": "Per ogni ospite, i suoi interessi e le attività, i ricordi, gli eventi e le persone della residenza collegati, con com'è andato lo spunto: è piaciuto, ci sta pensando, non è piaciuto, da provare."
     }
   }
 }

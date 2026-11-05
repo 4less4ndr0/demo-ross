@@ -8,6 +8,7 @@ import { Avatar, DataExplanation, EmptyState, ModeBadge, useStructureView } from
 import { ResidentSpunti } from "../components/ResidentSpunti";
 import { useChannel } from "../state/channelStore";
 import { AddDocumentMenu, familyOf, folders, useOf } from "../components/DocumentDialogs";
+import { HowIsV2, modeMeaning, WithRossV2 } from "../components/PortraitV2";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
 import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, rossTips, signalDetail, signalsFor, usageStyle } from "../data/careInsights";
@@ -29,11 +30,6 @@ const participationLabel = (value) => value >= 80 ? "Alta" : value >= 65 ? "Medi
 const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 const male = (resident) => ["carlo", "mario", "antonio", "bruno"].includes(resident.id);
 // Le tre modalità dette con le parole dell'ospite, e cosa significano per gli inviti della struttura.
-const modeMeaning = {
-  Attiva: ["«Proponimi tu»", "ROSS può proporre attività e inviti, anche quelli che gli chiede la struttura."],
-  Reattiva: ["«Quando ti chiamo»", "ROSS risponde quando lo chiamano, ma non propone nulla di sua iniziativa: gli inviti della struttura non partono."],
-  Silenziosa: ["«Stai in silenzio»", "ROSS non avvia nulla e rispetta il riposo: nessun invito parte."],
-};
 const dayFormat = new Intl.DateTimeFormat("it-IT", { weekday: "short", day: "numeric", month: "short" });
 const shortFormat = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "short" });
 const shiftDays = (iso, days) => { const date = new Date(`${iso}T12:00:00`); date.setDate(date.getDate() + days); return date.toISOString().slice(0, 10); };
@@ -68,9 +64,11 @@ export function ResidentProfile() {
     </section>
     <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabList.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
     {tab === "spunti" && <ResidentSpunti resident={resident} />}
-    {tab === "sintesi" && <Overview state={state} resident={resident} onPropose={v2 ? () => setTab("spunti") : undefined} onApproach={v2 ? undefined : () => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
+    {tab === "sintesi" && v2 && <HowIsV2 resident={resident} onPropose={() => setTab("spunti")} onProposeText={(text, kind) => setParams({ tab: "spunti", spunto: text, tipo: kind })} />}
+    {tab === "conversazioni" && v2 && <WithRossV2 resident={resident} onPropose={() => setTab("spunti")} />}
+    {tab === "sintesi" && !v2 && <Overview state={state} resident={resident} onPropose={v2 ? () => setTab("spunti") : undefined} onApproach={v2 ? undefined : () => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
     {tab === "avvicinare" && <Approach state={state} resident={resident} navigate={navigate} />}
-    {tab === "conversazioni" && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} onPropose={v2 ? () => setTab("spunti") : undefined} />}
+    {tab === "conversazioni" && !v2 && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} onPropose={v2 ? () => setTab("spunti") : undefined} />}
     {tab === "allegati" && <Attachments resident={resident} documents={residentDocuments} onAdd={actions.addDocument} />}
   </div>;
 }

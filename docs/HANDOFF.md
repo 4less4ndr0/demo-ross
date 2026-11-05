@@ -259,6 +259,32 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Struttura 2.0: «Come sta» e «Con ROSS» a racconto, con la mappa dei legami
+- **Richiesta:**
+  - il grafico della partecipazione è inutile e le schede sono dei report: bisogna puntare sulla qualità, non sulla quantità;
+  - i grafici vanno bene solo a supporto di concetti, mai al centro;
+  - provare dei knowledge graph che colleghino interessi e attività.
+- **Fatto, solo nel ritratto della 2.0** (la Struttura attuale non cambia):
+  - **Come sta:**
+    - «In questi giorni»: titolo e racconto di `narrativeFor` (`reportNarrative.js`);
+    - tre riquadri: Cosa va bene, Da osservare di persona, Ha chiesto. Gli andamenti sono detti a parole («più del solito»), mai con i numeri;
+    - **la mappa dei legami**;
+    - «Cosa puoi fare»: il passo suggerito e gli spunti di ROSS, senza le motivazioni con i conteggi;
+    - spariscono grafico della partecipazione, numeri della settimana e presenza;
+  - **Con ROSS:** «Come vive ROSS» (titolo e testo di `usageStyle`), «Cosa fa volentieri con ROSS» detto a parole (soprattutto… a volte…), la modalità con «L'ha scelta lui/lei». Spariscono percentuali per tipo, tabelle settimanali, minuti e livelli di partecipazione;
+  - **mappa dei legami** (`src/data/interestGraph.js`, componente `InterestMap`):
+    - la persona al centro, 3 interessi, e attorno attività, ricordi, eventi e altri ospiti con la stessa passione;
+    - i colori dicono com'è andato lo spunto: verde è piaciuto, ocra ci sta pensando, grigio non è piaciuto, corallo tratteggiato da provare;
+    - si tocca un punto e si legge il consiglio; con «Proponilo come spunto» si apre Spunti con testo e tipo già compilati (`?spunto=…&tipo=…`);
+    - sotto, ciò che sta fuori dai suoi interessi e non è piaciuto. Su telefono la mappa diventa un elenco;
+  - il racconto di Ada non dice più «4 conversazioni su 6».
+- **Da discutere:** quali altri strumenti danno valore alla qualità. Le idee in coda:
+  1. **la rete delle passioni**: nel canale, gli ospiti uniti da interessi in comune, per capire chi potrebbe fare qualcosa insieme. Solo per categoria, mai le relazioni raccontate;
+  2. **il filo dei momenti belli**: gli spunti accolti e le uscite raccontate dall'ospite, in fila nel tempo, senza conteggi;
+  3. **il «prima e dopo» di uno spunto**: proposto, come l'ha accolto, cosa è successo dopo;
+  4. **i momenti buoni della giornata**: mattino, pomeriggio e sera detti a parole, per sapere quando proporre;
+  5. **la cartolina della settimana**: un paragrafo di ROSS per l'équipe, con una foto scattata dallo staff.
+
 ### Novembre 2026 · 05/11/2026 · Allegato dalla chat con titolo, ospite e cartella; bottone in cima al ritratto sistemato
 - **Richiesta:** la stessa scelta della cartella anche per l'allegato dalla chat.
 - **Fatto (chat «Chiedi a ROSS», Struttura attuale):**

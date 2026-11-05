@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { Clock, Heart, HelpCircle, Sparkles, ThumbsDown } from "lucide-react";
 import { spuntoHistory, spuntoReading, spuntoTypeLabel } from "../data/channel";
 import { useChannel } from "../state/channelStore";
@@ -16,6 +17,7 @@ const list = (items) => [...new Set(items.map((i) => plural[i.type]).filter(Bool
 
 export function ResidentSpunti({ resident }) {
   const data = useChannel();
+  const [params] = useSearchParams();
   const r = channelResident(resident.id);
   const first = r.first;
 
@@ -57,7 +59,7 @@ export function ResidentSpunti({ resident }) {
 
         {spontaneous.length > 0 && <SpuntoGroup title={`Emerso da ${first}, senza spunto`} icon={Sparkles} tone="spontaneous" items={spontaneous.map((i) => ({ id: i.id, when: i.when, story: i.story, suggestion: i.suggestion, insight: i }))} />}
       </div>
-      <aside className="s2-profile-side"><ProposeCard key={r.id} spunti={data.spunti} fixedId={r.id} /></aside>
+      <aside className="s2-profile-side"><ProposeCard key={r.id} spunti={data.spunti} fixedId={r.id} prefill={params.get("spunto") ? { text: params.get("spunto"), type: params.get("tipo") } : null} /></aside>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { ArrowRight, Check, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
 import { Avatar, StructureView } from "../components/Common";
@@ -73,13 +73,15 @@ export function StructureChannel() {
 }
 
 // «Proponi uno spunto». Con `fixedId` (nel ritratto) l'ospite è già scelto.
-export function ProposeCard({ spunti, fixedId }) {
+export function ProposeCard({ spunti, fixedId, prefill }) {
   const { state } = useDemo();
   const [residentId, setResidentId] = useState(fixedId || null);
   const [text, setText] = useState("");
   const [type, setType] = useState(null);
   const [sent, setSent] = useState(null);
   const field = useRef(null);
+  // Dalla mappa dei legami (Come sta) arriva uno spunto già scritto, da rileggere prima di inviarlo.
+  useEffect(() => { if (prefill?.text) { setText(prefill.text.slice(0, MAX)); setType(prefill.type || null); setSent(null); window.setTimeout(() => field.current?.focus(), 60); } }, [prefill?.text, prefill?.type]);
   // La modalità può cambiare dal ritratto: si legge sempre quella attuale.
   const live = (id) => id && { ...channelResident(id), mode: state.residents.find((r) => r.id === id)?.mode || channelResident(id).mode };
   const resident = live(residentId);

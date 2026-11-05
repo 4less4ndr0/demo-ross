@@ -14,7 +14,7 @@ arch = json.load(open("docs/floorplan/architecture.json", encoding="utf-8"))
 
 # --- Struttura 2.0: nuovo gruppo e nuovi file (si aggiungono una volta sola) ---
 V2 = "struttura.v2"
-v2_files = ["src/pages/StructureChannel.jsx", "src/components/ResidentSpunti.jsx", "src/data/channel.js", "src/state/channelStore.js"]
+v2_files = ["src/pages/StructureChannel.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx", "src/data/channel.js", "src/data/interestGraph.js", "src/state/channelStore.js"]
 v2_node = {"id": V2, "parent": "struttura", "label": "Struttura 2.0 · il canale", "kind": "ui",
   "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
   "details": "", "tags": [], "paths": v2_files, "packages": [], "hosts": []}
@@ -31,12 +31,18 @@ if not any(f["p"] == "src/components/DocumentDialogs.jsx" for f in G["files"]):
     G["files"].append({"p": "src/components/DocumentDialogs.jsx", "n": "struttura.ospiti", "r": ".", "l": "javascript", "loc": 0, "name": "", "d": "", "h": "", "sig": "", "s": []})
 G["files"].sort(key=lambda f: f["p"])
 v2_desc = "docs/floorplan/descriptions/struttura.v2.json"
-if not os.path.exists(v2_desc):
-    json.dump({"files": {p: {} for p in v2_files}}, open(v2_desc, "w", encoding="utf-8"))
+v2d = json.load(open(v2_desc, encoding="utf-8")) if os.path.exists(v2_desc) else {"files": {}}
+for p in v2_files: v2d["files"].setdefault(p, {})
+json.dump(v2d, open(v2_desc, "w", encoding="utf-8"))
+for coll in (G["nodes"], arch["nodes"]):
+    for n in coll:
+        if n["id"] == V2: n["paths"] = v2_files
 
 # --- Descrizioni scritte a mano per i file cambiati ---
 desc = {
   "src/components/DocumentDialogs.jsx": ("Cartelle e aggiunta di documenti", "Le quattro cartelle di «Cosa sa ROSS» e le finestre per aggiungere un documento: un file con anteprima, titolo e cartella (dalla chat anche per quale ospite) o un testo incollato che diventa un .txt."),
+  "src/components/PortraitV2.jsx": ("Come sta e Con ROSS, a racconto", "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto, come vive ROSS. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."),
+  "src/data/interestGraph.js": ("Mappa dei legami", "Per ogni ospite, i suoi interessi e le attività, i ricordi, gli eventi e le persone della residenza collegati, con com'è andato lo spunto: è piaciuto, ci sta pensando, non è piaciuto, da provare."),
   "src/pages/StructureChannel.jsx": ("Struttura 2.0: il canale", "La Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve cosa è emerso. Schede Il canale · Ospiti; Proponi uno spunto e Cosa è emerso (Visto, Fatto)."),
   "src/components/ResidentSpunti.jsx": ("Scheda Spunti del ritratto", "Nel ritratto della Struttura 2.0: cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, ciò che è emerso senza spunto e il modulo per proporne uno."),
   "src/data/channel.js": ("Spunti e insight d'esempio", "Gli spunti della struttura e gli insight di ROSS d'esempio, come è stato accolto ciascuno, gli spunti più vecchi e cosa ha capito ROSS di ogni ospite. Mai cosa ha raccontato l'ospite."),
