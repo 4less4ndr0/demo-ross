@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AlarmClock, ArrowLeft, Megaphone, ArrowRight, CalendarHeart, DoorOpen, Phone, Check, CircleHelp, Clock3, CloudRain, Headphones, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, RotateCcw, Sparkles, UtensilsCrossed, Volume2, X } from "lucide-react";
+import { AlarmClock, ArrowLeft, Megaphone, ArrowRight, BookOpen, CalendarHeart, DoorOpen, Phone, CircleHelp, CloudRain, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, Puzzle, RotateCcw, Sparkles, Sun, UtensilsCrossed, X } from "lucide-react";
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/dm-sans";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "../components/ui";
 import { useDemo } from "../state/DemoContext";
@@ -238,101 +240,128 @@ export function RossHome() {
     return navigate("/ross/conversazione");
   };
 
+  // Le proposte di oggi, fuori da qui, in fila nel tempo (come «La tua giornata» di Maria, ma solo inviti: niente agenda della struttura).
+  const gameOfDay = games.canzone;
+  const Arc = completed ? "Parliamo ancora" : "Parla con ROSS";
+
   return (
-    <div className="ross-app screen-enter" data-ross-state={rossState}>
-      <header className="ross-header">
-        <div className="ross-wordmark"><span>R</span><strong>ROSS</strong></div>
-        <div className="ross-today"><span><CloudRain /> {today.temp} · {today.weather}</span><i /><span><Clock3 /> {today.time}</span><button type="button" className="ross-volume" aria-label="Volume"><Volume2 /></button></div>
+    <div className="ross-app ross-m screen-enter" data-ross-state={rossState}>
+      <header className="ross-m-top">
+        <div className="ross-m-brand"><span className="ross-m-avatar" aria-hidden="true" /><strong>ROSS</strong></div>
+        <div className="ross-m-now">
+          <span><CloudRain aria-hidden="true" /> {today.temp}</span><i aria-hidden="true" /><span><Sun aria-hidden="true" /> {today.time}</span>
+          <button type="button" className="ross-help-button" onClick={() => setPanel("help")}><CircleHelp aria-hidden="true" /> Aiuto</button>
+        </div>
       </header>
 
-      <main className="ross-home-main">
-        <section className="ross-hero">
-          <div className="ross-hero-copy">
-            <span className="ross-hero-date">{today.date}</span>
-            <h1>Buon pomeriggio, Elena.</h1>
-            <p>{completed ? "Che bella chiacchierata, prima. Se vuoi, continuiamo quando ti va." : "Ho pensato a qualche spunto per oggi. Scegli tu, oppure parliamo di quello che vuoi."}</p>
-            <button type="button" className="ross-talk" onClick={() => navigate("/ross/conversazione")}><span><Mic /></span><strong>{completed ? "Parliamo ancora" : "Parla con ROSS"}</strong><small>Tocca per iniziare</small></button>
-            <small className="ross-ai-note">Sono ROSS, un compagno digitale basato sull'intelligenza artificiale: non sono una persona. Quello che ci diciamo resta qui.</small>
+      <main className="ross-m-main">
+        <section className="ross-hero ross-m-hello">
+          <p className="ross-m-date">{today.date}</p>
+          <h1>Buon pomeriggio, Elena</h1>
+          <p className="ross-m-lead">{completed ? "Che bella chiacchierata, prima. Se vuoi, continuiamo quando ti va." : "Oggi piove: ho pensato a qualche spunto per te. Scegli tu, oppure parliamo di quello che vuoi."}</p>
+          <small className="ross-ai-note">Sono ROSS, un compagno digitale basato sull'intelligenza artificiale: non sono una persona. Quello che ci diciamo resta qui.</small>
+        </section>
+
+        {/* Le cose importanti di oggi: una cornice sola, quattro card uguali (da Anna, dalla residenza, il gioco, i ricordi). */}
+        <section className="ross-m-today" aria-labelledby="ross-today-title">
+          <h2 id="ross-today-title" className="ross-m-today-title">Le cose importanti di oggi</h2>
+          <div className="ross-m-today-grid">
+            {newsItems.length > 0 && outing?.status !== "out" && <article className={`ross-news ross-m-card ross-m-feature${newsLater ? "" : " is-news"}`} aria-live="polite">
+              <header><span className="ross-m-icon is-peach"><Heart /></span><div><h2>Da Anna</h2><p>Ti ha mandato {count(newsItems.length)}</p></div></header>
+              {newsLater
+                ? <><p className="ross-m-body">Va bene: {newsItems.length === 1 ? "te la racconto" : "te le racconto"} quando vuoi.</p><button type="button" className="ross-m-pill is-quiet" onClick={() => { setNewsLater(false); openNews(); }}>Raccontamele adesso</button></>
+                : <><p className="ross-m-body">Vuoi che {newsItems.length === 1 ? "te la racconti" : "te le racconti"}? Puoi anche dirmelo a voce: «Sì, raccontamele».{reminders.length > 0 ? " C'è anche un promemoria: te lo dico stasera." : ""}</p>
+                  <div className="ross-m-actions"><button type="button" className="ross-m-pill" onClick={() => openNews()}>Sì, raccontamele</button><button type="button" className="ross-m-pill is-quiet" onClick={() => setNewsLater(true)}>Più tardi</button></div></>}
+            </article>}
+            {announcements.map((m) => <article key={m.id} className="ross-tells ross-m-card ross-m-feature" aria-label="ROSS ti dice">
+              <header><span className="ross-m-icon is-sand"><Megaphone /></span><div><h2>ROSS ti dice</h2><p>Dalla residenza</p></div></header>
+              <p className="ross-m-body">{m.frase}</p>
+              <button type="button" className="ross-m-pill is-quiet" onClick={() => notify("Chiedimelo pure: ti rispondo io, o chiedo al personale", "neutral")}>Ho una domanda</button>
+            </article>)}
+            <article className="ross-m-card ross-m-feature">
+              <header><span className="ross-m-icon is-peach"><Puzzle /></span><div><h2>Il gioco del giorno</h2><p>{gameOfDay.title}</p></div></header>
+              <p className="ross-m-body">Ti dico l'inizio di una canzone di una volta e tu mi dici chi la cantava. Senza fretta: non ci sono punteggi.</p>
+              <button type="button" className="ross-m-pill" onClick={() => setStage({ kind: "game", id: "canzone" })}>Giochiamo</button>
+            </article>
+            <article className="ross-m-card ross-m-feature">
+              <header><span className="ross-m-icon is-amber"><BookOpen /></span><div><h2>I tuoi ricordi</h2><p>Parliamo insieme</p></div></header>
+              <p className="ross-m-body">{sharedPhoto ? `Raccontami del viaggio in Sicilia che ami tanto. Anna ti ha mandato una foto: «${sharedPhoto.title}».` : "Raccontami del viaggio in Sicilia che ami tanto. Ho anche la cartolina di Cefalù."}</p>
+              <button type="button" className="ross-m-pill" onClick={() => navigate("/ross/conversazione")}>Raccontami</button>
+            </article>
           </div>
         </section>
 
-        {newsItems.length > 0 && !newsLater && outing?.status !== "out" && <section className="ross-news" aria-live="polite">
-          <span className="ross-news-icon"><Heart /></span>
-          <div><small>Da Anna, adesso</small><h2>Anna ti ha mandato {count(newsItems.length)}. Vuoi che {newsItems.length === 1 ? "te la racconti" : "te le racconti"}?</h2><p>Puoi anche dirmelo a voce: «Sì, raccontamele».{reminders.length > 0 ? " C'è anche un promemoria: te lo dico stasera." : ""}</p></div>
-          <div className="ross-invite-actions"><button type="button" onClick={() => openNews()}>Sì, raccontamele</button><button type="button" className="ross-invite-later" onClick={() => setNewsLater(true)}>Più tardi</button></div>
-        </section>}
-
-        {outing?.status === "out" ? <section className="ross-away" aria-live="polite">
-          <span className="ross-away-icon"><DoorOpen /></span>
-          <div><small>Elena è fuori · ROSS resta in silenzio</small><h2>Ci vediamo dopo {outingInvite?.label}.</h2><p>Quando torni, mi racconti com'è andata?</p></div>
-          <button type="button" onClick={() => setReturning("feeling")}>Sono tornata</button>
-        </section> : <section className="ross-section ross-outside" aria-label="Oggi, fuori da qui">
-          <h2 className="ross-section-title">Oggi, fuori da qui</h2>
-          <p className="ross-section-note">Oggi piove: le proposte sono al coperto.</p>
-          <div className="ross-prompt-grid">{outsideInvites.map((item) => { const Icon = item.kind === "call" ? Phone : DoorOpen; const done = item.kind === "activity" && outing?.activityId === item.id && outing.status === "back"; return <article key={item.id} className={`ross-prompt-card ross-invite${done ? " is-done" : ""}`}>
-            <header><span className="ross-prompt-icon"><Icon /></span><div><small>{item.time} · {item.place}</small><h3>{item.title}</h3></div></header>
-            <p>{done ? "Ci sei andata: grazie di avermi raccontato com'è andata." : item.text}</p>
-            {!done && <div className="ross-invite-actions"><button type="button" onClick={() => (item.kind === "call" ? notify("Te lo ricorderò dopo cena, prima che Anna chiami") : actions.goOut(item.id))}>{item.cta}</button>{item.kind === "activity" && <button type="button" className="ross-invite-later" onClick={() => notify("Va bene: magari un'altra volta")}>Magari un'altra volta</button>}</div>}
-          </article>; })}</div>
-        </section>}
-
-        {reminders.length > 0 && <section className="ross-section ross-reminders" aria-label="Promemoria">
-          <h2 className="ross-section-title">Promemoria</h2>
-          <p className="ross-section-note">Te li ricordo all'ora giusta, con le parole di chi li ha lasciati: Anna, l'infermeria o tu. Non controllo se li hai fatti.</p>
-          <div className="ross-prompt-grid">
-            <article className="ross-prompt-card ross-reminder-card">
-              <header><span className="ross-prompt-icon"><AlarmClock /></span><div><small>Il prossimo · {whoOf(nextReminder)}{nextReminder.when ? ` · ${nextReminder.when}` : ""}{nextReminder.at ? ` ${nextReminder.at}` : ""}{(state.reminders || {})[nextReminder.key] === "later" ? " · domattina" : ""}</small><h3>«{nextReminder.text.replace(/[.!…]+$/, "")}»</h3></div></header>
-              <div className="ross-invite-actions"><button type="button" onClick={() => setStage({ kind: "reminder", item: nextReminder })}>Ascoltalo ora</button><button type="button" className="ross-invite-later" onClick={() => { actions.setReminder(nextReminder.key, "stopped"); notify("Va bene, non te lo ricordo più"); }}>Non ricordarmelo più</button></div>
-            </article>
-            <article className="ross-prompt-card ross-reminder-list">
-              <header><div><small>Poi</small><h3>Le altre cose da ricordare</h3></div></header>
-              {laterReminders.length ? <ul>{laterReminders.map((item) => <li key={item.key}><button type="button" onClick={() => setStage({ kind: "reminder", item })}><span className="ross-reminder-dot"><AlarmClock /></span><span><strong>{item.text.replace(/[.!…]+$/, "")}</strong><small>{whoOf(item)}{item.when ? ` · ${item.when}` : ""}</small></span><ArrowRight /></button></li>)}</ul> : <p>Nient'altro, per ora. Se vuoi, dimmi «ricordami che…».</p>}
-            </article>
-          </div>
-        </section>}
-
-        {announcements.length > 0 && <section className="ross-section ross-tells" aria-label="ROSS ti dice">
-          <h2 className="ross-section-title">ROSS ti dice</h2>
-          <div className="ross-tells-list">{announcements.map((m) => <article key={m.id} className="ross-prompt-card ross-tell">
-            <header><span className="ross-prompt-icon"><Megaphone /></span><div><small>Dalla residenza</small><h3>{m.frase}</h3></div></header>
-            <button type="button" onClick={() => notify("Chiedimelo pure: ti rispondo io, o chiedo al personale", "neutral")}>Ho una domanda</button>
-          </article>)}</div>
-        </section>}
-
-        <section className="ross-section ross-spunti" aria-label="Spunti per oggi">
-          <h2 className="ross-section-title">Spunti per oggi</h2>
-          <div className="ross-prompt-grid">{dayPrompts.map((item) => { const Icon = item.icon; return <article key={item.id} className="ross-prompt-card">
-            <header><span className="ross-prompt-icon"><Icon /></span><div><small>{item.kicker}</small><h3>{item.title}</h3></div></header>
-            <p>{item.text}</p>
-            <button type="button" onClick={() => (item.track ? play(item.track) : navigate("/ross/conversazione"))}>{item.cta}</button>
-          </article>; })}</div>
+        <section className="ross-m-tiles" aria-label="Cosa vuoi fare">
+          <button type="button" className="ross-m-tile" onClick={() => setPanel("music")}><span className="ross-m-icon is-sage"><Music2 /></span><strong>Ascolta musica</strong><small>Le tue canzoni preferite</small></button>
+          <button type="button" className="ross-m-tile" onClick={() => setPanel("activities")}><span className="ross-m-icon is-peach"><Sparkles /></span><strong>Giochi insieme</strong><small>Leggeri, senza punteggi</small></button>
+          <button type="button" className="ross-m-tile" onClick={() => setPanel("memories")}><img className="ross-m-thumb" src={asset("cefalu-postcard.svg")} alt="" /><strong>Album foto</strong><small>I ricordi più belli</small></button>
+          <button type="button" className="ross-m-tile" onClick={() => notify("Te lo ricorderò dopo cena, prima che Anna chiami")}><span className="ross-m-icon is-amber"><Phone /></span><strong>Anna ti chiama</strong><small>Dopo cena · te lo ricordo io</small></button>
         </section>
 
-        {fromAnna.length > 0 && <section className="ross-section" aria-label="Da Anna, per te">
-          <h2 className="ross-section-title">Da Anna, per te</h2>
-          <div className="ross-family-grid">{fromAnna.map((item) => { const kind = familyPrompt[item.kind] || familyPrompt.memory; const Icon = kind.icon; return <article key={item.id} className="ross-family-card">
-            {item.image ? <img src={item.image} alt={item.title} /> : <span className="ross-family-icon"><Icon /></span>}
+        <section className="ross-m-two">
+          {outing?.status === "out" ? <article className="ross-away ross-m-card ross-m-away" aria-live="polite">
+            <span className="ross-m-icon is-sage"><DoorOpen /></span>
+            <div><small>Sei fuori · ROSS resta in silenzio</small><h2>Ci vediamo dopo {outingInvite?.label}.</h2><p>Quando torni, mi racconti com'è andata?</p></div>
+            <button type="button" className="ross-m-pill" onClick={() => setReturning("feeling")}>Sono tornata</button>
+          </article> : <article className="ross-section ross-outside ross-m-card" aria-label="Oggi, fuori da qui">
+            <header className="ross-m-card-head"><CalendarHeart aria-hidden="true" /><h2>Oggi, fuori da qui</h2></header>
+            <p className="ross-m-note">Oggi piove: le proposte sono al coperto.</p>
+            <ol className="ross-m-day">{outsideInvites.map((item) => { const Icon = item.kind === "call" ? Phone : DoorOpen; const done = item.kind === "activity" && outing?.activityId === item.id && outing.status === "back"; return <li key={item.id} className={done ? "is-done" : ""}>
+              <span className="ross-m-dot"><Icon aria-hidden="true" /></span>
+              <div><strong>{item.title}</strong><small>{done ? "Ci sei andata: grazie di avermelo raccontato." : item.text}</small>
+                {!done && <div className="ross-m-actions"><button type="button" className="ross-m-pill is-small" onClick={() => (item.kind === "call" ? notify("Te lo ricorderò dopo cena, prima che Anna chiami") : actions.goOut(item.id))}>{item.cta}</button>{item.kind === "activity" && <button type="button" className="ross-m-pill is-small is-quiet" onClick={() => notify("Va bene: magari un'altra volta")}>Un'altra volta</button>}</div>}
+              </div>
+              <time>{item.time.replace(/^Alle /, "")}</time>
+            </li>; })}</ol>
+          </article>}
+
+          <article className="ross-section ross-spunti ross-m-card" aria-label="Spunti per oggi">
+            <header className="ross-m-card-head"><Lightbulb aria-hidden="true" /><h2>Spunti per oggi</h2></header>
+            <ul className="ross-m-rows">{dayPrompts.map((item) => { const Icon = item.icon; return <li key={item.id}>
+              <button type="button" onClick={() => (item.track ? play(item.track) : navigate("/ross/conversazione"))}>
+                <span className="ross-m-icon is-small"><Icon /></span>
+                <span><strong>{item.title}</strong><small>{item.kicker}</small></span>
+                <em>{item.cta}</em>
+              </button>
+            </li>; })}</ul>
+          </article>
+        </section>
+
+        {reminders.length > 0 && <section className="ross-section ross-reminders ross-m-card" aria-label="I tuoi promemoria">
+          <header className="ross-m-card-head"><AlarmClock aria-hidden="true" /><h2>I tuoi promemoria</h2></header>
+          <p className="ross-m-note">Te li ricordo all'ora giusta, con le parole di chi li ha lasciati: Anna, l'infermeria o tu. Non controllo se li hai fatti.</p>
+          <div className="ross-m-reminders">{reminders.slice(0, 3).map((item, index) => <div key={item.key} className={`ross-m-reminder${index === 0 ? " is-next" : ""}`}>
+            <small>{index === 0 ? "Il prossimo" : "Poi"} · {whoOf(item)}</small>
+            <strong>{item.text.replace(/[.!…]+$/, "")}</strong>
+            <span>{[item.when, item.at].filter(Boolean).join(" ") || "Quando serve"}{(state.reminders || {})[item.key] === "later" ? " · domattina" : ""}</span>
+            <button type="button" className="ross-m-pill is-small" onClick={() => setStage({ kind: "reminder", item })}>Ascoltalo</button>
+          </div>)}</div>
+          {reminders.length > 3 && <p className="ross-m-note">E poi altre cose: te le dico io, una alla volta.</p>}
+        </section>}
+
+        {fromAnna.length > 0 && <section className="ross-m-section" aria-label="Da Anna, per te">
+          <h2 className="ross-m-section-title">Da Anna, per te</h2>
+          <div className="ross-family-grid ross-m-family">{fromAnna.map((item) => { const kind = familyPrompt[item.kind] || familyPrompt.memory; const Icon = kind.icon; return <article key={item.id} className="ross-m-card ross-m-from">
+            {item.image ? <img src={item.image} alt={item.title} /> : <span className="ross-m-icon is-peach"><Icon /></span>}
             <div><small>{kind.lead}</small><h3>{item.title}</h3><p>{alreadyShared(item) ? "Ne abbiamo già parlato: possiamo riprenderlo quando vuoi." : item.parts?.length ? item.parts.map((part) => part.rossLine).join(" ") : kind.ask}</p></div>
-            <button type="button" onClick={() => usePrompt(item)}>{kind.cta} <ArrowRight /></button>
+            <button type="button" className="ross-m-pill is-small" onClick={() => usePrompt(item)}>{kind.cta}</button>
           </article>; })}</div>
         </section>}
 
-        <section className="ross-touch-grid" aria-label="Cosa vuoi fare">
-          <button onClick={() => setPanel("memories")}><Images /><span><strong>Ricordi e foto</strong><small>Guardiamo insieme</small></span><ArrowRight /></button>
-          <button onClick={() => setPanel("activities")}><Sparkles /><span><strong>Attività</strong><small>Qualcosa di leggero</small></span><ArrowRight /></button>
-          <button onClick={() => setPanel("music")}><Headphones /><span><strong>Musica</strong><small>Le tue canzoni</small></span><ArrowRight /></button>
-          <button onClick={() => setPanel("help")}><CircleHelp /><span><strong>Aiuto</strong><small>Chiedi a ROSS</small></span><ArrowRight /></button>
+        <section className="ross-modes ross-m-modes" aria-label="Come vuoi che ROSS stia con te?">
+          <span>Come vuoi che ROSS stia con te?</span>
+          <div>{modes.map(([mode, label]) => <button key={mode} type="button" className={elena.mode === mode ? "active" : ""} aria-pressed={elena.mode === mode} onClick={() => chooseMode(mode)} title={`Modalità ${mode.toLowerCase()}`}><i />{label}</button>)}</div>
         </section>
 
-        <section className="ross-modes">
-          <span>COME VUOI CHE ROSS STIA CON TE?</span>
-          <div>{modes.map(([mode, label]) => <button key={mode} className={elena.mode === mode ? "active" : ""} onClick={() => chooseMode(mode)} title={`Modalità ${mode.toLowerCase()}`}><i />{label}</button>)}</div>
-        </section>
+        <p className="ross-m-footer">Quando vuoi parlare, tocca qui sotto. Poi, se ti va, raccontalo anche ad Anna o a chi incontri in salone.</p>
       </main>
+
+      {/* Il semicerchio in basso, come in Maria: il gesto principale, sempre allo stesso posto. */}
+      <button type="button" className="ross-talk-arc" onClick={() => navigate("/ross/conversazione")} aria-label={Arc}><Mic aria-hidden="true" /><span>{Arc}</span></button>
 
       {stage && <RossStage flow={stage} onClose={() => setStage(null)} onAnswer={() => { setStage(null); navigate("/ross/conversazione"); }} />}
 
-      <Dialog open={Boolean(returning)} title={returning === "share" ? "Lo racconto ad Anna?" : `Com'è andata?`} onClose={() => setReturning(null)}>
+      <Dialog className="ross-dialog" open={Boolean(returning)} title={returning === "share" ? "Lo racconto ad Anna?" : `Com'è andata?`} onClose={() => setReturning(null)}>
         {returning === "feeling" ? <div className="ross-return">
           <p>Raccontami pure: ti ascolto. In questa demo scegli una risposta.</p>
           <div className="modal-actions">{["Bene, abbiamo cantato tanto", "Così così", "Preferisco non dirlo"].map((answer) => <button key={answer} className="ghost-button" onClick={() => setReturning("share")}>{answer}</button>)}</div>
@@ -342,7 +371,7 @@ export function RossHome() {
         </div>}
       </Dialog>
 
-      <Dialog open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => { setPanel(null); setForgetAsked(false); }} size="lg">
+      <Dialog className="ross-dialog" open={Boolean(panel)} title={panel === "memories" ? "Ricordi e fotografie" : panel === "activities" ? "Cosa facciamo?" : panel === "music" ? "Musica per te" : "Come posso aiutarti?"} onClose={() => { setPanel(null); setForgetAsked(false); }} size="lg">
         {panel === "memories" && <div className="ross-modal-choices"><button onClick={() => { setPanel(null); setStage({ kind: "memory" }); }}><span className="choice-art photo"><Heart /></span><strong>Cosa ricordo di te</strong><small>Ascolta, conferma o correggi quello che ROSS ricorda</small></button><button onClick={() => navigate("/ross/conversazione")}>{sharedPhoto?.image ? <img className="ross-choice-image" src={sharedPhoto.image} alt={`Foto condivisa dalla famiglia: ${sharedPhoto.title}`} /> : <span className="choice-art photo"><Images /></span>}<strong>{sharedPhoto?.title || "Il viaggio in Sicilia"}</strong><small>{sharedPhoto ? "Condivisa da Anna · pronta da guardare insieme" : "Palermo, Cefalù e le fotografie del 1998"}</small></button><button onClick={() => notify("Ricordo pronto per la prossima conversazione")}><img className="ross-choice-image" src={asset("garden-photo.svg")} alt="Gerani rossi sul balcone" /><strong>I gerani sul balcone</strong><small>Una piccola abitudine del mattino</small></button></div>}
         {panel === "activities" && <div className="ross-modal-choices"><button onClick={() => { setPanel(null); setStage({ kind: "game", id: "canzone" }); }}><span className="choice-art music"><Music2 /></span><strong>Indovina la canzone</strong><small>Un gioco, senza fretta e senza punteggi</small></button><button onClick={() => { setPanel(null); setStage({ kind: "game", id: "parole" }); }}><span className="choice-art photo"><Sparkles /></span><strong>Il gioco delle parole</strong><small>Non ci sono risposte giuste</small></button><button onClick={() => { notify("Attività avviata: Fotografie di viaggio"); setPanel(null); setRossState("activity"); }}><span className="choice-art photo"><Images /></span><strong>{scheduled?.title || "Fotografie di viaggio"}</strong><small>{scheduled ? `Preparata per domani alle ${scheduled.time}` : "Scegliamo una foto e ne parliamo"}</small></button></div>}
         {panel === "music" && <div className="ross-playlist">{[sharedMusic?.title, "Se telefonando · Mina", "Il cielo in una stanza · Gino Paoli", "Azzurro · Adriano Celentano"].filter(Boolean).map((track, index) => <button key={track} onClick={() => { notify(`In riproduzione: ${track.split(" · ")[0]}`); setRossState("activity"); setPanel(null); }}><span>{index + 1}</span><strong>{track}</strong><Play fill="currentColor" /></button>)}</div>}
