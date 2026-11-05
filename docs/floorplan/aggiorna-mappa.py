@@ -39,7 +39,7 @@ desc = {
   "src/data/channel.js": ("Spunti e insight d'esempio", "Gli spunti della struttura e gli insight di ROSS d'esempio, come è stato accolto ciascuno, gli spunti più vecchi e cosa ha capito ROSS di ogni ospite. Mai cosa ha raccontato l'ospite."),
   "src/state/channelStore.js": ("Memoria del canale", "Tiene spunti inviati e insight della Struttura 2.0, condivisi tra canale e ritratto; nella demo la risposta di ROSS arriva dopo pochi secondi, anche se si cambia pagina."),
   "src/pages/Residents.jsx": ("Lista degli ospiti", "Mostra gli ospiti in ordine alfabetico, con foto, modalità e ultima conversazione con ROSS. È la stessa nella Struttura e nella Struttura 2.0."),
-  "src/pages/ResidentProfile.jsx": ("Ritratto dell'ospite", "Il ritratto si adatta alla persona: Come sta, Come avvicinarsi, Con ROSS e «Cosa sa ROSS» (i documenti di struttura e famiglia per ciò che ROSS ne fa). Nella Struttura 2.0 ha in più la scheda Spunti e niente chat né report."),
+  "src/pages/ResidentProfile.jsx": ("Ritratto dell'ospite", "Il ritratto si adatta alla persona: Come sta, Come avvicinarsi, Con ROSS e «Cosa sa ROSS» (i documenti di struttura e famiglia per ciò che ROSS ne fa). Nella Struttura 2.0 si apre su Spunti, senza Come avvicinarsi (ci si avvicina con gli spunti), senza chat né report."),
   "src/components/Common.jsx": ("Pezzi comuni della Struttura", "Foto e iniziali degli ospiti, modalità, titoli e note; dice anche se Ospiti e ritratto stanno nella Struttura o nella Struttura 2.0."),
   "src/App.jsx": ("Mappa delle schermate", "Decide quale schermata mostrare per ogni indirizzo delle viste (anche la Struttura 2.0 in /struttura-2) e rimanda i vecchi indirizzi a quelli nuovi."),
   "src/components/PerspectiveSwitcher.jsx": ("Pillola \"Vista demo\"", "Il comando per chi presenta, in basso a destra: Struttura, Struttura 2.0, Famiglia, ROSS e Mappa, iPhone, schermata di blocco, cosa è reale e cosa è simulato, visita guidata e ripristino."),
@@ -176,7 +176,7 @@ items = [
   ("f:src/components/ResidentSpunti.jsx", "Nuovo: la scheda Spunti del ritratto."),
   ("f:src/data/channel.js", "Nuovo: spunti, insight, accoglienza e cosa ha capito ROSS."),
   ("f:src/state/channelStore.js", "Nuovo: stato condiviso tra canale e ritratto, risposta simulata di ROSS."),
-  ("f:src/pages/ResidentProfile.jsx", "Nella Struttura 2.0: scheda Spunti, niente chat né report."),
+  ("f:src/pages/ResidentProfile.jsx", "Nella Struttura 2.0: scheda Spunti al posto di Come avvicinarsi, niente chat né report."),
   ("f:src/pages/Residents.jsx", "I link seguono la Struttura in cui si è."),
   ("f:src/components/PerspectiveSwitcher.jsx", "Voce Struttura 2.0 (tasto 5) e nota in \"Cosa è reale e cosa è simulato\"."),
 ]

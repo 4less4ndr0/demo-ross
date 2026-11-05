@@ -258,6 +258,14 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · Struttura 2.0 senza «Come avvicinarsi»
+- **Richiesta:** togliere la scheda «Come avvicinarsi»: nella 2.0 sono gli spunti il modo per avvicinarsi.
+- **Fatto, solo nella Struttura 2.0:**
+  - il ritratto ha tre schede più Spunti: Spunti · Come sta · Con ROSS · Cosa sa ROSS. Un vecchio link con `?tab=avvicinare` apre Spunti;
+  - in Come sta sparisce la card "Come avvicinarsi a …";
+  - "Spunti di ROSS" e la card Modalità di Con ROSS portano a **Proponi uno spunto**, al posto degli inviti chiesti a ROSS.
+- **Non cambiato:** nella Struttura attuale «Come avvicinarsi» resta com'è. I dati (`approachGuide`, `relating`) non sono stati toccati.
+
 ### Novembre 2026 · 05/11/2026 · Struttura 2.0: Ospiti, ritratto e scheda Spunti
 - **Richiesta:** riprendere dalla Struttura attuale la scheda Ospiti e i ritratti con i documenti, così come sono. Nel ritratto aggiungere una scheda nuova con gli spunti proposti, quelli piaciuti e quelli non piaciuti, e un minimo di lettura.
 - **Fatto:**

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T11:07:59.000Z",
+  "updatedAt": "2026-11-05T11:14:25.000Z",
   "tasks": [
     {
       "title": "Struttura 2.0: il canale con ROSS",
@@ -29,7 +29,7 @@
         {
           "ref": "f:src/pages/ResidentProfile.jsx",
           "change": "changed",
-          "note": "Nella Struttura 2.0: scheda Spunti, niente chat né report."
+          "note": "Nella Struttura 2.0: scheda Spunti al posto di Come avvicinarsi, niente chat né report."
         },
         {
           "ref": "f:src/pages/Residents.jsx",

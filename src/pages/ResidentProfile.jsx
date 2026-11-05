@@ -16,8 +16,9 @@ import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, Dr
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
 const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Con ROSS"], ["allegati", "Cosa sa ROSS"]];
 const tabAliases = { documenti: "allegati", panoramica: "sintesi", andamento: "sintesi", attivita: "sintesi", interazioni: "conversazioni", storia: "avvicinare", memorie: "avvicinare", relazioni: "avvicinare", interessi: "avvicinare" };
-// Struttura 2.0: in più la scheda Spunti (cosa la struttura ha proposto a ROSS e come è stato accolto), aperta di default.
-const tabsV2 = [["spunti", "Spunti"], ...tabs];
+// Struttura 2.0: in più la scheda Spunti (cosa la struttura ha proposto a ROSS e come è stato accolto), aperta di default;
+// niente «Come avvicinarsi»: sono gli spunti il modo per avvicinarsi (decisione del 05/11/2026).
+const tabsV2 = [["spunti", "Spunti"], ...tabs.filter(([t]) => t !== "avvicinare")]; // nella 2.0 ci si avvicina con gli spunti
 const normalizeTab = (value, list = tabs) => { const fallback = list[0][0]; const key = (value || fallback).toLowerCase(); const id = tabAliases[key] || key; return list.some(([t]) => t === id) ? id : fallback; };
 
 const typeLabels = { Conversazione: "Conversazione libera", Memoria: "Reminiscenza" };
@@ -64,9 +65,9 @@ export function ResidentProfile() {
     </section>
     <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabList.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
     {tab === "spunti" && <ResidentSpunti resident={resident} />}
-    {tab === "sintesi" && <Overview state={state} resident={resident} onPropose={v2 ? () => setTab("spunti") : undefined} onApproach={() => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
+    {tab === "sintesi" && <Overview state={state} resident={resident} onPropose={v2 ? () => setTab("spunti") : undefined} onApproach={v2 ? undefined : () => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
     {tab === "avvicinare" && <Approach state={state} resident={resident} navigate={navigate} />}
-    {tab === "conversazioni" && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} />}
+    {tab === "conversazioni" && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} onPropose={v2 ? () => setTab("spunti") : undefined} />}
     {tab === "allegati" && <Attachments resident={resident} documents={residentDocuments} onAdd={actions.addDocument} />}
   </div>;
 }
@@ -95,7 +96,7 @@ function Overview({ state, resident, onApproach, onConversations, onPropose }) {
       <section className="resident-resources surface"><span className="eyebrow">LE RISORSE DI {name.toUpperCase()}</span><h3>Cosa aiuta {name} a stare bene</h3><div className="resources-grid">{resources.map(([title, text]) => <div key={title}><strong>{title}</strong><span>{text}</span></div>)}</div><p className="resources-note">Lente salutogenica: si parte da ciò che c'è già e funziona, poi da ciò che è da osservare.</p></section>
       <article className="narrative-card surface"><span className="eyebrow">ULTIMI 7 GIORNI</span><h2>{summary.headline}</h2><p>{summary.paragraphs.join(" ")}</p><div className="narrative-stats">{summary.kpis.slice(0, 3).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div></article>
       <RossTips resident={resident} onPropose={onPropose || onApproach} />
-      {r && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p>{top?.opener && <p className="continuity-hook"><strong>Per iniziare · {top.label.toLowerCase()}:</strong> {top.opener}</p>}</div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
+      {r && onApproach && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p>{top?.opener && <p className="continuity-hook"><strong>Per iniziare · {top.label.toLowerCase()}:</strong> {top.opener}</p>}</div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
       <section className="surface participation-card"><header><div><h3>Partecipazione rispetto alla sua media</h3><p>{chart.building ? "ROSS la sta ancora conoscendo: per una media personale servono circa 14 giorni di chiacchierate." : "La linea tratteggiata è la media personale di " + name + ". Mai confronti con altri ospiti."}</p></div><Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} /></header><ParticipationChart series={chart.series} building={chart.building} height={200} /></section>
       <DataExplanation>Descrive solo ciò che accade nelle conversazioni con ROSS. Non è un giudizio sulla salute: ROSS segnala, lo staff osserva e decide.</DataExplanation>
     </div>
@@ -147,7 +148,7 @@ function Approach({ state, resident, navigate }) {
   </section>;
 }
 
-function Conversations({ state, resident, onApproach }) {
+function Conversations({ state, resident, onApproach, onPropose }) {
   const weeks = [0, 1, 2, 3].map((n) => weekOf(state, resident.id, n)).filter((w) => w.items.length);
   const name = resident.name.split(" ")[0];
   const usage = usageStyle[resident.id];
@@ -159,8 +160,9 @@ function Conversations({ state, resident, onApproach }) {
         <div className="usage-mix" aria-label="Conversazioni per tipo">{usage.mix.map(([label, value]) => <div key={label}><span>{label}</span><i><b style={{ width: `${value}%` }} /></i><small>{value}%</small></div>)}</div>
         <small className="usage-note">Per tipo di conversazione negli ultimi 30 giorni, mai il contenuto.{usage.tool ? ` Per ${name} ROSS è uno strumento più che un compagno: va bene così.` : ""}</small></article>}
       <article className="surface usage-card mode-card"><span className="eyebrow">MODALITÀ</span><h3>{resident.mode} · {said}</h3><p>{meaning}</p>
+        {onPropose ? <><button className="text-link" onClick={onPropose}>Proponi uno spunto <ArrowRight size={14} /></button></> : <>
         <div className="mode-invites"><strong>Inviti chiesti a ROSS</strong>{invites.length ? invites.map((i) => <div key={i.id} className="mode-invite"><Check size={15} /><span>{i.title}<small>{i.when} · ROSS lo proporrà nel suo momento migliore, decide {name}</small></span></div>) : <small>{resident.mode === "Attiva" ? `Nessuno per ora. Puoi chiederlo da "Come avvicinarsi" o dalla chat.` : `Con questa modalità ROSS non propone attività a ${name}: si propongono di persona.`}</small>}</div>
-        <button className="text-link" onClick={onApproach}>Attività che potrebbero {male(resident) ? "interessargli" : "interessarle"} <ArrowRight size={14} /></button></article>
+        <button className="text-link" onClick={onApproach}>Attività che potrebbero {male(resident) ? "interessargli" : "interessarle"} <ArrowRight size={14} /></button></>}</article>
     </div>
     <div className="approach-heading with-ross-when"><h3>Quando parla con ROSS</h3><p>Quando, quanto e com'è andata, settimana per settimana.</p></div>
     {!weeks.length ? <EmptyState title="Nessuna conversazione recente" /> : weeks.map((w, index) => {
