@@ -6,7 +6,7 @@ import { releaseLockScreen, requestLockScreen } from "../state/lockScreen";
 import { requestFamilyNews, requestReminders } from "../state/familyNews";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
-// Si apre da sola a ogni apertura della demo (non nella Mappa, non con ?visita=0); poi da "Vista demo",
+// Si apre da sola a ogni apertura della demo (non nella Mappa né in Struttura 2.0, non con ?visita=0); poi da "Vista demo",
 // dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
 // Accessibilità: il resto della pagina diventa inert, il focus entra nella scheda del passo,
 // Esc chiude, le frecce scorrono i passi; il passo si può sempre saltare.
@@ -141,7 +141,7 @@ export function GuidedTour() {
     const start = () => { origin.current = null; setIndex(0); };
     window.addEventListener("ross:tour", start);
     const params = new URLSearchParams(window.location.search);
-    const skip = params.get("visita") === "0" || window.location.pathname.startsWith("/mappa");
+    const skip = params.get("visita") === "0" || /\/(mappa|struttura-2)/.test(window.location.pathname);
     if (!skip) { origin.current = `${window.location.pathname}${window.location.hash}`; setIndex(0); }
     return () => window.removeEventListener("ross:tour", start);
   }, []);

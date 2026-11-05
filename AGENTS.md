@@ -36,8 +36,15 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
   - schede in alto a pillole senza cornice;
   - più respiro.
   - I colori restano i token della Struttura. Le regole sono in fondo a `src/styles.css` ("Struttura con l'estetica di Famiglia e ROSS").
-- **Selettore "Vista demo"** (Struttura / Famiglia / ROSS / Mappa): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3/4, l'interruttore "Famiglia su iPhone" (tasto I), "Notifica sulla schermata di blocco", "Cosa è reale e cosa è simulato", "Visita guidata" e **"Ripristina la demo"** (cancella tutto ciò che la demo ha salvato nel browser, chiavi `ross-*`, e ricarica la pagina: prove, messaggi, impostazioni e avvisi del primo avvio tornano come all'inizio). Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
+- **Selettore "Vista demo"** (Struttura / Struttura 2.0 / Famiglia / ROSS / Mappa): pillola discreta **in basso a destra, nella stessa posizione in tutte le viste**, con menu a tendina e scorciatoie 1/2/3/4, l'interruttore "Famiglia su iPhone" (tasto I), "Notifica sulla schermata di blocco", "Cosa è reale e cosa è simulato", "Visita guidata" e **"Ripristina la demo"** (cancella tutto ciò che la demo ha salvato nel browser, chiavi `ross-*`, e ricarica la pagina: prove, messaggi, impostazioni e avvisi del primo avvio tornano come all'inizio). Non va al centro dello schermo: è un comando per chi presenta, non parte del prodotto.
 - **Vista "Mappa"** (`/mappa`, `src/pages/DemoMap.jsx`): la mappatura della demo generata con Floorplan (`public/mappa-ross.html`), a tutto schermo. È per chi presenta e per il team, non fa parte del prodotto. Dopo modifiche al codice va rigenerata: istruzioni in `docs/floorplan/README.md`.
+
+## Struttura 2.0: il canale con ROSS (decisione del 05/11/2026)
+
+- Vista **separata** (`/struttura-2`, `src/pages/StructureChannel.jsx`, dati in `src/data/channel.js`), tasto `5` nella pillola "Vista demo". La Struttura attuale **resta intatta**: le due convivono per confrontarle.
+- Logica a **canale**, non ad archivio: la struttura **non interroga** ROSS. Gli propone uno **spunto** (ospite, testo breve, tipo facoltativo: attività, ricordo, evento, persona); ROSS lo porta nella conversazione solo se l'ospite ci sta; ROSS restituisce di sua iniziativa **cosa è emerso**.
+- Due funzioni sole: **Proponi uno spunto** e **Cosa è emerso**. Gli insight sono in ordine dal più recente; mostrano l'ospite, lo spunto di partenza (o "spontaneamente"), 1–2 frasi narrative e un suggerimento. Azioni solo **Visto** e **Fatto**.
+- Vincoli: niente dashboard, grafici, KPI, aggregati, punteggi o classifiche; niente alert, parametri vitali, farmaci o dati sanitari; niente trascrizioni (ROSS traduce, non trasmette); niente schede anagrafiche. Tono da collega che segnala qualcosa di bello o utile, non da sorveglianza. L'ospite è al centro ed è libero di non seguire lo spunto.
 
 ## Gli ospiti come archetipi (decisione del 04/11/2026)
 
