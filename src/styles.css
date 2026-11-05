@@ -1603,3 +1603,5 @@ button.document-card:hover{background:var(--surface-2)}
 .file-doc-preview strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file-doc-preview small{font-size:12px;color:var(--muted)}
 .text-doc-form>p.text-doc-note{font-size:12px}
+.file-doc-people button{padding-left:4px}
+.file-doc-people .avatar{width:30px;height:30px}

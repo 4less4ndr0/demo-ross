@@ -1,18 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, BellOff, Check, ChevronLeft, Clock, Folder, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Pause, Play, Sparkles, TextCursorInput, Upload } from "lucide-react";
+import { ArrowRight, BellOff, Check, ChevronLeft, Clock, Folder, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Pause, Play, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { attachmentFrom, useDemo } from "../state/DemoContext";
+import { useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge, useStructureView } from "../components/Common";
 import { ResidentSpunti } from "../components/ResidentSpunti";
 import { useChannel } from "../state/channelStore";
+import { AddDocumentMenu, familyOf, folders, useOf } from "../components/DocumentDialogs";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
 import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, rossTips, signalDetail, signalsFor, usageStyle } from "../data/careInsights";
 import { buildResidentReport } from "../data/reportNarrative";
 import { scheduledActivities, suggestedActivities } from "../data/activities";
-import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Input, Select, Tabs, TabsList, TabsTrigger, Textarea } from "../components/ui";
+import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, Select, Tabs, TabsList, TabsTrigger } from "../components/ui";
 
 // Ritratto dell'ospite secondo docs/contratto-informativo-struttura.md: come sta, come avvicinarsi,
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
@@ -63,7 +64,7 @@ export function ResidentProfile() {
   return <div className="profile-screen screen-enter">
     <section className="profile-header">
       <div className="profile-person"><Avatar resident={resident} size="xl" /><div><span className="eyebrow">RITRATTO · STANZA {resident.room}</span><h1>{resident.name}</h1><p>{resident.age} anni · {resident.daysWithRoss} giorni con ROSS · ultima conversazione {resident.lastInteraction}</p></div></div>
-      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} />{v2 ? <><Button onClick={() => { setTab("spunti"); window.setTimeout(() => document.querySelector(".s2-propose textarea")?.focus(), 50); }}><Send size={16} /> Proponi uno spunto</Button><Button variant="outline" onClick={() => setTab("allegati")}><Paperclip size={16} /> Aggiungi un documento</Button></> : <><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></>}</div>
+      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} />{v2 ? <><Button onClick={() => { setTab("spunti"); window.setTimeout(() => document.querySelector(".s2-propose textarea")?.focus(), 50); }}><Send size={16} /> Proponi uno spunto</Button><AddDocumentMenu resident={resident} onAdd={actions.addDocument} onAdded={(family) => setParams({ tab: "allegati", cartella: family })} className="ui-button ui-button-outline ui-button-md" /></> : <><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></>}</div>
     </section>
     <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabList.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
     {tab === "spunti" && <ResidentSpunti resident={resident} />}
@@ -188,18 +189,6 @@ function RossTips({ resident, onPropose }) {
   </section>;
 }
 
-// «Cosa sa ROSS» in quattro cartelle (decisione del 05/11/2026): chi è la persona, cosa ha condiviso la famiglia,
-// le cose fondamentali per stare bene e la sua giornata, dove si controlla cosa ROSS sta per dire o proporre.
-// Ogni documento dice chi l'ha scritto, cosa ne fa ROSS e chi lo vede. Una cartella vuota è un invito, non un buco.
-const folders = [
-  { id: "persona", color: "lilac", title: (n) => `Chi è ${n}`, hint: (n, m) => `La sua storia, cosa ${m ? "gli" : "le"} piace, come preferisce essere ${m ? "chiamato" : "chiamata"}. ROSS lo usa per parlar${m ? "gli" : "le"} in modo personale.`, who: "Struttura e staff", use: "Ne parla con la persona in modo personale", empty: (n) => `Ancora niente su chi è ${n}. All'ingresso si può aggiungere la biografia, o un testo con cosa ${n} ama.` },
-  { id: "famiglia", color: "coral", title: () => "Dalla famiglia", hint: () => "Ciò che la famiglia ha scelto di condividere con la struttura e con ROSS. La struttura lo riceve e basta, non lo approva.", who: "Famiglia", use: "Ne parla con la persona in modo personale", empty: (n) => `La famiglia non ha ancora condiviso niente con la struttura. Può farlo dall'app, accendendo «Anche alla struttura».` },
-  { id: "benessere", color: "mint", title: () => "Per stare bene", hint: () => "Le cose fondamentali, la base: i promemoria dell'infermeria e le indicazioni di fisioterapisti ed educatori. ROSS ricorda e invita, la persona sceglie.", who: "Infermeria, fisioterapisti, educatori", use: "Glielo ricorda o la invita, senza insistere", empty: (n) => `Niente da ricordare a ${n} per ora. L'infermeria o un fisioterapista può aggiungere un promemoria o un'indicazione.` },
-  { id: "giornata", color: "sand", title: () => "La sua giornata", hint: (n) => `Cosa ROSS ricorderà e proporrà a ${n}, oggi e domani. Se qualcosa non va, lo fermi qui.`, who: "ROSS, dai documenti e dal calendario", use: "Glielo ricorda al momento giusto", empty: (n) => `Nessun promemoria o proposta in arrivo per ${n}.` },
-];
-const legacyFamily = { conoscere: "persona" };
-const familyOf = (d) => legacyFamily[d.family] || d.family || (d.origin === "famiglia" ? "famiglia" : d.reminders || d.kind === "Indicazione" ? "benessere" : d.origin === "struttura" ? "giornata" : "persona");
-const useOf = (d) => d.use || folders.find((f) => f.id === familyOf(d))?.use;
 const sourceOf = (d) => d.origin === "struttura" ? "Struttura" : d.origin === "famiglia" ? "Famiglia" : d.origin === "ingresso" ? "Ingresso" : "Staff";
 const malesP = ["carlo", "mario", "antonio", "bruno"];
 
@@ -217,29 +206,15 @@ function upcomingFor(resident, documents, spunti = []) {
 }
 
 function Attachments({ resident, documents, onAdd }) {
-  const fileRef = useRef(null);
   const [open, setOpen] = useState(null);
-  const [writing, setWriting] = useState(false);
-  const [folder, setFolder] = useState(null);
+  // La cartella aperta sta nell'indirizzo (?tab=allegati&cartella=…): ci portano anche la chat e il bottone in cima al ritratto.
+  const [params, setParams] = useSearchParams();
+  const folder = folders.some((f) => f.id === params.get("cartella")) ? params.get("cartella") : null;
+  const setFolder = (id) => setParams(id ? { tab: "allegati", cartella: id } : { tab: "allegati" });
   const [paused, setPaused] = useState(readPaused);
   const name = resident.name.split(" ")[0];
   const male = malesP.includes(resident.id);
-  // Scelto il file, si sceglie la cartella (e si può correggere il titolo) prima di aggiungerlo.
-  const [pending, setPending] = useState(null);
-  const add = (event) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (file) setPending(file);
-  };
-  const choices = folders.filter((f) => f.id !== "giornata").map((f) => ({ id: f.id, color: f.color, label: f.title(name) }));
-  const startFolder = folder && folder !== "giornata" ? folder : "persona";
   const saved = (family) => { if (folder && folder !== family) setFolder(family); };
-  const saveFile = (file, title, family) => {
-    // Un .txt si legge subito: il testo diventa il contenuto del documento.
-    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => onAdd({ ...textDocument(resident.id, title, text), family }));
-    else { const doc = attachmentFrom(file); onAdd({ residentId: resident.id, origin: "staff", ...doc, title: title.trim() || doc.title, family }); }
-    setPending(null); saved(family);
-  };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
   const { v2 } = useStructureView();
   const channel = useChannel();
@@ -254,15 +229,12 @@ function Attachments({ resident, documents, onAdd }) {
     try { localStorage.setItem(PAUSED_KEY, JSON.stringify(next)); } catch { /* ignora */ }
     toast(next.includes(id) ? "Fermato: ROSS non lo dirà finché non lo riprendi" : "Ripreso: ROSS lo dirà di nuovo", { action: { label: "Annulla", onClick: () => { setPaused(before); try { localStorage.setItem(PAUSED_KEY, JSON.stringify(before)); } catch { /* ignora */ } } } });
   };
-  const addMenu = () => <DropdownMenu><DropdownMenuTrigger asChild><button className="ghost-button"><Paperclip size={16} /> Aggiungi un documento</button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem icon={Upload} onSelect={() => fileRef.current?.click()}>Carica dal dispositivo</DropdownMenuItem><DropdownMenuItem icon={TextCursorInput} onSelect={() => setWriting(true)}>Aggiungi contenuto testuale</DropdownMenuItem></DropdownMenuContent></DropdownMenu>;
+  const addMenu = () => <AddDocumentMenu resident={resident} initial={folder} onAdd={onAdd} onAdded={saved} />;
   const docCard = (doc) => <button type="button" className="document-card surface" key={doc.id} onClick={() => setOpen(doc)}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<div className="knows-meta"><span><b>Scritto da</b>{doc.author}</span><span><b>ROSS</b>{useOf(doc)}</span><span><b>Lo vede</b>{doc.seenBy || "Staff e ROSS"}</span></div></div><ArrowRight size={17} /></button>;
 
   return <section className="content-section">
-    <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} />
-    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} choices={choices} initial={startFolder} onSave={(title, text, family) => { onAdd({ ...textDocument(resident.id, title, text), family }); setWriting(false); saved(family); }} />
-    <FileDocumentDialog file={pending} onClose={() => setPending(null)} name={name} choices={choices} initial={startFolder} onSave={saveFile} />
     {!current ? <>
-      <div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Quattro cartelle con ciò che struttura e famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. {name} lo ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale. Per aggiungere qualcosa, apri la cartella giusta.</p></div></div>
+      <div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Quattro cartelle con ciò che struttura e famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. {name} lo ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale.</p></div>{!v2 && <div className="attachment-actions">{addMenu()}</div>}</div>
       <div className="folder-grid">{folders.map((f) => <button type="button" key={f.id} className={`folder-card surface folder-${f.color}`} onClick={() => setFolder(f.id)}>
         <span className="folder-icon"><Folder size={30} strokeWidth={1.6} /></span>
         <span className="folder-count">{count(f.id)}</span>
@@ -295,65 +267,6 @@ function Attachments({ resident, documents, onAdd }) {
     </Dialog>
     <DataExplanation>ROSS usa questi documenti per accompagnare {name}: non interpreta referti né valori e non sostituisce il gestionale. Ciò che {name} racconta a ROSS resta tra loro.</DataExplanation>
   </section>;
-}
-
-// «Aggiungi contenuto testuale»: si incolla un testo e diventa un documento .txt di «Cosa sa ROSS».
-const txtName = (title, text) => (title.trim() || text.trim().split("\n")[0].slice(0, 60) || "Testo").replace(/\.txt$/i, "").replace(/[\s.,;:!?…]+$/, "") || "Testo";
-const textDocument = (residentId, title, text) => {
-  const clean = text.trim();
-  const name = txtName(title, clean);
-  return { residentId, origin: "staff", kind: "Testo", title: `${name}.txt`, summary: clean.length > 160 ? `${clean.slice(0, 157)}…` : clean, body: [["Testo", clean]] };
-};
-
-// «In quale cartella»: parte da quella aperta; si può sceglierne un'altra (La sua giornata no: la compone ROSS).
-function FolderChoice({ choices, value, onChange }) {
-  return <fieldset className="text-doc-folders"><legend>In quale cartella</legend><div>{choices.map((c) => <button type="button" key={c.id} className={`folder-${c.color}`} aria-pressed={value === c.id} onClick={() => onChange(c.id)}><span className="folder-icon"><Folder size={15} /></span>{c.label}</button>)}</div></fieldset>;
-}
-
-// «Carica dal dispositivo»: scelto il file, si vede cosa si sta aggiungendo, si corregge il titolo e si sceglie la cartella.
-function FileDocumentDialog({ file, onClose, onSave, name, choices, initial }) {
-  const [title, setTitle] = useState("");
-  const [family, setFamily] = useState(initial);
-  const [preview, setPreview] = useState(null);
-  useEffect(() => {
-    if (!file) return undefined;
-    setTitle(file.name.replace(/\.[^.]+$/, ""));
-    setFamily(initial);
-    const url = file.type.startsWith("image/") ? URL.createObjectURL(file) : null;
-    setPreview(url);
-    return () => { if (url) URL.revokeObjectURL(url); };
-  }, [file, initial]);
-  const ext = file ? (file.name.match(/\.([^.]+)$/)?.[1] || "").toLowerCase() : "";
-  const size = file ? (file.size > 1048576 ? `${(file.size / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} kB`) : "";
-  const save = (event) => { event.preventDefault(); onSave(file, title, family); };
-  return <Dialog open={Boolean(file)} onClose={onClose} title="Aggiungi un file" size="md">
-    {file && <form className="text-doc-form" onSubmit={save}>
-      <div className="file-doc-preview">{preview ? <img src={preview} alt="" /> : <span className="document-icon"><FileText size={22} /></span>}<div><strong>{file.name}</strong><small>{[ext.toUpperCase(), size].filter(Boolean).join(" · ")}{ext === "txt" ? " · il testo diventa il contenuto del documento" : ""}</small></div></div>
-      <label><span>Titolo</span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Come comparirà in «Cosa sa ROSS»" /></label>
-      <FolderChoice choices={choices} value={family} onChange={setFamily} />
-      <p className="text-doc-note">ROSS lo usa per accompagnare {name}: non interpreta referti né valori.</p>
-      <div className="text-doc-actions"><Button type="button" variant="outline" onClick={onClose}>Annulla</Button><Button type="submit">Aggiungi il documento</Button></div>
-    </form>}
-  </Dialog>;
-}
-
-function TextDocumentDialog({ open, onClose, onSave, name, choices, initial }) {
-  const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
-  const [family, setFamily] = useState(initial);
-  useEffect(() => { if (open) setFamily(initial); }, [open, initial]);
-  const close = () => { setTitle(""); setText(""); onClose(); };
-  const save = (event) => { event.preventDefault(); if (!text.trim()) return; onSave(title, text, family); setTitle(""); setText(""); };
-  return <Dialog open={open} onClose={close} title="Aggiungi contenuto testuale" size="md">
-    <form className="text-doc-form" onSubmit={save}>
-      <p>Incolla o scrivi un testo: diventa un documento .txt che ROSS usa per accompagnare {name}.</p>
-      <label><span>Titolo <small>(se vuoi)</small></span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Per esempio: Note dell'educatrice" /></label>
-      <FolderChoice choices={choices} value={family} onChange={setFamily} />
-      <label><span>Testo</span><Textarea rows={9} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo…" autoFocus /></label>
-      {text.trim() && <small className="text-doc-preview"><FileText size={14} />{txtName(title, text)}.txt · {text.trim().length} caratteri · in «{choices.find((c) => c.id === family)?.label}»</small>}
-      <div className="text-doc-actions"><Button type="button" variant="outline" onClick={close}>Annulla</Button><Button type="submit" disabled={!text.trim()}>Aggiungi il documento</Button></div>
-    </form>
-  </Dialog>;
 }
 
 // Attività dal calendario demo, collegate solo agli interessi condivisi. Nessun collegamento reale.

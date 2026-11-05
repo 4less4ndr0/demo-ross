@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUp, BellOff, BarChart3, BookOpen, FileText, Heart, Mes
 import { answerQuestion, findResident, roleFor, suggestions } from "../data/chatScript";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { Avatar } from "../components/Common";
+import { FileDocumentDialog, folderChoices, textDocument } from "../components/DocumentDialogs";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../components/ui";
 
 const queryShortcuts = { turno: "Chi ha bisogno di più attenzione oggi?", fisioterapia: "Cosa dice la fisioterapia?", emerso: "Cosa è emerso oggi con Elena?" };
@@ -78,25 +79,41 @@ export function AskRoss() {
     window.setTimeout(() => { setListening(false); ask(scoped ? `Come sta ${scoped.name.split(" ")[0]}?` : "Come posso coinvolgere Elena?"); }, 1500);
   };
 
+  // Allegato dalla chat: scelto il file, si sceglie per chi è, il titolo e in quale cartella di «Cosa sa ROSS».
+  const [pending, setPending] = useState(null);
+  const [pendingFor, setPendingFor] = useState(null);
+  const people = useMemo(() => [...state.residents].sort((a, b) => a.name.localeCompare(b.name, "it")), [state.residents]);
   const upload = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    const resident = scoped || findResident(state, file.name.replace(/[_-]/g, " ")) || state.residents[0];
-    const { kind, title, image } = attachmentFrom(file);
-    actions.addDocument({ residentId: resident.id, kind, title, image, summary: "Allegato ora dalla chat." });
-    const id = Date.now();
-    setMessages((prev) => [...prev, { id, from: "user", attachment: file.name }, { id: id + 1, from: "ross", answer: {
-      text: `Ho allegato «${title}» al ritratto di ${resident.name.split(" ")[0]}. Se serve lo cito come fonte; non interpreto referti né valori: restano a chi se ne occupa.`,
-      residents: [resident.id],
-      sources: [{ kind: "Documento", label: `${kind} · oggi` }],
-      action: { label: "Apri gli allegati", to: `/ospiti/${resident.id}?tab=allegati` },
-    } }]);
+    setPendingFor((scoped || findResident(state, file.name.replace(/[_-]/g, " ")) || state.residents[0]).id);
+    setPending(file);
+  };
+  const attach = (file, wanted, family) => {
+    const resident = state.residents.find((r) => r.id === pendingFor);
+    const first = resident.name.split(" ")[0];
+    const folder = folderChoices(first).find((f) => f.id === family)?.label;
+    const reply = (doc) => {
+      actions.addDocument({ ...doc, family });
+      const id = Date.now();
+      setMessages((prev) => [...prev, { id, from: "user", attachment: file.name }, { id: id + 1, from: "ross", answer: {
+        text: `Ho messo «${doc.title}» in «Cosa sa ROSS» di ${first}, nella cartella «${folder}». Se serve lo cito come fonte; non interpreto referti né valori: restano a chi se ne occupa.`,
+        residents: [resident.id],
+        sources: [{ kind: "Documento", label: `${doc.kind} · oggi` }],
+        action: { label: `Apri «${folder}»`, to: `/ospiti/${resident.id}?tab=allegati&cartella=${family}` },
+      } }]);
+    };
+    // Un .txt si legge: il testo diventa il contenuto del documento.
+    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => reply(textDocument(resident.id, wanted, text)));
+    else { const { kind, title, image } = attachmentFrom(file); reply({ residentId: resident.id, origin: "staff", kind, title: wanted.trim() || title, image, summary: "Allegato dalla chat." }); }
+    setPending(null);
   };
 
 
   return (
     <div className="ask-screen">
+      <FileDocumentDialog file={pending} onClose={() => setPending(null)} name={(people.find((r) => r.id === pendingFor)?.name || "").split(" ")[0]} choices={folderChoices((people.find((r) => r.id === pendingFor)?.name || "").split(" ")[0])} initial="persona" residents={people} residentId={pendingFor} onResidentChange={setPendingFor} onSave={attach} />
       <section className="ask-chat surface">
         <header className="ask-header">
           <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Come stanno gli ospiti e di cosa hanno bisogno</small></div></div>

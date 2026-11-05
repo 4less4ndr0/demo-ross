@@ -199,6 +199,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
 | `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
+| `src/components/DocumentDialogs.jsx` | Le quattro cartelle di «Cosa sa ROSS» (`folders`, `familyOf`, `useOf`, `folderChoices`) e i dialog per aggiungere un documento: `FileDocumentDialog` (anteprima, titolo, cartella; dalla chat anche l'ospite), `TextDocumentDialog` (testo incollato → `.txt`), `FolderChoice`. Usati dal ritratto e dalla chat. |
 | `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
 | `src/pages/Residents.jsx` | Lista ospiti in ordine alfabetico (usata anche dalla Struttura 2.0: i link seguono `useStructureView().base`); scheda con foto, chi è, ultima conversazione e un solo avviso. |
@@ -257,6 +258,17 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 05/11/2026 · Allegato dalla chat con titolo, ospite e cartella; bottone in cima al ritratto sistemato
+- **Richiesta:** la stessa scelta della cartella anche per l'allegato dalla chat.
+- **Fatto (chat «Chiedi a ROSS», Struttura attuale):**
+  - con la graffetta, scelto il file, si apre «Aggiungi un file», lo stesso dialog del ritratto, con in più **«Per chi»**: gli otto ospiti, con quello della conversazione o quello trovato nel nome del file già scelto;
+  - si sceglie poi il titolo e la cartella;
+  - ROSS risponde «Ho messo «…» in «Cosa sa ROSS» di Ada, nella cartella «Dalla famiglia»». Il bottone «Apri «Dalla famiglia»» porta al ritratto con la cartella già aperta (`?tab=allegati&cartella=famiglia`);
+  - il dialog sta fuori dal modulo della chat, così «Aggiungi il documento» non invia anche una domanda.
+- **Corretto:** nel ritratto della 2.0 il bottone «Aggiungi un documento» in alto portava solo alla scheda «Cosa sa ROSS», e se ci si era già non faceva niente. Ora apre lo stesso menu delle cartelle (Carica dal dispositivo · Aggiungi contenuto testuale) e poi la cartella scelta. Nella Struttura attuale il bottone c'è anche sulla schermata con tutte le cartelle.
+- **Cartella nell'indirizzo:** la cartella aperta sta nell'indirizzo (`?tab=allegati&cartella=…`), così il tasto Indietro del browser e i link funzionano.
+- **Codice:** il menu con i suoi dialog è `AddDocumentMenu`. Cartelle (`folders`, `familyOf`, `useOf`, `folderChoices`) e dialog (`FolderChoice`, `FileDocumentDialog`, `TextDocumentDialog`, `textDocument`) spostati in `src/components/DocumentDialogs.jsx`, usati dal ritratto e dalla chat.
 
 ### Novembre 2026 · 05/11/2026 · Scelta della cartella anche per «Carica dal dispositivo»
 - **Richiesta:** la stessa scelta della cartella del contenuto testuale, anche quando si carica un file.

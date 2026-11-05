@@ -11,6 +11,10 @@
     "src/pages/Residents.jsx": {
       "name": "Lista degli ospiti",
       "description": "Mostra gli ospiti in ordine alfabetico, con foto, modalità e ultima conversazione con ROSS. È la stessa nella Struttura e nella Struttura 2.0."
+    },
+    "src/components/DocumentDialogs.jsx": {
+      "name": "Cartelle e aggiunta di documenti",
+      "description": "Le quattro cartelle di «Cosa sa ROSS» e le finestre per aggiungere un documento: un file con anteprima, titolo e cartella (dalla chat anche per quale ospite) o un testo incollato che diventa un .txt."
     }
   }
 }

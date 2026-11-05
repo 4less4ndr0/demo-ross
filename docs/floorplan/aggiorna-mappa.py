@@ -27,6 +27,8 @@ if not any(n["id"] == V2 for n in arch["nodes"]):
 for p in v2_files:
     if not any(f["p"] == p for f in G["files"]):
         G["files"].append({"p": p, "n": V2, "r": ".", "l": "javascript", "loc": 0, "name": "", "d": "", "h": "", "sig": "", "s": []})
+if not any(f["p"] == "src/components/DocumentDialogs.jsx" for f in G["files"]):
+    G["files"].append({"p": "src/components/DocumentDialogs.jsx", "n": "struttura.ospiti", "r": ".", "l": "javascript", "loc": 0, "name": "", "d": "", "h": "", "sig": "", "s": []})
 G["files"].sort(key=lambda f: f["p"])
 v2_desc = "docs/floorplan/descriptions/struttura.v2.json"
 if not os.path.exists(v2_desc):
@@ -34,6 +36,7 @@ if not os.path.exists(v2_desc):
 
 # --- Descrizioni scritte a mano per i file cambiati ---
 desc = {
+  "src/components/DocumentDialogs.jsx": ("Cartelle e aggiunta di documenti", "Le quattro cartelle di «Cosa sa ROSS» e le finestre per aggiungere un documento: un file con anteprima, titolo e cartella (dalla chat anche per quale ospite) o un testo incollato che diventa un .txt."),
   "src/pages/StructureChannel.jsx": ("Struttura 2.0: il canale", "La Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve cosa è emerso. Schede Il canale · Ospiti; Proponi uno spunto e Cosa è emerso (Visto, Fatto)."),
   "src/components/ResidentSpunti.jsx": ("Scheda Spunti del ritratto", "Nel ritratto della Struttura 2.0: cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, ciò che è emerso senza spunto e il modulo per proporne uno."),
   "src/data/channel.js": ("Spunti e insight d'esempio", "Gli spunti della struttura e gli insight di ROSS d'esempio, come è stato accolto ciascuno, gli spunti più vecchi e cosa ha capito ROSS di ogni ospite. Mai cosa ha raccontato l'ospite."),
