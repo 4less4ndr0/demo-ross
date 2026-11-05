@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, BellOff, Check, Clock, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Sparkles, TextCursorInput, Upload } from "lucide-react";
+import { ArrowRight, BellOff, Check, ChevronLeft, Clock, Folder, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Pause, Play, Sparkles, TextCursorInput, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
 import { Avatar, DataExplanation, EmptyState, ModeBadge, useStructureView } from "../components/Common";
 import { ResidentSpunti } from "../components/ResidentSpunti";
+import { useChannel } from "../state/channelStore";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
 import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, rossTips, signalDetail, signalsFor, usageStyle } from "../data/careInsights";
@@ -186,50 +188,101 @@ function RossTips({ resident, onPropose }) {
   </section>;
 }
 
-// «Cosa sa ROSS»: i documenti raggruppati per ciò che ROSS ne fa, non per tipo.
-// Ogni card dice chi l'ha scritto, cosa ne fa ROSS e chi lo vede. Una sezione vuota è un invito, non un buco.
-const families = [
-  ["conoscere", "Per conoscerla", "Per conoscerlo", "ROSS ne parla con la persona in modo personale.", (n) => `Chiedete alla famiglia di aiutare ROSS a conoscere ${n}: persone care, date importanti, cosa le piace.`],
-  ["giornata", "La sua giornata", "La sua giornata", "ROSS ricorda e propone, una cosa alla volta e senza insistere.", (n) => `Nessun promemoria o appuntamento per ${n}. Menù, attività e avvisi della residenza valgono per tutti.`],
-  ["benessere", "Per stare bene", "Per stare bene", "Indicazioni di fisioterapisti ed educatori: ROSS invita, la persona sceglie.", () => "Nessuna indicazione per ora. Un fisioterapista o un'educatrice può aggiungerne una."],
+// «Cosa sa ROSS» in quattro cartelle (decisione del 05/11/2026): chi è la persona, cosa ha condiviso la famiglia,
+// le cose fondamentali per stare bene e la sua giornata, dove si controlla cosa ROSS sta per dire o proporre.
+// Ogni documento dice chi l'ha scritto, cosa ne fa ROSS e chi lo vede. Una cartella vuota è un invito, non un buco.
+const folders = [
+  { id: "persona", color: "lilac", title: (n) => `Chi è ${n}`, hint: (n, m) => `La sua storia, cosa ${m ? "gli" : "le"} piace, come preferisce essere ${m ? "chiamato" : "chiamata"}. ROSS lo usa per parlar${m ? "gli" : "le"} in modo personale.`, who: "Struttura e staff", use: "Ne parla con la persona in modo personale", empty: (n) => `Ancora niente su chi è ${n}. All'ingresso si può aggiungere la biografia, o un testo con cosa ${n} ama.` },
+  { id: "famiglia", color: "coral", title: () => "Dalla famiglia", hint: () => "Ciò che la famiglia ha scelto di condividere con la struttura e con ROSS. La struttura lo riceve e basta, non lo approva.", who: "Famiglia", use: "Ne parla con la persona in modo personale", empty: (n) => `La famiglia non ha ancora condiviso niente con la struttura. Può farlo dall'app, accendendo «Anche alla struttura».` },
+  { id: "benessere", color: "mint", title: () => "Per stare bene", hint: () => "Le cose fondamentali, la base: i promemoria dell'infermeria e le indicazioni di fisioterapisti ed educatori. ROSS ricorda e invita, la persona sceglie.", who: "Infermeria, fisioterapisti, educatori", use: "Glielo ricorda o la invita, senza insistere", empty: (n) => `Niente da ricordare a ${n} per ora. L'infermeria o un fisioterapista può aggiungere un promemoria o un'indicazione.` },
+  { id: "giornata", color: "sand", title: () => "La sua giornata", hint: (n) => `Cosa ROSS ricorderà e proporrà a ${n}, oggi e domani. Se qualcosa non va, lo fermi qui.`, who: "ROSS, dai documenti e dal calendario", use: "Glielo ricorda al momento giusto", empty: (n) => `Nessun promemoria o proposta in arrivo per ${n}.` },
 ];
-const familyOf = (d) => d.family || (d.origin === "struttura" ? "giornata" : d.kind === "Indicazione" ? "benessere" : "conoscere");
-const defaultUse = { conoscere: "Ne parla con la persona in modo personale", giornata: "Glielo ricorda al momento giusto", benessere: "La invita, senza insistere" };
+const legacyFamily = { conoscere: "persona" };
+const familyOf = (d) => legacyFamily[d.family] || d.family || (d.origin === "famiglia" ? "famiglia" : d.reminders || d.kind === "Indicazione" ? "benessere" : d.origin === "struttura" ? "giornata" : "persona");
+const useOf = (d) => d.use || folders.find((f) => f.id === familyOf(d))?.use;
 const sourceOf = (d) => d.origin === "struttura" ? "Struttura" : d.origin === "famiglia" ? "Famiglia" : d.origin === "ingresso" ? "Ingresso" : "Staff";
 const malesP = ["carlo", "mario", "antonio", "bruno"];
+
+// Cosa ROSS sta per dire o proporre: promemoria dell'infermeria e attività del calendario (solo in modalità Attiva).
+// Chi controlla può fermare una cosa che non va: ROSS non la dirà finché non viene ripresa. Resta nel browser.
+const PAUSED_KEY = "ross-paused-v1";
+const readPaused = () => { try { return JSON.parse(localStorage.getItem(PAUSED_KEY)) || []; } catch { return []; } };
+function upcomingFor(resident, documents, spunti = []) {
+  const items = [];
+  // Struttura 2.0: anche gli spunti della struttura che ROSS deve ancora portare nella conversazione.
+  spunti.filter((sp) => sp.residentId === resident.id && sp.status === "attesa").forEach((sp) => items.push({ id: sp.id, when: "Appena possibile", sort: "0", kind: "Il tuo spunto", what: sp.text, source: "Proposto dalla struttura" }));
+  documents.filter((d) => d.reminders).forEach((d) => d.reminders.forEach(([time, moment, what, line]) => items.push({ id: `${d.id}-${time}`, when: `Ogni giorno, ${time}`, sort: time, kind: "Promemoria dell'infermeria", what: `Ricordare ${what}, ${moment}`, line, source: d.title })));
+  (suggestedActivities[resident.id] || []).forEach((a) => items.push({ id: `att-${a.id}`, when: a.when, sort: `z${a.when}`, kind: "Proposta dal calendario", what: `Proporre «${a.title}» (${a.where})`, line: a.invite, source: "Calendario della residenza", off: resident.mode !== "Attiva" && `Non partirà: ${resident.name.split(" ")[0]} ha ROSS in modalità ${resident.mode.toLowerCase()}.` }));
+  return items.sort((a, b) => a.sort.localeCompare(b.sort));
+}
 
 function Attachments({ resident, documents, onAdd }) {
   const fileRef = useRef(null);
   const [open, setOpen] = useState(null);
   const [writing, setWriting] = useState(false);
+  const [folder, setFolder] = useState(null);
+  const [paused, setPaused] = useState(readPaused);
   const name = resident.name.split(" ")[0];
   const male = malesP.includes(resident.id);
+  const withFolder = (doc) => ({ ...doc, family: folder && folder !== "giornata" ? folder : "persona" }); // si aggiunge nella cartella aperta
   const add = (event) => {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
     // Un .txt si legge subito: il testo diventa il contenuto del documento.
-    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => onAdd(textDocument(resident.id, file.name.replace(/\.[^.]+$/, ""), text)));
-    else onAdd({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) });
+    if (/\.txt$/i.test(file.name) || file.type === "text/plain") file.text().then((text) => onAdd(withFolder(textDocument(resident.id, file.name.replace(/\.[^.]+$/, ""), text))));
+    else onAdd(withFolder({ residentId: resident.id, origin: "staff", ...attachmentFrom(file) }));
   };
   const src = (image) => /^(blob:|data:|https?:)/.test(image) ? image : asset(image);
-  const groups = families.map(([id, f, m, hint, empty]) => ({ id, label: male ? m : f, hint, empty: empty(name, male), items: documents.filter((d) => familyOf(d) === id) }));
-  return <section className="content-section"><div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Ciò che la struttura e la famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. Ogni cosa ha la sua fonte, e {name} la ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale.</p></div><div className="attachment-actions"><DropdownMenu><DropdownMenuTrigger asChild><button className="ghost-button"><Paperclip size={16} /> Aggiungi un documento</button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem icon={Upload} onSelect={() => fileRef.current?.click()}>Carica dal dispositivo</DropdownMenuItem><DropdownMenuItem icon={TextCursorInput} onSelect={() => setWriting(true)}>Aggiungi contenuto testuale</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
-    <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} /></div>
-    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} onSave={(title, text) => { onAdd(textDocument(resident.id, title, text)); setWriting(false); }} />
-    <div className="knows-flow"><span><b>Chi lo scrive</b>struttura o famiglia</span><ArrowRight size={16} /><span><b>Cosa ne fa ROSS</b>ne parla, ricorda, propone</span><ArrowRight size={16} /><span><b>Dove {name} lo ritrova</b>«Cosa ricordo di te», sul tablet</span></div>
-    {groups.map((g) => <div className="attachment-group" key={g.id}>
-      <header><FolderOpen size={18} /><h3>{g.label}</h3><span>{g.items.length}</span><p>{g.hint}</p></header>
-      {g.items.length ? <div className="document-list">{g.items.map((doc) => <button type="button" className="document-card surface" key={doc.id} onClick={() => setOpen(doc)}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<div className="knows-meta"><span><b>Scritto da</b>{doc.author}</span><span><b>ROSS</b>{doc.use || defaultUse[familyOf(doc)]}</span><span><b>Lo vede</b>{doc.seenBy || "Staff e ROSS"}</span></div></div><ArrowRight size={17} /></button>)}</div>
-        : <p className="knows-empty">{g.empty}</p>}
-    </div>)}
+  const { v2 } = useStructureView();
+  const channel = useChannel();
+  const upcoming = upcomingFor(resident, documents, v2 ? channel.spunti : []);
+  const count = (id) => id === "giornata" ? upcoming.length + documents.filter((d) => familyOf(d) === id).length : documents.filter((d) => familyOf(d) === id).length;
+  const current = folders.find((f) => f.id === folder);
+  const items = current ? documents.filter((d) => familyOf(d) === current.id) : [];
+  const togglePause = (id) => {
+    const before = paused;
+    const next = paused.includes(id) ? paused.filter((p) => p !== id) : [...paused, id];
+    setPaused(next);
+    try { localStorage.setItem(PAUSED_KEY, JSON.stringify(next)); } catch { /* ignora */ }
+    toast(next.includes(id) ? "Fermato: ROSS non lo dirà finché non lo riprendi" : "Ripreso: ROSS lo dirà di nuovo", { action: { label: "Annulla", onClick: () => { setPaused(before); try { localStorage.setItem(PAUSED_KEY, JSON.stringify(before)); } catch { /* ignora */ } } } });
+  };
+  const addMenu = () => <DropdownMenu><DropdownMenuTrigger asChild><button className="ghost-button"><Paperclip size={16} /> Aggiungi un documento</button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuItem icon={Upload} onSelect={() => fileRef.current?.click()}>Carica dal dispositivo</DropdownMenuItem><DropdownMenuItem icon={TextCursorInput} onSelect={() => setWriting(true)}>Aggiungi contenuto testuale</DropdownMenuItem></DropdownMenuContent></DropdownMenu>;
+  const docCard = (doc) => <button type="button" className="document-card surface" key={doc.id} onClick={() => setOpen(doc)}>{doc.image ? <img className="attachment-thumb" src={src(doc.image)} alt="" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <span className="document-icon"><FileText size={20} /></span>}<div><small>{doc.kind} · {doc.date}</small><h3>{doc.title}</h3>{doc.summary && <p>{doc.summary}</p>}<div className="knows-meta"><span><b>Scritto da</b>{doc.author}</span><span><b>ROSS</b>{useOf(doc)}</span><span><b>Lo vede</b>{doc.seenBy || "Staff e ROSS"}</span></div></div><ArrowRight size={17} /></button>;
+
+  return <section className="content-section">
+    <input ref={fileRef} type="file" hidden accept="image/*,.pdf,.doc,.docx,.txt" onChange={add} />
+    <TextDocumentDialog open={writing} onClose={() => setWriting(false)} name={name} onSave={(title, text) => { onAdd(withFolder(textDocument(resident.id, title, text))); setWriting(false); }} />
+    {!current ? <>
+      <div className="content-toolbar"><div><h2>Cosa sa ROSS di {name}</h2><p>Quattro cartelle con ciò che struttura e famiglia hanno dato a ROSS per {male ? "accompagnarlo" : "accompagnarla"}. {name} lo ritrova sul tablet in «Cosa ricordo di te». I documenti ufficiali restano nel gestionale. Per aggiungere qualcosa, apri la cartella giusta.</p></div></div>
+      <div className="folder-grid">{folders.map((f) => <button type="button" key={f.id} className={`folder-card surface folder-${f.color}`} onClick={() => setFolder(f.id)}>
+        <span className="folder-icon"><Folder size={30} strokeWidth={1.6} /></span>
+        <span className="folder-count">{count(f.id)}</span>
+        <h3>{f.title(name)}</h3>
+        <p>{f.hint(name, male)}</p>
+        <small><b>Chi lo scrive</b>{f.who}</small>
+      </button>)}</div>
+    </> : <>
+      <button type="button" className="folder-back" onClick={() => setFolder(null)}><ChevronLeft size={16} /> Tutte le cartelle</button>
+      <div className={`content-toolbar folder-head folder-${current.color}`}><div><span className="folder-icon"><FolderOpen size={26} strokeWidth={1.6} /></span><div><h2>{current.title(name)}</h2><p>{current.hint(name, male)}</p></div></div>{current.id !== "giornata" && <div className="attachment-actions">{addMenu()}</div>}</div>
+      {current.id === "giornata" && <div className="ross-check">
+        <header><h3>Cosa sta per dire ROSS</h3><p>Controlla le parole di ROSS prima che {male ? "le senta lui" : "le senta lei"}. Se qualcosa non va, fermalo: ROSS non lo dirà finché non lo riprendi.</p></header>
+        {upcoming.length ? <ul>{upcoming.map((u) => { const stop = paused.includes(`${resident.id}:${u.id}`); return <li key={u.id} className={`ross-check-item surface${stop ? " is-paused" : ""}${u.off ? " is-off" : ""}`}>
+          <div className="ross-check-when"><strong>{u.when}</strong><span>{u.kind}</span></div>
+          <div className="ross-check-body"><p className="ross-check-what">{u.what}</p>{u.line && <p className="reminder-line"><span>ROSS dirà</span>«{u.line}»</p>}<small>Da: {u.source}</small>{u.off && <small className="ross-check-off">{u.off}</small>}{stop && <small className="ross-check-off">Fermato: ROSS non lo dirà. Se è un promemoria dell'infermeria, avvisala di persona.</small>}</div>
+          {!u.off && <button type="button" className={`s2-mark${stop ? " is-done" : ""}`} aria-pressed={stop} onClick={() => togglePause(`${resident.id}:${u.id}`)}>{stop ? <><Play size={15} />Riprendi</> : <><Pause size={15} />Qualcosa non va</>}</button>}
+        </li>; })}</ul> : <p className="knows-empty">{current.empty(name)}</p>}
+      </div>}
+      {current.id === "giornata" && items.length > 0 && <h3 className="folder-subtitle">Documenti</h3>}
+      {items.length ? <div className="document-list">{items.map(docCard)}</div> : current.id !== "giornata" && <p className="knows-empty">{current.empty(name)}</p>}
+    </>}
     <Dialog open={Boolean(open)} onClose={() => setOpen(null)} title={open?.title || ""} size="sm">
       {open && <div className="document-view"><span className="preview-tag">DOCUMENTO DIMOSTRATIVO</span><p className="document-view-meta">{open.kind} · {open.author} · {open.date}</p>
         {open.image && <img className="document-view-image" src={src(open.image)} alt={open.title} onError={(event) => { event.currentTarget.style.display = "none"; }} />}
         {open.summary && open.kind !== "Testo" && <p>{open.summary}</p>}
         {open.reminders && <ReminderDoc doc={open} name={name} />}
         {open.body && <dl>{open.body.map(([label, text]) => <div key={label}><dt>{label}</dt><dd>{text}</dd></div>)}</dl>}
-        <p className="knows-source">Fonte: {sourceOf(open)} · ROSS: {open.use || defaultUse[familyOf(open)]} · Lo vede: {open.seenBy || "Staff e ROSS"}</p>
+        <p className="knows-source">Fonte: {sourceOf(open)} · ROSS: {useOf(open)} · Lo vede: {open.seenBy || "Staff e ROSS"}</p>
       </div>}
     </Dialog>
     <DataExplanation>ROSS usa questi documenti per accompagnare {name}: non interpreta referti né valori e non sostituisce il gestionale. Ciò che {name} racconta a ROSS resta tra loro.</DataExplanation>
@@ -237,9 +290,10 @@ function Attachments({ resident, documents, onAdd }) {
 }
 
 // «Aggiungi contenuto testuale»: si incolla un testo e diventa un documento .txt di «Cosa sa ROSS».
+const txtName = (title, text) => (title.trim() || text.trim().split("\n")[0].slice(0, 60) || "Testo").replace(/\.txt$/i, "").replace(/[\s.,;:!?…]+$/, "") || "Testo";
 const textDocument = (residentId, title, text) => {
   const clean = text.trim();
-  const name = (title.trim() || clean.split("\n")[0].slice(0, 60) || "Testo").replace(/\.txt$/i, "");
+  const name = txtName(title, clean);
   return { residentId, origin: "staff", kind: "Testo", title: `${name}.txt`, summary: clean.length > 160 ? `${clean.slice(0, 157)}…` : clean, body: [["Testo", clean]] };
 };
 
@@ -253,7 +307,7 @@ function TextDocumentDialog({ open, onClose, onSave, name }) {
       <p>Incolla o scrivi un testo: diventa un documento .txt che ROSS usa per accompagnare {name}.</p>
       <label><span>Titolo <small>(se vuoi)</small></span><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Per esempio: Note dell'educatrice" /></label>
       <label><span>Testo</span><Textarea rows={9} value={text} onChange={(e) => setText(e.target.value)} placeholder="Incolla qui il testo…" autoFocus /></label>
-      {text.trim() && <small className="text-doc-preview"><FileText size={14} />{(title.trim() || text.trim().split("\n")[0].slice(0, 60)).replace(/\.txt$/i, "")}.txt · {text.trim().length} caratteri</small>}
+      {text.trim() && <small className="text-doc-preview"><FileText size={14} />{txtName(title, text)}.txt · {text.trim().length} caratteri</small>}
       <div className="text-doc-actions"><Button type="button" variant="outline" onClick={close}>Annulla</Button><Button type="submit" disabled={!text.trim()}>Aggiungi il documento</Button></div>
     </form>
   </Dialog>;

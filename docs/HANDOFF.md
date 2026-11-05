@@ -258,6 +258,19 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 
 ## 6. Changelog (dal più recente)
 
+### Novembre 2026 · 05/11/2026 · «Cosa sa ROSS» in cartelle, con il controllo di cosa dirà ROSS
+- **Richiesta:** rendere «Cosa sa ROSS» più chiaro, organizzato in cartelle (le informazioni dell'ospite, ciò che ha condiviso la famiglia, le cose fondamentali per stare bene, la sua giornata). Aggiungere un modo per controllare cosa ROSS sta per proporre, se si vuole vedere se sbaglia qualcosa.
+- **Fatto (in tutte e due le Strutture):**
+  - la prima schermata mostra quattro **cartelle** (icona, numero di documenti, a cosa serve, chi la scrive): Chi è {nome} · Dalla famiglia · Per stare bene · La sua giornata. Si apre una cartella e si torna con «Tutte le cartelle»;
+  - **Per stare bene** raccoglie i promemoria dell'infermeria e le indicazioni di fisioterapisti ed educatori. Prima i promemoria stavano in «La sua giornata»;
+  - **La sua giornata** contiene **«Cosa sta per dire ROSS»**:
+    - promemoria, attività del calendario (con l'avviso se la modalità non è Attiva) e, nella 2.0, gli spunti in attesa;
+    - ogni voce mostra le parole esatte di ROSS;
+    - con «Qualcosa non va» si ferma: ROSS non la dirà finché non viene ripresa (toast con «Annulla»);
+  - «Aggiungi un documento» sta dentro le cartelle e il documento finisce in quella aperta. Il nome del `.txt` creato da testo non ha più la punteggiatura finale doppia.
+- **Codice:** `folders`, `familyOf` (con il vecchio `conoscere` → `persona`), `upcomingFor` e `Attachments` in `ResidentProfile.jsx`; stili `.folder-*` e `.ross-check-*` in fondo a `styles.css`.
+- **Da sapere:** fermare una voce è simulato e resta solo nel browser. Per i promemoria dell'infermeria l'app ricorda di avvisarla di persona.
+
 ### Novembre 2026 · 05/11/2026 · «Aggiungi un documento» con contenuto testuale
 - **Richiesta:** in «Cosa sa ROSS» togliere «Scatta una foto» e lasciare solo «Aggiungi un documento», con la possibilità di caricare un file o di incollare un testo che diventa un `.txt`.
 - **Fatto (in tutte e due le Strutture, perché il componente è lo stesso):**

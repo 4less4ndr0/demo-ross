@@ -6,7 +6,7 @@
     },
     "src/pages/ResidentProfile.jsx": {
       "name": "Ritratto dell'ospite",
-      "description": "Il ritratto si adatta alla persona: Come sta, Come avvicinarsi, Con ROSS e «Cosa sa ROSS» (i documenti di struttura e famiglia per ciò che ROSS ne fa; si aggiungono caricando un file o incollando un testo, che diventa un .txt). Nella Struttura 2.0 si apre su Spunti, senza Come avvicinarsi (ci si avvicina con gli spunti), senza chat né report."
+      "description": "Il ritratto si adatta alla persona: Come sta, Come avvicinarsi, Con ROSS e «Cosa sa ROSS», in quattro cartelle: Chi è, Dalla famiglia, Per stare bene e La sua giornata, dove si controlla cosa ROSS sta per dire e si ferma ciò che non va. Si aggiunge un file o un testo incollato, che diventa un .txt. Nella Struttura 2.0 si apre su Spunti, senza Come avvicinarsi (ci si avvicina con gli spunti), senza chat né report."
     },
     "src/pages/Residents.jsx": {
       "name": "Lista degli ospiti",
