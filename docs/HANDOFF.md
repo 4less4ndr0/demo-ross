@@ -192,10 +192,15 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti, Report e Panoramica; testi in `residentsGuide`, `reportsGuide` e `overviewGuide`. |
 | `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
 | `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
-| `src/pages/StructureChannel.jsx` | **Struttura 2.0** (`/struttura-2`): `StructureChannelLayout` (marchio e schede Il canale · Ospiti, fornisce `StructureView` con `base` e `v2`), `StructureChannelPage` (contenitore per Ospiti e ritratto, gli stessi componenti della Struttura), `ProposeCard` (anche nel ritratto, con `fixedId`) e la pagina del canale con «Proponi uno spunto» (ospite, testo ≤ 160 caratteri, tipo facoltativo) e «Cosa è emerso» (insight, i più recenti in alto, Visto/Fatto con «Annulla»). Stili `.s2-*` in fondo a `styles.css`. |
-| `src/state/channelStore.js` | Stato condiviso della Struttura 2.0 (`useChannel`, `channelActions.send` / `mark`), in localStorage `ross-struttura2-v1`. La risposta simulata di ROSS (6 secondi) vive a livello di modulo, così arriva anche se si cambia pagina. |
-| `src/components/ResidentSpunti.jsx` | Scheda **Spunti** del ritratto nella Struttura 2.0: «Cosa ha capito ROSS» (`spuntoReading` + tipi che funzionano / per ora meno), spunti raggruppati in Sono piaciuti · Ci sta pensando · Non sono piaciuti, o non era il momento · In attesa; più ciò che è emerso senza spunto, e il modulo per proporne uno. |
-| `src/data/channel.js` | Dati della Struttura 2.0: `channelResidents` (Elena, Ada, Antonio, Bruno), `spuntoTypes`, `timingFor` (come ROSS porta lo spunto secondo la modalità), `initialInsights` (6 esempi, con e senza spunto), `receptions`, `spuntoHistory` (spunti più vecchi, solo nel ritratto), `spuntoReading` (cosa ha capito ROSS di ciascuno), `simulatedInsight` (testi per tipo di spunto). Gli ospiti sono gli otto di `demoData.js`. |
+| `src/pages/StructureChannel.jsx` | **Struttura 2.0** (`/struttura-2`): `StructureChannelLayout` (marchio e schede Il canale · Ospiti, fornisce `StructureView` con `base` e `v2`), `StructureChannelPage` (contenitore per Ospiti e ritratto, gli stessi componenti della Struttura), la pagina del canale (flusso in 3 passi, rete delle passioni, «Proponi uno spunto», «Cosa è emerso» con il filtro `momentFilters.canale`), `ProposeCard` (anche nel ritratto, con `fixedId` e `prefill`), `MomentCard`, `MomentActions` (Visto/Fatto) ed `Esito`. Stili `.s2-*` in fondo a `styles.css`. |
+| `src/state/channelStore.js` | **La sola fonte dei momenti** letta da canale, Spunti e Con ROSS: `useMoments()`, `channelActions.send({ residentId, testo, tipo })` (crea un momento «spunto» in attesa; nella demo ROSS risponde in 6 secondi con `simulatedReply`) e `channelActions.mark(id, stato)` per Visto/Fatto, con «Annulla». I filtri delle tre viste sono in `momentFilters` (`canale`, `spunti(id)`, `storia(id)`). Nel browser (`ross-struttura2-v2`) si salvano solo lo stato dei momenti di partenza e i momenti nati da nuovi spunti; quelli di partenza si ricalcolano ogni volta da oggi. |
+| `src/components/ResidentSpunti.jsx` | Ritratto → **Spunti** (una persona → come proporle meglio): «Cosa ha capito ROSS» (`spuntoReading` e i tipi che funzionano o per ora meno, dagli esiti), poi solo i momenti con origine «spunto» raggruppati per esito (in attesa, sono piaciuti, ci sta pensando, non sono piaciuti o non era il momento), in card compatte; «Cosa puoi fare» solo finché non è Fatto. Accanto il modulo per proporne uno (con `?spunto=…&tipo=…` arriva già scritto). |
+| `src/data/channel.js` | Dati della Struttura 2.0: `channelResidents` (gli otto ospiti), `spuntoTypes`, `timingFor` (come ROSS porta lo spunto secondo la modalità), `spuntoReading` (cosa ha capito ROSS di ciascuno) e `simulatedReply` (la risposta preparata per tipo di spunto, in terza persona). |
+| `src/data/moments.js` | I **momenti di partenza** della 2.0 (`seedMoments`): gli insight del canale, gli spunti passati e i momenti di ogni ospite (iniziative, uscite raccontate, scelte, interessi emersi, cose da guardare di persona). Ognuno ha `id`, `residentId`, `quando` (calcolato da oggi con `at(giorniFa, "hh:mm")`), `origine` (spunto · spontaneo · invito · scelta · da_osservare), `spunto` ed `esito` se nasce da uno spunto, `titolo`, `racconto`, `cosaPuoiFare`, `stato`. Più `esiti`, `labelOf` e `toneOf`. Sempre in terza persona, mai il contenuto delle conversazioni. |
+| `src/data/demoClock.js` | L'**orologio della demo** per Struttura 2.0, Famiglia e tablet: `demoToday()`, `at(giorniFa, "hh:mm")`, `daysAgo`, `dayLabel` (Oggi · Ieri · giorno della settimana fino a 6 giorni · «La settimana scorsa» · «N settimane fa», con la data), `whenText`, `dayText`, `dayShort`, `rangeText`, `monthText`, `daysUntil`. La Struttura attuale resta sul giorno fisso `DEMO_TODAY`. |
+| `src/data/interestGraph.js` | **Una sola fonte per i due grafi**: `passions` (passioni con chi le condivide e un'occasione; `sharedPassions` sono quelle con almeno 2 ospiti), `passionsOf`, `viaOf`, `personalLinks` (le occasioni di ciascuno, collegate al momento che ne dice l'esito), `outsideLinks`, `graphStatus` e `statusFromEsito`. |
+| `src/components/PassionNetwork.jsx` | Canale, **«La rete delle passioni · tutta la residenza»**: solo `sharedPassions`, la passione scelta nell'indirizzo (`?passione=…`), azione collettiva «Proponilo a tutti e N». |
+| `src/components/PortraitV2.jsx` | Ritratto della 2.0: `HowIsV2` (Come sta, con **«Le passioni di …»**: solo i suoi interessi, colori dagli esiti dei suoi spunti, gli altri ospiti come «con chi la condivide», «Proponilo come spunto» e «Vedi chi altro la condivide» verso `/struttura-2?passione=…`) e `WithRossV2` (Con ROSS: la sua storia dal filtro `momentFilters.storia`, gli spunti come riga compatta con il link a Spunti, filtri a pillole). |
 | `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
 | `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
@@ -258,6 +263,36 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 05/11/2026 · Struttura 2.0: una sola fonte di momenti, due grafi distinti, ROSS in terza persona, date intorno a oggi
+- **Richiesta:** quattro sistemazioni della 2.0, senza toccare la Struttura attuale:
+  - un'unica fonte per i momenti emersi con ROSS, con un filtro diverso per canale, Spunti e Con ROSS;
+  - due grafi con ruoli distinti;
+  - la voce di ROSS sempre in terza persona;
+  - le date sempre intorno al giorno reale di oggi.
+- **Fatto:**
+  - **una sola fonte:**
+    - `src/data/moments.js` unisce gli insight del canale, gli spunti passati e i momenti di ogni ospite, senza doppioni. Prima stavano in `initialInsights`, `spuntoHistory` e `highlights.js`, che è stato tolto;
+    - `src/state/channelStore.js` è l'unico stato (`useMoments`, `momentFilters`);
+    - uno spunto inviato dal canale, dal ritratto o dalla rete crea un momento «spunto» in attesa. Quando ROSS risponde, lo stesso momento prende esito, racconto e cosa fare e torna in cima. Visto/Fatto cambia in un posto e vale ovunque;
+  - **tre viste con il loro filtro:**
+    - **canale, «Cosa è emerso»:** solo i momenti con «Cosa puoi fare», non ancora Fatti, degli ultimi 7 giorni. Card completa con Visto/Fatto e «Vedi la storia di …», che apre Con ROSS;
+    - **Spunti:** solo gli spunti, per esito, in card compatte. «Cosa puoi fare» compare solo finché non è Fatto;
+    - **Con ROSS:** la storia, senza gli spunti in attesa. Gli spunti sono una riga compatta («Dal tuo spunto · esito» e il testo) con «Vedi in Spunti», senza ripetere cosa fare;
+  - **due grafi, una sola fonte** (`interestGraph.js`):
+    - nel canale, «La rete delle passioni · tutta la residenza» mostra solo le passioni con almeno 2 ospiti. L'azione è collettiva e la passione sta nell'indirizzo (`?passione=…`);
+    - nel ritratto, «Le passioni di …» mostra solo i suoi interessi, colorati dagli esiti dei suoi spunti, con le foto di chi la condivide. L'azione è individuale («Proponilo come spunto»). Toccando una passione c'è «Vedi chi altro la condivide», che apre la rete già su quella passione;
+  - **terza persona:** tutti i testi di ROSS della 2.0, compresa la risposta simulata («ROSS ha nominato Chiara… Non ha insistito: ci tornerà…», «ha chiesto a ROSS se…»). Tolte anche le parole dell'ospite tra virgolette: ora si legge «Ha accettato l'invito di ROSS»;
+  - **date intorno a oggi:** `src/data/demoClock.js` (`demoToday`, `at`, `dayLabel`…). I momenti sono scostamenti in giorni da oggi e le etichette si calcolano. Allineate anche:
+    - la Famiglia: schermata di blocco, Oggi, Da lei per giorno, settimana e mese, lo spunto salvato;
+    - il tablet: la data in home e i giorni dei promemoria («per martedì»), contati da oggi.
+- **Da sapere:**
+  - la Struttura attuale resta sul suo giorno fisso (`DEMO_TODAY`, lunedì 21 settembre), come chiesto: le due Strutture non mostrano più la stessa data;
+  - **contenuti legati al calendario, non toccati:**
+    - sul tablet la ricorrenza «Il 23 settembre nasceva Gino Paoli» resta; la sua etichetta ora è «Una ricorrenza» invece di «Mercoledì è una ricorrenza»;
+    - nella Famiglia restano testi come «la festa dei compleanni di settembre», «Il primo giorno del mese» e «dopo l'estate», anche se le date ora cambiano;
+  - lo stato salvato prima (`ross-struttura2-v1`) non viene più letto: si riparte dai momenti di partenza;
+  - i testi di «Cosa puoi fare» sono al voi («Tenetele un posto…»), perché parlano all'équipe.
 
 ### Novembre 2026 · 05/11/2026 · La rete delle passioni sale in cima al canale
 - **Richiesta:** la rete delle passioni non deve stare in fondo.

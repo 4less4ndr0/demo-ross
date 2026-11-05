@@ -3,6 +3,7 @@ import { toast as sonner } from "sonner";
 import { biography as initialBiography, documents as initialDocuments, interactions as initialInteractions, memories as initialMemories, modeSchedule as initialSchedule, residents as initialResidents } from "../data/demoData";
 import { asset } from "../asset.js";
 import { elaborate } from "../data/familyMessages";
+import { dayText } from "../data/demoClock";
 
 const DemoContext = createContext(null);
 const STORAGE_KEY = "ross-rsa-demo-v2";
@@ -88,7 +89,7 @@ function defaultState() {
       { key: "own-pranzo", text: "Domenica pranzo con Anna e Sofia", when: "per domenica" },
       { key: "own-libro", text: "Restituire il libro di ricette a Lucia", when: "" },
     ],
-    savedPrompts: [{ id: "prompt-festa", text: "Chiedile della festa dei compleanni: com'era la torta di mele?", savedAt: "mercoledì 9 settembre" }],
+    savedPrompts: [{ id: "prompt-festa", text: "Chiedile della festa dei compleanni: com'era la torta di mele?", savedAt: dayText(12) }],
     residents: initialResidents,
     memories: initialMemories,
     interactions: initialInteractions,
