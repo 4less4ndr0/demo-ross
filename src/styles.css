@@ -1855,3 +1855,49 @@ button.document-card:hover{background:var(--surface-2)}
 .ross-tells-list{display:grid;gap:14px}
 .ross-tell h3{font-size:clamp(20px,2.2vw,26px);line-height:1.35}
 .s2-rq-section .s2-feed-head h2{font:500 28px/1.15 var(--serif);margin:0}
+/* Struttura 2.0 · «ROSS, al volo» (src/components/QuickChat.jsx): la bolla sopra la pillola «Vista demo» */
+.s2-quick-bubble{position:fixed;right:18px;bottom:70px;z-index:125;width:56px;height:56px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--text);color:var(--surface);box-shadow:0 12px 30px rgba(18,28,25,.28);cursor:pointer;transition:transform .15s,background .15s}
+.s2-quick-bubble:hover{transform:translateY(-2px);background:var(--green)}
+.s2-quick-bubble:focus-visible{outline:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--green) 35%,transparent),0 12px 30px rgba(18,28,25,.28)}
+.s2-quick-bubble.is-open{background:var(--green)}
+.s2-quick-panel{position:fixed;right:18px;bottom:138px;z-index:124;width:380px;height:min(560px,calc(100vh - 170px));display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 60px rgba(18,28,25,.22);overflow:hidden;animation:s2QuickIn .18s ease-out}
+@keyframes s2QuickIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.s2-quick-panel>header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:16px 18px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+.s2-quick-panel h2{font:500 20px var(--serif);margin:0}
+.s2-quick-panel header p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.s2-quick-close{border:0;background:transparent;color:var(--muted);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.s2-quick-close:hover{background:var(--surface-2);color:var(--text)}
+.s2-quick-body{flex:1;display:flex;flex-direction:column;min-height:0}
+.s2-quick-log{flex:1;overflow-y:auto;list-style:none;margin:0;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.s2-quick-ross{align-self:flex-start;max-width:92%;padding:11px 14px;border-radius:18px 18px 18px 6px;background:var(--surface);box-shadow:0 2px 8px rgba(51,42,32,.06);display:grid;gap:8px;font-size:14px;line-height:1.45}
+.s2-quick-ross>p{margin:0}
+.s2-quick-ross ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px}
+.s2-quick-me{align-self:flex-end;max-width:85%}
+.s2-quick-me span{display:block;padding:9px 13px;border-radius:18px 18px 6px 18px;background:var(--text);color:var(--surface);font-size:14px;line-height:1.4}
+.s2-quick-link{justify-self:start;display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;padding:0;color:var(--green);font-size:13px;font-weight:700;cursor:pointer}
+.s2-quick-link:hover{text-decoration:underline;text-underline-offset:3px}
+.s2-quick-pills{display:flex;flex-wrap:wrap;gap:6px}
+.s2-quick-pills button{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:600;cursor:pointer;text-align:left}
+.s2-quick-pills button:hover{background:var(--surface-2)}
+.s2-quick-pills button[aria-pressed=true]{background:var(--text);color:var(--surface);border-color:var(--text)}
+.s2-quick-form{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--surface)}
+.s2-quick-form .ui-input{flex:1;min-height:40px}
+.s2-quick-draft{display:grid;gap:7px;padding:11px 12px;border-radius:14px;background:var(--green-soft)}
+.s2-quick-draft.is-done{background:var(--surface-2)}
+.s2-quick-draft-kind{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+.s2-quick-draft-who{display:flex;align-items:center;gap:7px;font-size:13px}
+.s2-quick-draft-who small{color:var(--muted)}
+.s2-quick-draft-text{margin:0;font:400 15px/1.4 var(--serif)}
+.s2-quick-draft-phrase{font-size:12px;color:var(--muted)}
+.s2-quick-draft-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.s2-quick-draft-actions>span{font-size:13px;font-weight:700;margin-right:2px}
+.s2-quick-draft-state{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+/* Su telefono il pannello è un Sheet a tutto schermo. */
+.s2-quick-sheet.ui-sheet{width:100vw;max-width:none;padding:16px 0 0;gap:6px}
+.s2-quick-sheet .ui-sheet-title,.s2-quick-sheet .ui-sheet-description{padding:0 18px}
+.s2-quick-sheet .ui-sheet-title{font:500 22px var(--serif)}
+.s2-quick-sheet .s2-quick-body{min-height:0}
+/* Con la bolla presente i toast salgono sopra di lei, così non si coprono. */
+body.has-quickchat [data-sonner-toaster]{--offset-bottom:140px!important;--mobile-offset-bottom:128px!important}
+@media(max-width:650px){.s2-quick-bubble{right:12px;bottom:62px;width:52px;height:52px}}
+@media(prefers-reduced-motion:reduce){.s2-quick-panel{animation:none}.s2-quick-bubble{transition:none}}

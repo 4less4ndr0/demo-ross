@@ -9,6 +9,7 @@ import { esiti, labelOf, toneOf } from "../data/moments";
 import { channelActions, momentFilters, useMoments } from "../state/channelStore";
 import { useDemo } from "../state/DemoContext";
 import { PassionNetwork } from "../components/PassionNetwork";
+import { QuickChat } from "../components/QuickChat";
 
 // Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto e riceve qualcosa in cambio.
 // Due schede: «Il canale» (Proponi uno spunto · Cosa è emerso) e «Ospiti» (lista e ritratto della Struttura,
@@ -41,6 +42,7 @@ export function StructureChannelLayout() {
           <span className="s2-top-spacer" aria-hidden="true" />
         </header>
         <Outlet />
+        <QuickChat />
       </div>
     </StructureView.Provider>
   );

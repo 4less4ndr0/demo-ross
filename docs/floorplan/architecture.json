@@ -91,7 +91,9 @@
         "src/data/interestGraph.js",
         "src/data/moments.js",
         "src/data/demoClock.js",
-        "src/state/channelStore.js"
+        "src/state/channelStore.js",
+        "src/components/QuickChat.jsx",
+        "src/data/quickChat.js"
       ]
     },
     {
