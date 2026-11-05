@@ -1,6 +1,10 @@
 import { HelpCircle, Info } from "lucide-react";
-import { useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+
+// Quale Struttura sta mostrando Ospiti e ritratto: quella attuale (base "") o la Struttura 2.0 (base "/struttura-2").
+export const StructureView = createContext({ base: "", v2: false });
+export const useStructureView = () => useContext(StructureView);
 
 // Foto degli ospiti della demo (public/ospiti, ritagliate dal collage): dove manca restano le iniziali.
 const photoIds = new Set(["antonio", "lucia", "mario", "carlo", "ada", "bruno", "elena", "teresa"]);

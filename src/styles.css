@@ -1437,8 +1437,10 @@ button.document-card:hover{background:var(--surface-2)}
 @media(max-width:700px){.knows-flow{flex-direction:column;align-items:flex-start}.knows-flow svg{transform:rotate(90deg)}}
 .knows-meta b{white-space:nowrap}
 /* Struttura 2.0: il canale con ROSS (src/pages/StructureChannel.jsx). Token della Struttura, estetica di Famiglia e ROSS. */
-.s2-app{min-height:100vh;background:var(--bg);color:var(--text);padding-bottom:110px}
-.s2-top{display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:0 auto;padding:22px 28px}
+.s2-app{min-height:100vh;background:var(--bg);color:var(--text)}
+.s2-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;max-width:1180px;margin:0 auto;padding:22px 28px}
+.s2-top .top-tabs{margin:0}
+.s2-page{max-width:1240px}
 .s2-brand{display:flex;align-items:center;gap:11px}.s2-brand div{display:grid}.s2-brand strong{font:600 15px var(--serif);letter-spacing:.06em}.s2-brand small{font-size:12px;color:var(--muted)}
 .s2-main{max-width:1180px;margin:0 auto;padding:0 28px}
 .s2-eyebrow{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
@@ -1485,7 +1487,7 @@ button.document-card:hover{background:var(--surface-2)}
 .s2-insight{padding:24px 26px;display:grid;gap:14px;transition:opacity .2s}
 .s2-insight header{display:flex;align-items:center;gap:13px}
 .s2-insight header div{display:grid;flex:1;min-width:0}
-.s2-insight header strong{font:600 18px var(--serif)}
+.s2-name{font:600 18px var(--serif);color:var(--text);text-decoration:none;width:fit-content}.s2-name:hover{text-decoration:underline;text-underline-offset:3px}
 .s2-insight header small{font-size:12px;color:var(--muted)}
 .s2-new{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:5px 10px;border-radius:999px}
 .s2-origin{margin:0;padding:11px 14px;border-radius:14px;background:var(--surface-2);font-size:14px;line-height:1.45}
@@ -1493,12 +1495,40 @@ button.document-card:hover{background:var(--surface-2)}
 .s2-reception{margin-left:auto;font-style:normal;letter-spacing:0;text-transform:none;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--muted)}
 .s2-reception.is-volentieri{background:var(--green-soft);color:var(--green)}
 .s2-reception.is-pensa{background:var(--sand-soft);color:#83621f}
+.s2-reception.is-no,.s2-reception.is-non-ora{background:var(--surface-3);color:var(--muted)}
+/* Struttura 2.0 · ritratto, scheda Spunti */
+.s2-profile{display:grid;grid-template-columns:1fr minmax(320px,400px);gap:28px;align-items:start;margin-top:8px}
+.s2-profile-main{display:grid;gap:28px;min-width:0}
+.s2-profile-side .s2-propose{top:20px}
+.s2-reading h3{font:500 24px/1.35 var(--serif);margin:0 0 16px}
+.s2-reading-facts{display:grid;gap:8px;margin-bottom:14px}
+.s2-reading-facts p{display:flex;align-items:center;gap:10px;margin:0;font-size:15px}
+.s2-reading-facts .s2-reception{margin:0;min-width:104px;text-align:center}
+.s2-reading-note{margin:0;font-size:13px;line-height:1.5;color:var(--muted)}
+.s2-group h3{display:flex;align-items:center;gap:9px;font:500 21px var(--serif);margin:0 0 12px;padding:0 4px}
+.s2-group h3 svg{color:var(--muted)}
+.s2-group.is-piaciuti h3 svg{color:var(--green)}
+.s2-group.is-pensa h3 svg{color:#a8761b}
+.s2-group.is-spontaneous h3 svg{color:#a8761b}
+.s2-group h3 small{font:700 12px Inter,ui-sans-serif,system-ui,sans-serif;color:var(--muted);background:var(--surface-2);padding:3px 9px;border-radius:999px}
+.s2-group ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.s2-spunto{padding:18px 22px;border-radius:22px;display:grid;gap:9px;box-shadow:0 8px 26px rgba(51,42,32,.06)}
+.s2-group.is-piaciuti .s2-spunto{box-shadow:inset 4px 0 0 var(--green),0 8px 26px rgba(51,42,32,.06)}
+.s2-group.is-pensa .s2-spunto{box-shadow:inset 4px 0 0 var(--sand),0 8px 26px rgba(51,42,32,.06)}
+.s2-group.is-no .s2-spunto{box-shadow:inset 4px 0 0 var(--line),0 8px 26px rgba(51,42,32,.06)}
+.s2-spunto-meta{display:flex;align-items:center;gap:10px}
+.s2-spunto-meta span{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.s2-spunto-meta small{font-size:12px;color:var(--muted);margin-left:auto}
+.s2-spunto-text{margin:0;font-size:15px;line-height:1.45}
+.s2-spunto-story{margin:0;font:400 17px/1.5 var(--serif)}
+.s2-spunto .s2-suggestion{font-size:14px;padding:11px 14px}
+@media(max-width:1000px){.s2-profile{grid-template-columns:1fr}.s2-profile-side .s2-propose{position:static}}
 .s2-origin.is-spontaneous{background:var(--sand-soft);padding:9px 14px}
 .s2-origin.is-spontaneous span{margin:0;color:#83621f}
 .s2-story{margin:0;font:400 19px/1.5 var(--serif)}
 .s2-suggestion{margin:0;padding:13px 16px;border-radius:16px;background:var(--green-soft);font-size:15px;line-height:1.5}
 .s2-suggestion span{display:block;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:3px}
-.s2-insight footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.s2-insight-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .s2-consent{font-size:12px;color:var(--muted)}
 .s2-actions{display:flex;gap:8px;margin-left:auto}
 .s2-mark{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:650;color:var(--text);cursor:pointer}
@@ -1511,5 +1541,6 @@ button.document-card:hover{background:var(--surface-2)}
 .s2-footnote{display:flex;align-items:center;gap:9px;margin:40px 0 0;font-size:13px;color:var(--muted)}
 .s2-footnote svg{flex:none;color:var(--green)}
 @media(max-width:900px){.s2-columns{grid-template-columns:1fr}.s2-propose{position:static}}
+@media(max-width:700px){.s2-top{grid-template-columns:1fr;gap:10px}.s2-top-spacer{display:none}.s2-top .top-tabs{order:0;width:auto;margin:0;border:0;background:transparent;padding:0;justify-content:flex-start}}
 @media(max-width:600px){.s2-top,.s2-main{padding-inline:16px}.s2-hero{padding:14px 0 28px}.s2-hero>p{font-size:17px}.s2-flow{flex-direction:column;align-items:stretch}.s2-flow-arrow{display:none!important}.s2-card{padding:22px 18px;border-radius:24px}.s2-insight{padding:20px 18px}.s2-story{font-size:17px}.s2-people{gap:6px}}
 @media(prefers-reduced-motion:reduce){.s2-insight{transition:none}.s2-insight.is-arrived{animation:none}}

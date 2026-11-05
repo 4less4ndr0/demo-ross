@@ -1,15 +1,15 @@
+import { residents } from "./demoData";
+
 // Struttura 2.0: il canale tra struttura, ROSS e ospite.
 // La struttura manda a ROSS uno spunto; ROSS lo porta nella conversazione (solo se l'ospite ci sta);
 // quando emerge qualcosa di utile, ROSS restituisce di sua iniziativa un insight narrativo.
 // Niente trascrizioni, punteggi o dati sanitari: ROSS traduce, non trasmette.
 
-// Quattro ospiti della Residenza Aurora (foto in public/ospiti). `f` serve solo per l'accordo grammaticale.
-export const channelResidents = [
-  { id: "elena", name: "Elena Bianchi", first: "Elena", initials: "EB", color: "coral", room: "204", mode: "Attiva", f: true },
-  { id: "ada", name: "Ada Moretti", first: "Ada", initials: "AM", color: "lilac", room: "215", mode: "Reattiva", f: true },
-  { id: "antonio", name: "Antonio Greco", first: "Antonio", initials: "AG", color: "coral", room: "109", mode: "Attiva", f: false },
-  { id: "bruno", name: "Bruno De Angelis", first: "Bruno", initials: "BD", color: "sand", room: "121", mode: "Silenziosa", f: false },
-];
+// Gli ospiti della Residenza Aurora (stessi dati e foto della Struttura). `f` serve solo per l'accordo grammaticale.
+const female = new Set(["elena", "ada", "lucia", "teresa"]);
+export const channelResidents = residents
+  .map((r) => ({ ...r, first: r.name.split(" ")[0], f: female.has(r.id) }))
+  .sort((a, b) => a.name.localeCompare(b.name, "it"));
 export const channelResident = (id) => channelResidents.find((r) => r.id === id);
 
 export const spuntoTypes = [
@@ -33,6 +33,28 @@ export const receptions = {
   volentieri: "Accolto volentieri",
   pensa: "Ci sta pensando",
   "non-ora": "Non era il momento",
+  no: "Non è piaciuto",
+};
+
+// Spunti più vecchi, già ripresi da ROSS: compaiono solo nel ritratto dell'ospite (scheda Spunti).
+export const spuntoHistory = [
+  { id: "h-elena-mina", residentId: "elena", when: "2 settimane fa", type: "ricordo", text: "Le canzoni di Mina che ascoltava la domenica.", reception: "volentieri", story: "L'ha accolto con un sorriso e ha chiesto di riascoltare una canzone." },
+  { id: "h-elena-ginnastica", residentId: "elena", when: "3 settimane fa", type: "attivita", text: "Ginnastica dolce del martedì mattina.", reception: "no", story: "Non la incuriosisce: preferisce le attività in cui si usano le mani." },
+  { id: "h-elena-teresa", residentId: "elena", when: "3 settimane fa", type: "persona", text: "Teresa, che canta nel coro della residenza.", reception: "pensa", story: "Le piacerebbe conoscerla, ma preferisce che qualcuno gliela presenti di persona." },
+  { id: "h-ada-lettura", residentId: "ada", when: "1 settimana fa", type: "attivita", text: "Il gruppo di lettura del mercoledì.", reception: "volentieri", story: "L'idea le piace: ha chiesto se può portare un libro suo." },
+  { id: "h-ada-tombola", residentId: "ada", when: "1 settimana fa", type: "evento", text: "La tombola di sabato pomeriggio in salone.", reception: "no", story: "Per ora no: preferisce i momenti tranquilli, in pochi." },
+  { id: "h-antonio-radio", residentId: "antonio", when: "2 settimane fa", type: "evento", text: "La partita alla radio, domenica in salotto.", reception: "volentieri", story: "Gli è piaciuto molto: ha chiesto a che ora comincia." },
+  { id: "h-antonio-pittura", residentId: "antonio", when: "3 settimane fa", type: "attivita", text: "Il laboratorio di pittura del venerdì.", reception: "no", story: "Ha detto che non fa per lui, senza giri di parole." },
+  { id: "h-bruno-ferrovia", residentId: "bruno", when: "2 settimane fa", type: "ricordo", text: "Gli anni in ferrovia, dalla biografia d'ingresso.", reception: "volentieri", story: "Ne ha parlato volentieri, contento che qualcuno se ne ricordasse." },
+  { id: "h-bruno-carte", residentId: "bruno", when: "1 settimana fa", type: "attivita", text: "Il gruppo di carte del giovedì alle 15.", reception: "pensa", story: "L'idea gli piace, ma alle 15 riposa: chiede se si può fare più tardi." },
+];
+
+// Cosa ha capito ROSS dagli spunti di ciascuno: come li accoglie, mai cosa ha raccontato.
+export const spuntoReading = {
+  elena: "Con Elena funzionano le cose da fare con le mani e i ricordi legati alla musica. Le persone nuove preferisce conoscerle di persona, non solo sentirle nominare.",
+  ada: "Ada è arrivata da poco: le piacciono le proposte tranquille e in piccoli gruppi. Le feste affollate, per ora, no.",
+  antonio: "Antonio dice sì volentieri, ma da solo fatica a presentarsi: le proposte funzionano meglio se qualcuno lo accompagna.",
+  bruno: "Bruno risponde bene a ciò che riguarda i treni e le carte, soprattutto nel tardo pomeriggio, dopo il riposo.",
 };
 
 // Insight di esempio: i più recenti in alto. `spunto` è facoltativo (gli insight nascono anche da ciò che

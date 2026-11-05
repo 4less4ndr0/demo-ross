@@ -3,7 +3,8 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowRight, BellOff, Camera, Check, Clock, FolderOpen, Info, MapPin, FileText, MessageCircle, MoreHorizontal, Paperclip, Printer, Send, Sparkles } from "lucide-react";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
 import { asset } from "../asset.js";
-import { Avatar, DataExplanation, EmptyState, ModeBadge } from "../components/Common";
+import { Avatar, DataExplanation, EmptyState, ModeBadge, useStructureView } from "../components/Common";
+import { ResidentSpunti } from "../components/ResidentSpunti";
 import { ParticipationChart } from "../components/ParticipationChart";
 import { DEMO_TODAY } from "../data/demoData";
 import { approachGuide, hooksFor, journeyInterest, needsFor, presenceFor, relating, rossTips, signalDetail, signalsFor, usageStyle } from "../data/careInsights";
@@ -15,7 +16,9 @@ import { Button, Dialog, DropdownMenu, DropdownMenuContent, DropdownMenuItem, Dr
 // quando e quanto parla con ROSS. Niente biografia, ricordi, persone o luoghi raccontati.
 const tabs = [["sintesi", "Come sta"], ["avvicinare", "Come avvicinarsi"], ["conversazioni", "Con ROSS"], ["allegati", "Cosa sa ROSS"]];
 const tabAliases = { documenti: "allegati", panoramica: "sintesi", andamento: "sintesi", attivita: "sintesi", interazioni: "conversazioni", storia: "avvicinare", memorie: "avvicinare", relazioni: "avvicinare", interessi: "avvicinare" };
-const normalizeTab = (value) => { const key = (value || "sintesi").toLowerCase(); const id = tabAliases[key] || key; return tabs.some(([t]) => t === id) ? id : "sintesi"; };
+// Struttura 2.0: in più la scheda Spunti (cosa la struttura ha proposto a ROSS e come è stato accolto), aperta di default.
+const tabsV2 = [["spunti", "Spunti"], ...tabs];
+const normalizeTab = (value, list = tabs) => { const fallback = list[0][0]; const key = (value || fallback).toLowerCase(); const id = tabAliases[key] || key; return list.some(([t]) => t === id) ? id : fallback; };
 
 const typeLabels = { Conversazione: "Conversazione libera", Memoria: "Reminiscenza" };
 const participationLabel = (value) => value >= 80 ? "Alta" : value >= 65 ? "Media" : "Bassa";
@@ -44,8 +47,10 @@ export function ResidentProfile() {
   const [params, setParams] = useSearchParams();
   const { state, actions } = useDemo();
   const navigate = useNavigate();
+  const { v2 } = useStructureView();
+  const tabList = v2 ? tabsV2 : tabs;
   const resident = state.residents.find((r) => r.id === id) || state.residents[0];
-  const tab = normalizeTab(params.get("tab"));
+  const tab = normalizeTab(params.get("tab"), tabList);
   const residentDocuments = state.documents.filter((d) => d.residentId === resident.id);
   const setTab = (next) => setParams({ tab: next });
   const firstName = resident.name.split(" ")[0];
@@ -55,17 +60,18 @@ export function ResidentProfile() {
   return <div className="profile-screen screen-enter">
     <section className="profile-header">
       <div className="profile-person"><Avatar resident={resident} size="xl" /><div><span className="eyebrow">RITRATTO · STANZA {resident.room}</span><h1>{resident.name}</h1><p>{resident.age} anni · {resident.daysWithRoss} giorni con ROSS · ultima conversazione {resident.lastInteraction}</p></div></div>
-      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} /><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div>
+      <div className="profile-actions"><Select value={resident.mode} onValueChange={(mode) => actions.setResidentMode(resident.id, mode)} label="Modalità ROSS" options={["Attiva", "Reattiva", "Silenziosa"].map((v) => ({ value: v, label: `Modalità ${v.toLowerCase()}` }))} />{v2 ? <><Button onClick={() => { setTab("spunti"); window.setTimeout(() => document.querySelector(".s2-propose textarea")?.focus(), 50); }}><Send size={16} /> Proponi uno spunto</Button><Button variant="outline" onClick={() => setTab("allegati")}><Paperclip size={16} /> Allega una foto o un file</Button></> : <><Button variant="outline" onClick={() => navigate(`/?ospite=${resident.id}`)}><Sparkles size={16} /> Chiedi su {firstName}</Button><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione</Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="outline" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem icon={Printer} onSelect={() => navigate(`/report?ospite=${resident.id}&stampa=1`)}>Stampa report</DropdownMenuItem><DropdownMenuItem icon={FileText} onSelect={() => navigate(`/report?ospite=${resident.id}`)}>Apri report</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem icon={Paperclip} onSelect={() => setTab("allegati")}>Allega una foto o un file</DropdownMenuItem></DropdownMenuContent></DropdownMenu></>}</div>
     </section>
-    <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabs.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
-    {tab === "sintesi" && <Overview state={state} resident={resident} onApproach={() => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
+    <Tabs value={tab} onValueChange={setTab}><TabsList className="profile-tabs" aria-label={`Ritratto di ${firstName}`}>{tabList.map(([tabId, label]) => <TabsTrigger key={tabId} value={tabId} active={tab === tabId}>{label}{tabId === "allegati" && residentDocuments.length > 0 && <small className="tab-count">{residentDocuments.length}</small>}</TabsTrigger>)}</TabsList></Tabs>
+    {tab === "spunti" && <ResidentSpunti resident={resident} />}
+    {tab === "sintesi" && <Overview state={state} resident={resident} onPropose={v2 ? () => setTab("spunti") : undefined} onApproach={() => setTab("avvicinare")} onConversations={() => setTab("conversazioni")} />}
     {tab === "avvicinare" && <Approach state={state} resident={resident} navigate={navigate} />}
     {tab === "conversazioni" && <Conversations state={state} resident={resident} onApproach={() => setTab("avvicinare")} />}
     {tab === "allegati" && <Attachments resident={resident} documents={residentDocuments} onAdd={actions.addDocument} />}
   </div>;
 }
 
-function Overview({ state, resident, onApproach, onConversations }) {
+function Overview({ state, resident, onApproach, onConversations, onPropose }) {
   const [period, setPeriod] = useState("30");
   const name = resident.name.split(" ")[0];
   const summary = buildResidentReport(state, resident, "7");
@@ -88,7 +94,7 @@ function Overview({ state, resident, onApproach, onConversations }) {
     <div className="overview-main">
       <section className="resident-resources surface"><span className="eyebrow">LE RISORSE DI {name.toUpperCase()}</span><h3>Cosa aiuta {name} a stare bene</h3><div className="resources-grid">{resources.map(([title, text]) => <div key={title}><strong>{title}</strong><span>{text}</span></div>)}</div><p className="resources-note">Lente salutogenica: si parte da ciò che c'è già e funziona, poi da ciò che è da osservare.</p></section>
       <article className="narrative-card surface"><span className="eyebrow">ULTIMI 7 GIORNI</span><h2>{summary.headline}</h2><p>{summary.paragraphs.join(" ")}</p><div className="narrative-stats">{summary.kpis.slice(0, 3).map(([value, label]) => <div key={label}><strong>{value}</strong><span>{label}</span></div>)}</div></article>
-      <RossTips resident={resident} onPropose={onApproach} />
+      <RossTips resident={resident} onPropose={onPropose || onApproach} />
       {r && <section className="continuity-card surface"><div><span className="eyebrow">COME AVVICINARSI A {name.toUpperCase()}</span><h3>{capitalize(r.bestTime)} · {r.duration}</h3><p>{newInterest ? journeyInterest.how : `Funziona: ${r.works.join(", ").toLowerCase()}. ${r.avoid}.`}</p>{top?.opener && <p className="continuity-hook"><strong>Per iniziare · {top.label.toLowerCase()}:</strong> {top.opener}</p>}</div><Button variant="outline" onClick={onApproach}>Tutte le indicazioni <ArrowRight size={16} /></Button></section>}
       <section className="surface participation-card"><header><div><h3>Partecipazione rispetto alla sua media</h3><p>{chart.building ? "ROSS la sta ancora conoscendo: per una media personale servono circa 14 giorni di chiacchierate." : "La linea tratteggiata è la media personale di " + name + ". Mai confronti con altri ospiti."}</p></div><Select value={period} onValueChange={setPeriod} label="Periodo" options={[{ value: "7", label: "Ultimi 7 giorni" }, { value: "30", label: "Ultimi 30 giorni" }]} /></header><ParticipationChart series={chart.series} building={chart.building} height={200} /></section>
       <DataExplanation>Descrive solo ciò che accade nelle conversazioni con ROSS. Non è un giudizio sulla salute: ROSS segnala, lo staff osserva e decide.</DataExplanation>
@@ -113,13 +119,14 @@ const rhythmLabels = { 1: "Bassa", 2: "Media", 3: "Alta" };
 const styleLabels = [["pace", "Ritmo"], ["sentences", "Frasi"], ["questions", "Domande"], ["pauses", "Pause"]];
 
 function Approach({ state, resident, navigate }) {
+  const { v2 } = useStructureView();
   const r = relating[resident.id];
   const guide = approachGuide[resident.id];
   const name = resident.name.split(" ")[0];
   const hooks = hooksFor(resident.id, { withJourney: Boolean(state.rossJourney.completedAt) });
   const building = resident.participation == null;
   return <section className="content-section approach-section">
-    <div className="content-toolbar"><div><h2>Come avvicinarsi a {name}</h2><p>Indicazioni pratiche per lo staff, dalla biografia d'ingresso e da come {name} risponde a ROSS. I ricordi e i racconti restano tra ROSS e {name}.</p></div><Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione con ROSS</Button></div>
+    <div className="content-toolbar"><div><h2>Come avvicinarsi a {name}</h2><p>Indicazioni pratiche per lo staff, dalla biografia d'ingresso e da come {name} risponde a ROSS. I ricordi e i racconti restano tra ROSS e {name}.</p></div>{!v2 && <Button onClick={() => navigate(`/interazione/${resident.id}`)}><MessageCircle size={16} /> Avvia conversazione con ROSS</Button>}</div>
     {guide && <article className="first-steps surface"><span className="eyebrow">PRIMO APPROCCIO IN 3 PASSI</span><ol>{guide.firstSteps.map((step) => <li key={step}>{step}</li>)}</ol></article>}
     {r ? <div className="relating-strip surface"><div><span>Come rivolgersi</span><strong>{r.address}</strong></div><div><span>Momento migliore</span><strong>{r.bestTime}</strong></div><div><span>Durata ideale</span><strong>{r.duration}</strong></div><div><span>Attenzione</span><strong>{r.avoid}</strong></div></div> : <EmptyState title="Indicazioni in costruzione" description="ROSS le propone dopo le prime settimane di conversazioni." />}
     <div className="approach-heading"><h3>Interessi e spunti</h3><p>Dall'interesse che coinvolge di più {name}. Il dettaglio concreto compare solo se arriva dalla biografia d'ingresso.</p></div>
