@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, ArrowUp, BellOff, BarChart3, BookOpen, FileText, Heart, MessageCircle, Mic, MoreHorizontal, Paperclip, Printer, RotateCcw, Sparkles, StickyNote, X } from "lucide-react";
 import { answerQuestion, findResident, roleFor, suggestions } from "../data/chatScript";
 import { attachmentFrom, useDemo } from "../state/DemoContext";
-import { Avatar } from "../components/Common";
+import { Avatar, RossLogo } from "../components/Common";
 import { FileDocumentDialog, folderChoices, textDocument } from "../components/DocumentDialogs";
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../components/ui";
 
@@ -116,7 +116,7 @@ export function AskRoss() {
       <FileDocumentDialog file={pending} onClose={() => setPending(null)} name={(people.find((r) => r.id === pendingFor)?.name || "").split(" ")[0]} choices={folderChoices((people.find((r) => r.id === pendingFor)?.name || "").split(" ")[0])} initial="persona" residents={people} residentId={pendingFor} onResidentChange={setPendingFor} onSave={attach} />
       <section className="ask-chat surface">
         <header className="ask-header">
-          <div className="ask-title"><span className="brand-mark small">R</span><div><strong>Chiedi a ROSS</strong><small>Come stanno gli ospiti e di cosa hanno bisogno</small></div></div>
+          <div className="ask-title"><RossLogo className="brand-logo is-small" /><div><strong>Chiedi a ROSS</strong><small>Come stanno gli ospiti e di cosa hanno bisogno</small></div></div>
           <span className="ask-role-chip" title="Il ruolo si cambia dalla card in basso a sinistra">come {role.label}</span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label="Altre azioni"><MoreHorizontal size={17} /></Button></DropdownMenuTrigger>
@@ -139,7 +139,7 @@ export function AskRoss() {
             </div>
           ) : messages.map((m) => m.from === "user"
             ? <div key={m.id} className="ask-msg ask-msg-user"><span className="ask-bubble">{m.attachment ? <span className="ask-attachment"><Paperclip size={14} />{m.attachment}</span> : m.text}</span></div>
-            : <div key={m.id} className="ask-msg ask-msg-ross"><span className="ask-avatar">R</span>{m.pending ? <div className="ask-typing"><i /><i /><i /><small>Raccolgo quello che ROSS ha notato…</small></div> : <Answer answer={m.answer} state={state} navigate={navigate} />}</div>)}
+            : <div key={m.id} className="ask-msg ask-msg-ross"><span className="ask-avatar is-logo"><RossLogo /></span>{m.pending ? <div className="ask-typing"><i /><i /><i /><small>Raccolgo quello che ROSS ha notato…</small></div> : <Answer answer={m.answer} state={state} navigate={navigate} />}</div>)}
         </div>
 
         <footer className="ask-composer">

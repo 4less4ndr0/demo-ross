@@ -1,3 +1,4 @@
+import { RossLogo } from "../components/Common";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AlarmClock, ArrowLeft, Megaphone, ArrowRight, BookOpen, CalendarHeart, DoorOpen, Phone, CircleHelp, CloudRain, Heart, Images, Lightbulb, MessageCircle, Mic, Music2, Pause, Play, Puzzle, RotateCcw, Sparkles, Sun, UtensilsCrossed, X } from "lucide-react";
 import "@fontsource-variable/fraunces";
@@ -171,7 +172,7 @@ function RossStage({ flow, onClose, onAnswer }) {
   return <div className="ross-stage-overlay" role="dialog" aria-modal="true" aria-label={view.tag}>
     <header className="ross-stage-bar"><button type="button" onClick={onClose}><ArrowLeft /> Torna a ROSS</button><span className="ross-listening"><i /> Ti ascolto</span></header>
     <main className="ross-stage" key={view.line}>
-      {view.image ? <img className="ross-stage-photo" src={view.image} alt="La foto che Anna ti ha mandato" /> : <span className="ross-orb" aria-hidden="true" />}
+      {view.image ? <img className="ross-stage-photo" src={view.image} alt="La foto che Anna ti ha mandato" /> : <RossLogo className="ross-stage-logo" />}
       <span className="ross-stage-tag"><Icon /> {view.tag}</span>
       <p className="ross-stage-line">{view.line}</p>
       <p className="ross-stage-hint">Puoi dirmi:</p>
@@ -247,7 +248,7 @@ export function RossHome() {
   return (
     <div className="ross-app ross-m screen-enter" data-ross-state={rossState}>
       <header className="ross-m-top">
-        <div className="ross-m-brand"><span className="ross-m-avatar" aria-hidden="true" /><strong>ROSS</strong></div>
+        <div className="ross-m-brand"><RossLogo className="ross-m-logo" /><strong>ROSS</strong></div>
         <div className="ross-m-now">
           <span><CloudRain aria-hidden="true" /> {today.temp}</span><i aria-hidden="true" /><span><Sun aria-hidden="true" /> {today.time}</span>
           <button type="button" className="ross-help-button" onClick={() => setPanel("help")}><CircleHelp aria-hidden="true" /> Aiuto</button>
@@ -461,9 +462,9 @@ export function RossConversation() {
     const kept = ended === "done" ? Boolean(state.rossJourney.completedAt) : history.includes("ricordo");
     const sharedNow = ended === "done" ? state.rossJourney.shared !== false : shared;
     return <div className="ross-app ross-chat-end screen-enter" data-ross-state="rest">
-      <header className="ross-header"><button onClick={() => navigate("/ross")}><ArrowLeft /> Torna a ROSS</button><div className="ross-wordmark"><span>R</span><strong>ROSS</strong></div><span /></header>
+      <header className="ross-header"><button onClick={() => navigate("/ross")}><ArrowLeft /> Torna a ROSS</button><div className="ross-wordmark"><RossLogo className="ross-wordmark-logo" /><strong>ROSS</strong></div><span /></header>
       <main>
-        <img src={asset("ross-eyes.png")} alt="Gli occhi luminosi di ROSS" className="ross-eyes complete" />
+        <RossLogo alt="Gli occhi di ROSS" className="ross-eyes complete" />
         <h1>{ended === "out" ? "Buon canto, Elena." : "Grazie, Elena."}</h1>
         <p>{ended === "out" ? "Resto in silenzio finché non torni. Poi mi racconti com'è andata." : "Quello che ci siamo detti resta qui. Quando vuoi, ci sono."}</p>
         <section className="ross-chat-summary" aria-label="Cosa resta di questa conversazione">
@@ -489,7 +490,7 @@ export function RossConversation() {
       </header>
 
       <main className="ross-chat-main">
-        <img src={asset("ross-eyes.png")} alt="Gli occhi di ROSS" className={`ross-eyes ross-chat-eyes is-${mood}`} />
+        <RossLogo alt="Gli occhi di ROSS" className={`ross-eyes ross-chat-eyes is-${mood}`} />
         {!(turn.image && revealed) && <div className="ross-chat-history" aria-hidden="true">{previous.map((item) => <p key={item.id} className={`is-${item.speaker}`}><strong>{item.speaker === "ross" ? "ROSS" : "Elena"}</strong>{item.line}</p>)}</div>}
         <section className={`ross-chat-now is-${turn.speaker}`} aria-live="polite">
           <span className="ross-chat-who">{turn.speaker === "ross" ? "ROSS" : "Elena"}</span>

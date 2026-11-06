@@ -221,7 +221,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 | `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
 | `src/components/DocumentDialogs.jsx` | Le quattro cartelle di «Cosa sa ROSS» (`folders`, `familyOf`, `useOf`, `folderChoices`) e i dialog per aggiungere un documento: `FileDocumentDialog` (anteprima, titolo, cartella; dalla chat anche l'ospite), `TextDocumentDialog` (testo incollato → `.txt`), `FolderChoice`. Usati dal ritratto e dalla chat. |
-| `src/components/Common.jsx` | `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
+| `src/components/Common.jsx` | `RossLogo` (il logo, `public/ross-logo.svg`), `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
 | `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
 | `src/pages/Residents.jsx` | Lista ospiti in ordine alfabetico (usata anche dalla Struttura 2.0: i link seguono `useStructureView().base`); scheda con foto, chi è, ultima conversazione e un solo avviso. |
 | `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con i quattro tab. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
@@ -279,6 +279,21 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 05/11/2026 · Il nuovo logo di ROSS in tutta la demo
+- **Richiesta:** usare il logo di oggi, cioè i due occhi con la sfumatura dal blu al verde, al posto di ogni logo della demo.
+- **Fatto:**
+  - il file è `public/ross-logo.svg`, mostrato con il nuovo componente `RossLogo` in `src/components/Common.jsx`. Dove c'è già la scritta «ROSS» è decorativo; altrimenti dice «Gli occhi di ROSS»;
+  - **Struttura:** sidebar, titolo di «Chiedi a ROSS», avatar di ROSS nei messaggi della chat (in un cerchio bianco) e intestazione del riepilogo stampabile;
+  - **Struttura 2.0:** il marchio nell'header;
+  - **Famiglia:** il marchio in alto e l'icona dell'app nelle notifiche della schermata di blocco (bianca, come un'icona iPhone);
+  - **tablet:** il logo nella barra, gli occhi grandi nella conversazione e nella chiusura, e il logo al posto della sfera arancione nella scheda «una cosa alla volta»; l'alone dietro è ora azzurro e verde;
+  - **favicon** in `index.html`;
+  - tolto `public/ross-eyes.png`, che non si usa più.
+- **Verificato:** Struttura, Struttura 2.0, Famiglia, home del tablet, scheda di un gioco e conversazione; nessuna immagine rotta e nessun errore in console. `npm run build` e `npm run test:sites` passano; la mappa è rigenerata.
+- **Da sapere:**
+  - il logo è blu e verde, mentre il tablet ha gli accenti caldi presi da Maria (pesca e il semicerchio arancione), quindi convivono due famiglie di colore;
+  - da decidere se portare il blu e verde anche nel semicerchio e negli accenti del tablet.
 
 ### Novembre 2026 · 05/11/2026 · Tablet: «Le cose importanti di oggi» in una cornice
 - **Richiesta:** le novità da Anna, «ROSS ti dice», il gioco del giorno e i ricordi sono le quattro cose importanti della giornata. Vanno in una cornice propria, con quattro card uguali, come quelle del gioco e dei ricordi.

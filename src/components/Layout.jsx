@@ -1,3 +1,4 @@
+import { RossLogo } from "./Common";
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ChevronsUpDown, Compass, FileText, LayoutDashboard, Menu, MessageCircle, RotateCcw, Settings, Users } from "lucide-react";
@@ -39,7 +40,7 @@ export function Layout() {
 
   const sidebar = (
     <>
-      <div className="brand" title="Residenza Aurora · Lunedì, 21 settembre 2026"><span className="brand-mark">R</span><div className="brand-text"><strong>R.O.S.S.</strong><span className="brand-place">Residenza Aurora</span><span className="brand-date">Lunedì, 21 settembre 2026</span></div></div>
+      <div className="brand" title="Residenza Aurora · Lunedì, 21 settembre 2026"><RossLogo className="brand-logo" /><div className="brand-text"><strong>R.O.S.S.</strong><span className="brand-place">Residenza Aurora</span><span className="brand-date">Lunedì, 21 settembre 2026</span></div></div>
       {isChat && <div className="sidebar-insights"><InsightRail onDone={closeMenu} /></div>}
       {guide && <div className="sidebar-insights"><SidebarGuide key={guide.id} {...guide} onDone={closeMenu} /></div>}
       <div className="sidebar-bottom">
