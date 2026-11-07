@@ -81,7 +81,7 @@ export function TextDocumentDialog({ open, onClose, onSave, name, choices, initi
 }
 
 // «Aggiungi un documento»: il menu (Carica dal dispositivo · Aggiungi contenuto testuale) con i suoi dialog.
-// Si usa dentro una cartella (parte da quella) e in cima al ritratto della Struttura 2.0; `onAdded` riceve la cartella scelta.
+// Si usa dentro una cartella (parte da quella) e in cima al ritratto; `onAdded` riceve la cartella scelta.
 export function AddDocumentMenu({ resident, initial = "persona", onAdd, onAdded, className = "ghost-button" }) {
   const fileRef = useRef(null);
   const [pending, setPending] = useState(null);

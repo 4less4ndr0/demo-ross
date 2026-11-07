@@ -6,7 +6,7 @@
     },
     "src/App.jsx": {
       "name": "Mappa delle schermate",
-      "description": "Decide quale schermata mostrare per ogni indirizzo delle viste (anche la Struttura 2.0 in /struttura-2) e rimanda i vecchi indirizzi a quelli nuovi."
+      "description": "Decide quale schermata mostrare per ogni indirizzo: la Struttura (il canale con ROSS) alla radice, poi Famiglia, tablet e Mappa. I vecchi indirizzi (/struttura-2, /report, /panoramica, /impostazioni…) portano alla pagina giusta."
     },
     "src/asset.js": {
       "name": "Percorsi di immagini e file",
@@ -18,7 +18,7 @@
     },
     "src/styles.css": {
       "name": "Aspetto di tutte le viste",
-      "description": "Colori, caratteri e spaziature di Struttura e Struttura 2.0 (canale, scheda Spunti), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."
+      "description": "Colori, caratteri e spaziature della Struttura (canale, ritratto, richieste, pianta della residenza, ROSS al volo), della Famiglia (app per iPhone) e del tablet di Elena (in stile Maria)."
     }
   }
 }

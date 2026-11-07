@@ -13,7 +13,7 @@ import { useDemo } from "../state/DemoContext";
 // a sinistra l'indice dei piani, al centro la pianta, a destra il dettaglio (solo se si tocca qualcosa).
 // Mostra i ROSS e gli spazi, non le persone: lo stato del dispositivo, mai cosa si dice né da quanto.
 // Su telefono l'indice diventa una fila di pillole e il dettaglio un foglio dal basso.
-const BASE = "/struttura-2";
+const BASE = "";
 const W = 18, D = 6; // ogni piano è 18 × 6 (coordinate di floorsPlan)
 const FIXED_KEY = "ross-residence-v1"; // gli alloggi segnati «Fatto, è ricollegato» (si azzera con «Ripristina la demo»)
 const loadFixed = () => { try { return JSON.parse(localStorage.getItem(FIXED_KEY)) || []; } catch { return []; } };

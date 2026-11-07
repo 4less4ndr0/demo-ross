@@ -1,4 +1,4 @@
-// Stato condiviso della Struttura 2.0: la sola fonte dei momenti emersi con ROSS (src/data/moments.js).
+// Stato condiviso della Struttura: la sola fonte dei momenti emersi con ROSS (src/data/moments.js).
 // Canale, ritratto → Spunti e ritratto → Con ROSS leggono gli stessi momenti con il loro filtro (`momentFilters`):
 // Visto/Fatto cambia in un posto e si aggiorna ovunque. Vive a livello di modulo, così la risposta simulata
 // di ROSS arriva anche se si cambia pagina.
@@ -55,7 +55,7 @@ const schedule = (moment) => {
   }, REPLY_DELAY));
 };
 if (typeof window !== "undefined") saved.created.filter((m) => m.esito === "attesa").forEach(schedule);
-// Se tablet e Struttura 2.0 sono aperti in due finestre, una modifica in una si vede anche nell'altra.
+// Se tablet e Struttura sono aperti in due finestre, una modifica in una si vede anche nell'altra.
 if (typeof window !== "undefined") window.addEventListener("storage", (event) => {
   if (event.key !== STORAGE_KEY) return;
   saved = load(); snapshot = build(); listeners.forEach((listener) => listener());
@@ -71,7 +71,7 @@ export const channelActions = {
     return moment;
   },
   // Richiesta pratica dal tablet: parte solo dopo il sì dell'ospite («Sì, diglielo»), mai da una deduzione di ROSS.
-  // Non crea un avviso: arriva in «Hanno chiesto» nel canale della Struttura 2.0.
+  // Non crea un avviso: arriva in «Hanno chiesto» nella scheda «Richieste» della Struttura.
   request({ residentId, richiesta, categoria, chiusura }) {
     const now = new Date().toISOString();
     // Chiesta di nuovo, e non ancora fatta: nessuna card nuova, quella esistente lo ricorda.

@@ -1,6 +1,5 @@
-// L'orologio della demo (Struttura 2.0, Famiglia e tablet di ROSS): la demo parte sempre dal giorno reale di oggi.
+// L'orologio della demo (Struttura, Famiglia e tablet di ROSS): la demo parte sempre dal giorno reale di oggi.
 // I momenti si salvano come scostamenti in giorni da oggi, mai come etichette: le etichette si calcolano qui.
-// La Struttura attuale resta sul suo giorno fisso (DEMO_TODAY in demoData.js) e non usa questo orologio.
 
 const startOfDay = (date) => { const d = new Date(date); d.setHours(0, 0, 0, 0); return d; };
 

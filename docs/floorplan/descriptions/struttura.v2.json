@@ -1,12 +1,12 @@
 {
   "files": {
     "src/pages/StructureChannel.jsx": {
-      "name": "Struttura 2.0: il canale",
-      "description": "La Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve cosa è emerso. Schede Il canale · Ospiti; Proponi uno spunto e Cosa è emerso (Visto, Fatto)."
+      "name": "La Struttura: il canale",
+      "description": "La Struttura non interroga ROSS: gli propone uno spunto per un ospite e riceve cosa è emerso. Header con le schede Il canale · Ospiti · Richieste; nel canale la residenza adesso, la rete delle passioni, Proponi uno spunto e Cosa è emerso."
     },
     "src/components/ResidentSpunti.jsx": {
       "name": "Scheda Spunti del ritratto",
-      "description": "Nel ritratto della Struttura 2.0: cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, ciò che è emerso senza spunto e il modulo per proporne uno."
+      "description": "Cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, e il modulo per proporne uno."
     },
     "src/data/channel.js": {
       "name": "Spunti e insight d'esempio",
@@ -18,7 +18,7 @@
     },
     "src/components/PortraitV2.jsx": {
       "name": "Come sta e Con ROSS, a racconto",
-      "description": "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto; e Con ROSS è il feed dei momenti da ricordare, giorno per giorno. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."
+      "description": "Nel ritratto «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto, le sue passioni e i momenti da ricordare."
     },
     "src/data/interestGraph.js": {
       "name": "Le passioni, per i due grafi",
@@ -26,23 +26,23 @@
     },
     "src/components/PassionNetwork.jsx": {
       "name": "La rete delle passioni",
-      "description": "In cima al canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."
+      "description": "Nel canale della Struttura: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme."
     },
     "src/data/moments.js": {
       "name": "I momenti emersi con ROSS",
-      "description": "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona e richieste pratiche confermate dall'ospite, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."
+      "description": "La sola fonte dei momenti della Struttura: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona, richieste pratiche e comunicazioni."
     },
     "src/data/demoClock.js": {
       "name": "L'orologio della demo",
-      "description": "Fa partire la Struttura 2.0, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana, la settimana scorsa)."
+      "description": "Fa partire la Struttura, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana)."
     },
     "src/pages/StructureRequests.jsx": {
       "name": "Le richieste, in due direzioni",
-      "description": "La scheda Richieste della Struttura 2.0: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti, che ROSS dice a ciascuno."
+      "description": "La scheda Richieste della Struttura: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti."
     },
     "src/components/QuickChat.jsx": {
       "name": "ROSS, al volo",
-      "description": "La bolla in basso a destra della Struttura 2.0 e la sua piccola chat: domande veloci su ciò che ROSS ha già raccontato, bozze di spunti e comunicazioni che partono solo dopo «Mando»."
+      "description": "La bolla in basso a destra della Struttura e la sua piccola chat: domande veloci su ciò che ROSS ha già raccontato, bozze di spunti e comunicazioni che partono solo dopo «Mando»."
     },
     "src/data/quickChat.js": {
       "name": "Le risposte di ROSS, al volo",

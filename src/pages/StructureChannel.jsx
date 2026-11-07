@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { ArrowRight, BookOpen, Check, ClipboardList, Eye, MessageCircleHeart, Send, Sparkles, Users } from "lucide-react";
-import { Avatar, StructureView, RossLogo } from "../components/Common";
+import { Avatar, RossLogo } from "../components/Common";
 import { Button, Textarea } from "../components/ui";
 import { channelResident, channelResidents, spuntoTypeLabel, spuntoTypes, timingFor } from "../data/channel";
 import { whenText } from "../data/demoClock";
@@ -12,12 +12,11 @@ import { PassionNetwork } from "../components/PassionNetwork";
 import { QuickChat } from "../components/QuickChat";
 import { ResidenceMap } from "../components/ResidenceMap";
 
-// Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto e riceve qualcosa in cambio.
+// La Struttura (il canale con ROSS; fino al 07/11/2026 «Struttura 2.0»): la struttura non interroga ROSS, gli propone uno spunto e riceve qualcosa in cambio.
 // Due schede: «Il canale» (Proponi uno spunto · Cosa è emerso) e «Ospiti» (lista e ritratto della Struttura,
 // con in più la scheda Spunti). Niente dashboard, punteggi o trascrizioni.
-const BASE = "/struttura-2";
+const BASE = ""; // la Struttura sta alla radice della demo
 const MAX = 160;
-const view = { base: BASE, v2: true };
 
 export function StructureChannelLayout() {
   // La scheda «Richieste» mostra un pallino (senza numero) quando ci sono richieste da vedere.
@@ -31,12 +30,11 @@ export function StructureChannelLayout() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
   return (
-    <StructureView.Provider value={view}>
-      <div className="app-shell s2-app">
+    <div className="app-shell s2-app">
         <header className={`s2-top${scrolled ? " is-scrolled" : ""}`}>
           <div className="s2-brand"><RossLogo className="brand-logo" /><div><strong>R.O.S.S.</strong><small>Residenza Aurora</small></div></div>
           <nav className="top-tabs" aria-label="Sezioni">
-            <NavLink to={BASE} end><Send size={16} /><span>Il canale</span></NavLink>
+            <NavLink to="/" end><Send size={16} /><span>Il canale</span></NavLink>
             <NavLink to={`${BASE}/ospiti`}><Users size={16} /><span>Ospiti</span></NavLink>
             <NavLink to={`${BASE}/richieste`} className={({ isActive }) => `${isActive ? "active " : ""}${toSee ? "has-dot" : ""}`} aria-label={toSee ? "Richieste: ci sono richieste da vedere" : "Richieste"}><ClipboardList size={16} /><span>Richieste</span>{toSee && <i className="s2-tab-dot" aria-hidden="true" />}</NavLink>
           </nav>
@@ -44,12 +42,11 @@ export function StructureChannelLayout() {
         </header>
         <Outlet />
         <QuickChat />
-      </div>
-    </StructureView.Provider>
+    </div>
   );
 }
 
-// Ospiti e ritratto sono quelli della Struttura: qui stanno dentro la pagina della Struttura 2.0.
+// Ospiti e ritratto stanno dentro la pagina della Struttura, sotto l'header con le schede.
 export function StructureChannelPage({ children }) {
   return <main className="page s2-page">{children}</main>;
 }

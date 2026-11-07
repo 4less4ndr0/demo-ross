@@ -41,7 +41,7 @@ const script = [
   { id: "lampada", speaker: "elena", line: "Prima di salutarci: la lampada sul comodino non si accende più." },
   { id: "lampada-conferma", speaker: "ross", line: "Mi dispiace, così la sera è scomodo. Vuoi che lo dica al personale?", note: "Una richiesta pratica parte solo con il sì di Elena. Con il no ROSS lascia perdere e non ci torna. Non è un avviso: arriva alla struttura come «Hanno chiesto», senza priorità né tempi.",
     choices: [{ label: "Sì, diglielo", next: "lampada-si", request: "lampada" }, { label: "No, lascia stare", next: "lampada-no" }] },
-  { id: "lampada-si", speaker: "ross", line: "Va bene, lo faccio sapere al personale.", note: "Nella Struttura 2.0 la richiesta compare in «Hanno chiesto», con «Confermato da Elena».", next: "saluto" },
+  { id: "lampada-si", speaker: "ross", line: "Va bene, lo faccio sapere al personale.", note: "Nella Struttura la richiesta compare in «Hanno chiesto», con «Confermato da Elena».", next: "saluto" },
   { id: "lampada-no", speaker: "ross", line: "Va bene, lascio stare.", note: "Senza un sì non parte niente.", next: "saluto" },
   { id: "saluto", speaker: "ross", line: "Le altre fotografie le guardiamo un'altra volta. Alle 17:30 in salone si canta, e c'è anche Mina: ci vai? Poi mi racconti com'è andata.", note: "ROSS chiude verso fuori: è un ponte verso le persone vere, non la meta.",
     choices: [{ label: "Sì, ci vado", end: "out" }, { label: "Magari un'altra volta", end: "home" }] },
@@ -50,7 +50,7 @@ const script = [
   { id: "salute-risposta", speaker: "ross", line: "Per questo è meglio chiamare subito il personale: puoi usare il campanello qui accanto. Io non sono un sistema di emergenza.", note: "ROSS non crea nessuna richiesta e non avvisa nessuno al posto di Elena: salute e urgenze passano dal campanello e dal personale, mai da ROSS. ROSS non è un sistema di emergenza.",
     choices: [{ label: "Va bene, suono il campanello", end: "help" }] },
   // Chiusura del cerchio: se la struttura ha segnato «Fatto», ROSS apre così la conversazione successiva.
-  { id: "cerchio", speaker: "ross", line: "Ciao Elena. Hanno sistemato la lampada sul comodino: adesso la luce va bene?", note: "La struttura ha segnato la richiesta come «Fatto» nella Struttura 2.0: ROSS lo dice a Elena alla prima occasione, una volta sola.",
+  { id: "cerchio", speaker: "ross", line: "Ciao Elena. Hanno sistemato la lampada sul comodino: adesso la luce va bene?", note: "La struttura ha segnato la richiesta come «Fatto» nella Struttura: ROSS lo dice a Elena alla prima occasione, una volta sola.",
     choices: [{ label: "Sì, adesso va bene", next: "cerchio-ok" }, { label: "Non ancora", next: "cerchio-no" }] },
   { id: "cerchio-ok", speaker: "ross", line: "Bene, mi fa piacere. Ti va di stare un po' insieme?",
     choices: [{ label: "Sì, volentieri", next: "si" }, { label: "Non adesso", next: "non-adesso" }] },
@@ -426,7 +426,7 @@ export function RossConversation() {
   };
   const go = (id) => setHistory((list) => [...list, id]);
   const choose = (choice) => {
-    // Con il sì di Elena la richiesta arriva alla Struttura 2.0, in «Hanno chiesto».
+    // Con il sì di Elena la richiesta arriva alla Struttura, in «Hanno chiesto».
     if (choice.request === "lampada" && !asked.current) { asked.current = true; channelActions.request(lampRequest); }
     if (choice.share !== undefined) setShared(choice.share);
     if (choice.end) return finish(choice.end, choice.share ?? shared);

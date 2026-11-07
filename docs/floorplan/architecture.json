@@ -27,25 +27,14 @@
       "id": "struttura",
       "label": "Vista Struttura",
       "kind": "ui",
-      "summary": "Lo strumento per l'équipe della RSA in due versioni da confrontare: la Struttura (chiedere a ROSS, ritratti, report e panoramica) e la Struttura 2.0 (il canale: la struttura propone uno spunto, ROSS restituisce cosa è emerso). Mai il contenuto delle conversazioni."
-    },
-    {
-      "id": "struttura.chat",
-      "parent": "struttura",
-      "label": "Chiedi a ROSS",
-      "kind": "feature",
-      "summary": "La home: una chat a frizione zero con domande consigliate per ruolo e la colonna \"Il polso di ROSS\".",
-      "paths": [
-        "src/pages/AskRoss.jsx",
-        "src/components/InsightRail.jsx"
-      ]
+      "summary": "Lo strumento per l'équipe della RSA: un canale con ROSS, non un archivio. La struttura propone a ROSS uno spunto per un ospite e riceve cosa è emerso; in più la lista degli ospiti con il ritratto e le richieste pratiche. Come sta e di cosa ha bisogno, mai di cosa ha parlato."
     },
     {
       "id": "struttura.ospiti",
       "parent": "struttura",
       "label": "Ospiti e ritratto",
       "kind": "feature",
-      "summary": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno, che si adatta al suo archetipo: Come sta (con gli spunti di ROSS), Come avvicinarsi (attività da far proporre a ROSS), Con ROSS e Allegati per provenienza.",
+      "summary": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno: Spunti, Come sta, Con ROSS e «Cosa sa ROSS», con le quattro cartelle dei documenti.",
       "paths": [
         "src/pages/Residents.jsx",
         "src/pages/ResidentProfile.jsx",
@@ -53,32 +42,8 @@
       ]
     },
     {
-      "id": "struttura.report",
-      "parent": "struttura",
-      "label": "Report e Panoramica",
-      "kind": "feature",
-      "summary": "Il report \"Come sta\" di ogni ospite e le analytics della struttura, con infografiche che confrontano ognuno solo con sé stesso.",
-      "paths": [
-        "src/pages/OperationalPages.jsx",
-        "src/components/ReportCharts.jsx",
-        "src/components/ParticipationChart.jsx"
-      ]
-    },
-    {
-      "id": "struttura.cornice",
-      "parent": "struttura",
-      "label": "Cornice e impostazioni",
-      "kind": "feature",
-      "summary": "Barra con le quattro schede, sidebar contestuale con lo specchietto \"Cosa ti dice ROSS\" e la pagina Impostazioni.",
-      "paths": [
-        "src/components/Layout.jsx",
-        "src/components/PageGuide.jsx",
-        "src/pages/Settings.jsx"
-      ]
-    },
-    {
       "id": "struttura.v2",
-      "label": "Struttura 2.0 · il canale",
+      "label": "Il canale con ROSS",
       "kind": "ui",
       "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
       "paths": [
@@ -142,7 +107,7 @@
       "id": "dati",
       "label": "Contenuti della demo",
       "kind": "data",
-      "summary": "La Residenza Aurora inventata: otto ospiti come otto archetipi, segnali positivi e da osservare, come ognuno usa ROSS, spunti per invogliarli, risposte preparate della chat, testi dei report, allegati simulati, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia.",
+      "summary": "La Residenza Aurora inventata: otto ospiti come otto archetipi, segnali positivi e da osservare, come ognuno usa ROSS, il racconto di ciascuno, i momenti emersi con ROSS e i contributi della famiglia.",
       "paths": [
         "src/data"
       ]
@@ -198,13 +163,6 @@
   ],
   "annotations": [
     {
-      "path": "src/data/chatScript.js",
-      "note": "Qui stanno tutte le risposte della chat \"Chiedi a ROSS\": non c'è un modello AI, ogni domanda è riconosciuta e risposta da questo copione.",
-      "tags": [
-        "hotspot"
-      ]
-    },
-    {
       "path": "src/state/DemoContext.jsx",
       "note": "Il punto unico da cui passano tutte le modifiche fatte durante la demo; quasi ogni schermata dipende da qui.",
       "tags": [
@@ -214,48 +172,21 @@
   ],
   "flows": [
     {
-      "id": "chiedi",
-      "title": "Lo staff chiede a ROSS",
-      "description": "Un operatore fa una domanda nella chat della Struttura e riceve una risposta con la fonte.",
-      "steps": [
-        {
-          "ref": "n:guscio",
-          "note": "L'indirizzo \"/\" apre la home della Struttura."
-        },
-        {
-          "ref": "n:struttura.chat",
-          "note": "L'operatore sceglie una domanda consigliata o ne scrive una."
-        },
-        {
-          "ref": "n:dati",
-          "note": "Il copione riconosce l'ospite e il tema e compone la risposta, citando sempre la fonte."
-        },
-        {
-          "ref": "n:stato",
-          "note": "La conversazione viene aggiunta alla memoria della demo."
-        },
-        {
-          "ref": "n:browser",
-          "note": "E resta salvata nel browser per il prossimo ricaricamento."
-        }
-      ]
-    },
-    {
       "id": "ritratto",
-      "title": "Dal ritratto al report",
-      "description": "Dalla lista degli ospiti al ritratto di uno di loro, fino al report stampabile \"Come sta\".",
+      "title": "Dalla lista al ritratto",
+      "description": "Dalla lista degli ospiti al ritratto di uno di loro, che si apre sugli spunti.",
       "steps": [
         {
           "ref": "n:struttura.ospiti",
           "note": "La lista è in ordine alfabetico; si apre il ritratto, che si adatta alla persona (il suo archetipo)."
         },
         {
-          "ref": "n:dati",
-          "note": "Il ritratto legge i segnali rispetto alla sua media, come usa ROSS e gli spunti di ROSS per invogliarla alla vita della residenza."
+          "ref": "f:src/components/ResidentSpunti.jsx",
+          "note": "Si apre sugli spunti: cosa ha capito ROSS e com'è andata ogni proposta."
         },
         {
-          "ref": "n:struttura.report",
-          "note": "\"Stampa report\" apre il racconto narrativo per l'équipe, con le infografiche."
+          "ref": "f:src/components/PortraitV2.jsx",
+          "note": "Come sta e Con ROSS raccontano invece di misurare: niente grafici, minuti o percentuali."
         }
       ]
     },
@@ -333,29 +264,6 @@
       ]
     },
     {
-      "id": "invito",
-      "title": "La struttura chiede a ROSS di proporre un'attività",
-      "description": "Lo staff chiede a ROSS di invitare un ospite; ROSS lo fa solo se la modalità lo permette, e decide l'ospite.",
-      "steps": [
-        {
-          "ref": "n:struttura.chat",
-          "note": "Dalla chat (\"Proponi ad Antonio la radio in compagnia\") o dal ritratto (\"Chiedi a ROSS di proporla\")."
-        },
-        {
-          "ref": "f:src/data/chatScript.js",
-          "note": "Il copione trova l'ospite e l'attività dal calendario e controlla la modalità."
-        },
-        {
-          "ref": "f:src/pages/ResidentProfile.jsx",
-          "note": "In modalità Attiva si vede come ROSS lo dirà; in Reattiva o Silenziosa un avviso spiega che l'invito non parte: si propone di persona."
-        },
-        {
-          "ref": "n:stato",
-          "note": "L'invito chiesto resta nel tab \"Con ROSS\", con \"Annulla\" nel toast. Un sì non è una prenotazione; un no non arriva a nessuno."
-        }
-      ]
-    },
-    {
       "id": "anche-struttura",
       "title": "Anna condivide anche con la struttura",
       "description": "Con l'interruttore nel +, una copia di ciò che Anna manda a ROSS arriva anche negli allegati di Elena.",
@@ -377,7 +285,7 @@
     {
       "id": "canale",
       "title": "La struttura propone, ROSS restituisce",
-      "description": "Struttura 2.0: uno spunto per un ospite va a ROSS, che lo porta nella conversazione solo se l'ospite ci sta, e torna come racconto di com'è andata.",
+      "description": "La Struttura: uno spunto per un ospite va a ROSS, che lo porta nella conversazione solo se l'ospite ci sta, e torna come racconto di com'è andata.",
       "steps": [
         {
           "ref": "f:src/pages/StructureChannel.jsx",
@@ -416,8 +324,8 @@
     },
     {
       "ref": "n:struttura.v2",
-      "title": "Struttura 2.0: un canale, non un archivio",
-      "note": "Una seconda versione della Struttura, da confrontare con la prima: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve com'è andata. Niente dashboard, punteggi o trascrizioni."
+      "title": "Un canale, non un archivio",
+      "note": "La struttura non interroga ROSS: gli propone uno spunto per un ospite, ROSS ne parla con lui se ci sta e restituisce cosa è emerso. Nel canale anche la residenza adesso, la rete delle passioni e le richieste pratiche."
     },
     {
       "ref": "n:tablet",
@@ -433,11 +341,6 @@
       "ref": "n:dati",
       "title": "I contenuti",
       "note": "La Residenza Aurora inventata e il copione della chat: per cambiare cosa dice la demo si parte da qui."
-    },
-    {
-      "ref": "f:src/data/chatScript.js",
-      "title": "Il copione della chat",
-      "note": "Ogni risposta di \"Chiedi a ROSS\" nasce in questo file."
     },
     {
       "ref": "f:src/data/familyMessages.js",

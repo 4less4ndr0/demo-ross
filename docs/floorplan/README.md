@@ -7,7 +7,7 @@ Mappa interattiva di come è fatta la demo, generata con [Floorplan](https://git
 Si apre **dentro la demo**: pillola "Vista demo" in basso a destra → **Mappa** (tasto 4), oppure l'indirizzo `/mappa`. Il file è [`public/mappa-ross.html`](../../public/mappa-ross.html): unico, offline, senza codice sorgente.
 
 Dentro trovi:
-- **la panoramica**: Guscio dell'app, Vista Struttura (con Chiedi a ROSS, Ospiti e ritratto, Report e Panoramica, Cornice, Struttura 2.0 · il canale), Vista Famiglia, Tablet di ROSS, Pezzi comuni, Memoria della demo, Contenuti della demo, Pubblicazione, Controlli;
+- **la panoramica**: Guscio dell'app, Vista Struttura (con Ospiti e ritratto e Il canale con ROSS), Vista Famiglia, Tablet di ROSS, Pezzi comuni, Memoria della demo, Contenuti della demo, Pubblicazione, Controlli;
 - **Start here**: un giro di un minuto per chi arriva ora;
 - **Flows**: otto percorsi guidati ("Lo staff chiede a ROSS", "Dal ritratto al report", "Elena racconta, Anna legge", "Anna manda, ROSS riordina, Elena ascolta", "Un promemoria, all'ora giusta", "La struttura chiede a ROSS di proporre un'attività", "Anna condivide anche con la struttura", "La struttura propone, ROSS restituisce");
 - **Screens**: le 19 schermate dell'app e cosa c'è dietro a ciascuna;

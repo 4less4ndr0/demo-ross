@@ -1,7 +1,7 @@
 # ROSS · Vista Struttura: passaggio di consegne e changelog
 
 > Documento per il team e documento vivo di sviluppo. **Aggiornalo a ogni modifica**: aggiungi una voce in cima al changelog (§6) e, se cambia qualcosa di strutturale, correggi le sezioni 0–5.
-> Ultimo aggiornamento: 5 novembre 2026 · nuova vista **Struttura 2.0** (il canale con ROSS, poi Ospiti e ritratto con la scheda Spunti). Prima: 4 novembre 2026 · ospiti come archetipi e ritratto rivisto. Prima ancora: 2 novembre 2026 · vista Famiglia come app per iPhone. Precedente: 20 ottobre 2026 · demo riallineata per l'incontro con Papa Luciani / Promozione Lavoro (branch `claude/nifty-ride-9l6eka`).
+> Ultimo aggiornamento: 7 novembre 2026 · **una sola Struttura**: la «Struttura 2.0» (il canale con ROSS) prende il posto della vecchia, eliminata del tutto.
 
 **Come leggerlo.**
 - Chi arriva ora legge la **§0** (10 minuti): cos'è ROSS, la filosofia, i personaggi, un giro della demo e le domande per il team.
@@ -36,16 +36,9 @@ Il metodo con cui è pensata è la **salutogenesi** ([`salutogenesi.md`](salutog
 
 | Vista | Chi la usa | Cosa vede | Cosa non vede | Stato |
 |---|---|---|---|---|
-| **Struttura** (`/`) | Staff, psicologa, direzione | Come sta ogni ospite rispetto alla sua media, cosa va bene, cosa osservare, bisogni, come avvicinarlo, voce anonima degli ospiti, report per l'équipe | Contenuto delle conversazioni, storia di vita, ricordi, contributi della famiglia | **Rifatta** (PR #1–#27) |
+| **Struttura** (`/`) | Lo staff della residenza | Un canale, non un archivio: propone a ROSS uno **spunto** per un ospite e riceve in cambio **cosa è emerso** (come è stato accolto + cosa puoi fare). Sopra, «La residenza, adesso» (dove c'è ROSS, piano per piano) e la rete delle passioni. Schede **Il canale · Ospiti · Richieste**; il ritratto ha **Spunti · Come sta · Con ROSS · Cosa sa ROSS**; in basso a destra **«ROSS, al volo»** | Di cosa ha parlato l'ospite, trascrizioni, punteggi, grafici di andamento, report, dati sanitari | **Unica dal 7/11**: è la vecchia «Struttura 2.0» rinominata. La vecchia Struttura (chat, report, panoramica) è stata eliminata |
 | **Famiglia** (`/famiglia`) | Anna, la figlia di Elena | I racconti che Elena ha scelto di condividere, come sta questa settimana (solo il positivo), spunti per la prossima chiamata; può inviare ricordi, foto e musica direttamente a ROSS | I racconti che Elena ha tenuto per sé, i segnali da osservare | **Riallineata** al consenso (PR #21); **app per iPhone** (novembre) |
-| **Struttura 2.0** (`/struttura-2`) | Staff della struttura | Un canale, non un archivio: propone a ROSS uno **spunto** per un ospite e riceve in cambio **cosa è emerso** (come è stato accolto lo spunto + suggerimento); nella scheda **Richieste**, le cose pratiche in due direzioni: dagli ospiti (richieste confermate: Da vedere · Ci pensiamo noi · Fatte oggi) e agli ospiti (comunicazioni che ROSS dice a ciascuno) | Di cosa ha parlato l'ospite, trascrizioni, punteggi, grafici, report, dati sanitari | **Nuova** (5/11), accanto alla Struttura attuale, che resta intatta. Schede **Il canale · Ospiti · Richieste**; il ritratto ha in più la scheda **Spunti**. In basso a destra la bolla **«ROSS, al volo»** (5/11): domande veloci su ciò che ROSS ha già raccontato, spunti e comunicazioni con conferma |
-| **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS; può chiedere a ROSS di far sapere al personale una piccola cosa pratica (con conferma), e ROSS le dice quando è sistemata; in home, «ROSS ti dice» con le comunicazioni pratiche della residenza | — | **Riallineata** (ottobre): trasparenza sull'IA, aiuto non di emergenza, "dimentica", chiusura verso le persone vere. **Richieste pratiche** (5/11) |
-
-Nella Struttura ci sono **quattro stakeholder**, e il target principale non è ancora scelto: per questo esiste il selettore di ruolo.
-- **Staff**: operatori e coordinatori, accesso condiviso senza login. Domande pratiche: chi seguire, cosa serve, come avvicinarsi.
-- **Educatrice**: accesso personale con login. Domande su attività e interessi che coinvolgono e sui momenti della giornata meno coperti (aggiunta per Papa Luciani, che ha due educatrici).
-- **Psicologa**: accesso personale con login. Domande sull'andamento rispetto alla media.
-- **Direzione**: accesso personale con login. Domande su dati aggregati, adozione e valore.
+| **ROSS** (`/ross`) | L'ospite, sul tablet | La conversazione con ROSS; può chiedere a ROSS di far sapere al personale una piccola cosa pratica (con conferma), e ROSS le dice quando è sistemata; in home, «ROSS ti dice» con le comunicazioni pratiche della residenza | — | **In stile Maria** (5/11): le cose importanti di oggi, scorciatoie, promemoria, semicerchio «Parla con ROSS» |
 
 ### 0.4 I personaggi della demo (Residenza Aurora)
 
@@ -65,38 +58,36 @@ Ogni ospite rappresenta un **archetipo**: un modo diverso di vivere ROSS e la re
 Elena è la protagonista delle viste Famiglia e ROSS, con la figlia **Anna**. La lista Ospiti è in ordine alfabetico.
 
 ### 0.5 Giro della demo in 5 minuti
-Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, vai sulla card in basso a sinistra → "Ripristina dati demo".
+Demo: https://4less4ndr0.github.io/demo-ross/. Se qualcosa sembra strano, pillola «Vista demo» → «Ripristina la demo».
 
-1. **Chiedi a ROSS** (home). Clicca "Chi ha bisogno di più attenzione oggi?". La risposta cita sempre la fonte. Dalla card in basso a sinistra cambia ruolo ("Sto chiedendo come") e guarda come cambiano le domande consigliate: la Direzione, per esempio, chiede "Cosa dicono gli ospiti della vita in struttura?".
-2. **Il polso di ROSS**, la sidebar della chat. Apri "Cosa va bene" e "Da osservare": ogni voce fa una domanda alla chat. "Cosa ti dice ROSS" è la guida alla lettura.
-3. **Ospiti** (`/ospiti`). In cima c'è Antonio, perché oggi non ha ancora parlato con ROSS. Ogni scheda mostra la foto, chi è, l'ultima conversazione e al massimo un avviso; il resto è nel ritratto.
-4. **Ritratto di Antonio** (`/ospiti/antonio`). Tab *Come sta* (benessere rispetto alla sua media, bisogni, presenza) e *Come avvicinarsi* (primo approccio in 3 passi e spunti per interesse; i dettagli concreti arrivano solo dalla biografia d'ingresso).
-5. **Panoramica** (`/panoramica`). La struttura in una schermata: sintesi, numeri chiave e grafici (ognuno rispetto alla propria media, segnali della settimana, voce della struttura con la soglia di anonimato, bisogni, presenza), ciascuno con "Cosa mostra" e "Come leggerlo". Clicca una barra per aprire il report di quell'ospite. "Stampa" o "Scarica riepilogo" generano il Riepilogo d'équipe per la riunione.
-6. **Report** (`/report`). Il "Come sta" di un ospite alla volta, da stampare.
-7. **Vista Famiglia**: tasto `2` o pillola "Vista demo" in basso a destra. Il racconto del giorno compare solo con il consenso di Elena; il resto è "tenuto per sé".
-8. **Vista ROSS**: tasto `3`. Avvia la conversazione: alla fine ROSS chiede a Elena se può raccontarlo ad Anna. Tornando alla Famiglia (`2`), il racconto ora è condiviso.
-9. **Una richiesta pratica, andata e ritorno**:
+1. **Il canale** (`/`). In cima il messaggio: «Tu porti uno spunto. ROSS ti restituisce un'occasione.», con il flusso in tre passi.
+2. **La residenza, adesso**: si apre sul primo piano, dove il ROSS di Carlo è da sistemare. Tocca il suo alloggio, poi «Fatto, è ricollegato».
+3. **La rete delle passioni**: tocca una passione condivisa e «Proponilo a tutti».
+4. **Proponi uno spunto** per un ospite: dopo pochi secondi ROSS «risponde» e il momento compare in cima a **Cosa è emerso**, con «Visto» e «Fatto».
+5. **Ospiti** (`/ospiti`) → **ritratto di Elena** (`/ospiti/elena`): si apre su **Spunti** (cosa ha capito ROSS, com'è andata ogni proposta), poi **Come sta** (racconto, le passioni di Elena), **Con ROSS** (i momenti da ricordare, con i filtri) e **Cosa sa ROSS** (le quattro cartelle).
+6. **Vista Famiglia**: tasto `2`. Il racconto del giorno compare solo con il consenso di Elena; il resto è "tenuto per sé".
+7. **Vista ROSS**: tasto `3`. Avvia la conversazione: alla fine ROSS chiede a Elena se può raccontarlo ad Anna. Tornando alla Famiglia (`2`), il racconto ora è condiviso.
+8. **Una richiesta pratica, andata e ritorno**:
    - nella stessa conversazione, prima di salutare, Elena dice che la lampada sul comodino non si accende. ROSS chiede «Vuoi che lo dica al personale?» ed Elena risponde «Sì, diglielo»;
-   - in **Struttura 2.0** (`5`), il canale mostra la riga «richieste nuove dagli ospiti → Richieste». Nella scheda **Richieste** la lampada è in «Da vedere» con «Confermato da Elena»: segnala «Ci pensiamo noi» e poi «Fatto»;
+   - nella **Struttura** (`1`), il canale mostra la riga «richieste nuove dagli ospiti → Richieste». Nella scheda **Richieste** la lampada è in «Da vedere» con «Confermato da Elena»: segna «Ci pensiamo noi» e poi «Fatto»;
    - riapri la conversazione (`3`): ROSS apre con «Hanno sistemato la lampada sul comodino: adesso la luce va bene?»;
    - per il caso che **non** diventa una richiesta, all'inizio della conversazione scegli «Sono caduta»: ROSS rimanda al campanello e non crea niente.
-10. **Una comunicazione agli ospiti:** nella scheda **Richieste**, in «Agli ospiti», scrivi una cosa pratica, scegli Elena (o tutti) e inviala. Sulla home del tablet (`3`, `/ross`) compare in «ROSS ti dice», con le parole semplici di ROSS. Nella Struttura 2.0 lo stato è a parole: In corso, Detto.
-11. **«ROSS, al volo»** (Struttura 2.0, bolla in basso a destra, sopra la pillola «Vista demo»):
+9. **Una comunicazione agli ospiti:** nella scheda **Richieste**, in «Agli ospiti», scrivi una cosa pratica, scegli Elena (o tutti) e inviala. Sulla home del tablet (`3`) compare in «ROSS ti dice». Nella Struttura lo stato è a parole: In corso, Detto.
+10. **«ROSS, al volo»** (bolla in basso a destra, sopra la pillola «Vista demo»):
     - tocca «Le ultime 3 cose emerse» o «Ci sono richieste aperte?»: risposte brevi, ognuna con il link alla schermata giusta;
     - scrivi «Proponi a Bruno il torneo di sabato»: ROSS prepara la bozza dello spunto e chiede «Lo mando?». Con «Mando» lo spunto compare nel canale e nella scheda Spunti di Bruno;
     - prova una domanda fuori dal perimetro («Di cosa ha parlato Elena?», «Chi è il più solo?», «Ha preso le medicine?»): ROSS dice di no, con gentilezza, e propone cosa può fare.
 
 **Per chi presenta:**
-- la pillola "Vista demo" (tasti `1` Struttura, `2` Famiglia, `3` ROSS);
-- la **visita guidata**, che si apre da sola a ogni apertura della demo (non nella Mappa, non con `?visita=0`) e poi dalla pillola, dalla card in basso a sinistra, da Impostazioni o con `?visita=1`: evidenzia un elemento alla volta e lo spiega in poche righe;
-- il ripristino dei dati dalla card in basso a sinistra.
+- la pillola "Vista demo" (tasti `1` Struttura, `2` Famiglia, `3` ROSS, `4` Mappa);
+- la **visita guidata**, che si apre da sola a ogni apertura della demo (non nella Mappa, non con `?visita=0`) e poi dalla pillola o con `?visita=1`: evidenzia un elemento alla volta e lo spiega in poche righe;
+- «Ripristina la demo», sempre dalla pillola.
 
-**Giro breve per un incontro di ricerca (3 minuti, si mostra solo alla fine, dopo aver ascoltato):** la visita guidata segue questo ordine.
-1. **Tablet di Elena** (`/ross`): spunti del giorno (meteo, ricorrenza) e "Da Anna, per te", cioè ciò che la famiglia porta a ROSS; ROSS dice di essere un programma; "Aiuto" mostra che si chiede con parole proprie e che ROSS non è un sistema di emergenza.
+**Giro breve per un incontro di ricerca (3 minuti, si mostra solo alla fine, dopo aver ascoltato):**
+1. **Tablet di Elena** (`/ross`): le cose importanti di oggi, «Da Anna, per te», ROSS che dice di essere un programma; «Aiuto» mostra che si chiede con parole proprie e che ROSS non è un sistema di emergenza.
 2. **Conversazione**: alla fine ROSS chiede se può raccontarlo ad Anna e rimanda Elena alle persone vere.
-3. **Famiglia** (`/famiglia`, `/famiglia/attivita`): "traduce, non trasmette", cioè un racconto e non dei dati; ciò che Elena tiene per sé resta suo.
-4. **Struttura** (`/?q=emerso`, ritratto di Elena): sa come sta e come avvicinarla, mai di cosa ha parlato.
-5. **Cosa la struttura riceve** (`/impostazioni#privacy`), poi "Cosa è reale e cosa è simulato".
+3. **Famiglia** (`/famiglia`): "traduce, non trasmette", cioè un racconto e non dei dati; ciò che Elena tiene per sé resta suo.
+4. **Struttura** (`/`, poi il ritratto di Elena): propone spunti e sa come sono stati accolti, mai di cosa Elena ha parlato. Poi "Cosa è reale e cosa è simulato".
 
 ### 0.6 Come ci siamo arrivati
 Le tappe principali, per tema. Il dettaglio di ogni PR è nella §6.
@@ -116,50 +107,43 @@ Le tappe principali, per tema. Il dettaglio di ogni PR è nella §6.
 
 ### 0.7 Cosa chiediamo al team
 Domande su cui ci serve il vostro parere (dettagli nella §5):
-1. **Target:** per chi progettiamo prima, Staff, Psicologa o Direzione?
-2. **Contenuti:** rileggere spunti di "Come avvicinarsi", segnali positivi, azioni suggerite della voce della struttura e testi degli specchietti. Sono stati scritti per la demo.
-3. **Consenso:** va progettato un "raccontalo anche alla struttura"? E come fa l'ospite a cambiare idea su ciò che ha condiviso?
-4. **Segnali gravi:** cosa succede se un ospite esprime dolore acuto, rischio per sé o maltrattamenti? Oggi non c'è un protocollo.
-5. **Accessi:** i tre ruoli devono vedere perimetri diversi, o cambiano solo le domande?
-6. **Vista ROSS:** riallineata a ottobre; resta da progettare il promemoria con avviso all'operatore (il caso di Namastè).
-7. **Idee in coda:** frecce "← precedente · successivo →" nel report del singolo ospite; rileggere i testi della visita guidata.
+1. **Contenuti:** rileggere gli spunti d'esempio, cosa ha capito ROSS di ciascuno e i racconti del ritratto. Sono stati scritti per la demo.
+2. **Consenso:** va progettato un "raccontalo anche alla struttura"? E come fa l'ospite a cambiare idea su ciò che ha condiviso?
+3. **Segnali gravi:** cosa succede se un ospite esprime dolore acuto, rischio per sé o maltrattamenti? Oggi non c'è un protocollo.
+4. **Chi usa la Struttura:** con la vecchia Struttura è sparito il selettore di ruolo (Staff, Educatrice, Psicologa, Direzione). Serve ancora distinguere chi guarda, o il canale basta a tutti?
+5. **Vista ROSS:** resta da progettare il promemoria con avviso all'operatore (il caso di Namastè).
 
 ### 0.8 Glossario
-- **Ritratto:** la pagina di un ospite nella vista Struttura (mai "cartella").
-- **Sua media:** la media personale dell'ospite negli ultimi 14 giorni; ogni confronto parte da lì.
-- **Segnale:** qualcosa che l'ospite ha espresso in conversazione, nella forma "X conversazioni su Y, di solito Z", su almeno 7 giorni. Può essere positivo (serenità, buonumore) o da osservare (stanchezza, solitudine). Mai l'oggetto dell'emozione.
-- **Cinque punti cardinali:** le sole cose che la struttura riceve, cioè benessere nel tempo, come relazionarsi, bisogni personali, voce della struttura, presenza e continuità.
-- **Voce della struttura:** ciò che gli ospiti esprimono sulla vita in struttura (pasti, rumore, attività), anonimo e aggregato.
-- **Soglia di anonimato:** un tema della voce compare solo se lo esprimono almeno 3 ospiti.
-- **Biografia d'ingresso:** le informazioni date da famiglia o struttura all'ingresso; è l'unica fonte dei dettagli concreti in "Come avvicinarsi".
+- **Ritratto:** la pagina di un ospite nella Struttura (mai "cartella").
+- **Spunto:** una proposta che la struttura manda a ROSS per un ospite (attività, ricordo, evento, persona). ROSS la porta nella conversazione solo se l'ospite ci sta.
+- **Momento:** ciò che ROSS restituisce: come è stato accolto uno spunto, un'iniziativa, un'uscita raccontata, una scelta, una cosa da guardare di persona. Sempre per categoria, mai il contenuto.
+- **Cosa puoi fare:** il suggerimento pratico che accompagna un momento, finché non lo si segna «Fatto».
+- **Biografia d'ingresso:** le informazioni date da famiglia o struttura all'ingresso, nella cartella «Chi è» di «Cosa sa ROSS».
 - **Emerso con ROSS:** un interesse scoperto in conversazione. La struttura ne vede solo la categoria, mai l'episodio.
 - **Modalità Attiva / Reattiva / Silenziosa:** con Attiva ROSS propone lui; con Reattiva risponde se interpellato; con Silenziosa non avvia nulla e rispetta il riposo.
-- **Riepilogo d'équipe / Come sta:** i due report stampabili, il primo sulla struttura, il secondo sul singolo ospite.
-- **Vista demo:** la pillola in basso a destra per passare tra Struttura, Famiglia e ROSS. È un comando per chi presenta, non parte del prodotto.
+- **Vista demo:** la pillola in basso a destra per passare tra Struttura, Famiglia, ROSS e Mappa. È un comando per chi presenta, non parte del prodotto.
 
 ---
 
 ## 1. Stato attuale in breve
 
-- **Demo online:** https://4less4ndr0.github.io/demo-ross/ (GitHub Pages, branch `gh-pages`, aggiornato automaticamente a ogni push su `main`).
+- **Demo online:** https://4less4ndr0.github.io/demo-ross/ (GitHub Pages, aggiornata a ogni merge su `main`).
 - **Repository:** `4less4ndr0/demo-ross`. Il lavoro si fa su un branch dedicato, poi PR verso `main`.
-- **Perimetro del lavoro:** soprattutto la **vista Struttura**, cioè ciò che vede lo staff della RSA. La **vista Famiglia** (`/famiglia`) è stata riallineata al consenso dell'ospite (PR #21). La **vista ROSS** (`/ross`, il tablet dell'ospite) non è stata ridisegnata: è cambiato solo il copione della conversazione, dove ROSS chiede a Elena se condividere il ricordo con Anna.
+- **Una sola Struttura dal 07/11/2026:** quella che era la «Struttura 2.0» è ora la Struttura, alla radice della demo. La vecchia vista è stata eliminata del tutto, codice e stili.
 
-**Com'è fatta oggi la vista Struttura:**
+**Com'è fatta oggi la Struttura:**
 
 | Zona | Cosa c'è |
 |---|---|
-| Barra superiore | Solo quattro schede centrate sulla finestra: **Chiedi a ROSS · Ospiti · Report · Panoramica**. Restano ferme quando la sidebar cambia larghezza. Su mobile stanno sulla stessa riga dell'hamburger. |
-| Sidebar sinistra | Logo, "Residenza Aurora" e data. **Chat:** accordion con Da osservare, **Cosa va bene**, Bisogni espressi, Voce della struttura, Presenza con ROSS e **Cosa ti dice ROSS** (guida alla lettura). **Ospiti (lista), Report e Panoramica:** sidebar larga con lo specchietto verde "Cosa ti dice ROSS" della pagina, aperto di default. **Ritratto e Impostazioni:** colonna di icone. In fondo: Impostazioni e card con l'account del ruolo (menu "Sto chiedendo come", impostazioni, presentazione, ripristino dati). |
-| Chiedi a ROSS (`/`) | Chat a frizione zero sul modello ChatGPT. Risposte preparate e deterministiche con le fonti; 4 domande consigliate per ciascuno dei quattro stakeholder (Staff, Educatrice, Psicologa, Direzione); graffetta per allegare una foto o un file; microfono simulato; menu "…". |
-| Ospiti (`/ospiti`) | Lista ordinata per attenzione (assenza insolita, segnali, bisogni). Ogni scheda: foto grande, nome, età, stanza, modalità di ROSS, ultima conversazione e al massimo un avviso da osservare. Cosa va bene, partecipazione e interessi stanno nel ritratto. Le foto (`public/ospiti/`) compaiono anche negli avatar di ritratto, chat e report. |
-| Ritratto (`/ospiti/:id`) | Si adatta all'archetipo dell'ospite (§0.4). Quattro tab: **Come sta** (risorse, narrativa, "Spunti di ROSS" per invogliare alla vita della residenza, benessere nel tempo con prima ciò che va bene, bisogni, presenza, grafico rispetto alla media) · **Come avvicinarsi** (primo approccio in 3 passi, spunti per interesse, attività da far proporre a ROSS solo in modalità Attiva, stile di ROSS, momenti della giornata) · **Con ROSS** (come usa ROSS per tipo di conversazione, modalità e inviti chiesti a ROSS, settimane; mai di cosa) · **Allegati** (raggruppati per provenienza: dall'ingresso, dalla famiglia, dallo staff; si aprono e si leggono). Niente grafo delle relazioni; dalla famiglia solo ciò che sceglie di condividere con la struttura. |
-| Report (`/report`) | Solo il **Come sta** del singolo ospite (`?ospite=ID`, `&stampa=1`), scelto da un menu in ordine di attenzione: infografiche (segnali rispetto al solito, bisogni, conversazioni per settimana, momenti della giornata, interessi che coinvolgono), come avvicinarsi, "Da valorizzare", checklist "Da osservare in équipe" e partecipazione rispetto alla media. |
-| Panoramica (`/panoramica`) | Le analytics della struttura come schermata dell'app: sintesi, 6 numeri chiave, grafici in tre gruppi (Benessere nel tempo · Voce degli ospiti e bisogni · Presenza con ROSS), ognuno con "Cosa mostra" e "Come leggerlo", e i punti da discutere. "Stampa" / "Scarica riepilogo" stampano il **Riepilogo d'équipe** (documento completo con situazione per ospite), tenuto pronto fuori schermo. Le vecchie URL `/analytics` e `/report?ambito=struttura` portano qui. |
-| Sessione live (`/interazione/:id`) | Conversazione avviata dallo staff: niente trascrizione; alla fine l'esito e un nuovo interesse per categoria. |
-| Impostazioni (`/impostazioni`) | Tema, visita guidata, fasce delle modalità ROSS, "Cosa la struttura riceve da ROSS" (`#privacy`), ripristino dei dati demo. |
-| Selettore "Vista demo" | Pillola in basso a destra, nella stessa posizione in tutte le viste. Menu Struttura/Famiglia/ROSS, tasti 1/2/3, "Cosa è reale e cosa è simulato", "Visita guidata". |
-| Vista Famiglia (`/famiglia`) | App per iPhone: **Oggi · Da lei · + · Da te · Insieme**. **Oggi**: sorriso di oggi, racconto del giorno, spunto per la telefonata, come sta questa settimana. **Da lei** (`/famiglia/da-lei`, `#racconti` / `#ricordi`): ciò che Elena sceglie di condividere, cioè i racconti (giorno, settimana, mese) e i suoi ricordi. **+**: contributo a ROSS. **Da te** (`/famiglia/da-te`): contributi di Anna con lo stato e il link a com'è andata, ricordi della famiglia. **Insieme** (`/famiglia/insieme`): spunti salvati per le chiamate, metodo, cosa vedi e cosa no. Dettagli: `/famiglia/attivita/:id`, `/famiglia/ricordi/:id`. |
+| Header | Logo R.O.S.S. e «Residenza Aurora»; schede **Il canale · Ospiti · Richieste** (pallino su Richieste quando c'è qualcosa da vedere). Resta in alto scorrendo. |
+| Il canale (`/`) | Messaggio d'apertura con il flusso in tre passi e il rimando alle richieste; **La residenza, adesso** (un piano alla volta, in 3D su desktop); **La rete delle passioni**; **Proponi uno spunto** e **Cosa è emerso** (Visto, Fatto). |
+| Ospiti (`/ospiti`) | Lista in ordine alfabetico: foto, nome, età, stanza, modalità, ultima conversazione con ROSS. Nessun avviso sulla persona. |
+| Ritratto (`/ospiti/:id`) | **Spunti** (aperta di default) · **Come sta** (racconto, cosa va bene, da osservare di persona, ha chiesto, le passioni, cosa puoi fare) · **Con ROSS** (come vive ROSS e i momenti da ricordare) · **Cosa sa ROSS** (quattro cartelle). |
+| Richieste (`/richieste`) | Dagli ospiti (Da vedere · Ci pensiamo noi · Fatte oggi) e agli ospiti (comunicazioni che ROSS dice a ciascuno). |
+| ROSS, al volo | Bolla in basso a destra su tutte le pagine: riassume, prepara spunti e comunicazioni con conferma, spiega ROSS. |
+| Selettore "Vista demo" | Pillola in basso a destra: Struttura, Famiglia, ROSS, Mappa (tasti 1–4), iPhone, schermata di blocco, «Cosa è reale e cosa è simulato», visita guidata, ripristino. |
+| Vista Famiglia (`/famiglia`) | App per iPhone: **Oggi · Da lei · + · Da te · Insieme**. |
+| Vista ROSS (`/ross`) | Il tablet di Elena in stile Maria e la conversazione «Parla con ROSS». |
 
 ---
 
@@ -167,73 +151,53 @@ Domande su cui ci serve il vostro parere (dettagli nella §5):
 
 Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informativo-struttura.md`](contratto-informativo-struttura.md) e in [`lessico-struttura.md`](lessico-struttura.md). In sintesi:
 
-1. **ROSS sta sopra i sistemi della RSA.** Non è un gestionale: niente anagrafica, note di reparto, pianificazione attività o dati come "Adesso: sala lettura".
-2. **La home è una chat** interrogabile anche da telefono, e ogni risposta cita la fonte.
-3. **Quattro stakeholder, target ancora da scegliere.** **Staff** (operatori e coordinatori, una sola voce, accesso condiviso senza login), **Educatrice**, **Psicologa** e **Direzione** (accesso personale con login). La card mostra l'account del ruolo, mai una persona per lo staff. Domande consigliate concrete e con un nome; niente turni nella demo.
-4. **Regola d'oro della privacy:** la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai di cosa ha parlato**. Niente trascrizioni, citazioni, argomenti, nomi raccontati, ricordi specifici, oggetto delle emozioni, giudizi sulla salute.
-5. **Cinque punti cardinali**, le sole cose che la struttura riceve:
-   - benessere nel tempo: segnali espressi su almeno 7 giorni, confrontati con la media personale;
-   - come relazionarsi: interessi solo per categoria;
-   - bisogni personali: per ospite;
-   - voce della struttura: anonima, solo con almeno 3 ospiti;
-   - presenza e continuità.
-6. **Equilibrio:** ogni ospite mostra anche ciò che va bene, non solo ciò che è da osservare. Il positivo viene prima; ROSS segnala entrambi, l'équipe osserva e decide.
-7. **Confronti solo con sé stessi:** partecipazione "sopra / in linea / sotto la sua media"; mai punteggi assoluti (/10), classifiche o baseline unica.
-8. **Come avvicinarsi:** dettagli concreti **solo dalla biografia d'ingresso** (famiglia o struttura), con la fonte visibile; per gli interessi emersi con ROSS solo leva, spunto, attività e coinvolgimento, mai l'episodio.
-9. **Nella struttura non ci sono** biografia/storia, grafo delle relazioni né contributi della famiglia: questi vanno direttamente a ROSS.
-10. **Lessico:** ROSS parla come un compagno, non come un servizio sanitario. Mai cartella, clinico, diagnosi, sintomo, rilevare, disorientamento, baseline, ingaggio, paziente, terapia, monitoraggio. La pagina di un ospite è il suo **ritratto**.
-11. **Allegati facoltativi:** una foto (anche dal telefono) o un file, dalla chat o dal tab Allegati; nessuna classificazione né dati sanitari come requisito; non entrano nel report "Come sta". ROSS li cita, non interpreta referti o valori.
-12. **Report:** Riepilogo d'équipe (default) o Singolo ospite; numeri calcolati dalle conversazioni; niente "crescita della memoria" né icone "i".
-13. **Specchietto verde "Cosa ti dice ROSS"** sempre nel menu laterale, mai nel corpo della pagina. Contestualizza: a cosa serve la pagina, cosa si trova, perché è fatta così, cosa non c'è.
-14. **Interazioni in stile shadcn/ui** (Radix + Sonner) con i colori e i caratteri ROSS; niente Tailwind né tema neutro. Le azioni reversibili mostrano un toast con "Annulla".
-15. **Barra superiore minimale** (solo le tre schede) e **selettore "Vista demo"** in un angolo: è un comando per chi presenta.
+1. **ROSS sta sopra i sistemi della RSA.** Non è un gestionale: niente anagrafica, note di reparto, pianificazione attività.
+2. **La Struttura è un canale, non un archivio:** non interroga ROSS, gli propone spunti e riceve cosa è emerso.
+3. **Regola d'oro della privacy:** la struttura sa *come sta* e *di cosa ha bisogno* l'ospite, **mai di cosa ha parlato**. Gli insight dicono come è stato accolto uno spunto; mai trascrizioni, citazioni, argomenti, nomi raccontati, ricordi specifici, giudizi sulla salute.
+4. **Qualità, non quantità:** niente dashboard, KPI, grafici di andamento, punteggi, classifiche o conteggi «X su Y». I grafici solo a supporto di un concetto (le passioni).
+5. **Prima ciò che va bene**, poi ciò che è da guardare di persona.
+6. **Si dà del tu** a chi lavora in struttura; **ROSS sempre in terza persona**; mai le parole dell'ospite tra virgolette.
+7. **Richieste pratiche** solo esplicite e confermate dall'ospite; salute e urgenze mai, si va al campanello.
+8. **Lessico:** ROSS parla come un compagno, non come un servizio sanitario. La pagina di un ospite è il suo **ritratto**.
+9. **Interazioni in stile shadcn/ui** (Radix + Sonner) con i colori ROSS; le azioni reversibili mostrano un toast con "Annulla".
+10. **Selettore "Vista demo"** in un angolo: è un comando per chi presenta.
 
 ---
 
 ## 3. Mappa del codice
 
-> **Mappa interattiva** (aggiornata al 5/11, con la Struttura 2.0): vista **Mappa** della demo (pillola "Vista demo" → Mappa, tasto 4, indirizzo `/mappa`; file `public/mappa-ross.html`): parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
+> **Mappa interattiva** (aggiornata al 7/11, con una sola Struttura): vista **Mappa** della demo (pillola "Vista demo" → Mappa, tasto 4, indirizzo `/mappa`; file `public/mappa-ross.html`): parti, file e collegamenti con nomi in italiano, tre percorsi guidati e le schermate. Come aggiornarla: [`docs/floorplan/README.md`](floorplan/README.md).
 
 | File | Ruolo |
 |---|---|
-| `src/App.jsx` | Rotte. Le vecchie URL (`/consegne`, `/insight`, `/analytics`, `/interazioni`, `/attivita`, `/struttura`) reindirizzano alle nuove. Mostra il `Toaster` (Sonner) nella vista Struttura e il vecchio toast nelle viste Famiglia e ROSS. |
-| `src/components/Layout.jsx` | Guscio della Struttura: sidebar (larga in chat, Ospiti e Report; a icone altrove), Sheet su mobile, schede in alto, card con l'account del ruolo (`roles[].account`), scorciatoia ⌘K che porta alla chat. |
-| `src/components/InsightRail.jsx` | Accordion della sidebar della chat (Da osservare, Cosa va bene, Bisogni, Voce, Presenza con ROSS) e guida `readingGuide`. Le voci fanno domande alla chat tramite l'evento `ross:ask`. |
-| `src/components/PageGuide.jsx` | `SidebarGuide`: specchietto "Cosa ti dice ROSS" di Ospiti, Report e Panoramica; testi in `residentsGuide`, `reportsGuide` e `overviewGuide`. |
-| `src/components/ReportCharts.jsx` | Infografiche dei report: `DivergingBars` (con `onSelect` le righe diventano bottoni), `HorizontalBars` (con linea di riferimento), `Dumbbell`, `Columns`, `Sparkline`, `ChartCard`, `ChartLegend`. Colori fissi in `CHART` (e token `--chart-*` in `styles.css`): verde = va bene, corallo = da osservare, grigio = in linea, sabbia scura = bisogni. |
-| `src/components/ParticipationChart.jsx` | Grafico della partecipazione rispetto alla media personale, usato nel ritratto e nel report. |
-| `src/pages/StructureChannel.jsx` | **Struttura 2.0** (`/struttura-2`): `StructureChannelLayout` (marchio e schede Il canale · Ospiti · Richieste, con il pallino sulle richieste da vedere, fornisce `StructureView` con `base` e `v2`), `StructureChannelPage` (contenitore per Ospiti e ritratto, gli stessi componenti della Struttura), la pagina del canale (flusso in 3 passi, riga di rimando alle richieste, rete delle passioni, «Proponi uno spunto», «Cosa è emerso» con il filtro `momentFilters.canale`), `ProposeCard` (anche nel ritratto, con `fixedId` e `prefill`), `MomentCard`, `MomentActions` (Visto/Fatto) ed `Esito`. Stili `.s2-*` in fondo a `styles.css`. |
-| `src/components/ResidenceMap.jsx` | Canale della 2.0: **«La residenza, adesso»**, un piano alla volta; su desktop il piano scelto è in 3D (`Floor3D`, `Room3D`: SVG con nomi e pallini in HTML sopra), su telefono la pianta piatta (`Plan`). Indice dei piani (`Tabs` verticali; su telefono pillole), pianta con alloggi e spazi posizionati in percentuale sulla geometria 18 × 6 di `floorsPlan`, pallino dello stato nell'angolo (`Pin`), tooltip Radix con lo stato a parole, legenda, dettaglio a destra (`RoomPanel`; su telefono `Sheet` dal basso). «Fatto, è ricollegato» con «Annulla», salvato in `ross-residence-v1`. |
+| `src/App.jsx` | Rotte. La Struttura sta alla radice (`/`, `/ospiti`, `/ospiti/:id`, `/richieste`, dentro `StructureChannelLayout`). `FromStructure2` porta i vecchi `/struttura-2/…` alla stessa pagina senza prefisso; `retired` porta `/report`, `/panoramica`, `/impostazioni`, `/interazione/:id` e gli altri indirizzi della vecchia Struttura al canale o agli ospiti. |
+| `src/data/narratives.js` | Il racconto di ciascun ospite per «Come sta» (`narrativeFor`): titolo, presenza, cosa fare. Preso dal vecchio report, che non c'è più. |
+| `src/pages/StructureChannel.jsx` | **La Struttura** (`/`): `StructureChannelLayout` (logo e schede Il canale · Ospiti · Richieste, con il pallino sulle richieste da vedere; header sticky), `StructureChannelPage` (contenitore per Ospiti e ritratto), la pagina del canale (messaggio d'apertura con il flusso in 3 passi, riga di rimando alle richieste, la residenza adesso, rete delle passioni, «Proponi uno spunto», «Cosa è emerso» con il filtro `momentFilters.canale`), `ProposeCard` (anche nel ritratto, con `fixedId` e `prefill`), `MomentCard`, `MomentActions` (Visto/Fatto) ed `Esito`. Stili `.s2-*` in `styles.css` (il prefisso viene dalla Struttura 2.0). |
+| `src/components/ResidenceMap.jsx` | Canale della Struttura: **«La residenza, adesso»**, un piano alla volta; su desktop il piano scelto è in 3D (`Floor3D`, `Room3D`: SVG con nomi e pallini in HTML sopra), su telefono la pianta piatta (`Plan`). Indice dei piani (`Tabs` verticali; su telefono pillole), pianta con alloggi e spazi posizionati in percentuale sulla geometria 18 × 6 di `floorsPlan`, pallino dello stato nell'angolo (`Pin`), tooltip Radix con lo stato a parole, legenda, dettaglio a destra (`RoomPanel`; su telefono `Sheet` dal basso). «Fatto, è ricollegato» con «Annulla», salvato in `ross-residence-v1`. |
 | `src/data/residence.js` | Dati della pianta: `floorsPlan` (tre piani, alloggi e spazi comuni con coordinate), `deviceState` e `deviceNote` (stato del dispositivo, mai della persona), `stateLabel` e `legendLabel`, `stateOrder`, `roomState(stanza, ospiti, ricollegati)` (la modalità Silenziosa diventa «in pausa») e `startFloor` (il piano da aprire all'inizio). |
-| `src/state/channelStore.js` | **La sola fonte dei momenti** letta da canale, Spunti e Con ROSS: `useMoments()`, `channelActions.send({ residentId, testo, tipo })` (crea un momento «spunto» in attesa; nella demo ROSS risponde in 6 secondi con `simulatedReply`) e `channelActions.mark(id, stato)` per Visto/Fatto, con «Annulla». I filtri delle tre viste sono in `momentFilters` (`canale`, `spunti(id)`, `storia(id)`). Nel browser (`ross-struttura2-v2`) si salvano solo lo stato dei momenti di partenza e i momenti nati da nuovi spunti; quelli di partenza si ricalcolano ogni volta da oggi. Per le richieste: `channelActions.request` (dal tablet, dopo il sì), `requestStep(id, "ci_pensiamo" o "fatto")` con «Annulla», `closeWithResident`, i filtri `richieste`, `haChiesto(id)` e `daChiudere(id)`, `getMoments()`. Tablet e Struttura 2.0 leggono lo stesso stato, anche in due finestre (evento `storage`). Richieste ripetute: `request` aggiorna la card esistente. Comunicazioni: `announce`, `toldTo`, filtri `daVedere`, `ciPensiamo`, `fatteOggi`, `comunicazioni`, `comunicazioniPer`; le comunicazioni sono escluse da `storia`. |
+| `src/state/channelStore.js` | **La sola fonte dei momenti** letta da canale, Spunti e Con ROSS: `useMoments()`, `channelActions.send({ residentId, testo, tipo })` (crea un momento «spunto» in attesa; nella demo ROSS risponde in 6 secondi con `simulatedReply`) e `channelActions.mark(id, stato)` per Visto/Fatto, con «Annulla». I filtri delle tre viste sono in `momentFilters` (`canale`, `spunti(id)`, `storia(id)`). Nel browser (`ross-struttura2-v2`) si salvano solo lo stato dei momenti di partenza e i momenti nati da nuovi spunti; quelli di partenza si ricalcolano ogni volta da oggi. Per le richieste: `channelActions.request` (dal tablet, dopo il sì), `requestStep(id, "ci_pensiamo" o "fatto")` con «Annulla», `closeWithResident`, i filtri `richieste`, `haChiesto(id)` e `daChiudere(id)`, `getMoments()`. Tablet e Struttura leggono lo stesso stato, anche in due finestre (evento `storage`). Richieste ripetute: `request` aggiorna la card esistente. Comunicazioni: `announce`, `toldTo`, filtri `daVedere`, `ciPensiamo`, `fatteOggi`, `comunicazioni`, `comunicazioniPer`; le comunicazioni sono escluse da `storia`. |
 | `src/components/ResidentSpunti.jsx` | Ritratto → **Spunti** (una persona → come proporle meglio): «Cosa ha capito ROSS» (`spuntoReading` e i tipi che funzionano o per ora meno, dagli esiti), poi solo i momenti con origine «spunto» raggruppati per esito (in attesa, sono piaciuti, ci sta pensando, non sono piaciuti o non era il momento), in card compatte; «Cosa puoi fare» solo finché non è Fatto. Accanto il modulo per proporne uno (con `?spunto=…&tipo=…` arriva già scritto). |
-| `src/data/channel.js` | Dati della Struttura 2.0: `channelResidents` (gli otto ospiti), `spuntoTypes`, `timingFor` (come ROSS porta lo spunto secondo la modalità), `spuntoReading` (cosa ha capito ROSS di ciascuno) e `simulatedReply` (la risposta preparata per tipo di spunto, in terza persona). |
-| `src/pages/StructureRequests.jsx` | Struttura 2.0, scheda **Richieste** (`/struttura-2/richieste`): «Dagli ospiti» (le richieste confermate in tre gruppi: Da vedere · Ci pensiamo noi · Fatte oggi; card con categoria, «Confermato da …», «L'ha chiesto di nuovo oggi», «ROSS gliel'ha detto») e «Agli ospiti» (`AnnounceCard`: testo, a chi, quando dirlo, anteprima di come lo dirà ROSS; elenco delle comunicazioni con lo stato a parole). |
-| `src/components/QuickChat.jsx` | Struttura 2.0, **«ROSS, al volo»**: la bolla in basso a destra (sopra la pillola «Vista demo») e il pannello (380×560 su desktop, non modale; `Sheet` a tutto schermo su telefono). Saluto e pillole, campo libero, messaggi di ROSS con al massimo 3 voci e un link alla schermata giusta, bozze da confermare (`DraftCard`: Mando · Modifica · Annulla) che chiamano `channelActions.send` o `channelActions.announce`. Esc chiude, il focus va al campo e poi torna alla bolla. La conversazione sta solo nella sessione (`sessionStorage`, `ross-quick-v1`). Il link «Cosa è reale e cosa è simulato» manda l'evento `ross:about` alla pillola. |
-| `src/data/quickChat.js` | Il motore di «ROSS, al volo», separato dalla chat della Struttura attuale: `quickAnswer(domanda, momenti)` riconosce gli intenti con parole chiave normalizzate (senza accenti) e i nomi degli otto ospiti (`residentIn`). Tre capacità: **riassumere** (ultime 3 cose emerse, richieste aperte, cosa è emerso con una persona negli ultimi 7 giorni, spunti piaciuti, tutto dai filtri di `channelStore`), **agire con conferma** (bozza di spunto o di comunicazione, `draftSummary`), **spiegare ROSS** (cosa vede la struttura, perché non si sa di cosa parlano, cos'è uno spunto, il no dell'ospite, le urgenze). I rifiuti (contenuto, classifiche, salute, gestione) hanno testi fissi. Più `suggestions` e `greeting`. |
+| `src/data/channel.js` | Dati della Struttura: `channelResidents` (gli otto ospiti), `spuntoTypes`, `timingFor` (come ROSS porta lo spunto secondo la modalità), `spuntoReading` (cosa ha capito ROSS di ciascuno) e `simulatedReply` (la risposta preparata per tipo di spunto, in terza persona). |
+| `src/pages/StructureRequests.jsx` | Struttura, scheda **Richieste** (`/richieste`): «Dagli ospiti» (le richieste confermate in tre gruppi: Da vedere · Ci pensiamo noi · Fatte oggi; card con categoria, «Confermato da …», «L'ha chiesto di nuovo oggi», «ROSS gliel'ha detto») e «Agli ospiti» (`AnnounceCard`: testo, a chi, quando dirlo, anteprima di come lo dirà ROSS; elenco delle comunicazioni con lo stato a parole). |
+| `src/components/QuickChat.jsx` | Struttura, **«ROSS, al volo»**: la bolla in basso a destra (sopra la pillola «Vista demo») e il pannello (380×560 su desktop, non modale; `Sheet` a tutto schermo su telefono). Saluto e pillole, campo libero, messaggi di ROSS con al massimo 3 voci e un link alla schermata giusta, bozze da confermare (`DraftCard`: Mando · Modifica · Annulla) che chiamano `channelActions.send` o `channelActions.announce`. Esc chiude, il focus va al campo e poi torna alla bolla. La conversazione sta solo nella sessione (`sessionStorage`, `ross-quick-v1`). Il link «Cosa è reale e cosa è simulato» manda l'evento `ross:about` alla pillola. |
+| `src/data/quickChat.js` | Il motore di «ROSS, al volo»: `quickAnswer(domanda, momenti)` riconosce gli intenti con parole chiave normalizzate (senza accenti) e i nomi degli otto ospiti (`residentIn`). Tre capacità: **riassumere** (ultime 3 cose emerse, richieste aperte, cosa è emerso con una persona negli ultimi 7 giorni, spunti piaciuti, tutto dai filtri di `channelStore`), **agire con conferma** (bozza di spunto o di comunicazione, `draftSummary`), **spiegare ROSS** (cosa vede la struttura, perché non si sa di cosa parlano, cos'è uno spunto, il no dell'ospite, le urgenze). I rifiuti (contenuto, classifiche, salute, gestione) hanno testi fissi. Più `suggestions` e `greeting`. |
 | `src/pages/RossExperience.jsx` | Tablet di Elena, con l'anatomia e l'estetica della schermata «Maria» (classi `ross-m-*`, semicerchio `ross-talk-arc`, dialog `ross-dialog`): la home con le schede «una cosa alla volta» e «Parla con ROSS» (`RossConversation`, copione `script`). Nel copione c'è la **richiesta pratica** della lampada: turni `lampada`, `lampada-conferma` (con «Sì, diglielo» parte `channelActions.request(lampRequest)`), la **chiusura del cerchio** (`cerchio`, se c'è una richiesta «Fatto» da chiudere: `momentFilters.daChiudere`) e il **caso salute** (`salute`, nessuna richiesta, rimando al campanello). In home la card **«ROSS ti dice»** con le comunicazioni per Elena (`momentFilters.comunicazioniPer`), che segna come dette (`toldTo`). |
-| `src/data/moments.js` | I **momenti di partenza** della 2.0 (`seedMoments`): gli insight del canale, gli spunti passati e i momenti di ogni ospite (iniziative, uscite raccontate, scelte, interessi emersi, cose da guardare di persona). Ognuno ha `id`, `residentId`, `quando` (calcolato da oggi con `at(giorniFa, "hh:mm")`), `origine` (spunto · spontaneo · invito · scelta · da_osservare), `spunto` ed `esito` se nasce da uno spunto, `titolo`, `racconto`, `cosaPuoiFare`, `stato`. Più `esiti`, `labelOf` e `toneOf`. Sempre in terza persona, mai il contenuto delle conversazioni. Più le **richieste pratiche** (origine `richiesta`: `richiesta`, `categoria` stanza · comfort · desiderio, `chiusura`, `stato` in_attesa · ci_pensiamo · fatto, `chiusoConOspite`), con `requestStates` e `lampRequest`. Più le **comunicazioni** agli ospiti (origine `comunicazione`: `testo`, `frase`, `perChi`, `quandoDirlo`, `stato` in_corso · detto) e, nelle richieste, `richiestoDiNuovo` e `fattoIl`. |
-| `src/data/demoClock.js` | L'**orologio della demo** per Struttura 2.0, Famiglia e tablet: `demoToday()`, `at(giorniFa, "hh:mm")`, `daysAgo`, `dayLabel` (Oggi · Ieri · giorno della settimana fino a 6 giorni · «La settimana scorsa» · «N settimane fa», con la data), `whenText`, `dayText`, `dayShort`, `rangeText`, `monthText`, `daysUntil`. La Struttura attuale resta sul giorno fisso `DEMO_TODAY`. |
+| `src/data/moments.js` | I **momenti di partenza** della Struttura (`seedMoments`): gli insight del canale, gli spunti passati e i momenti di ogni ospite (iniziative, uscite raccontate, scelte, interessi emersi, cose da guardare di persona). Ognuno ha `id`, `residentId`, `quando` (calcolato da oggi con `at(giorniFa, "hh:mm")`), `origine` (spunto · spontaneo · invito · scelta · da_osservare), `spunto` ed `esito` se nasce da uno spunto, `titolo`, `racconto`, `cosaPuoiFare`, `stato`. Più `esiti`, `labelOf` e `toneOf`. Sempre in terza persona, mai il contenuto delle conversazioni. Più le **richieste pratiche** (origine `richiesta`: `richiesta`, `categoria` stanza · comfort · desiderio, `chiusura`, `stato` in_attesa · ci_pensiamo · fatto, `chiusoConOspite`), con `requestStates` e `lampRequest`. Più le **comunicazioni** agli ospiti (origine `comunicazione`: `testo`, `frase`, `perChi`, `quandoDirlo`, `stato` in_corso · detto) e, nelle richieste, `richiestoDiNuovo` e `fattoIl`. |
+| `src/data/demoClock.js` | L'**orologio della demo** per Struttura, Famiglia e tablet: `demoToday()`, `at(giorniFa, "hh:mm")`, `daysAgo`, `dayLabel` (Oggi · Ieri · giorno della settimana fino a 6 giorni · «La settimana scorsa» · «N settimane fa», con la data), `whenText`, `dayText`, `dayShort`, `rangeText`, `monthText`, `daysUntil`. |
 | `src/data/interestGraph.js` | **Una sola fonte per i due grafi**: `passions` (passioni con chi le condivide e un'occasione; `sharedPassions` sono quelle con almeno 2 ospiti), `passionsOf`, `viaOf`, `personalLinks` (le occasioni di ciascuno, collegate al momento che ne dice l'esito), `outsideLinks`, `graphStatus` e `statusFromEsito`. |
 | `src/components/PassionNetwork.jsx` | Canale, **«La rete delle passioni · tutta la residenza»**: solo `sharedPassions`, la passione scelta nell'indirizzo (`?passione=…`), azione collettiva «Proponilo a tutti e N». |
-| `src/components/PortraitV2.jsx` | Ritratto della 2.0: `HowIsV2` (Come sta, con **«Le passioni di …»**: solo i suoi interessi, colori dagli esiti dei suoi spunti, gli altri ospiti come «con chi la condivide», «Proponilo come spunto» e «Vedi chi altro la condivide» verso `/struttura-2?passione=…`) e `WithRossV2` (Con ROSS: la sua storia dal filtro `momentFilters.storia`, gli spunti come riga compatta con il link a Spunti, filtri a pillole). |
-| `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": menu, tasti 1/2/3, dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), voce "Visita guidata". |
-| `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura, Famiglia, Elena, ognuno con scheda d'apertura e `steps`), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia, posiziona la scheda (sotto, sopra, di fianco o in basso su telefono), rende `inert` il resto della pagina. |
+| `src/components/PortraitV2.jsx` | Ritratto della Struttura: `HowIsV2` (Come sta, con **«Le passioni di …»**: solo i suoi interessi, colori dagli esiti dei suoi spunti, gli altri ospiti come «con chi la condivide», «Proponilo come spunto» e «Vedi chi altro la condivide» verso `/?passione=…`) e `WithRossV2` (Con ROSS: la sua storia dal filtro `momentFilters.storia`, gli spunti come riga compatta con il link a Spunti, filtri a pillole). |
+| `src/components/PerspectiveSwitcher.jsx` | Pillola "Vista demo": Struttura, Famiglia, ROSS, Mappa (tasti 1–4), dialog "Cosa è reale e cosa è simulato" (`simulated`, `principles`), visita guidata, ripristino. |
+| `src/components/GuidedTour.jsx` | Visita guidata per capitoli: `chapters` (Struttura: il canale, la residenza, la rete delle passioni, cosa è emerso, il ritratto, le richieste; poi Famiglia ed Elena), `sequence`, `startTour()` (evento `ross:tour`), avvio automatico a ogni caricamento (tranne `/mappa` e `?visita=0`) e con `?visita=1`; evidenzia e rende `inert` il resto della pagina. |
 | `src/components/ui.jsx` | Primitive in stile shadcn, usate in tutte le viste: `Button`, `DropdownMenu*`, `Select`, `Sheet`, `Dialog` (con `className`, per esempio `family-dialog`), `Tabs*`, `Input`, `Textarea`, `Toaster`. |
-| `src/components/DocumentDialogs.jsx` | Le quattro cartelle di «Cosa sa ROSS» (`folders`, `familyOf`, `useOf`, `folderChoices`) e i dialog per aggiungere un documento: `FileDocumentDialog` (anteprima, titolo, cartella; dalla chat anche l'ospite), `TextDocumentDialog` (testo incollato → `.txt`), `FolderChoice`. Usati dal ritratto e dalla chat. |
-| `src/components/Common.jsx` | `RossLogo` (il logo, `public/ross-logo.svg`), `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`. |
-| `src/pages/AskRoss.jsx` | Chat: thread, suggerimenti, ambito `?ospite=`, domande via `?q=`, allegati, microfono simulato, menu "…", ascolto di `ross:ask` e `ross:focus-chat`. |
-| `src/pages/Residents.jsx` | Lista ospiti in ordine alfabetico (usata anche dalla Struttura 2.0: i link seguono `useStructureView().base`); scheda con foto, chi è, ultima conversazione e un solo avviso. |
-| `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con i quattro tab. I vecchi `?tab=memorie`/`relazioni` portano a Come avvicinarsi. |
-| `src/pages/OperationalPages.jsx` | `ReportsPage` (solo singolo ospite, `ResidentReport`) e `OverviewPage` (Panoramica: `Overview` a schermo, `TeamReport` fuori schermo per la stampa, classe `.print-offscreen`). |
-| `src/pages/LiveInteraction.jsx` | Sessione live: interessi dell'ospite in uso, esito con nuovo interesse per categoria (`journeyInterest` per Elena). |
-| `src/pages/Settings.jsx` | Impostazioni unificate, con la sezione `#privacy`. |
-| `src/data/chatScript.js` | Motore della chat: `roles` (Staff, Psicologa, Direzione, con `account`), `roleFor` (converte i ruoli vecchi salvati), `suggestions`, intenti a parole chiave con risposte per ruolo e fonti (tra cui `priorita`, `positivi`, `segnali`, `bisogni`, `voce`, `presenza`, `report`, `privacy`). |
-| `src/data/careInsights.js` | **Dati conformi al contratto:** `signals` (da osservare e positivi), `needs`, `facilityVoice` (con azione suggerita), `relating`, `approachGuide` (primo approccio, stile, momenti, spunti per interesse), `presenceNotes`, `journeyInterest`, `cardinalPoints`. Helper: `hooksFor`, `attentionFor`, `attentionScore`, `byAttention`, `trendOf`, `describeSignal`, `signalDetail`, `groupByResident`. È il posto dove cambiare gli insight. |
-| `src/data/reportNarrative.js` | `buildResidentReport(state, resident, period)` (narrativa, KPI, segnali, bisogni, come avvicinarsi, da valorizzare, checklist, serie del grafico) e `buildTeamReport(state, period)` per il Riepilogo d'équipe, calcolato da `state.interactions` e da `careInsights.js`. Dati delle infografiche: `trendRows`, `signalTypes` (con `who`), `needCategories`, `activityEngagement`, tendenza dei KPI rispetto al periodo precedente; per l'ospite `weekly`, `rhythm`, `engagement`. |
-| `src/state/DemoContext.jsx` | Stato persistente in localStorage (`ross-rsa-demo-v2`): `role`, `documents`, `notify` con Sonner e "Annulla". I dati degli ospiti vengono sempre dalla demo: dal browser si conservano solo modalità e stato. |
+| `src/components/DocumentDialogs.jsx` | Le quattro cartelle di «Cosa sa ROSS» (`folders`, `familyOf`, `useOf`, `folderChoices`), il menu «Aggiungi un documento» (`AddDocumentMenu`) e i dialog: `FileDocumentDialog` (anteprima, titolo, cartella), `TextDocumentDialog` (testo incollato → `.txt`), `FolderChoice`. Usati dal ritratto. |
+| `src/components/Common.jsx` | `RossLogo` (il logo, `public/ross-logo.svg`), `Avatar` (foto da `public/ospiti/` con `residentPhoto`, iniziali come ripiego), `ModeBadge`, `InfoTip`, `SectionTitle`, `DataExplanation`, `EmptyState`. |
+| `src/pages/Residents.jsx` | Lista ospiti in ordine alfabetico; scheda con foto, chi è e ultima conversazione con ROSS; «Proponi uno spunto» porta al canale. |
+| `src/pages/ResidentProfile.jsx` | Ritratto dell'ospite con quattro schede: **Spunti** (default, `ResidentSpunti`), **Come sta** e **Con ROSS** (`HowIsV2`, `WithRossV2` in `PortraitV2.jsx`), **Cosa sa ROSS** (`Attachments`, con le quattro cartelle e «Cosa sta per dire ROSS»). In cima: modalità, «Proponi uno spunto», «Aggiungi un documento». I vecchi `?tab=avvicinare`, `memorie`, `relazioni`… portano a Spunti. |
+| `src/data/careInsights.js` | Dati sugli ospiti conformi al contratto: segnali (positivi e da osservare), bisogni, presenza, come usa ROSS (`usageStyle`), «Spunti di ROSS» (`rossTips`). Lo leggono il ritratto («Come sta», «Con ROSS») e la Famiglia («Come sta questa settimana»). Alcune parti servivano solo alla vecchia Struttura e oggi non le legge nessuno. |
+| `src/state/DemoContext.jsx` | Stato persistente in localStorage (`ross-rsa-demo-v2`): ospiti e modalità, documenti, ricordi, contributi della famiglia, viaggio della conversazione, `notify` con Sonner e "Annulla". Contiene ancora alcuni campi della vecchia Struttura (ruolo, inviti chiesti a ROSS) che oggi nessuna schermata usa. |
 | `src/data/demoData.js` | Dataset fittizio: ospiti, interazioni, `documents`, più dati usati solo dalle viste Famiglia e ROSS (biografia, memorie, `graphData`, `handoverEntries`). |
-| `src/styles.css` | Stili unici; le sezioni aggiunte sono commentate (es. `/* Come avvicinarsi … */`, `/* Report: Riepilogo d'équipe … */`). |
+| `src/styles.css` | Stili unici, a sezioni commentate. Il 07/11/2026 sono stati tolti tutti i selettori della vecchia Struttura (sidebar, chat, report, panoramica, impostazioni): da 237 a 156 KB, senza differenze visibili. |
 | `docs/contratto-informativo-struttura.md` | Contratto informativo ROSS → struttura: regola d'oro, cinque punti, segnali ammessi (anche positivi), divieti, checklist, aree grigie. |
 | `docs/lessico-struttura.md` | Lessico della Struttura dalle pagine Notion "TOV guidelines" e "Keywords": principi, tabella "non si dice / si dice", checklist. |
 
@@ -244,41 +208,60 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
 **Avvio locale:** `npm install`, poi `npm run dev` (http://localhost:5173).
 **Prima di ogni PR:** `npm run build` e `npm run test:sites`. La build deve produrre `dist/client/index.html`, `dist/server/index.js` e `dist/.openai/hosting.json`.
 **Deploy:** merge su `main`, poi il workflow `.github/workflows/deploy-pages.yml` pubblica su GitHub Pages in circa 30 secondi.
-**Dati vecchi nel browser:** card in basso → "Ripristina dati demo".
+**Dati vecchi nel browser:** pillola «Vista demo» → «Ripristina la demo».
 
-- **Aggiungere una domanda alla chat:** in `src/data/chatScript.js` aggiungi un oggetto a `intents`, con `id`, `keywords` normalizzate senza accenti, eventuale `when(state)` e `answer({ state, role, resident, q })`. L'oggetto restituisce `text`, `bullets`, `residents`, `sources`, `action`. Usa `byRole` per le varianti Staff / Psicologa / Direzione. Se è una domanda consigliata, aggiungila a `suggestions` e verifica che il punteggio delle keyword non la faccia finire in un altro intento.
-- **Cambiare gli insight** (segnali da osservare o positivi, bisogni, voce, come relazionarsi, spunti): modifica solo `src/data/careInsights.js`. Chat, sidebar, lista, ritratto e report li leggono da lì. Tieni l'equilibrio: ogni ospite con almeno un segnale positivo.
-- **Cambiare la guida "Cosa ti dice ROSS":** chat → `readingGuide` in `src/components/InsightRail.jsx`; Ospiti e Report → `residentsGuide` / `reportsGuide` in `src/components/PageGuide.jsx`.
+- **Cambiare gli spunti o ciò che emerge:** i momenti stanno solo in `src/data/moments.js` (letti tramite `src/state/channelStore.js`); le risposte simulate e cosa ha capito ROSS in `src/data/channel.js`. Non duplicare i momenti in altri file.
+- **Cambiare le passioni:** `src/data/interestGraph.js`, che alimenta sia «Le passioni di …» nel ritratto sia la rete nel canale.
+- **Cambiare i racconti del ritratto:** `src/data/narratives.js` e, per i segnali e gli «Spunti di ROSS», `src/data/careInsights.js`.
 - **Nuovi controlli UI:** usa le primitive di `src/components/ui.jsx`, non `<select>` nativi né modali personalizzati.
 - **Checklist prima di pubblicare un testo nuovo** (contratto §5 e lessico):
   - nessuna citazione, nessun argomento, nessun nome o luogo raccontato;
-  - segnali su almeno 7 giorni, nella forma "X conversazioni su Y", confrontati con la media della persona;
+  - al tu verso chi lavora in struttura; ROSS in terza persona;
   - verbi ammessi: *ha espresso*, *ha partecipato*, *si accorge*, *racconta*; mai *è*, *sente*, *soffre*;
-  - voce della struttura solo anonima e con almeno 3 ospiti;
+  - niente conteggi, percentuali o classifiche;
   - nessuna parola della colonna "Non si dice" di `docs/lessico-struttura.md` (cartella, clinico, diagnosi, baseline…).
 
 ---
 
 ## 5. Questioni aperte
 
-1. **Vista ROSS:** riallineata a ottobre (trasparenza, aiuto, "dimentica", modalità). Da progettare: promemoria conversazionale con avviso selettivo all'operatore (Namastè); le date della demo sono ancora di settembre.
-2. **Consenso verso la struttura:** per la famiglia il consenso è modellato (`sharedWithFamily`); per la struttura vale la regola d'oro, ma un eventuale "raccontalo anche alla struttura" è da progettare (contratto, §6.2). Dal 04/11 la **famiglia** può mandare una copia dei suoi contributi alla struttura ("Anche alla struttura" nel +): da decidere se serva anche il consenso di Elena, visto che si parla di lei.
+1. **Vista ROSS:** da progettare il promemoria conversazionale con avviso selettivo all'operatore (Namastè).
+2. **Consenso verso la struttura:** per la famiglia il consenso è modellato (`sharedWithFamily`); per la struttura vale la regola d'oro. Dal 04/11 la **famiglia** può mandare una copia dei suoi contributi alla struttura ("Anche alla struttura" nel +): da decidere se serva anche il consenso di Elena, visto che si parla di lei.
 3. **Nomi dei documenti:** "Fisioterapia", "Esami del sangue" restano perché sono documenti della struttura. Da decidere se rinominarli nella demo.
-4. **Contenuti da validare:** spunti di "Come avvicinarsi" e dettagli d'ingresso, segnali positivi, azioni suggerite della voce della struttura e testi degli specchietti sono stati scritti per la demo e vanno riletti dal team.
+4. **Contenuti da validare:** spunti d'esempio, cosa ha capito ROSS, racconti del ritratto e segnali positivi sono stati scritti per la demo e vanno riletti dal team.
 5. **Consenso revocabile:** nella demo il consenso è per singolo racconto e non si può ritirare; da decidere come l'ospite possa cambiare idea.
 6. **Protocollo per segnali gravi** (dolore acuto, rischio per sé, maltrattamenti): non esiste ancora (contratto, §6.3).
-7. **Livelli di accesso per ruolo:** oggi tutti i ruoli vedono lo stesso perimetro; cambiano solo domande e profondità delle risposte (contratto, §6.4).
-8. **Target:** va ancora scelta la figura principale. Il selettore di ruolo resta finché la scelta non è fatta.
-9. **Visita guidata:** i passi sono in `steps` di `GuidedTour.jsx`; vanno rivisti se cambiano le schermate chiave o le classi CSS usate come bersaglio.
-10. **Tooltip "i"** ancora presenti in Impostazioni.
-11. **Chat preparata:** le risposte sono deterministiche, senza un modello AI vero. Un modello reale richiederebbe un backend, che GitHub Pages non ha.
-12. **Ordine della visita:** parte dalla persona e chiude su "cosa la struttura riceve" e sulla pillola "Vista demo". Report e Panoramica sono fuori dal giro, di proposito.
-13. **Idea in coda:** frecce "← precedente · successivo →" nel report del singolo ospite, nello stesso ordine per attenzione, per scorrere l'équipe senza tornare al riepilogo.
-14. **Archetipi:** gli otto ospiti rappresentano otto modi di vivere ROSS (§0.4). Da validare con il team e con le strutture: mancano casi? (per esempio chi rifiuta del tutto ROSS, o chi ha una famiglia molto presente e conflittuale).
+7. **Chi guarda la Struttura:** con la vecchia Struttura è sparito il selettore di ruolo. Da decidere se servano perimetri diversi per staff, educatrici, psicologa e direzione.
+8. **Visita guidata:** i passi sono in `steps` di `GuidedTour.jsx`; vanno rivisti se cambiano le schermate chiave o le classi CSS usate come bersaglio.
+9. **Codice rimasto:** in `DemoContext.jsx`, `careInsights.js` e `demoData.js` restano dati e azioni che servivano solo alla vecchia Struttura (ruolo, inviti, interazioni settimanali). Non si vedono, ma si possono togliere.
+10. **Archetipi:** gli otto ospiti rappresentano otto modi di vivere ROSS (§0.4). Da validare con il team e con le strutture.
 
 ---
 
 ## 6. Changelog (dal più recente)
+
+### Novembre 2026 · 07/11/2026 · Una sola Struttura: il canale con ROSS
+- **Richiesta:** cancellare la vecchia vista della Struttura, eliminarla del tutto, e mettere al suo posto la Struttura 2.0, rinominata Struttura.
+- **Fatto:**
+  - **la Struttura è il canale**, alla radice: `/` (il canale), `/ospiti`, `/ospiti/:id`, `/richieste`. Nella pillola «Vista demo» c'è una sola Struttura (tasto `1`); la voce «Struttura 2.0» e il tasto `5` non ci sono più;
+  - **eliminati** la chat «Chiedi a ROSS» (`AskRoss.jsx`, `chatScript.js`), Report e Panoramica (`OperationalPages.jsx`, `ReportCharts.jsx`, `ParticipationChart.jsx`, `reportNarrative.js`), Impostazioni (`Settings.jsx`), la sessione live (`LiveInteraction.jsx`) e il guscio con sidebar, polso e specchietti (`Layout.jsx`, `InsightRail.jsx`, `PageGuide.jsx`). Il racconto di ciascun ospite, che serviva al ritratto, è passato in `src/data/narratives.js`;
+  - **ritratto:** solo Spunti · Come sta · Con ROSS · Cosa sa ROSS. Tolti «Come avvicinarsi», le tabelle delle conversazioni, il grafico della partecipazione e gli inviti chiesti a ROSS dal ritratto. Tolto il contesto `StructureView` (il flag `v2`);
+  - **vecchi indirizzi:** `/struttura-2/…` porta alla stessa pagina senza prefisso; `/report`, `/panoramica`, `/impostazioni`, `/interazione/:id` e gli altri della vecchia Struttura portano al canale o agli ospiti; `?tab=avvicinare` porta a Spunti;
+  - **stili:** tolti da `styles.css` tutti i selettori con classi che nessun file usa più (1.112 selettori, 8 animazioni): da 237 a 156 KB;
+  - **visita guidata:** il capitolo Struttura ora racconta il canale (messaggio, la residenza adesso, la rete delle passioni, cosa è emerso, il ritratto di Elena, le richieste); la visita parte anche sulla Struttura;
+  - **testi:** «Struttura 2.0» diventa «Struttura» ovunque (pillola, «Cosa è reale e cosa è simulato», note del copione del tablet, commenti); tolta la voce sulla chat della vecchia Struttura;
+  - **documenti:** AGENTS.md (nuova sezione «Decisioni comuni» e sezione del canale), questo file (§0.3, §0.5, §0.7, §0.8, §1–§5) e la Mappa (via i gruppi Chiedi a ROSS e Report, le loro schermate e i percorsi; il canale su `/`).
+- **Verificato:**
+  - le quattro pagine della Struttura e i redirect dai vecchi indirizzi;
+  - i sei passi del capitolo Struttura della visita guidata;
+  - la pillola e il tasto `1`;
+  - nessun errore in console;
+  - **38 schermate** (desktop e telefono: canale, ospiti, ritratto in tutte le schede, richieste, Famiglia, tablet, conversazione, dialog, ROSS al volo, visita) fotografate prima e dopo la pulizia degli stili: identiche al pixel. Fa eccezione la Mappa, che cambia leggermente da sola tra un'apertura e l'altra;
+  - `npm run build` e `npm run test:sites` passano.
+- **Da sapere:**
+  - le classi e i file interni mantengono il prefisso della 2.0 (`.s2-*`, `StructureChannel.jsx`, `PortraitV2.jsx`, `ross-struttura2-v2` nel browser): rinominarli non cambia nulla per chi usa la demo;
+  - sono spariti il selettore di ruolo e la pagina «Cosa la struttura riceve» delle impostazioni: il principio resta in «Cosa è reale e cosa è simulato» e in `docs/contratto-informativo-struttura.md`;
+  - restano nei dati alcune parti della vecchia Struttura che nessuno legge più (§5, punto 9).
 
 ### Novembre 2026 · 05/11/2026 · Il nuovo logo di ROSS in tutta la demo
 - **Richiesta:** usare il logo di oggi, cioè i due occhi con la sfumatura dal blu al verde, al posto di ogni logo della demo.
@@ -464,7 +447,7 @@ Le regole complete sono in [`AGENTS.md`](../AGENTS.md), in [`contratto-informati
   - **ritratto:**
     - in «Con ROSS» la richiesta è una riga compatta (richiesta + stato);
     - in «Come sta», «Ha chiesto» mostra solo le richieste pratiche confermate. Spariscono dalla 2.0 il ginocchio di Mario (salute) e il desiderio di Antonio di sentire un familiare (emotivo); i dati della Struttura attuale restano;
-  - **dati:** origine `richiesta` nella fonte unica dei momenti, con `stato` in attesa · ci pensiamo noi · fatto. Tablet e Struttura 2.0 leggono lo stesso stato, anche in due finestre;
+  - **dati:** origine `richiesta` nella fonte unica dei momenti, con `stato` in attesa · ci pensiamo noi · fatto. Tablet e Struttura leggono lo stesso stato, anche in due finestre;
   - **esempi:** Bruno (freddo in camera, in attesa), Lucia (il giornale al mattino, ci pensiamo noi), Carlo (il telecomando, fatto); la lampada di Elena nasce dal tablet. I due vecchi momenti «freddo nel pomeriggio» di Bruno e «ginocchio» di Mario sono stati tolti dalla 2.0;
   - **«Cosa è reale e cosa è simulato»:** il riconoscimento della richiesta è simulato.
 - **Da sapere:**

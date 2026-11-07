@@ -1,6 +1,6 @@
 import { residents } from "./demoData";
 
-// Struttura 2.0: il canale tra struttura, ROSS e ospite.
+// Struttura: il canale tra struttura, ROSS e ospite.
 // La struttura manda a ROSS uno spunto; ROSS lo porta nella conversazione (solo se l'ospite ci sta);
 // quando emerge qualcosa di utile, ROSS restituisce di sua iniziativa un insight narrativo.
 // Niente trascrizioni, punteggi o dati sanitari: ROSS traduce, non trasmette.
