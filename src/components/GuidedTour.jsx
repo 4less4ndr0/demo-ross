@@ -6,8 +6,7 @@ import { releaseLockScreen, requestLockScreen } from "../state/lockScreen";
 import { requestFamilyNews, requestReminders } from "../state/familyNews";
 
 // Visita guidata: un passo alla volta, con l'elemento evidenziato e una spiegazione breve.
-// Si apre da sola a ogni apertura della demo (non nella Mappa né in Struttura 2.0, non con ?visita=0); poi da "Vista demo",
-// dalla card in basso a sinistra, da Impostazioni o con ?visita=1.
+// Si apre da sola a ogni apertura della demo (non nella Mappa, non con ?visita=0); poi da "Vista demo" o con ?visita=1.
 // Accessibilità: il resto della pagina diventa inert, il focus entra nella scheda del passo,
 // Esc chiude, le frecce scorrono i passi; il passo si può sempre saltare.
 export const startTour = () => window.dispatchEvent(new CustomEvent("ross:tour"));
@@ -18,14 +17,15 @@ const chapters = [
   {
     id: "struttura", label: "Struttura", who: "Lo staff della residenza", icon: Building2, route: "/",
     title: "Ora vediamo la struttura",
-    body: "Quello che vede l'équipe: come sta ogni ospite e di cosa ha bisogno, mai di cosa ha parlato con ROSS. ROSS sta sopra i sistemi della residenza, non li sostituisce.",
-    features: ["Chiedi a ROSS: domande a parole proprie, anche dal telefono", "Chi accompagnare: chi vorrebbe partecipare alla vita della residenza", "Il polso: cosa va bene e cosa è da osservare", "Il ritratto di ogni ospite, a partire dalle sue risorse", "Cosa la struttura riceve, e cosa no"],
+    body: "Quello che vede l'équipe è un canale, non un archivio: lo staff propone a ROSS uno spunto per un ospite, ROSS ne parla con lui se ci sta, e racconta cosa è emerso. Come sta e di cosa ha bisogno, mai di cosa ha parlato.",
+    features: ["Il canale: tu porti uno spunto, ROSS ti restituisce un'occasione", "La residenza, adesso: dove c'è ROSS, piano per piano", "La rete delle passioni: chi potrebbe fare qualcosa insieme", "Cosa è emerso: cosa puoi fare adesso", "Il ritratto di ogni ospite, a partire dagli spunti", "Le richieste pratiche, in due direzioni"],
     steps: [
-      { route: "/", target: ".ask-empty", title: "Chiedi a ROSS", lens: "Comprensibile", body: "Lo staff chiede a parole sue, anche dal telefono: chi ha bisogno di più attenzione, come avvicinare qualcuno. Ogni risposta cita la fonte." },
-      { route: "/", target: ".ask-suggestions", title: "Chi accompagnare", lens: "Gestibile", body: "ROSS invita gli ospiti a partecipare; lo staff chiede «Chi vorrebbe partecipare ma ha bisogno di essere accompagnato?» e sa dove serve un braccio, un invito, una sedia in più." },
-      { route: "/", target: ".sidebar .sidebar-insights", title: "Il polso di ROSS", lens: "Prima le risorse", body: "Cosa va bene e cosa è da osservare, ognuno rispetto alla sua media. ROSS segnala, l'équipe osserva e decide." },
-      { route: "/ospiti/elena", target: ".resident-resources", title: "Il ritratto di Elena", lens: "Risorse", body: "In cima le sue risorse: cosa le dà significato, cosa la aiuta a farcela, cosa va bene. Poi come sta, come avvicinarla, quando parla con ROSS. Mai di cosa ha parlato." },
-      { route: "/impostazioni#privacy", target: "#privacy", title: "Cosa riceve la struttura", lens: "Decide la persona", body: "Come sta e di cosa ha bisogno ogni ospite, mai il contenuto delle conversazioni. È la regola d'oro di ROSS." },
+      { route: "/", target: ".s2-hero", title: "Un canale, non un archivio", lens: "Comprensibile", body: "La struttura non interroga ROSS: gli propone uno spunto per un ospite. ROSS lo porta nella conversazione solo se l'ospite ci sta, e poi racconta com'è andata." },
+      { route: "/", target: ".rm", title: "La residenza, adesso", lens: "Gestibile", body: "Dove c'è ROSS, un piano alla volta: acceso, attivo, in pausa perché l'ospite ha scelto il silenzio, o da sistemare. Solo lo stato del dispositivo, mai di cosa si parla." },
+      { route: "/", target: ".s2-network", title: "La rete delle passioni", lens: "Risorse", body: "Le passioni che gli ospiti hanno in comune, solo per categoria: chi potrebbe fare qualcosa insieme. Da qui si propone uno spunto a tutti, e ognuno è libero di dire di no." },
+      { route: "/", target: ".s2-feed", title: "Cosa è emerso", lens: "Prima le risorse", body: "Cosa è emerso con ROSS e cosa puoi fare adesso, per tutti gli ospiti. Si segna «Visto» o «Fatto». Racconta come è stato accolto uno spunto, mai cosa ha detto l'ospite." },
+      { route: "/ospiti/elena", target: ".s2-reading", title: "Il ritratto di Elena", lens: "Decide la persona", body: "Si apre sugli spunti: cosa ha capito ROSS di come proporle le cose, e com'è andata ogni proposta. Poi come sta, la sua storia con ROSS e cosa sa ROSS di lei." },
+      { route: "/richieste", target: ".s2-rq-section", title: "Le richieste pratiche", lens: "Gestibile", body: "Le piccole cose che un ospite chiede a ROSS di farti sapere e conferma con un sì, come la lampada di Elena. Mai salute né urgenze: per quelle c'è il campanello." },
     ],
   },
   {
@@ -141,7 +141,7 @@ export function GuidedTour() {
     const start = () => { origin.current = null; setIndex(0); };
     window.addEventListener("ross:tour", start);
     const params = new URLSearchParams(window.location.search);
-    const skip = params.get("visita") === "0" || /\/(mappa|struttura-2)/.test(window.location.pathname);
+    const skip = params.get("visita") === "0" || /\/mappa/.test(window.location.pathname);
     if (!skip) { origin.current = `${window.location.pathname}${window.location.hash}`; setIndex(0); }
     return () => window.removeEventListener("ross:tour", start);
   }, []);

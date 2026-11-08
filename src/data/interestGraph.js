@@ -1,4 +1,4 @@
-// Struttura 2.0 · le passioni: una sola fonte per i due grafi, con punti di vista diversi.
+// Struttura · le passioni: una sola fonte per i due grafi, con punti di vista diversi.
 // - Canale, «La rete delle passioni · tutta la residenza»: solo le passioni condivise da almeno 2 ospiti,
 //   per vedere chi potrebbe fare qualcosa insieme; l'azione è collettiva.
 // - Ritratto, «Le passioni di …»: solo gli interessi di quella persona e le sue occasioni, colorate dall'esito

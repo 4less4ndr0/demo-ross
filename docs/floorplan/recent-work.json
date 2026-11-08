@@ -1,6 +1,43 @@
 {
-  "updatedAt": "2026-11-05T22:28:30.000Z",
+  "updatedAt": "2026-11-07T16:16:49.000Z",
   "tasks": [
+    {
+      "title": "Una sola Struttura: il canale con ROSS",
+      "request": "Cancellare la vecchia vista della Struttura, del tutto, e mettere al suo posto la Struttura 2.0, rinominata Struttura.",
+      "summary": "La Struttura è il canale con ROSS, alla radice della demo (/, /ospiti, /richieste). Tolte la chat Chiedi a ROSS, Report, Panoramica, Impostazioni, la sessione live, la sidebar e i loro stili; i vecchi indirizzi portano alla pagina giusta. Ritratto con Spunti, Come sta, Con ROSS e Cosa sa ROSS.",
+      "items": [
+        {
+          "ref": "f:src/App.jsx",
+          "change": "changed",
+          "note": "La Struttura alla radice; i vecchi indirizzi rimandano."
+        },
+        {
+          "ref": "f:src/pages/ResidentProfile.jsx",
+          "change": "changed",
+          "note": "Solo Spunti, Come sta, Con ROSS e Cosa sa ROSS."
+        },
+        {
+          "ref": "f:src/components/PerspectiveSwitcher.jsx",
+          "change": "changed",
+          "note": "Una sola Struttura (tasto 1)."
+        },
+        {
+          "ref": "f:src/components/GuidedTour.jsx",
+          "change": "changed",
+          "note": "Il capitolo Struttura racconta il canale."
+        },
+        {
+          "ref": "f:src/data/narratives.js",
+          "change": "changed",
+          "note": "Nuovo: il racconto di ciascuno, preso dal vecchio report."
+        },
+        {
+          "ref": "f:src/styles.css",
+          "change": "changed",
+          "note": "Tolti gli stili della vecchia Struttura."
+        }
+      ]
+    },
     {
       "title": "Struttura 2.0: il canale con ROSS",
       "request": "Cambiare punto di vista: la struttura non consulta né interroga ROSS, gli propone spunti e riceve insight. In una vista nuova, senza rompere la Struttura attuale; poi Ospiti e ritratto, con una scheda per gli spunti piaciuti e non piaciuti",
@@ -59,11 +96,6 @@
           "note": "Come usa ROSS ogni ospite e gli spunti per invogliarlo; segnali di Antonio e Carlo corretti."
         },
         {
-          "ref": "f:src/data/chatScript.js",
-          "change": "changed",
-          "note": "Nuove risposte \"Proponi a…\" e \"Come invogliare…\"; Carlo che parla poco non è un segnale."
-        },
-        {
           "ref": "f:src/data/demoData.js",
           "change": "changed",
           "note": "Documenti simulati per ogni ospite; conversazioni e modalità secondo l'archetipo."
@@ -109,28 +141,6 @@
           "ref": "f:src/components/PerspectiveSwitcher.jsx",
           "change": "changed",
           "note": "\"Cosa è reale\": la conversazione è un copione."
-        }
-      ]
-    },
-    {
-      "title": "Promemoria: il prossimo e le altre cose da ricordare",
-      "request": "Vedere più promemoria insieme, senza videochiamate negli esempi",
-      "summary": "In home la sezione Promemoria ha due card: il prossimo e, accanto, le altre cose da ricordare in fila nel tempo, comprese quelle che Elena ha chiesto lei a ROSS.",
-      "items": [
-        {
-          "ref": "f:src/pages/RossExperience.jsx",
-          "change": "changed",
-          "note": "Due card affiancate e l'ordine nel tempo (stasera, domani, giorni, senza data)."
-        },
-        {
-          "ref": "f:src/state/DemoContext.jsx",
-          "change": "changed",
-          "note": "I promemoria chiesti da Elena (\"Me l'hai chiesto tu\")."
-        },
-        {
-          "ref": "f:src/styles.css",
-          "change": "changed",
-          "note": "Stile dell'elenco dei promemoria."
         }
       ]
     }

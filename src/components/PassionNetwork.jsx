@@ -8,7 +8,7 @@ import { channelActions } from "../state/channelStore";
 import { Avatar, residentPhoto } from "./Common";
 import { Button } from "./ui";
 
-// Struttura 2.0 · «La rete delle passioni · tutta la residenza», nel canale: chi potrebbe fare qualcosa insieme.
+// Struttura · «La rete delle passioni · tutta la residenza», nel canale: chi potrebbe fare qualcosa insieme.
 // Stessa fonte delle «Passioni di …» nel ritratto (src/data/interestGraph.js), ma un altro punto di vista:
 // solo le passioni condivise da almeno 2 ospiti, e l'azione è collettiva («Proponilo a tutti e N»).
 // Un supporto per proporre occasioni condivise, mai il centro: niente punteggi, niente relazioni raccontate.

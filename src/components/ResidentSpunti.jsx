@@ -5,7 +5,7 @@ import { whenText } from "../data/demoClock";
 import { momentFilters, useMoments } from "../state/channelStore";
 import { Esito, MomentActions, ProposeCard } from "../pages/StructureChannel";
 
-// Struttura 2.0, ritratto → «Spunti»: una persona, come proporle meglio. Legge la sola fonte dei momenti
+// Struttura, ritratto → «Spunti»: una persona, come proporle meglio. Legge la sola fonte dei momenti
 // (src/data/moments.js) e tiene solo quelli nati da uno spunto, raggruppati per esito. Card compatte:
 // lo spunto, l'esito, una riga di racconto; «Cosa puoi fare» solo finché il momento non è Fatto.
 // Serve a capire cosa le fa piacere, non a valutarla: niente punteggi né percentuali.

@@ -1,4 +1,4 @@
-// La Residenza Aurora vista dall'alto, un piano alla volta (Struttura 2.0, «Il canale»). Dati dimostrativi.
+// La Residenza Aurora vista dall'alto, un piano alla volta (Struttura, «Il canale»). Dati dimostrativi.
 // Si mostra lo stato dei ROSS e degli spazi, non lo stato delle persone: dispositivo acceso, attivo,
 // in pausa perché l'ospite ha scelto il silenzio, da sistemare. Mai cosa si dice, mai da quanto.
 // 12 alloggi, 8 con ROSS: ROSS si sceglie, non si impone.

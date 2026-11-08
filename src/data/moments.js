@@ -1,4 +1,4 @@
-// Struttura 2.0 · la sola fonte dei «momenti» emersi con ROSS (decisione del 05/11/2026).
+// Struttura · la sola fonte dei «momenti» emersi con ROSS (decisione del 05/11/2026).
 // Canale («Cosa è emerso»), ritratto → Spunti e ritratto → Con ROSS leggono questi stessi momenti,
 // ognuno con il suo filtro (vedi src/state/channelStore.js). Visto/Fatto cambia in un posto e vale ovunque.
 //

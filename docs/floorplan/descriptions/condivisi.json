@@ -2,15 +2,15 @@
   "files": {
     "src/components/Common.jsx": {
       "name": "Pezzi comuni della Struttura",
-      "description": "Foto e iniziali degli ospiti, modalità, titoli e note; dice anche se Ospiti e ritratto stanno nella Struttura o nella Struttura 2.0."
+      "description": "Il logo di ROSS, le foto e le iniziali degli ospiti, la modalità, i titoli e le note."
     },
     "src/components/GuidedTour.jsx": {
       "name": "Visita guidata",
-      "description": "Accompagna chi guarda la demo capitolo per capitolo, un elemento alla volta: l'iPhone di Anna con la schermata di blocco, e sul tablet le novità, il promemoria all'ora giusta e la conversazione con ROSS."
+      "description": "La visita per capitoli: Struttura (il canale, la residenza, la rete delle passioni, cosa è emerso, il ritratto, le richieste), Famiglia ed Elena."
     },
     "src/components/PerspectiveSwitcher.jsx": {
       "name": "Pillola \"Vista demo\"",
-      "description": "Il comando per chi presenta, in basso a destra: Struttura, Struttura 2.0, Famiglia, ROSS e Mappa, iPhone, schermata di blocco, cosa è reale e cosa è simulato, visita guidata e ripristino."
+      "description": "Il comando per chi presenta, in basso a destra: Struttura, Famiglia, ROSS e Mappa (tasti 1–4), iPhone, schermata di blocco, cosa è reale e cosa è simulato, visita guidata e ripristino."
     },
     "src/components/ui.jsx": {
       "name": "Kit dell'interfaccia",

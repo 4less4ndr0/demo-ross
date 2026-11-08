@@ -2,7 +2,7 @@ import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Heart, Eye, HandHelping, Leaf, MessageCircle, Send, Sparkles, Users } from "lucide-react";
 import { presenceFor, rossTips, signalsFor, usageStyle } from "../data/careInsights";
-import { narrativeFor } from "../data/reportNarrative";
+import { narrativeFor } from "../data/narratives";
 import { graphKind, graphStatus, outsideLinks, passionsOf, personalLinks, statusFromEsito, viaOf } from "../data/interestGraph";
 import { channelResident } from "../data/channel";
 import { dayLabel, daysAgo, timeText } from "../data/demoClock";
@@ -12,7 +12,7 @@ import { Esito } from "../pages/StructureChannel";
 import { Avatar, residentPhoto } from "./Common";
 import { Button } from "./ui";
 
-// Struttura 2.0: «Come sta» e «Con ROSS» raccontano, non misurano (decisione del 05/11/2026).
+// Struttura: «Come sta» e «Con ROSS» raccontano, non misurano (decisione del 05/11/2026).
 // Qualità, non quantità: niente grafici, minuti, percentuali, tabelle o conteggi «X su Y».
 // Ognuno è confrontato solo con sé stesso; ROSS segnala, lo staff osserva di persona e decide.
 
@@ -26,8 +26,8 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 // L'andamento detto a parole, rispetto alla sua media: mai il numero.
 const trendWords = (s) => ({ "in aumento": "più del solito", stabile: "come sempre", nuovo: "da questa settimana", "prime settimane": "fin dai primi giorni" }[s.trend] || s.trend);
 const presenceWords = (p) => p.kind === "assenza" ? "Oggi non ha ancora parlato con ROSS, di solito a quest'ora sì" : "A volte ha fatto fatica a seguire il filo: ROSS ha rallentato e semplificato";
-// Nella 2.0 si dà del tu a chi lavora in struttura (decisione del 05/11/2026). Gli «Spunti di ROSS» vengono da
-// careInsights.js, che usa anche la Struttura attuale al voi: qui si leggono al tu, senza toccare i dati.
+// Si dà del tu a chi lavora in struttura (decisione del 05/11/2026). Gli «Spunti di ROSS» in careInsights.js
+// sono scritti al voi: qui si leggono al tu, senza toccare i dati.
 const tuForms = [["Passate a prenderlo voi", "Passa a prenderlo tu"], ["Dategli", "Dagli"], ["Chiedetegli", "Chiedigli"], ["Accompagnatela", "Accompagnala"], ["Passate", "Passa"], ["Proponetegli", "Proponigli"], ["Invitatela", "Invitala"]];
 const tu = (text = "") => tuForms.reduce((t, [voi, te]) => t.split(voi).join(te), text);
 const list = (items) => items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} e ${items.at(-1)}`;
@@ -39,7 +39,7 @@ export function HowIsV2({ resident, onPropose, onProposeText }) {
   const good = own.filter((s) => s.positive).map((s) => `${capitalize(s.signal)}, ${trendWords(s)}`);
   const watch = [...own.filter((s) => !s.positive).map((s) => `${capitalize(s.signal)}, ${trendWords(s)}`), ...presenceFor(resident.id).map(presenceWords)];
   // «Ha chiesto»: solo le richieste pratiche confermate dall'ospite (stanza, comfort, piccoli desideri).
-  // I bisogni di salute o emotivi della Struttura attuale (needsFor) qui non compaiono.
+  // I bisogni di salute o emotivi (needsFor in careInsights.js) qui non compaiono.
   const moments = useMoments();
   const asked = moments.filter(momentFilters.haChiesto(resident.id));
   const tips = rossTips[resident.id];
@@ -220,7 +220,7 @@ function InterestMap({ resident, onProposeText }) {
     </div>}
     {currentInterest && <div className="v2-map-detail" role="status">
       <div><small>Una passione di {name}</small><strong>{currentInterest.label}</strong><p>{currentInterest.others.length ? <>La condivide con {names(currentInterest.others)}, nella passione «{currentInterest.p.label}».</> : "Per ora nessun altro ospite la condivide."}</p></div>
-      {currentInterest.others.length > 0 && <Link className="ui-button ui-button-outline ui-button-md" to={`/struttura-2?passione=${currentInterest.p.id}`}><Users size={15} /> Vedi chi altro la condivide</Link>}
+      {currentInterest.others.length > 0 && <Link className="ui-button ui-button-outline ui-button-md" to={`/?passione=${currentInterest.p.id}`}><Users size={15} /> Vedi chi altro la condivide</Link>}
     </div>}
     {!current && !currentInterest && outside.length > 0 && <p className="v2-map-other">Fuori dalle sue passioni: {outside.map((o) => o.label.toLowerCase()).join(", ")} (non è piaciuto). Le proposte che non toccano ciò che {name} ama funzionano meno.</p>}
   </section>;

@@ -7,7 +7,7 @@ import { spuntoTypes } from "../data/channel";
 import { draftSummary, greeting, quickAnswer } from "../data/quickChat";
 import { channelActions, useMoments } from "../state/channelStore";
 
-// Struttura 2.0 · «ROSS, al volo»: una bolla in basso a destra, sopra la pillola «Vista demo», e una piccola chat
+// Struttura · «ROSS, al volo»: una bolla in basso a destra, sopra la pillola «Vista demo», e una piccola chat
 // per domande veloci su ciò che ROSS ha già raccontato. Non interroga ROSS sugli ospiti: riassume, agisce con
 // conferma (spunti e comunicazioni), spiega come funziona ROSS. Le risposte sono in src/data/quickChat.js.
 // La conversazione vive solo nella sessione del browser (sessionStorage).
@@ -63,11 +63,11 @@ export function QuickChat() {
       channelActions.send({ residentId: d.residentId, testo: d.testo, tipo: d.tipo });
       const s = draftSummary(d);
       setDraft(message.id, { draftState: "sent" });
-      reply({ text: `Mandato. ROSS lo porterà a ${s.who.first} quando ne avrà occasione, e ti racconterà com'è andata.`, link: { label: `Apri il ritratto di ${s.who.first}`, to: `/struttura-2/ospiti/${d.residentId}?tab=spunti` } });
+      reply({ text: `Mandato. ROSS lo porterà a ${s.who.first} quando ne avrà occasione, e ti racconterà com'è andata.`, link: { label: `Apri il ritratto di ${s.who.first}`, to: `/ospiti/${d.residentId}?tab=spunti` } });
     } else {
       channelActions.announce({ testo: d.testo, perChi: d.perChi, quandoDirlo: d.quandoDirlo });
       setDraft(message.id, { draftState: "sent" });
-      reply({ text: "Mandata. ROSS la dirà a ciascuno nel suo momento, con parole semplici.", link: { label: "Apri le richieste", to: "/struttura-2/richieste" } });
+      reply({ text: "Mandata. ROSS la dirà a ciascuno nel suo momento, con parole semplici.", link: { label: "Apri le richieste", to: "/richieste" } });
     }
   };
 

@@ -8,12 +8,12 @@ import { daysAgo, whenText } from "../data/demoClock";
 import { announcementPhrase, announcementStates, requestCategoryLabels } from "../data/moments";
 import { channelActions, momentFilters, useMoments } from "../state/channelStore";
 
-// Struttura 2.0 · scheda «Richieste» (/struttura-2/richieste): le cose pratiche, in due direzioni.
+// Struttura · scheda «Richieste» (/richieste): le cose pratiche, in due direzioni.
 // Dagli ospiti: le richieste che hanno chiesto a ROSS di farti sapere e hanno confermato.
 // Agli ospiti: le informazioni pratiche che vuoi far sapere a loro, che ROSS dice a ciascuno nel suo momento.
 // Non è un sistema di ticket: niente priorità, assegnazioni, tempi di risposta, numeri o storico.
 // Il canale resta dedicato alle relazioni (gli spunti).
-const BASE = "/struttura-2";
+const BASE = "";
 const MAX = 160;
 const categoryIcon = { stanza: House, comfort: Thermometer, desiderio: Coffee };
 

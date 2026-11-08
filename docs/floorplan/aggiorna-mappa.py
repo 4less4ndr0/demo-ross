@@ -12,10 +12,27 @@ start = html.index("window.FLOORPLAN = {") + len("window.FLOORPLAN = ")
 G, end = json.JSONDecoder().raw_decode(html, start)
 arch = json.load(open("docs/floorplan/architecture.json", encoding="utf-8"))
 
+# --- Una sola Struttura (07/11/2026): la vecchia Struttura (chat, report, panoramica, impostazioni) non c'è più ---
+# Via i file eliminati, i gruppi rimasti vuoti, i loro collegamenti, le schermate, i percorsi e le note.
+G["files"] = [f for f in G["files"] if os.path.exists(f["p"])]
+if not any(f["p"] == "src/data/narratives.js" for f in G["files"]):
+    G["files"].append({"p": "src/data/narratives.js", "n": "dati", "r": ".", "l": "javascript", "loc": 0, "name": "", "d": "", "h": "", "sig": "", "s": []})
+gone = {n["id"] for n in G["nodes"] if n["id"].startswith("struttura.") and n["id"] != "struttura.v2" and not any(f["n"] == n["id"] for f in G["files"])}
+G["nodes"] = [n for n in G["nodes"] if n["id"] not in gone]
+arch["nodes"] = [n for n in arch["nodes"] if n["id"] not in gone]
+alive_refs = {f"n:{n['id']}" for n in G["nodes"]} | {f"f:{f['p']}" for f in G["files"]}
+G["links"] = [l for l in G["links"] if l["a"] in alive_refs and l["b"] in alive_refs]
+arch["edges"] = [e for e in arch["edges"] if e["from"] not in gone and e["to"] not in gone]
+arch["annotations"] = [a for a in arch["annotations"] if os.path.exists(a["path"])]
+old_urls = {"/", "/report", "/panoramica", "/impostazioni", "/interazione/:id", "/ospiti", "/ospiti/:id"}
+G["screens"] = [x for x in G["screens"] if x["url"] not in old_urls and not x["url"].startswith("/struttura-2")]
+for d in os.listdir("docs/floorplan/descriptions"):
+    if d[:-5] in gone: os.remove(f"docs/floorplan/descriptions/{d}")
+
 # --- Struttura 2.0: nuovo gruppo e nuovi file (si aggiungono una volta sola) ---
 V2 = "struttura.v2"
 v2_files = ["src/pages/StructureChannel.jsx", "src/pages/StructureRequests.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx", "src/components/PassionNetwork.jsx", "src/data/channel.js", "src/data/interestGraph.js", "src/data/moments.js", "src/data/demoClock.js", "src/state/channelStore.js", "src/components/QuickChat.jsx", "src/data/quickChat.js", "src/components/ResidenceMap.jsx", "src/data/residence.js"]
-v2_node = {"id": V2, "parent": "struttura", "label": "Struttura 2.0 · il canale", "kind": "ui",
+v2_node = {"id": V2, "parent": "struttura", "label": "Il canale con ROSS", "kind": "ui",
   "summary": "La Struttura come canale, non come archivio: propone a ROSS uno spunto per un ospite e riceve cosa è emerso, cioè come è stato accolto e cosa può aiutare. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti.",
   "details": "", "tags": [], "paths": v2_files, "packages": [], "hosts": []}
 if not any(n["id"] == V2 for n in G["nodes"]):
@@ -36,33 +53,35 @@ for p in v2_files: v2d["files"].setdefault(p, {})
 json.dump(v2d, open(v2_desc, "w", encoding="utf-8"))
 for coll in (G["nodes"], arch["nodes"]):
     for n in coll:
-        if n["id"] == V2: n["paths"] = v2_files
+        if n["id"] == V2: n["paths"] = v2_files; n["label"] = v2_node["label"]
 
 # --- Descrizioni scritte a mano per i file cambiati ---
 desc = {
+  "src/components/GuidedTour.jsx": ("Visita guidata", "La visita per capitoli: Struttura (il canale, la residenza, la rete delle passioni, cosa è emerso, il ritratto, le richieste), Famiglia ed Elena."),
+  "src/data/narratives.js": ("Il racconto di ciascuno", "Per ogni ospite il titolo, la presenza con ROSS e cosa fare, che il ritratto usa in «Come sta». Come sta, mai di cosa ha parlato."),
   "src/pages/RossExperience.jsx": ("Schermate del tablet", "La home di Elena con le schede \"una cosa alla volta\" e \"Parla con ROSS\" con i sottotitoli. Nella conversazione Elena può chiedere a ROSS di far sapere al personale una piccola cosa pratica (la lampada), con conferma; quando è sistemata ROSS glielo dice. Salute e urgenze: solo il campanello."),
   "src/components/DocumentDialogs.jsx": ("Cartelle e aggiunta di documenti", "Le quattro cartelle di «Cosa sa ROSS» e le finestre per aggiungere un documento: un file con anteprima, titolo e cartella (dalla chat anche per quale ospite) o un testo incollato che diventa un .txt."),
   "src/components/ResidenceMap.jsx": ("La residenza, adesso", "La pianta della Residenza Aurora vista dall'alto, un piano alla volta, in apertura del canale: indice dei piani, alloggi e spazi con lo stato del loro ROSS (attivo, acceso, in pausa, da sistemare) e il dettaglio di ciò che si tocca. Mai cosa si dice."),
   "src/data/residence.js": ("I piani e i ROSS della residenza", "La geometria dei tre piani, lo stato dei dispositivi (mai delle persone), le etichette degli stati e il piano da aprire all'inizio."),
-  "src/components/QuickChat.jsx": ("ROSS, al volo", "La bolla in basso a destra della Struttura 2.0 e la sua piccola chat: domande veloci su ciò che ROSS ha già raccontato, bozze di spunti e comunicazioni che partono solo dopo «Mando»."),
+  "src/components/QuickChat.jsx": ("ROSS, al volo", "La bolla in basso a destra della Struttura e la sua piccola chat: domande veloci su ciò che ROSS ha già raccontato, bozze di spunti e comunicazioni che partono solo dopo «Mando»."),
   "src/data/quickChat.js": ("Le risposte di ROSS, al volo", "Il motore della piccola chat: riconosce le domande con parole chiave e i nomi degli ospiti, riassume dai momenti, prepara le bozze e rifiuta ciò che è fuori perimetro (contenuto, classifiche, salute, gestione)."),
-  "src/pages/StructureRequests.jsx": ("Le richieste, in due direzioni", "La scheda Richieste della Struttura 2.0: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti, che ROSS dice a ciascuno."),
-  "src/data/moments.js": ("I momenti emersi con ROSS", "La sola fonte dei momenti della Struttura 2.0: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona e richieste pratiche confermate dall'ospite, in terza persona e mai con il contenuto delle conversazioni. Il canale, Spunti e Con ROSS li leggono con filtri diversi."),
-  "src/data/demoClock.js": ("L'orologio della demo", "Fa partire la Struttura 2.0, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana, la settimana scorsa)."),
-  "src/state/channelStore.js": ("Memoria dei momenti", "Tiene la sola fonte dei momenti della Struttura 2.0 e i filtri delle tre viste; Visto e Fatto cambiano in un posto e valgono ovunque; nella demo ROSS risponde agli spunti dopo pochi secondi."),
-  "src/components/PassionNetwork.jsx": ("La rete delle passioni", "In cima al canale della Struttura 2.0: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme. Una passione si tocca e si manda l'occasione come spunto a tutti; ROSS la porta a ciascuno, se ci sta."),
-  "src/components/PortraitV2.jsx": ("Come sta e Con ROSS, a racconto", "Nella Struttura 2.0 «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto; e Con ROSS è il feed dei momenti da ricordare, giorno per giorno. Niente grafici al centro: solo la mappa dei legami tra interessi, attività e persone, a supporto."),
+  "src/pages/StructureRequests.jsx": ("Le richieste, in due direzioni", "La scheda Richieste della Struttura: ciò che gli ospiti hanno chiesto a ROSS di far sapere e hanno confermato (Da vedere · Ci pensiamo noi · Fatte oggi), e le comunicazioni pratiche che la struttura vuole far sapere agli ospiti."),
+  "src/data/moments.js": ("I momenti emersi con ROSS", "La sola fonte dei momenti della Struttura: spunti con il loro esito, iniziative, inviti, scelte, cose da guardare di persona, richieste pratiche e comunicazioni."),
+  "src/data/demoClock.js": ("L'orologio della demo", "Fa partire la Struttura, la Famiglia e il tablet dal giorno reale di oggi: date come scostamenti in giorni ed etichette calcolate (Oggi, Ieri, il giorno della settimana)."),
+  "src/state/channelStore.js": ("Memoria del canale", "Tiene la sola fonte dei momenti della Struttura e i filtri delle sue viste; Visto e Fatto cambiano in un posto e valgono ovunque; nella demo ROSS risponde agli spunti dopo pochi secondi."),
+  "src/components/PassionNetwork.jsx": ("La rete delle passioni", "Nel canale della Struttura: gli ospiti in cerchio e le passioni che condividono (per categoria), per vedere chi potrebbe fare qualcosa insieme."),
+  "src/components/PortraitV2.jsx": ("Come sta e Con ROSS, a racconto", "Nel ritratto «Come sta» e «Con ROSS» raccontano invece di misurare: come sta in questi giorni, cosa va bene, cosa osservare, cosa ha chiesto, le sue passioni e i momenti da ricordare."),
   "src/data/interestGraph.js": ("Le passioni, per i due grafi", "Per ogni ospite, i suoi interessi e le attività, i ricordi, gli eventi e le persone della residenza collegati, con com'è andato lo spunto: è piaciuto, ci sta pensando, non è piaciuto, da provare. In più le passioni in comune tra gli ospiti, con un'occasione per ciascuna."),
-  "src/pages/StructureChannel.jsx": ("Struttura 2.0: il canale", "La Struttura 2.0: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve cosa è emerso. Schede Il canale · Ospiti; Proponi uno spunto e Cosa è emerso (Visto, Fatto)."),
-  "src/components/ResidentSpunti.jsx": ("Scheda Spunti del ritratto", "Nel ritratto della Struttura 2.0: cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, ciò che è emerso senza spunto e il modulo per proporne uno."),
+  "src/pages/StructureChannel.jsx": ("La Struttura: il canale", "La Struttura non interroga ROSS: gli propone uno spunto per un ospite e riceve cosa è emerso. Header con le schede Il canale · Ospiti · Richieste; nel canale la residenza adesso, la rete delle passioni, Proponi uno spunto e Cosa è emerso."),
+  "src/components/ResidentSpunti.jsx": ("Scheda Spunti del ritratto", "Cosa ha capito ROSS dagli spunti, quelli piaciuti, in sospeso e non piaciuti, e il modulo per proporne uno."),
   "src/data/channel.js": ("Spunti e insight d'esempio", "Gli spunti della struttura e gli insight di ROSS d'esempio, come è stato accolto ciascuno, gli spunti più vecchi e cosa ha capito ROSS di ogni ospite. Mai cosa ha raccontato l'ospite."),
   "src/state/channelStore.js": ("Memoria del canale", "Tiene spunti inviati e insight della Struttura 2.0, condivisi tra canale e ritratto; nella demo la risposta di ROSS arriva dopo pochi secondi, anche se si cambia pagina."),
-  "src/pages/Residents.jsx": ("Lista degli ospiti", "Mostra gli ospiti in ordine alfabetico, con foto, modalità e ultima conversazione con ROSS. È la stessa nella Struttura e nella Struttura 2.0."),
-  "src/pages/ResidentProfile.jsx": ("Ritratto dell'ospite", "Il ritratto si adatta alla persona: Come sta, Come avvicinarsi, Con ROSS e «Cosa sa ROSS», in quattro cartelle: Chi è, Dalla famiglia, Per stare bene e La sua giornata, dove si controlla cosa ROSS sta per dire e si ferma ciò che non va. Si aggiunge un file o un testo incollato, che diventa un .txt. Nella Struttura 2.0 si apre su Spunti, senza Come avvicinarsi (ci si avvicina con gli spunti), senza chat né report."),
-  "src/components/Common.jsx": ("Pezzi comuni della Struttura", "Foto e iniziali degli ospiti, modalità, titoli e note; dice anche se Ospiti e ritratto stanno nella Struttura o nella Struttura 2.0."),
-  "src/App.jsx": ("Mappa delle schermate", "Decide quale schermata mostrare per ogni indirizzo delle viste (anche la Struttura 2.0 in /struttura-2) e rimanda i vecchi indirizzi a quelli nuovi."),
-  "src/components/PerspectiveSwitcher.jsx": ("Pillola \"Vista demo\"", "Il comando per chi presenta, in basso a destra: Struttura, Struttura 2.0, Famiglia, ROSS e Mappa, iPhone, schermata di blocco, cosa è reale e cosa è simulato, visita guidata e ripristino."),
-  "src/styles.css": ("Aspetto di tutte le viste", "Colori, caratteri e spaziature di Struttura e Struttura 2.0 (canale, scheda Spunti), Famiglia (app per iPhone) e tablet (schede \"una cosa alla volta\")."),
+  "src/pages/Residents.jsx": ("Lista degli ospiti", "Gli ospiti in ordine alfabetico, con foto, modalità e ultima conversazione con ROSS; da qui si apre il ritratto."),
+  "src/pages/ResidentProfile.jsx": ("Ritratto dell'ospite", "Quattro schede: Spunti (aperta di default), Come sta, Con ROSS e «Cosa sa ROSS», in quattro cartelle: Chi è, Dalla famiglia, Per stare bene e La sua giornata, con il controllo di ciò che ROSS sta per dire."),
+  "src/components/Common.jsx": ("Pezzi comuni della Struttura", "Il logo di ROSS, le foto e le iniziali degli ospiti, la modalità, i titoli e le note."),
+  "src/App.jsx": ("Mappa delle schermate", "Decide quale schermata mostrare per ogni indirizzo: la Struttura (il canale con ROSS) alla radice, poi Famiglia, tablet e Mappa. I vecchi indirizzi (/struttura-2, /report, /panoramica, /impostazioni…) portano alla pagina giusta."),
+  "src/components/PerspectiveSwitcher.jsx": ("Pillola \"Vista demo\"", "Il comando per chi presenta, in basso a destra: Struttura, Famiglia, ROSS e Mappa (tasti 1–4), iPhone, schermata di blocco, cosa è reale e cosa è simulato, visita guidata e ripristino."),
+  "src/styles.css": ("Aspetto di tutte le viste", "Colori, caratteri e spaziature della Struttura (canale, ritratto, richieste, pianta della residenza, ROSS al volo), della Famiglia (app per iPhone) e del tablet di Elena (in stile Maria)."),
 }
 
 def symbols(path, old):
@@ -147,57 +166,51 @@ for n in G["nodes"]:
 
 # --- Nodi, percorsi e giro: testi scritti a mano ---
 node_text = {
-  "struttura": "Lo strumento per l'équipe della RSA in due versioni da confrontare: la Struttura (chiedere a ROSS, ritratti, report e panoramica) e la Struttura 2.0 (il canale: la struttura propone uno spunto, ROSS restituisce cosa è emerso). Mai il contenuto delle conversazioni.",
-  "struttura.ospiti": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno, che si adatta al suo archetipo: Come sta (con gli spunti di ROSS), Come avvicinarsi (attività da far proporre a ROSS), Con ROSS e Allegati per provenienza.",
-  "dati": "La Residenza Aurora inventata: otto ospiti come otto archetipi, segnali positivi e da osservare, come ognuno usa ROSS, spunti per invogliarli, risposte preparate della chat, testi dei report, allegati simulati, il metodo salutogenico e le regole con cui ROSS riordina i messaggi della famiglia.",
+  "struttura": "Lo strumento per l'équipe della RSA: un canale con ROSS, non un archivio. La struttura propone a ROSS uno spunto per un ospite e riceve cosa è emerso; in più la lista degli ospiti con il ritratto e le richieste pratiche. Come sta e di cosa ha bisogno, mai di cosa ha parlato.",
+  "struttura.ospiti": "La lista degli ospiti in ordine alfabetico e il ritratto di ciascuno: Spunti, Come sta, Con ROSS e «Cosa sa ROSS», con le quattro cartelle dei documenti.",
+  "dati": "La Residenza Aurora inventata: otto ospiti come otto archetipi, segnali positivi e da osservare, come ognuno usa ROSS, il racconto di ciascuno, i momenti emersi con ROSS e i contributi della famiglia.",
   "famiglia": "L'app per iPhone di Anna, la figlia di Elena: Oggi · Da lei · + · Da te · Insieme. Vede solo ciò che Elena sceglie di raccontarle; con il + le manda qualcosa a voce o per iscritto (e, se vuole, una copia alla struttura), e ROSS lo riordina per Elena.",
 }
 for coll in (G["nodes"], arch["nodes"]):
     for n in coll:
         if n["id"] in node_text: n["summary"] = node_text[n["id"]]
 
-flow_ritratto = {"id": "ritratto", "title": "Dal ritratto al report", "description": "Dalla lista degli ospiti al ritratto di uno di loro, fino al report stampabile \"Come sta\".", "steps": [
+flow_ritratto = {"id": "ritratto", "title": "Dalla lista al ritratto", "description": "Dalla lista degli ospiti al ritratto di uno di loro, che si apre sugli spunti.", "steps": [
   {"ref": "n:struttura.ospiti", "note": "La lista è in ordine alfabetico; si apre il ritratto, che si adatta alla persona (il suo archetipo)."},
-  {"ref": "n:dati", "note": "Il ritratto legge i segnali rispetto alla sua media, come usa ROSS e gli spunti di ROSS per invogliarla alla vita della residenza."},
-  {"ref": "n:struttura.report", "note": "\"Stampa report\" apre il racconto narrativo per l'équipe, con le infografiche."}]}
-flow_invito = {"id": "invito", "title": "La struttura chiede a ROSS di proporre un'attività", "description": "Lo staff chiede a ROSS di invitare un ospite; ROSS lo fa solo se la modalità lo permette, e decide l'ospite.", "steps": [
-  {"ref": "n:struttura.chat", "note": "Dalla chat (\"Proponi ad Antonio la radio in compagnia\") o dal ritratto (\"Chiedi a ROSS di proporla\")."},
-  {"ref": "f:src/data/chatScript.js", "note": "Il copione trova l'ospite e l'attività dal calendario e controlla la modalità."},
-  {"ref": "f:src/pages/ResidentProfile.jsx", "note": "In modalità Attiva si vede come ROSS lo dirà; in Reattiva o Silenziosa un avviso spiega che l'invito non parte: si propone di persona."},
-  {"ref": "n:stato", "note": "L'invito chiesto resta nel tab \"Con ROSS\", con \"Annulla\" nel toast. Un sì non è una prenotazione; un no non arriva a nessuno."}]}
+  {"ref": "f:src/components/ResidentSpunti.jsx", "note": "Si apre sugli spunti: cosa ha capito ROSS e com'è andata ogni proposta."},
+  {"ref": "f:src/components/PortraitV2.jsx", "note": "Come sta e Con ROSS raccontano invece di misurare: niente grafici, minuti o percentuali."}]}
 flow_struttura = {"id": "anche-struttura", "title": "Anna condivide anche con la struttura", "description": "Con l'interruttore nel +, una copia di ciò che Anna manda a ROSS arriva anche negli allegati di Elena.", "steps": [
   {"ref": "n:famiglia", "note": "Anna scrive o detta nel + e accende \"Anche alla struttura\" (spento di default)."},
   {"ref": "n:stato", "note": "A ROSS il messaggio arriva comunque direttamente; una copia diventa un allegato \"Dalla famiglia\"."},
   {"ref": "n:struttura.ospiti", "note": "Nel ritratto di Elena, tab «Cosa sa ROSS», nella cartella Dalla famiglia. La struttura la riceve e basta, non la approva."}]}
-flow_canale = {"id": "canale", "title": "La struttura propone, ROSS restituisce", "description": "Struttura 2.0: uno spunto per un ospite va a ROSS, che lo porta nella conversazione solo se l'ospite ci sta, e torna come racconto di com'è andata.", "steps": [
+flow_canale = {"id": "canale", "title": "La struttura propone, ROSS restituisce", "description": "La Struttura: uno spunto per un ospite va a ROSS, che lo porta nella conversazione solo se l'ospite ci sta, e torna come racconto di com'è andata.", "steps": [
   {"ref": "f:src/pages/StructureChannel.jsx", "note": "Nel canale o nel ritratto (scheda Spunti) si sceglie l'ospite e si scrive lo spunto: attività, ricordo, evento o persona."},
   {"ref": "f:src/state/channelStore.js", "note": "Lo spunto resta in attesa del momento giusto, secondo la modalità dell'ospite; nella demo ROSS risponde dopo pochi secondi."},
   {"ref": "f:src/data/channel.js", "note": "Torna un insight: come è stato accolto, 1–2 frasi narrative e cosa si può fare. Mai cosa ha raccontato l'ospite."},
   {"ref": "f:src/components/ResidentSpunti.jsx", "note": "Nel ritratto gli spunti si dividono in piaciuti, in sospeso e non piaciuti, e ROSS dice cosa ha capito per proporre meglio."}]}
 for coll in (G["flows"], arch["flows"]):
-    coll[:] = [flow_ritratto if f["id"] == "ritratto" else f for f in coll if f["id"] not in ("invito", "anche-struttura", "canale")] + [flow_invito, flow_struttura, flow_canale]
+    coll[:] = [flow_ritratto if f["id"] == "ritratto" else f for f in coll if f["id"] not in ("chiedi", "invito", "anche-struttura", "canale")] + [flow_struttura, flow_canale]
 
 tour_ospiti = {"ref": "n:struttura.ospiti", "title": "Otto ospiti, otto archetipi", "note": "Ogni ospite rappresenta un modo diverso di vivere ROSS: la nuova arrivata, chi lo usa come uno strumento, chi lo adora troppo, il riservato… Il ritratto si adatta alla persona. Gli archetipi sono per chi presenta, mai etichette nel prodotto."}
 for coll in (G["tour"], arch["tour"]):
     coll[:] = [t for t in coll if t["ref"] != "n:struttura.ospiti"]
     coll.insert(2, tour_ospiti)
-tour_v2 = {"ref": "n:struttura.v2", "title": "Struttura 2.0: un canale, non un archivio", "note": "Una seconda versione della Struttura, da confrontare con la prima: la struttura non interroga ROSS, gli propone uno spunto per un ospite e riceve com'è andata. Niente dashboard, punteggi o trascrizioni."}
+tour_v2 = {"ref": "n:struttura.v2", "title": "Un canale, non un archivio", "note": "La struttura non interroga ROSS: gli propone uno spunto per un ospite, ROSS ne parla con lui se ci sta e restituisce cosa è emerso. Nel canale anche la residenza adesso, la rete delle passioni e le richieste pratiche."}
 for coll in (G["tour"], arch["tour"]):
-    coll[:] = [t for t in coll if t["ref"] != "n:struttura.v2"]
+    coll[:] = [t for t in coll if t["ref"] != "n:struttura.v2" and (t["ref"] in alive_refs)]
     coll.insert(3, tour_v2)
 
 # --- Lavori recenti: la nuova attività in cima, si tengono le ultime quattro ---
-task = {"title": "Struttura 2.0: il canale con ROSS",
-        "request": "Cambiare punto di vista: la struttura non consulta né interroga ROSS, gli propone spunti e riceve insight. In una vista nuova, senza rompere la Struttura attuale; poi Ospiti e ritratto, con una scheda per gli spunti piaciuti e non piaciuti",
-        "summary": "Nuova vista /struttura-2 (tasto 5): Proponi uno spunto e Cosa è emerso, con Visto e Fatto. Gli insight dicono come è stato accolto lo spunto, mai cosa ha raccontato l'ospite. Ospiti e ritratto sono quelli della Struttura, con in più la scheda Spunti."}
+task = {"title": "Una sola Struttura: il canale con ROSS",
+        "request": "Cancellare la vecchia vista della Struttura, del tutto, e mettere al suo posto la Struttura 2.0, rinominata Struttura.",
+        "summary": "La Struttura è il canale con ROSS, alla radice della demo (/, /ospiti, /richieste). Tolte la chat Chiedi a ROSS, Report, Panoramica, Impostazioni, la sessione live, la sidebar e i loro stili; i vecchi indirizzi portano alla pagina giusta. Ritratto con Spunti, Come sta, Con ROSS e Cosa sa ROSS."}
 items = [
-  ("f:src/pages/StructureChannel.jsx", "Nuovo: schede Il canale · Ospiti, Proponi uno spunto, Cosa è emerso."),
-  ("f:src/components/ResidentSpunti.jsx", "Nuovo: la scheda Spunti del ritratto."),
-  ("f:src/data/channel.js", "Nuovo: spunti, insight, accoglienza e cosa ha capito ROSS."),
-  ("f:src/state/channelStore.js", "Nuovo: stato condiviso tra canale e ritratto, risposta simulata di ROSS."),
-  ("f:src/pages/ResidentProfile.jsx", "Nella Struttura 2.0: scheda Spunti al posto di Come avvicinarsi, niente chat né report."),
-  ("f:src/pages/Residents.jsx", "I link seguono la Struttura in cui si è."),
-  ("f:src/components/PerspectiveSwitcher.jsx", "Voce Struttura 2.0 (tasto 5) e nota in \"Cosa è reale e cosa è simulato\"."),
+  ("f:src/App.jsx", "La Struttura alla radice; i vecchi indirizzi rimandano."),
+  ("f:src/pages/ResidentProfile.jsx", "Solo Spunti, Come sta, Con ROSS e Cosa sa ROSS."),
+  ("f:src/components/PerspectiveSwitcher.jsx", "Una sola Struttura (tasto 1)."),
+  ("f:src/components/GuidedTour.jsx", "Il capitolo Struttura racconta il canale."),
+  ("f:src/data/narratives.js", "Nuovo: il racconto di ciascuno, preso dal vecchio report."),
+  ("f:src/styles.css", "Tolti gli stili della vecchia Struttura."),
 ]
 rec = json.load(open("docs/floorplan/recent-work.json", encoding="utf-8"))
 rec["tasks"] = [t for t in rec["tasks"] if t["title"] != task["title"]]
@@ -209,14 +222,15 @@ rec["updatedAt"] = NOW
 G["recent"] = {"updatedAt": NOW, "tasks": [{k: t[k] for k in ("title", "request", "summary")} for t in rec["tasks"]],
                "items": [{"id": it["ref"], "task": ti, "change": it["change"], "note": it["note"]} for ti, t in enumerate(rec["tasks"]) for it in t["items"]]}
 
-# --- Schermate della Struttura 2.0 ---
+# --- Schermate della Struttura (il canale con ROSS) ---
 v2_behind = [{"id": "f:src/App.jsx", "note": "The screen itself", "kind": "screen"}, {"id": "f:src/pages/StructureChannel.jsx", "note": "A component on this screen", "kind": "part"}]
 v2_screens = [
-  ("/struttura-2", "Struttura 2.0 · Il canale", "Proponi uno spunto per un ospite e leggi cosa è emerso: come è stato accolto e cosa puoi fare.", []),
-  ("/struttura-2/ospiti", "Struttura 2.0 · Ospiti", "La lista degli ospiti della Struttura, che qui apre il ritratto della Struttura 2.0.", ["src/pages/Residents.jsx"]),
-  ("/struttura-2/ospiti/:id", "Struttura 2.0 · Ritratto", "Il ritratto della Struttura con in più la scheda Spunti: piaciuti, in sospeso, non piaciuti e cosa ha capito ROSS.", ["src/pages/ResidentProfile.jsx", "src/components/ResidentSpunti.jsx"]),
+  ("/", "Struttura · Il canale", "Proponi uno spunto per un ospite e leggi cosa è emerso; sopra, la residenza adesso e la rete delle passioni.", ["src/components/ResidenceMap.jsx", "src/components/PassionNetwork.jsx"]),
+  ("/ospiti", "Struttura · Ospiti", "La lista degli ospiti in ordine alfabetico.", ["src/pages/Residents.jsx"]),
+  ("/ospiti/:id", "Struttura · Ritratto", "Il ritratto: Spunti, Come sta, Con ROSS e Cosa sa ROSS.", ["src/pages/ResidentProfile.jsx", "src/components/ResidentSpunti.jsx", "src/components/PortraitV2.jsx"]),
+  ("/richieste", "Struttura · Richieste", "Le cose pratiche, in due direzioni: dagli ospiti e agli ospiti.", ["src/pages/StructureRequests.jsx"]),
 ]
-G["screens"] = [x for x in G["screens"] if not x["url"].startswith("/struttura-2")]
+G["screens"] = [x for x in G["screens"] if x["url"] not in {u for u, *_ in v2_screens}]
 for url, name, text, extra in v2_screens:
     G["screens"].append({"id": f"screen:guscio:{url}", "url": url, "file": "src/App.jsx", "app": "guscio", "fw": "react-router", "name": name, "description": text,
                          "behind": v2_behind + [{"id": f"f:{p}", "note": "A component on this screen", "kind": "part"} for p in extra]})

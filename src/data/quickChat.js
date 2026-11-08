@@ -1,6 +1,6 @@
-// Struttura 2.0 · «ROSS, al volo»: le risposte della piccola chat in basso a destra.
+// Struttura · «ROSS, al volo»: le risposte della piccola chat in basso a destra.
 // Non è uno strumento per interrogare ROSS sugli ospiti: è una scorciatoia su ciò che ROSS ha già restituito
-// nella 2.0 (gli stessi momenti di src/data/moments.js, letti con momentFilters), più un modo rapido di mandare
+// nella Struttura (gli stessi momenti di src/data/moments.js, letti con momentFilters), più un modo rapido di mandare
 // qualcosa a ROSS (sempre con conferma) e un'assistenza su come funziona ROSS.
 // Stesso approccio di chatScript.js (intenti a parole chiave normalizzate), ma con soli questi intenti:
 // niente priorità, segnali, presenza o report della vecchia chat.
@@ -11,7 +11,7 @@ import { whenText } from "./demoClock";
 import { announcementPhrase, esiti, requestStates } from "./moments";
 import { momentFilters } from "../state/channelStore";
 
-const BASE = "/struttura-2";
+const BASE = "";
 const normalize = (text = "") => text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’']/g, " ");
 const has = (q, ...words) => words.some((w) => q.includes(w));
 const firstSentence = (text = "") => (text.match(/^.*?[.!?](\s|$)/) || [text])[0].trim();
@@ -55,7 +55,7 @@ const guessType = (q) => has(q, "ricord") ? "ricordo" : has(q, "festa", "coro", 
 const intents = [
   // ——— Cosa non fa ———
   { id: "contenuto", match: (q) => !has(q, "perche") && has(q, "di cosa ha parlato", "di cosa parla", "cosa ha detto", "cosa ha raccontato", "cosa gli ha detto", "cosa le ha detto", "trascri", "conversazione di", "cosa si sono detti"),
-    answer: (q, ctx) => { const r = residentIn(ctx.question); return { text: r ? `Quello che ${r.first} racconta resta tra ${r.f ? "lei" : "lui"} e ROSS. Posso dirti come ha accolto gli ultimi spunti.` : "Quello che un ospite racconta resta tra l'ospite e ROSS. Posso dirti come ha accolto gli ultimi spunti.", link: r ? portrait(r, "spunti") : link("Apri il canale", BASE), suggestions: ["Quali spunti sono piaciuti di recente?"] }; } },
+    answer: (q, ctx) => { const r = residentIn(ctx.question); return { text: r ? `Quello che ${r.first} racconta resta tra ${r.f ? "lei" : "lui"} e ROSS. Posso dirti come ha accolto gli ultimi spunti.` : "Quello che un ospite racconta resta tra l'ospite e ROSS. Posso dirti come ha accolto gli ultimi spunti.", link: r ? portrait(r, "spunti") : link("Apri il canale", "/"), suggestions: ["Quali spunti sono piaciuti di recente?"] }; } },
   { id: "classifica", match: (q) => has(q, "chi sta peggio", "chi sta meglio", "classific", "chi usa meno", "chi usa di piu", "chi parla di piu", "chi parla meno", "il piu solo", "confront", "chi e piu", "chi e meno"),
     answer: () => ({ text: "ROSS non mette in fila le persone: ognuno si confronta solo con sé stesso. Posso dirti le ultime cose emerse.", suggestions: ["Le ultime 3 cose emerse"] }) },
   { id: "urgenze-spiega", match: (q) => has(q, "cosa fa ross con le urgenz", "ross con le urgenz", "ross e le urgenz", "se c e un urgenz", "emergenze?"),
@@ -63,7 +63,7 @@ const intents = [
   { id: "salute", match: (q) => has(q, "dolore", "fa male", "sta male", "caduta", "caduto", "urgenz", "emergenz", "febbre", "medicin", "farmac", "pressione", "glicemia", "terapi", "sintom", "malat"),
     answer: () => ({ text: "Per la salute e le urgenze serve il personale, subito: ROSS non è un sistema di emergenza.", link: about }) },
   { id: "gestione", match: (q) => has(q, "turn", "compit", "report", "quanti", "quante", "numer", "percentual", "statistic", "kpi", "panoramic", "assegna", "grafic", "riepilog"),
-    answer: () => ({ text: "Non è il mio lavoro: io ti racconto cosa emerge e porto i tuoi spunti agli ospiti.", link: link("Apri il canale", BASE) }) },
+    answer: () => ({ text: "Non è il mio lavoro: io ti racconto cosa emerge e porto i tuoi spunti agli ospiti.", link: link("Apri il canale", "/") }) },
 
   // ——— Agire al volo, sempre con conferma ———
   { id: "proponi", match: (q) => /^(proponi|proponigli|proponile|suggerisci|proporre)\b/.test(q.trim()),
@@ -92,8 +92,8 @@ const intents = [
     answer: (q, ctx) => {
       const liked = ctx.moments.filter((m) => m.origine === "spunto" && m.esito === "accolto").slice(0, 3);
       return liked.length
-        ? { text: "Gli ultimi spunti accolti volentieri:", items: liked.map((m) => short(`${channelResident(m.residentId).first}: «${m.spunto.testo}» · ${whenText(m.quando)}`, 90)), link: link("Apri il canale", BASE) }
-        : { text: "Di recente nessuno spunto è stato accolto volentieri: prova a proporne uno.", link: link("Apri il canale", BASE) };
+        ? { text: "Gli ultimi spunti accolti volentieri:", items: liked.map((m) => short(`${channelResident(m.residentId).first}: «${m.spunto.testo}» · ${whenText(m.quando)}`, 90)), link: link("Apri il canale", "/") }
+        : { text: "Di recente nessuno spunto è stato accolto volentieri: prova a proporne uno.", link: link("Apri il canale", "/") };
     } },
   { id: "richieste", match: (q) => has(q, "richiest", "hanno chiesto", "cose pratiche"),
     answer: (q, ctx) => {
@@ -114,8 +114,8 @@ const intents = [
     answer: (q, ctx) => {
       const last = ctx.moments.filter(momentFilters.canale).slice(0, 3);
       return last.length
-        ? { text: "Le ultime cose emerse:", items: last.map((m) => `${channelResident(m.residentId).first} · ${lineOf(m)}`), link: link("Apri il canale", BASE) }
-        : { text: "Per ora niente di nuovo da fare: quando emerge qualcosa, te lo racconto nel canale.", link: link("Apri il canale", BASE) };
+        ? { text: "Le ultime cose emerse:", items: last.map((m) => `${channelResident(m.residentId).first} · ${lineOf(m)}`), link: link("Apri il canale", "/") }
+        : { text: "Per ora niente di nuovo da fare: quando emerge qualcosa, te lo racconto nel canale.", link: link("Apri il canale", "/") };
     } },
 
   // ——— Spiegare ROSS ———
@@ -124,9 +124,9 @@ const intents = [
   { id: "perche", match: (q) => has(q, "perche") && has(q, "parlano", "sapere", "conversazion", "vedere", "racconta"),
     answer: () => ({ text: "È la regola d'oro: ciò che un ospite racconta resta tra lui e ROSS. ROSS traduce, non trasmette: ti dice come sta e cosa può aiutarlo, così puoi fare qualcosa senza tradire la sua fiducia.", link: about }) },
   { id: "spunto", match: (q) => has(q, "cos e uno spunto", "cosa e uno spunto", "che cos e uno spunto", "cosa sono gli spunti", "come funziona uno spunto", "spunto?"),
-    answer: () => ({ text: "Uno spunto è una proposta che mandi a ROSS per un ospite: un'attività, un ricordo, un evento, una persona. ROSS lo porta nella conversazione solo se l'ospite ci sta, poi ti racconta com'è andata.", link: link("Apri il canale", BASE) }) },
+    answer: () => ({ text: "Uno spunto è una proposta che mandi a ROSS per un ospite: un'attività, un ricordo, un evento, una persona. ROSS lo porta nella conversazione solo se l'ospite ci sta, poi ti racconta com'è andata.", link: link("Apri il canale", "/") }) },
   { id: "no", match: (q) => has(q, "dice di no", "dice no", "non vuole", "rifiuta", "se dice no"),
-    answer: () => ({ text: "Va bene così: ROSS non insiste e non ci torna. A te arriva solo «Non era il momento» o «Non è piaciuto», senza dettagli. Decide sempre l'ospite.", link: link("Apri il canale", BASE) }) },
+    answer: () => ({ text: "Va bene così: ROSS non insiste e non ci torna. A te arriva solo «Non era il momento» o «Non è piaciuto», senza dettagli. Decide sempre l'ospite.", link: link("Apri il canale", "/") }) },
 ];
 
 // La risposta a una domanda: { text, items?, link?, draft?, suggestions? }.
